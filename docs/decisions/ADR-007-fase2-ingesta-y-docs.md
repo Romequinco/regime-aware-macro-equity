@@ -2,10 +2,12 @@
 
 - **Estado:** Aceptada · 2026-10-14 (decisión del equipo).
 - **Actualización (2026-11-11):** instalación y dependencias sustituidas por [ADR-012](ADR-012-estructura-repo.md) §2.2.
+- **Actualización (2026-11-17):** referencias a notebooks puestas en la numeración vigente (00–22); sin cambios de
+  fondo. El texto original está en el historial de git.
 - **Completa:** [ADR-005](ADR-005-reencuadre-tfm-multiagente.md) §3, que dejaba abierto dónde vivirían las fases 2–5:
   aquí se decide para la **Fase 2**; las fases 3–5 siguen abiertas ([`tfm/lineas_abiertas.md`](../tfm/lineas_abiertas.md) §4).
 - **Sustituye:** el árbol de `docs/` de [ADR-004](ADR-004-unificacion.md) §2 (punto 4) y §3 (el resto de ADR-004 sigue vigente).
-- **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen (notebook `22_decision_final`).
+- **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen (notebook `21_decision_final`).
 
 ---
 
@@ -62,7 +64,7 @@ docs/
 │   ├── fuentes/         documentos de origen (propuesta, presentación al tutor)
 │   └── internos/        SOLO LOCAL: presentaciones, plan de datos en LaTeX, diario del estado del arte
 ├── estado_del_arte/     estado del arte general, de detectores y de fuentes de datos, con su catálogo
-├── fase1/               pipeline 00–23 y mapa del código (README), EDA, F1–F7 (teoría + detectores), sintéticos
+├── fase1/               pipeline 00–22 y mapa del código (README), EDA, F1–F7 (teoría + detectores), sintéticos
 ├── fase2/               reparto en temas (README), plan de datos, datos alternativos
 └── historia/            Capa 1, narrativa v1 de los detectores, estado del arte v1, tarea previa
 ```
@@ -92,7 +94,7 @@ Reglas:
 | `docs/decisions/` | Las ADR se enlazan desde el código, los notebooks y el README raíz |
 | `docs/fase2/README.md` | La enlazan los README de los cuatro temas, que viven en ramas distintas: moverla rompería enlaces en ramas que no controla quien reorganiza |
 | `docs/GLOSARIO.md` | La enlazan notebooks, ADR y el README raíz, también por ancla; sus anclas de términos se conservan |
-| `docs/historia/capa1/resultados/` | La leen los notebooks de familia y el `22` como datos (métricas v1); moverla obligaría a tocar notebooks ya ejecutados |
+| `docs/historia/capa1/resultados/` | La leen los notebooks de familia como datos (métricas v1; el plan de entonces era que también la leyera la decisión final, hoy el `21`, que aún es un esqueleto); moverla obligaría a tocar notebooks ya ejecutados |
 
 ## 3. Alternativas consideradas
 

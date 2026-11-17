@@ -2,10 +2,12 @@
 
 - **Estado:** Aceptada · 2026-09-29
 - **Revisión posterior (2026-10-06):** (1) la «regla a congelar para el pseudolive» (§4) se decide en el
-  notebook `22_decision_final` y quedará registrada en la **futura ADR-006** (la antigua «futura ADR-005»,
+  notebook `21_decision_final` y quedará registrada en la **futura ADR-006** (la antigua «futura ADR-005»,
   renumerada por [ADR-005](ADR-005-reencuadre-tfm-multiagente.md)). (2) `LAG_PUBLICACION` es el *TimeGate*
   de las **series numéricas**; el TimeGate de los documentos (corpus del RAG) es trabajo de la Fase 2 del
   TFM. (3) ALFRED (vintages en tiempo real) sigue siendo una limitación declarada.
+- **Actualización (2026-11-17):** referencias a notebooks puestas en la numeración vigente (00–22); sin cambios de
+  fondo. El texto original está en el historial de git.
 - **Rama:** trabajo directo sobre `main`.
 - **Origen:** revisión completa del código y de los notebooks de datos, preprocesado, benchmark,
   comparativa y fusión (2026-09-29), hecha sin re-ejecutar el benchmark: se corrigió todo lo que no
@@ -15,7 +17,8 @@
 - **Ámbito:** `regimenes.features` (lags de publicación, alineación), `regimenes.datos` (CAPE, Ken
   French, vol realizada), `regimenes.evaluacion` (walk-forward, detección por evento, ranking),
   `regimenes.detectores.registry` (semillas), `regimenes.benchmark` (huella de caché, ejecución
-  paralela), `configs/benchmark_spec.yaml` (solo comentarios) y los notebooks 02–03, 05 y 14–16 (numeración actual). **No**
+  paralela), `configs/benchmark_spec.yaml` (solo comentarios) y los notebooks 02–03, 05, 14 y 15
+  (numeración vigente; el 15, `15_fusiones_fijas`, integra las dos fusiones fijas de entonces). **No**
   cambia ventanas, crisis, series del banco ni la lógica de los detectores.
 - **Consecuencia:** invalida los resultados previos del benchmark y de la Fase E; el benchmark se
   re-ejecuta completo una vez con los tres cambios juntos.

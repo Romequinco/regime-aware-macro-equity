@@ -72,8 +72,9 @@ config=None) -> dict`` con las claves:
     (ADR-011 §4, notebook 16), con pesos aprendidos solo con crisis terminadas;
     ``estado_consenso`` es ``crisis`` si ``>= umbral_consenso`` (0,5).
   - ``detectores_en_crisis``, ``detectores_total`` e ``ids_en_crisis``: cuántos
-    candidatos no supervisados (15 en A, 17 en B) marcan crisis ese día.
-  - ``confianza``: fracción de esos candidatos que dicen lo mismo que el
+    candidatos no supervisados marcan crisis ese día, **sin contar al principal**
+    (14 de los 15 en A, 16 de los 17 en B).
+  - ``confianza``: fracción de esos otros candidatos que dicen lo mismo que el
     principal (en crisis si el principal está en crisis; en calma si no). Es
     **acuerdo entre detectores**, no una probabilidad calibrada.
   - ``coincide_consenso`` y ``lectura``: ``crisis respaldada``, ``crisis sin
@@ -81,9 +82,12 @@ config=None) -> dict`` con las claves:
     coincidan el principal y el consenso.
   - ``fuente``: rutas y SHA-256 de los dos ficheros.
 
-  Es causal por construcción: las señales son los paneles OOS de cada candidato
-  y la fusión online solo usa pesos fijados con información anterior (lo
-  comprueban ``tests/fusion``); aquí solo se lee la fila de ``fecha_dato``.
+  Las señales son los paneles OOS de cada candidato y la fusión online solo usa
+  pesos fijados con crisis anteriores (lo comprueban ``tests/fusion``); aquí solo
+  se lee la fila de ``fecha_dato``. **Matiz pendiente:** la variante por defecto
+  (``ONLINE_principal_eta10``, sin retraso) da una crisis por terminada en cuanto
+  pasa su suelo, que solo se conoce a posteriori; ``ONLINE_retraso63_eta10`` lo
+  evita. Se decide en el notebook 21 (pregunta 6) y en ADR-006.
 
 Fechas: fines de semana y festivos se resuelven al último día hábil del panel
 ``<= fecha``. Se lanza :class:`FechaFueraDeRango` si la fecha es anterior al
@@ -331,7 +335,9 @@ def _cargar_contexto(cfg: dict, pista: str) -> _Contexto | None:
     )
 
 
-def _contexto(cfg: dict, pista: str, fecha_dato: pd.Timestamp, es_crisis: bool) -> dict | None:
+def _contexto(
+    cfg: dict, pista: str, fecha_dato: pd.Timestamp, es_crisis: bool, principal: str
+) -> dict | None:
     """Bloque ``contexto`` de la respuesta para la sesión ``fecha_dato`` (ver el módulo)."""
     ctx = _cargar_contexto(cfg, pista)
     if ctx is None or fecha_dato not in ctx.senales.index or fecha_dato not in ctx.prob.index:
@@ -339,7 +345,8 @@ def _contexto(cfg: dict, pista: str, fecha_dato: pd.Timestamp, es_crisis: bool) 
     prob = float(ctx.prob.loc[fecha_dato])
     if not np.isfinite(prob):
         return None
-    fila = ctx.senales.loc[fecha_dato]
+    # El principal no cuenta: el contexto es la opinión del RESTO (si no, siempre se daría la razón).
+    fila = ctx.senales.loc[fecha_dato].drop(labels=[principal], errors="ignore")
     en_crisis = [str(c) for c in fila.index[fila.to_numpy()]]
     total = int(fila.size)
     coinciden = len(en_crisis) if es_crisis else total - len(en_crisis)
@@ -484,5 +491,5 @@ def get_regimen(
             "huella_cache": panel.huella_cache,
             "config": _ruta_config(config),
         },
-        "contexto": _contexto(cfg, pista_ef, panel.index[i], es_crisis) if contexto else None,
+        "contexto": _contexto(cfg, pista_ef, panel.index[i], es_crisis, det) if contexto else None,
     }

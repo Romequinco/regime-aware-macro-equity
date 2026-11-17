@@ -10,24 +10,27 @@
   [ADR-008](ADR-008-preregistro-pool-termometros.md) §4 (MCS) y [ADR-010](ADR-010-preregistro-pool-crudo.md), cuyos
   paneles OOS y etiquetas causales se reutilizan.
 - **No cambia:** los 12 detectores de v2, las variantes de la Fase 2 (ADR-010), sus paneles y métricas, el ranking
-  v3, el notebook 21, las ventanas, las crisis ni las trampas. **No se reentrena nada:** las fusiones combinan los
+  v3, el notebook 20, las ventanas, las crisis ni las trampas. **No se reentrena nada:** las fusiones combinan los
   paneles OOS que ya existen.
 - **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen. Los resultados de esta fase
   se escriben en el §9 de este ADR.
+- **Actualización (2026-11-17):** referencias a notebooks puestas en la numeración vigente (00–22); sin cambios de
+  fondo. El texto original está en el historial de git. El pre-registro congelado es el del commit `f6876d2`.
 
 ---
 
 ## 1. Pregunta
 
-Los ADR-008 a ADR-010 comparan detectores **sueltos**. Las fusiones que hay ([notebook 15](../../notebooks/fase1/15_fusiones_fijas.ipynb),
-D7 alerta + D8 confirma, y [notebook 16](../../notebooks/fase1/15_fusiones_fijas.ipynb), D6 confirmador fijo con cribado de
-alertas) se eligieron después de ver el benchmark y se midieron con una utilidad operativa propia, no con la vara del
-ranking. Queda la pregunta: **¿hay alguna combinación de detectores no supervisados que, medida con la misma vara que
-los individuales y con la selección controlada, mejore al mejor detector solo?** Se prueba de dos formas:
+Los ADR-008 a ADR-010 comparan detectores **sueltos**. Las fusiones que hay (notebooks 15 y 16 antiguos:
+`15_fusion_d07_d08`, D7 alerta + D8 confirma, y `16_fusion_d02_d06`, D6 confirmador fijo con cribado de alertas; hoy
+integrados en [`15_fusiones_fijas`](../../notebooks/fase1/15_fusiones_fijas.ipynb)) se eligieron después de ver el
+benchmark y se midieron con una utilidad operativa propia, no con la vara del ranking. Queda la pregunta: **¿hay
+alguna combinación de detectores no supervisados que, medida con la misma vara que los individuales y con la
+selección controlada, mejore al mejor detector solo?** Se prueba de dos formas:
 
 - **Fusiones fijas** (notebook 15): reglas sin parámetros aprendidos (alerta→confirmación, votación, OR y AND),
   barridas sobre todos los candidatos.
-- **Fusión online** (notebook 17, C1, inspirada en la agregación de modelos de crisis de Fouliard et al., 2020): media
+- **Fusión online** (notebook 16, C1, inspirada en la agregación de modelos de crisis de Fouliard et al., 2020): media
   ponderada de probabilidades con pesos que se actualizan cada mes según el acierto pasado, medido solo con crisis ya
   terminadas.
 
@@ -74,7 +77,8 @@ ajusten a crisis.
 
 - **Pares:** todos los **ordenados** de candidatos distintos (X alerta, Y confirma): 15 × 14 = 210 en A y 17 × 16 =
   272 en B.
-- **Máquina:** `fusion.fuse_early_warning` sin cambios, con la configuración de los notebooks 15 y 16:
+- **Máquina:** `fusion.fuse_early_warning` sin cambios, con la configuración de los notebooks 15 y 16 antiguos (hoy
+  integrados en `15_fusiones_fijas`):
   `FusionConfig(alert_source="state", alert_crisis_state=n_states_X − 1, alert_persistence=1,
   confirmation_threshold=0,50, confirmation_persistence=3, warning_horizon=63)`.
 - **Confirmador binario:** la máquina confirma con `p_crisis ≥ umbral`, no con el estado. Para que el confirmador sea
@@ -86,8 +90,8 @@ ajusten a crisis.
     mira a Y: la alerta no interviene. Las 210 (o 272) parejas se reducirían a 15 (o 17) señales distintas, una por
     confirmador, y cada una sería el propio confirmador con persistencia 3. Eso no es una fusión: sería medir los
     individuales con un filtro de persistencia y llamarlo «combinación».
-  - «Accionable» es la decisión que defendían los notebooks 15 y 16, y la única de las tres en la que X y Y
-    intervienen los dos. Es crisis:
+  - «Accionable» es la decisión que defendían los notebooks 15 y 16 antiguos (hoy integrados en `15_fusiones_fijas`),
+    y la única de las tres en la que X y Y intervienen los dos. Es crisis:
     - el día de un flanco de subida de X con Y aún inactivo y las 63 sesiones siguientes (`warning_window`, edad 0 a
       63). La ventana no se corta cuando Y confirma ni cuando X se apaga, y un flanco nuevo la reinicia;
     - y los días en que Y confirma.
@@ -96,7 +100,8 @@ ajusten a crisis.
     sesgo.
 - **Sensibilidad, sin peso:** «confirmación tras aviso» (`maquina._gated_confirmation`). Solo cuenta como crisis una
   confirmación de Y precedida por un aviso de X emparejado dentro del horizonte. Es la lectura secuencial estricta, y
-  el notebook 16 vio que casi nunca ocurre (en A, el 1,3 % de las confirmaciones de D6 tienen aviso de D2).
+  el notebook 16 antiguo (`16_fusion_d02_d06`, hoy integrado en `15_fusiones_fijas`) vio que casi nunca ocurre (en A,
+  el 1,3 % de las confirmaciones de D6 tienen aviso de D2).
 - **Referencia, sin peso:** «confirmado» puro, es decir, cada candidato con persistencia 3.
 
 ### 3.2 Familia (b) · Votación k-de-n
@@ -133,7 +138,7 @@ los dos), día a día. Son C(15, 2) × 2 = 210 señales en A y C(17, 2) × 2 = 2
 `VOTO_3de5` y `VOTO_mayoria`. Si dos fusiones dan señales idénticas, se mantienen las dos; el desempate del §5.2 elige
 una.
 
-## 4. Fusión online (notebook 17)
+## 4. Fusión online (notebook 16)
 
 ### 4.1 Combinación
 
@@ -254,13 +259,13 @@ una.
     ADR-010 (decisión del usuario del 03-11-2026). Así (ii) se mide con la misma vara que el MCS publicado, y el
     control de la selección en H1 lo hace (iii). El MCS en H2 se reporta sin peso (§6.3): tiene 12 crisis en A y solo
     5 en B.
-- **Utilidad operativa** de los notebooks 15 y 16 (`fusion.signal_scores` y `operational_utility`): se mantiene como
-  lectura secundaria, sin peso.
+- **Utilidad operativa** de los notebooks 15 y 16 antiguos (hoy integrados en `15_fusiones_fijas`;
+  `fusion.signal_scores` y `operational_utility`): se mantiene como lectura secundaria, sin peso.
 
 ### 5.2 Selección en la primera mitad, evaluación en la segunda
 
-- **Mitades:** se corta en ⌊n/2⌋ sesiones OOS, igual que el notebook 16. Ninguna ventana de crisis cruza el corte
-  (§8).
+- **Mitades:** se corta en ⌊n/2⌋ sesiones OOS, igual que el notebook 16 antiguo (`16_fusion_d02_d06`, hoy integrado
+  en `15_fusiones_fijas`). Ninguna ventana de crisis cruza el corte (§8).
 
 | Pista | H1 (selección) | Crisis en H1 | H2 (evaluación) | Crisis en H2 |
 |---|---|---|---|---|
@@ -352,7 +357,7 @@ en todo el OOS y en H2. Se reporta aparte y no cambia el veredicto principal. La
   - `benchmark/pool.py`, `configs/benchmark_spec.yaml`, `configs/bloques.yaml` y `data/processed`;
   - los módulos de los sintéticos (`anclas.py`, `muestras.py` y `envoltorio.py`) y `features/rentabilidades.py`.
 
-  `fusion/` no entra en la huella de la caché v2 (`benchmark.cache._cache_code_paths`) ni en la del notebook 21
+  `fusion/` no entra en la huella de la caché v2 (`benchmark.cache._cache_code_paths`) ni en la del notebook 20
   (`sinteticos.aumento.config.huella_generador`).
 - **Resultados:** `results/fusion/fijas/` y `results/fusion/online/`, con rutas nuevas en `rutas.py`. Se conservan
   `results/fusion/d07_d08/` y `results/fusion/d02_d06/`.
@@ -377,17 +382,18 @@ Es barato y no hace falta piloto: no se ajusta ningún modelo.
 - Lo más caro son los MCS: 2 por pista en todo el OOS y 2 en H2, con 21 a 26 modelos y 5.000 réplicas. Son minutos
   cada uno.
 
-Se ejecuta con **un solo proceso**, en paralelo al notebook 21 sin competir con él.
+Se ejecuta con **un solo proceso**, en paralelo al notebook 21 (hoy 20) sin competir con él.
 
 ### 7.3 Numeración de notebooks
 
 - **El 15 y el 16 se unifican** en `notebooks/fase1/15_fusiones_fijas.ipynb` y el 16 se borra con `git mv` / `git rm`.
   - El 15 nuevo empieza por los antecedentes (D7 + D8 y D2 + D6, leídos de sus `results/fusion/` actuales, sin peso).
   - Después vienen las tres familias de este ADR.
-- **El 17 sigue siendo la fusión online** (`17_fusion_online.ipynb`, hoy un esqueleto). Su objetivo cambia: compara
-  con F\*, M, V e I\*, en vez de con D2 + D6 y el mejor del 14.
-- **No se renumera 18–23** hasta que termine el notebook 21. Mientras tanto queda el hueco del 16. La renumeración irá
-  en un commit aparte con `git mv` y el test de enlaces de la documentación.
+- **El 17 sigue siendo la fusión online** (`17_fusion_online.ipynb`, entonces un esqueleto; hoy
+  `16_fusion_online.ipynb`). Su objetivo cambia: compara con F\*, M, V e I\*, en vez de con D2 + D6 y el mejor del 14.
+- **No se renumera 18–23** hasta que termine el notebook 21 (el aumento, hoy 20). Mientras tanto queda el hueco del
+  16. La renumeración irá en un commit aparte con `git mv` y el test de enlaces de la documentación (hecha el
+  2026-11-11: el 17–23 pasó a 16–22).
 
 ## 8. Verificaciones antes de congelar
 
@@ -447,7 +453,7 @@ Se ejecuta con **un solo proceso**, en paralelo al notebook 21 sin competir con 
 Calculado el 03-11-2026 después de congelar. Hubo una sola ejecución limpia: primero las fijas, después la online,
 en un proceso, con 5.000 réplicas en todos los MCS. Las tablas están en `results/fusion/fijas/` y
 `results/fusion/online/`. La lectura se hace en los notebooks [15](../../notebooks/fase1/15_fusiones_fijas.ipynb) y
-[17](../../notebooks/fase1/16_fusion_online.ipynb).
+[16](../../notebooks/fase1/16_fusion_online.ipynb).
 
 ### 9.1 Fusiones fijas (§6.1)
 
@@ -508,5 +514,5 @@ Lectura sin peso (§6.3):
 - **Ninguna fusión desplaza a los mejores detectores solos en las dos pistas.** La fusión online es la única que
   gana en una, la A, y esa ventaja no viene de que los pesos aprendan: la media simple rinde igual o más en H2.
 - **`get_regimen`** sigue con un detector individual, D06 en A y D05 en B, hasta la decisión final (ADR-006,
-  notebook 22). La fusión online de A queda como candidata que hay que contrastar allí.
+  notebook 21). La fusión online de A queda como candidata que hay que contrastar allí.
 - **Para el TFM:** se suma al resultado del ADR-009 y del ADR-010: con 17 crisis, la complejidad no se paga.

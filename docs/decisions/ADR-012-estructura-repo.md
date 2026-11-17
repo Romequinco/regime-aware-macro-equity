@@ -8,7 +8,8 @@
 - **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen (notebook `21_decision_final`).
 - **Actualización (2026-11-17):** §3 corregida tras una auditoría de coherencia: la lista de comentarios con
   numeración antigua en ficheros con huella no era exacta, y faltaban `src/regimenes/sinteticos/`,
-  `configs/sinteticos.yaml` y ADR-003. La decisión no cambia.
+  `configs/sinteticos.yaml` y ADR-003. La decisión no cambia. Ese mismo día las ADR anteriores se pusieron en la
+  numeración vigente y salieron de la lista.
 
 ---
 
@@ -148,10 +149,6 @@ Corregirlos invalidaría una caché o reescribiría un pre-registro.
 - **`configs/bloques.yaml` y `features/bloques.py`:** citan `PendientesOscar.md` solo por su nombre, sin ruta.
 - **`configs/benchmark_spec.yaml` y `configs/bloques.yaml`:** sus comentarios citan `notebooks/NN_*.ipynb` sin la
   carpeta `fase1/` (la Fase 1 se movió a `notebooks/fase1/` después; los notebooks no están en ninguna huella).
-- **ADR-003 (revisión del 2026-10-06, línea 5), ADR-004, ADR-005 y ADR-007 a ADR-011:** usan la numeración de
-  notebooks de su fecha. Equivalencias: notebook «21» de ADR-009–011 = aumento (hoy 20); «17» = fusión online
-  (hoy 16); «22»/«23» de ADR-003–005 y ADR-007 = decisión final y pseudolive (hoy 21 y 22). Excepción: la tabla de
-  notebooks de ADR-004 §3 se actualizó a la numeración vigente el 2026-11-17.
 
 ## 4. Consecuencias
 

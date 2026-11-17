@@ -6,10 +6,12 @@
   del usuario del 02-11-2026.
 - **Parte de:** [ADR-008](ADR-008-preregistro-pool-termometros.md), con sus menús, su vara de medir y su MCS, y de
   [ADR-009](ADR-009-resultados-pool.md), que descarta el menú T: el núcleo es N, con U para los univariantes.
-- **No cambia:** los 12 detectores de v2, sus 24 resultados y su caché, el notebook 21, las ventanas, las crisis ni
-  las trampas.
+- **No cambia:** los 12 detectores de v2, sus 24 resultados y su caché, el notebook 20 (aumento), las ventanas, las
+  crisis ni las trampas.
 - **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen. Los resultados de esta fase
   se escriben en el §9 de este ADR.
+- **Actualización (2026-11-17):** referencias a notebooks puestas en la numeración vigente (00–22); sin cambios de
+  fondo. El texto original está en el historial de git. El pre-registro congelado es el del commit `16ae62f`.
 
 ---
 
@@ -139,9 +141,9 @@ operación en cada sentido; en bajista, al activo libre de riesgo. No publica la
   `detectores/__init__.py`, `evaluacion/walk_forward.py`, `evaluacion/metricas.py` ni `detectores/f*/`**, y sin
   tocar `configs/benchmark_spec.yaml` ni los parquet de `data/processed`. Esos ficheros entran en la huella de la
   caché v2 (`benchmark.cache._cache_code_paths` y `_cache_fingerprint`) y,
-  a través de ella, en la del notebook 21. Tocarlos invalidaría los 24 resultados oficiales y el cálculo del
+  a través de ella, en la del notebook 20. Tocarlos invalidaría los 24 resultados oficiales y el cálculo del
   aumento.
-- **Comprobación al cerrar:** la caché v2 sigue vigente (`comprobar_benchmark`) y el `estado` del notebook 21 no
+- **Comprobación al cerrar:** la caché v2 sigue vigente (`comprobar_benchmark`) y el `estado` del notebook 20 no
   recupera trabajos ya hechos.
 - **Tests:**
   - prefijo: calcular hasta t da lo mismo que calcular con todo y recortar en t;
@@ -194,7 +196,7 @@ MCS de supervisados y no supervisados juntos, solo como lectura.
     reajustes) en vez de en cada reajuste. Si hace falta, se declara aquí como errata **antes** de calcular.
   - El paso de reajuste de cada detector es el de su familia en v2: 21 días, como D09 y D10 (`DetectorSpec.step`
     por defecto en `registry.py`). D14 no se ajusta.
-- **Ejecución:** con `Start-Process`, `--horas` y orden LPT, reanudable, en paralelo al notebook 21.
+- **Ejecución:** con `Start-Process`, `--horas` y orden LPT, reanudable, en paralelo al notebook 20.
 
 ## 8. Verificaciones antes de congelar
 

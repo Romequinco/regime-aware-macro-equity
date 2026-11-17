@@ -7,6 +7,8 @@
 - **Completa:** [ADR-008](ADR-008-preregistro-pool-termometros.md), el pre-registro. No cambia sus bloques, anclas,
   menús, vara de medir ni criterios, ni su veredicto (§8).
 - **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen.
+- **Actualización (2026-11-17):** referencias a notebooks puestas en la numeración vigente (00–22); sin cambios de
+  fondo. El texto original está en el historial de git.
 
 ---
 
@@ -214,7 +216,7 @@ Cómo encajan los resultados con cada opción, según las reglas escritas arriba
 - **D16 y D17.** Los supervisados se evalúan sobre todo en P y, como comparación barata, en N (no en T, que está
   descartado; precisado en el ADR-010 §3 el 03-11-2026). No tienen peso en el ranking principal. Responden si un
   modelo con etiquetas saca partido del pool.
-- **`get_regimen` provisional, sintéticos del notebook 21 y XAI.** Se apoyan en N y U, como hasta ahora. Ya no hace
+- **`get_regimen` provisional, sintéticos del notebook 20 y XAI.** Se apoyan en N y U, como hasta ahora. Ya no hace
   falta ampliar los generadores sintéticos al menú T (PendientesOscar §6.7): solo a P, y solo si P aporta.
 - **Memoria del TFM.** El resultado negativo es pre-registrado y se explica bien: comprimir el pool en
   termómetros por bloque no mejora a los mismos detectores con los datos de siempre. Tampoco supera repartir las

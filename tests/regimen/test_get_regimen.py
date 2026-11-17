@@ -293,10 +293,10 @@ def test_contexto_cuenta_acuerdo_y_lectura(bench: dict, prob: float) -> None:
         r = get_regimen(fecha, directorio=bench["dir"], config=cfg)
         ctx = r["contexto"]
         crisis = r["estado"] == "crisis"
-        # X2 (el principal) e Y1 en crisis según toque; Y2 nunca; la fusión no cuenta.
-        assert ctx["detectores_total"] == 3
-        assert ctx["ids_en_crisis"] == (["X2", "Y1"] if crisis else ["Y1"])
-        assert ctx["confianza"] == pytest.approx(2 / 3)
+        # X2 es el principal: no cuenta (ni la fusión). Y1 siempre en crisis, Y2 nunca.
+        assert ctx["detectores_total"] == 2
+        assert ctx["ids_en_crisis"] == ["Y1"]
+        assert ctx["confianza"] == pytest.approx(1 / 2)
         assert ctx["estado_consenso"] == ("crisis" if prob >= 0.5 else "calma")
         assert ctx["coincide_consenso"] == (crisis == (prob >= 0.5))
         assert ctx["lectura"] == {
@@ -328,10 +328,12 @@ def test_reales_contexto_usa_los_candidatos_del_adr011() -> None:
 
     limpiar_cache()
     for fecha, pista in (("2008-10-10", "A"), ("2020-03-16", "B"), ("2015-06-01", "B")):
-        ctx = get_regimen(fecha)["contexto"]
+        r = get_regimen(fecha)
+        ctx = r["contexto"]
         assert ctx is not None
-        assert ctx["detectores_total"] == len(vara.candidatos(pista))
-        assert set(ctx["ids_en_crisis"]) <= set(vara.candidatos(pista))
+        otros = set(vara.candidatos(pista)) - {r["detector"]}
+        assert ctx["detectores_total"] == len(otros)
+        assert set(ctx["ids_en_crisis"]) <= otros
         assert 0.0 <= ctx["prob_crisis_consenso"] <= 1.0
         assert 0.0 <= ctx["confianza"] <= 1.0
     assert get_regimen("2008-10-10")["contexto"]["lectura"] == "crisis respaldada"

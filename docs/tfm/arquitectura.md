@@ -104,7 +104,21 @@ Salida (`SalidaRegimen`):
   ajustar ni recalcular nada.
 - **Convención de fecha.** La fila de `fecha` usa los datos al cierre de `fecha` (la rentabilidad y los niveles del
   propio día; ver el docstring de `regimenes.regimen.tool`), así que quien decida a ese mismo cierre o durante la
-  sesión debe pedir `t − 1`. La convención que usarán los agentes queda **pendiente de fijar antes de la Fase 4**.
+  sesión debe pedir `t − 1`.
+- **Ejecución (decidido el 2026-11-17): se decide tras el cierre de `t` y se opera en `t + 1`.** Los agentes llaman a
+  `get_regimen(t)` después del cierre (hora de decisión 16:30 ET del contrato de datos) y la orden se ejecuta en la
+  sesión siguiente; **nunca** al mismo cierre de `t`, que sería usar un dato que a esa hora no existía. `get_regimen`
+  no cambia: la regla vive en el motor de backtest de la Fase 4, con un test que la garantice.
+  **Pendiente (antes de la Fase 4):**
+  - **Precio de ejecución: preferencia por la apertura de `t + 1`**, la opción más realista para un inversor que deja
+    la orden puesta por la noche. Para ello hace falta:
+    1. Tener precios de apertura en el corpus del Tema 1 para todo el universo. Hoy las series de cartera van al cierre.
+    2. Resolver los instrumentos con otro horario o en otra divisa: con qué apertura y con qué tipo de cambio visible.
+    3. Pasar los *baselines* de `ingesta.mercados_series.cartera` (que hoy ejecutan al cierre con señal `sesion < fecha`)
+       a la misma convención, para comparar en igualdad.
+    4. Medir el coste del salto de apertura.
+  - **Sensibilidad:** repetir el backtest ejecutando al cierre de `t + 1`, que es más conservador y solo necesita
+    cierres. Es equivalente a la convención actual de los *baselines*.
 - **Lo que fijará la ADR-006:** el detector final, los estados definitivos (si se añade `alerta`; correspondencia de
   trabajo con la máquina de fusión `regimenes.fusion`: calma ≈ *normal*, alerta ≈ *vigilancia*, crisis ≈
   *confirmado*) y la definición exacta de la probabilidad que se publica. El contrato tipado de
