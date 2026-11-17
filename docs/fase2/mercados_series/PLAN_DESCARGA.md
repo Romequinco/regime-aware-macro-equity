@@ -106,11 +106,11 @@ filtro**, que es el paso 3. Para elegir los umbrales con datos, enseña cuántas
 | # | Decisión | Propuesta |
 |---|---|---|
 | D1 | Qué significa «tiene historia desde 2000» | **Aprobada:** que la **primera publicación visible** (`fecha_publicacion`, no la de referencia) sea ≤ 2001-01-02 |
-| D2 | Niveles de fiabilidad de la fecha | **Aprobada con cambio:** A = vintage exacto o publicación medida; B = regla verificada; C = regla sin verificar; D = sin fecha. Entran A y B; D se queda fuera. El nivel **C se explica y se analiza en el notebook** (cuánto se desvía la regla de la fecha real donde se puede medir y en qué sentido); si no es fiable, se quita |
+| D2 | Niveles de fiabilidad de la fecha | **Cerrada (2026-11-17)** tras el análisis del `02`, con un mismo trato para B y C en la ventana desde 2000:<br>- entran «exacta», «sin riesgo», «fiable», «con margen» y «verificada sin medir»;<br>- a las «no fiables» se les quita el tramo sin contrastar (o pasan a una regla conservadora);<br>- las «no medibles» (mercado diario, Banco Mundial, macro de Eurostat, BCE y BIS, académicas) entran **con aviso y con una regla conservadora**: la fecha más tardía plausible según el calendario documentado de cada fuente;<br>- en el backtest se hace una prueba de robustez contra la fecha normal.<br>Las reglas concretas se preparan en el paso 3 y se aplican en el 4 |
 | D3 | Países en el alcance | **Aprobada:** EE. UU., zona euro, G7 y China (decidido en la sonda), más los agregados mundial y emergentes del Banco Mundial y del WEO |
 | D4 | Proyecciones (SEP, WEO, referencias futuras) | **Aprobada:** tabla aparte de proyecciones, fuera de la base curada |
 | D5 | ~~Agente que usa cada serie~~ | **Descartada** (2026-11-17): se decide al construir los agentes, no en el dataset |
-| D6 | Ficha del BoE | **Aprobada con cambio:** «bloqueada» en la ficha, pero si existe una ruta que `robots.txt` permita, se descarga en el paso 3b |
+| D6 | Ficha del BoE | **Cerrada (2026-11-17):** sin ruta CSV o XML permitida en `robots.txt` (solo HTML), así que no se extrae de HTML. La ficha queda en «fallo» con el motivo (el esquema común no admite «bloqueada»). El tipo oficial va por el BIS y las curvas del BoE ya están. Se reconsidera si alguna serie del BoE no tiene alternativa |
 | D7 | Dónde va el inventario | **Aprobada:** `results/ingesta/mercados_series/tablas/inventario_*.csv`, versionado (solo metadatos, sin valores) |
 
 **Se deciden viendo el notebook** (lo enseña con tablas de sensibilidad):
