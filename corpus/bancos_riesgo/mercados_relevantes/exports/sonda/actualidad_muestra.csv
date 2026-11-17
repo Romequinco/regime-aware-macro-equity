@@ -1,0 +1,36 @@
+﻿apartado,fuente,tipo,funcion,alcance_acceso,estado,publicacion_mas_reciente_muestra,dias_desde_publicacion,texto_completo,url
+1,Fed,Comunicado y decisión FOMC,Comunicación monetaria,Listado: muestra limitada,OK,2026-04-29 18:00:00+00:00,177.0,True,https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm
+1,Fed,Actas FOMC,Comunicación monetaria,Listado: muestra limitada,OK,2026-05-20 00:00:00+00:00,157.0,True,https://www.federalreserve.gov/monetarypolicy/fomcminutes20260429.htm
+1,Fed,Rueda de prensa: transcripción,Comunicación monetaria,Listado: muestra limitada,OK,,,False,https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+1,Fed,Beige Book,Comunicación monetaria,Listado: muestra limitada,OK,2026-04-15 00:00:00+00:00,192.0,True,https://www.federalreserve.gov/monetarypolicy/beigebook202604-summary.htm
+1,Fed,Discurso,Comunicación monetaria,Listado: muestra limitada,OK,2026-10-14 00:00:00+00:00,10.0,True,https://www.federalreserve.gov/newsevents/speech/bowman20261014a.htm
+1,Fed,Summary of Economic Projections,Comunicación monetaria,Listado: muestra limitada,OK,2026-09-16 00:00:00+00:00,38.0,True,https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260916.htm
+2,BCE,Decisión de política monetaria,Comunicación monetaria,Listado: muestra limitada,OK,2026-09-10 00:00:00+00:00,44.0,True,https://www.ecb.europa.eu/press/pr/date/2026/html/ecb.mp260910~314e508016.en.html
+2,BCE,Declaración de política monetaria,Comunicación monetaria,Listado: muestra limitada,OK,2026-09-10 00:00:00+00:00,44.0,True,https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/2026/html/ecb.is260910~6a45359cfc.en.html
+2,BCE,Preguntas y respuestas,Comunicación monetaria,Listado: muestra limitada,OK,2026-09-10 00:00:00+00:00,44.0,False,https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/2026/html/ecb.is260910~6a45359cfc.en.html
+2,BCE,Monetary policy accounts,Comunicación monetaria,Listado: muestra limitada,OK,2026-10-08 00:00:00+00:00,16.0,True,https://www.ecb.europa.eu/press/accounts/2026/html/ecb.mg261008~a10153d090.en.html
+2,BCE,Discurso,Comunicación monetaria,Listado: muestra limitada,PENDIENTE,,,False,https://www.ecb.europa.eu/press/key/html/index.en.html
+2,BCE,Proyecciones macroeconómicas,Comunicación monetaria,Listado: muestra limitada,OK,2026-09-10 00:00:00+00:00,44.0,True,https://www.ecb.europa.eu/press/projections/html/ecb.projections202609_ecbstaff~8e340fc69d.en.html
+3,BoE,Decisión y actas MPC,Comunicación monetaria,Listado: muestra limitada,PENDIENTE,,,False,https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/monetary-policy-summary-and-minutes
+3,BoE,Monetary Policy Report,Comunicación monetaria,Listado: muestra limitada,OK,2020-11-05 00:00:00+00:00,2179.0,True,https://www.bankofengland.co.uk/monetary-policy-report/2020/november-2020
+3,BoE,Discurso,Comunicación monetaria,Edición fija: no acredita actualidad,OK,2026-10-08 00:00:00+00:00,16.0,True,https://www.bankofengland.co.uk/speech/2026/october/andrew-bailey-speech-at-the-istanbul-economic-forum-central-bank-of-the-republic-of-turkey-istanbul
+4,BoJ,Comunicado de política monetaria,Comunicación monetaria,Listado: muestra limitada,OK,,,False,https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm
+4,BoJ,Summary of Opinions,Comunicación monetaria,Listado: muestra limitada,OK,2026-05-12 00:00:00+00:00,165.0,True,https://www.boj.or.jp/en/mopo/mpmsche_minu/opinion_2026/opi260428.pdf
+4,BoJ,Minutes,Comunicación monetaria,Listado: muestra limitada,OK,2026-06-19 00:00:00+00:00,127.0,True,https://www.boj.or.jp/en/mopo/mpmsche_minu/minu_2026/g260428.pdf
+4,BoJ,Outlook Report,Comunicación monetaria,Listado: muestra limitada,OK,2026-08-03 00:00:00+00:00,82.0,False,https://www.boj.or.jp/en/mopo/outlook/gor2607b.pdf
+4,BoJ,Discurso original BoJ,Comunicación monetaria,Listado: muestra limitada,OK,,,False,https://www.boj.or.jp/en/announcements/press/koen_2026/index.htm
+4,RBI (India),Comunicado y resolución MPC,Comunicación monetaria,Edición fija: no acredita actualidad,OK,2026-10-07 00:00:00+00:00,17.0,True,https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=63742
+4,RBI (India),Monetary Policy Report,Comunicación monetaria,Edición fija: no acredita actualidad,OK,2026-10-07 00:00:00+00:00,17.0,True,https://www.rbi.org.in/Scripts/PublicationsView.aspx?id=24085
+4,PBoC (China),China Monetary Policy Report Q1 2025 (portal oficial regional),Comunicación monetaria,Excluida de automatización,EXCLUIDA_AUTOMATIZACION,,,False,https://xining.pbc.gov.cn/en/3688229/3688353/3688356/2025/2025120609594943547/2025061614254988376.pdf
+5,BoC (Canadá),Decisión monetaria,Comunicación monetaria,Listado: muestra limitada,OK,2026-04-29 00:00:00+00:00,178.0,True,https://www.bankofcanada.ca/2026/04/fad-press-release-2026-04-29/
+5,BoC (Canadá),Monetary Policy Report,Comunicación monetaria,Listado: muestra limitada,OK,2026-07-15 00:00:00+00:00,101.0,True,https://www.bankofcanada.ca/publications/mpr/mpr-2026-07-15/
+5,SNB (Suiza),Evaluación y decisión monetaria,Comunicación monetaria,Listado: muestra limitada,OK,2026-09-24 00:00:00+00:00,30.0,True,https://www.snb.ch/en/publications/communication/press-releases-restricted/pre_20260924
+5,BCB (Brasil),Comunicado Copom,Comunicación monetaria,Listado: muestra limitada,PENDIENTE,,,False,https://www.bcb.gov.br/en/monetarypolicy/copomstatements/cronologicos
+5,Banxico (México),Anuncio de decisión,Comunicación monetaria,Listado: muestra limitada,OK,,,False,https://www.banxico.org.mx/publicaciones-y-prensa/anuncios-de-las-decisiones-de-politica-monetaria/anuncios-politica-monetaria-t.html
+6,FMI,World Economic Outlook: informe,Contexto macro y riesgo,Listado: muestra limitada,BLOQUEADA_ROBOTS,,,False,https://www.imf.org/en/Publications/WEO
+6,FMI,GFSR: ficha de una edición,Contexto macro y riesgo,Excluida de automatización,EXCLUIDA_AUTOMATIZACION,,,False,https://www.imf.org/en/Publications/GFSR
+7,Fed,Financial Stability Report,Contexto de riesgo,Listado: muestra limitada,OK,,,False,https://www.federalreserve.gov/publications/financial-stability-report.htm
+7,BCE,Financial Stability Review,Contexto de riesgo,Listado: muestra limitada,OK,2026-05-27 00:00:00+00:00,150.0,True,https://www.ecb.europa.eu/press/financial-stability-publications/fsr/html/ecb.fsr202605~50566915a7.en.html
+7,BoE,Financial Stability Report,Contexto de riesgo,Listado: muestra limitada,OK,1997-10-16 00:00:00+00:00,10600.0,True,https://www.bankofengland.co.uk/financial-stability-report/1997/autumn-1997
+7,BoJ,Financial System Report,Contexto de riesgo,Listado: muestra limitada,OK,2026-10-23 00:00:00+00:00,1.0,False,https://www.boj.or.jp/en/research/brp/fsr/data/fsr261023a.pdf
+8,BIS,Quarterly Review: edición completa,Contexto de mercados,Listado: muestra limitada,OK,2026-09-14 00:00:00+00:00,40.0,False,https://www.bis.org/publications/qr-202609
