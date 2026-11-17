@@ -24,7 +24,8 @@ alternativos con validez). Ninguno implica todavía una ingesta masiva desplegad
 (`src/herramientas`) ya envuelve `get_regimen`; `get_serie` y `get_precios` están pendientes de envolver.
 
 **Notebooks por tema:**
-- Tema 1: [`notebooks/fase2/mercados_series/`](../../notebooks/fase2/mercados_series/) (`01`–`09`).
+- Tema 1: [`notebooks/fase2/mercados_series/01_resumen_sonda.ipynb`](../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb);
+  la descarga completa añadirá `02`–`05` ([plan](mercados_series/PLAN_DESCARGA.md)).
 - Tema 2: [`notebooks/fase2/bancos_riesgo/01_sonda.ipynb`](../../notebooks/fase2/bancos_riesgo/01_sonda.ipynb);
   [diseño y guías](../../src/ingesta/bancos_riesgo/README.md#diseño-y-próximos-pasos).
 - Tema 3: [`notebooks/fase2/empresas/01_sonda.ipynb`](../../notebooks/fase2/empresas/01_sonda.ipynb).

@@ -45,11 +45,17 @@ hay que evaluarlos y justificar si entran o no.
 3. **Hecho (bloque 2)**: base de series con fase1 + FRED + académicas (ver «Base de series (bloque 2)»).
 4. **Hecho (bloque 3)**: vintages exactos de ALFRED, FRED como fuente viva y ediciones académicas con vintage propio
    (ver «Vintages (bloque 3)»).
-5. Limpieza y EDA de las series (huecos, rupturas, series retiradas): inventario en el notebook 02 y revisiones en el 03.
-6. **Hecho (bloques 4–8)**: macro internacional (notebook 04), universo (05), precios as-traded (06), supervivencia
-   (07), libre de riesgo, baselines y costes (08). Ver las secciones de cada bloque.
-7. **Hecho (bloque 9, cierre)**: calidad global, tabla de fichas y las dos tools en 2008-09-15 y 2020-03-16
-   (notebook 09) y truncado real de `get_serie` y `get_precios` (`test_t1_cierre.py`, `@pytest.mark.datos`).
+5. Limpieza y EDA de las series (huecos, rupturas, series retiradas): pendiente, en la descarga completa
+   (`02_inventario` y `03_seleccion_eda`; ver [`PLAN_DESCARGA.md`](../../../docs/fase2/mercados_series/PLAN_DESCARGA.md)).
+6. **Hecho (bloques 4–8)**: macro internacional, universo, precios as-traded, supervivencia y libre de riesgo,
+   baselines y costes. Ver las secciones de cada bloque.
+7. **Hecho (bloque 9, cierre)**: calidad global, tabla de fichas, las dos tools en 2008-09-15 y 2020-03-16 y truncado
+   real de `get_serie` y `get_precios` (`test_t1_cierre.py`, `@pytest.mark.datos`).
+
+Notebooks del tema (`notebooks/fase2/mercados_series/`):
+[`01_resumen_sonda.ipynb`](../../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb) resume la sonda
+(bloques 1–9; los recorridos por bloque quedan en la etiqueta git `sonda-tema1`). La descarga completa añadirá
+`02_inventario`, `03_seleccion_eda`, `04_preprocesado` y `05_resultado`.
 
 ## Cómo usarlo
 
@@ -154,8 +160,7 @@ Calendario `us_federal`: festivos federales más los cierres extraordinarios de 
 Módulos: [`contrato`](contrato.py) (columnas, validadores), [`visibilidad`](visibilidad.py) (cierres y
 publicaciones), [`timegate`](timegate.py) (`as_of_series`, `ajustar_a_fecha`), [`divisas`](divisas.py),
 [`almacen`](almacen.py) (parquet), [`tools`](tools.py) (`get_serie`, `get_precios`) y
-[`sinteticos`](sinteticos.py) (datos sin red). Demostración con gráficos y prueba de truncado en directo:
-[`notebooks/fase2/mercados_series/01_contrato_timegate.ipynb`](../../../notebooks/fase2/mercados_series/01_contrato_timegate.ipynb).
+[`sinteticos`](sinteticos.py) (datos sin red).
 
 ## Catálogo de series (bloque 2)
 
@@ -208,9 +213,7 @@ ya no se construye es un error salvo `--purgar`; `--sin-escribir` no escribe nad
 las excepciones de publicación medidas (abajo) y después se anotan en la `nota`, sin tocar valores, los índices
 reconstruidos y las anomalías de la fuente (picos aislados que se revierten, cierres en fin de semana, rachas
 planas: `tablas/anomalias_series.csv`). `python -m ingesta.mercados_series resumen [--csv]` resume la base
-guardada. Recorrido con
-gráficos (inventario, cobertura, retrasos, retiradas, el mismo día visto por `get_serie`):
-[`notebooks/fase2/mercados_series/02_base_fase1.ipynb`](../../../notebooks/fase2/mercados_series/02_base_fase1.ipynb).
+guardada.
 
 **Fuentes y estado** (una serie, una fuente; si dos cargadores traen el mismo id gana `alfred` > `academicos` >
 `fred` > `fase1`, el orden de `catalogo.PRIORIDAD_ORIGENES`; las derivadas se recalculan después):
@@ -361,15 +364,13 @@ ve el 2020-05-08 y no el 07; el empleo de septiembre de 2013 se ve el 2013-10-22
 
 **Cuánto filtraba el bloque 2** (`tablas/alfred_vs_lag.csv`, `tablas/alfred_revisiones_resumen.csv`, sin niveles):
 la regla fija adelantaba la fecha del 2,8 % de los 48 161 periodos medidos (128 de 156 series, hasta 144 días) y
-todos los valores eran los revisados de hoy (el 99 % de los periodos se revisa en la serie mediana). Recorrido con
-gráficos: [`notebooks/fase2/mercados_series/03_alfred_vintages.ipynb`](../../../notebooks/fase2/mercados_series/03_alfred_vintages.ipynb).
+todos los valores eran los revisados de hoy (el 99 % de los periodos se revisa en la serie mediana).
 
 ## Macro internacional (bloque 4)
 
 Países del alcance: EE. UU., zona euro (composición cambiante `U2`/`EA`; la zona euro pasa a 21 en 2026), G7 (DE, FR,
 IT, UK, JP, CA) y China; el resto del mundo, anual (Banco Mundial). Prefijos: `ecb:`, `eurostat:`, `bis:`, `imf:`,
-`wb:`, `oecd:`, `philly:`, `boc:`, `boj:`, `bbk:`, `rba:`. Recorrido con gráficos:
-[`notebooks/fase2/mercados_series/04_macro_internacional.ipynb`](../../../notebooks/fase2/mercados_series/04_macro_internacional.ipynb).
+`wb:`, `oecd:`, `philly:`, `boc:`, `boj:`, `bbk:`, `rba:`.
 
 - **BCE** ([`fuentes.bce`](fuentes/bce.py)): 44 divisas de referencia (vigentes y retiradas; TWD no está), €STR (hábil
   TARGET siguiente a las 08:00 de Berlín), EONIA como predecesor (1999-2021), tipos oficiales DFR y MRO en su fecha de
@@ -411,8 +412,7 @@ lanzamiento de justETF; divisas medidas en Yahoo (`GBp`, `GBP`, `CHF`, `USX`). C
 ([`fuentes.constituyentes`](fuentes/constituyentes.py)): S&P 500 point-in-time 1996-2026 (fecha efectiva del cambio) y
 composición actual de 10 índices (Wikipedia; sin Nikkei 225 ni Ibovespa). El universo ampliado (1.842 tickers, lista en
 `<corpus>/mercados_series/logs/tickers_ampliado.csv`) se define con los constituyentes. Futuros: solo contexto.
-Fondos: fuera de la optimización. Recorrido:
-[`05_universo.ipynb`](../../../notebooks/fase2/mercados_series/05_universo.ipynb).
+Fondos: fuera de la optimización.
 
 ## Precios (bloque 6)
 
@@ -461,8 +461,6 @@ cero, cierres repetidos, dividendos altos).
   (gilt nominal, desde 1979), MoF Japón (JGB, desde 1974) y BoC (desde 2001), en la base de series con prefijos `ust:`,
   `ecb:`, `boe:`, `mof:` y `boc:`. Hora de publicación de cada una en su ficha; la del Tesoro (18:00 NY) sin verificar.
 
-Recorrido: [`06_precios_cobertura.ipynb`](../../../notebooks/fase2/mercados_series/06_precios_cobertura.ipynb).
-
 ## Supervivencia (bloque 7)
 
 [`supervivencia`](supervivencia.py): el sesgo se **declara y se mide** con TODOS los tramos del S&P 500 que tienen
@@ -478,8 +476,7 @@ entran 144 salidos y 496 actuales. Sesgo supervivientes − PIT con precio: **7,
 (`tablas/supervivencia_cobertura.csv`, ficha `supervivencia`). Corrección completa: CRSP vía WRDS (pendiente de la
 licencia de MIAX); alternativa: Tiingo (exige cuenta propia; sin probar). Comando: `python -m
 ingesta.mercados_series.supervivencia medir`. Es una medición: no añade series, publicadores ni mercados ni escribe en
-el almacén. Recorrido:
-[`07_supervivencia.ipynb`](../../../notebooks/fase2/mercados_series/07_supervivencia.ipynb).
+el almacén.
 
 ## Cartera: libre de riesgo, baselines y costes (bloque 8)
 
@@ -497,8 +494,7 @@ el almacén. Recorrido:
   (`tablas/costes_modelo.csv`). Comisiones de la tarifa pública sin verificar.
 
 Informe: `python -m ingesta.mercados_series.cartera.informe`; ficha `cartera_baselines_costes`. Los precios
-se leen con `almacen.leer_precios` (validados por contrato: los 92 tickers del núcleo, ARCX y NAV_US incluidos). Recorrido:
-[`08_libre_riesgo_baselines_costes.ipynb`](../../../notebooks/fase2/mercados_series/08_libre_riesgo_baselines_costes.ipynb).
+se leen con `almacen.leer_precios` (validados por contrato: los 92 tickers del núcleo, ARCX y NAV_US incluidos).
 
 ## Fuentes y estado (cierre, bloque 9)
 
@@ -526,9 +522,8 @@ entera, **parcial** si falta una parte documentada en la ficha y **bloqueada** s
 | `supervivencia` | ok | 1996 – 2026-08 | medición; corrección WRDS pendiente |
 | `cartera_baselines_costes` | ok | 1993 – 2026-10 | comisiones sin verificar; 1/N con lista estática; 60/40 UCITS desde 2017-11 |
 
-Calidad global, cobertura por fuente, método y época y las dos tools en 2008-09-15 y 2020-03-16 (solo metadatos):
-[`09_cierre_calidad.ipynb`](../../../notebooks/fase2/mercados_series/09_cierre_calidad.ipynb). Truncado real
-(5 series, 5 tickers, 3 fechas): `tests/ingesta/mercados_series/test_t1_cierre.py`.
+Calidad global y cobertura por fuente, en resumen:
+[`01_resumen_sonda.ipynb`](../../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb). Truncado real (5 series, 5 tickers, 3 fechas): `tests/ingesta/mercados_series/test_t1_cierre.py`.
 
 ## Deudas pendientes
 

@@ -16,8 +16,8 @@ El crudo descargado no se borra nunca: la depuración produce una base curada ap
 |---|---|
 | Filas | 10,5 M |
 | Series | 1.434 (worldbank 594, imf_weo 280, fred_alfred 241, bce 52, eurostat 47, bis 35, resto < 30) |
-| Ficheros de precios | 1.474 (Yahoo y Coinbase) |
-| Tamaño en disco | ~2,4 GB |
+| Ficheros de precios | 1.471 (Yahoo 1.469, Coinbase 2) |
+| Tamaño en disco | ~2,5 GB |
 | Último refresco | 2026-10-13/14 |
 
 ## Criterio para quedarse con un dato
@@ -89,11 +89,30 @@ Una serie o un ticker se queda si pasa las cuatro preguntas:
 | 5 | Formato del catálogo para los agentes | Tabla con id, descripción, agente, frecuencia, desde y fiabilidad de fecha |
 | Fuera | Fronteras con los compañeros | Universo de empresas común con el Tema 3; SKEW, GPR y EPU en el Tema 4; series del BCE y del BIS sin duplicar con el Tema 2 |
 
+## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
+
+Lo que dejaban los notebooks antiguos y no recoge el README (originales en la etiqueta `sonda-tema1`):
+
+- **Paso 2:** `fred_alfred` tiene `fecha_referencia` hasta 2029-01-01, seguramente horizontes del SEP u otras
+  proyecciones. Hay que revisarlo y decidir si van a una tabla aparte. La ficha `boe` dice `fallo` y el README dice
+  «bloqueada»: hay que unificarlo.
+- **Paso 3 (EDA):**
+  - En Yahoo, el inicio mediano es 1985 en EE. UU. y 1997 fuera, y antes de 2000 hay un 92 % frente a un 67 %.
+  - Hay saltos sin split en AAPL, ASML.AS, CL=F, NVDA, SHEL.L y ^VIX.
+  - Hay contrasplits o splits fraccionarios en XLF, EWJ, USO, ETHA y SAN.MC.
+- **Memoria del TFM:**
+  - Vintages: en 2008 el empleo se publicó como unos 1,9 M de empleos perdidos y hoy son unos 3,5 M. La semana de
+    Lehman del NFCI tiene 401 valores distintos.
+  - Costes: el multiplicador de crisis tiene mediana 1,03 en calma (2017), 6,9 en 2008 y 10 en 2020.
+  - DTB3 se ve con un día de retraso mediano (p95, 3 días).
+  - Figuras (reloj de decisión, Gantt y mapas de calor de cobertura, fuga del ajustado de Yahoo): siguen en la
+    etiqueta; se exportan si hacen falta.
+
 ## Estado
 
 | Paso | Estado | Commit |
 |---|---|---|
-| 1 | Pendiente | |
+| 1 | Hecho (2026-11-17): `01_resumen_sonda` (21 KB); 9 notebooks borrados; enlaces del README y de `docs/fase2` al día; el test de salidas de notebooks cubre ya todos los del tema | este |
 | 2 | Pendiente | |
 | 3 | Pendiente | |
 | 3b | Pendiente | |
