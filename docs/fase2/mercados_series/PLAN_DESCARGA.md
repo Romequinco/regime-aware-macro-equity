@@ -117,9 +117,9 @@ filtro**, que es el paso 3. Para elegir los umbrales con datos, enseña cuántas
 
 | # | Decisión | Lo que enseña el notebook |
 |---|---|---|
-| D8 | Umbral de redundancia y solape mínimo | Cuántos alias salen con 0,90, 0,95 y 0,98, con 3, 5 o 10 años de solape |
-| D9 | Banco Mundial (594) y WEO (280) | Cobertura por país e indicador y duplicidad con OCDE, FRED o Eurostat |
-| D10 | Mínimos de un ticker (historia y liquidez) | Cuántos de los 1.388 quedan según el inicio, las sesiones y el volumen mediano |
+| D8 | Umbral de redundancia y solape mínimo | **Aprobada (2026-11-17):** 0,95 con la regla estrella (alias solo si se parece directamente a la que se queda), Pearson y Spearman, 5 años de solape; 102 alias de 557 series comparables |
+| D9 | Banco Mundial (594) y WEO (280) | **Aprobada (2026-11-17):** alcance estricto (G7 + China; 24 series del Banco Mundial); fuera lo que ya existe con más frecuencia; las proyecciones del WEO, a su tabla aparte |
+| D10 | Mínimos de un ticker (historia y liquidez) | **Abierta a propósito** (2026-11-17). Recomendación académica: sin corte por fecha de inicio en el dataset; la elegibilidad se aplica en el backtest punto a punto (en cada fecha, historia pasada y liquidez medidas solo con datos hasta esa fecha). Se fija en la Fase 4 |
 
 **Lo que hace falta del equipo:** las fronteras con los otros temas:
 - con el Tema 3, el universo de empresas común;
