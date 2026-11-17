@@ -24,7 +24,8 @@ El crudo descargado no se borra nunca: la depuración produce una base curada ap
 
 Una serie o un ticker se queda si pasa las cuatro preguntas:
 
-1. **Uso.** ¿Qué agente la usa (Macro, Equity, Risk o Portfolio) y para qué pregunta? Si no la usa ninguno, fuera.
+1. **Relevancia.** ¿Sirve para alguna pregunta del sistema: macro, mercados, riesgo o cartera? Qué agente usa cada
+   dato se decide más adelante, al construir las tools y los agentes, no al hacer el dataset (decidido el 2026-11-17).
 2. **Información nueva.** ¿Repite algo que ya tenemos? Un mismo concepto de dos fuentes da una serie canónica y el
    resto se guarda como validación o alias. Una serie casi idéntica a otra, por encima del umbral de redundancia del
    paso 2, se guarda como alias.
@@ -92,8 +93,8 @@ Una serie o un ticker se queda si pasa las cuatro preguntas:
 ## Paso 2 · `02_inventario`: decisiones y plan
 
 **Qué hace.** Cuenta lo que hay, serie a serie y ticker a ticker, con los metadatos que ya existen:
-- de `catalogo_series.yaml`: frecuencia, unidad, divisa, método, `revisable`, `estado` (incluida `duplicada`),
-  `verificado` y `agentes`;
+- de `catalogo_series.yaml`: frecuencia, unidad, divisa, método, `revisable`, `estado` (incluida `duplicada`) y
+  `verificado`;
 - de `universo.yaml`: clase, `bucket` y capa.
 
 A eso le añade lo que se mide en el corpus: cobertura, huecos, primera publicación visible, número de vintages,
@@ -108,7 +109,7 @@ filtro**, que es el paso 3. Para elegir los umbrales con datos, enseña cuántas
 | D2 | Niveles de fiabilidad de la fecha | A = vintage exacto o publicación medida; B = regla verificada; C = regla sin verificar; D = sin fecha. Entran A y B; C entra con aviso; D se queda fuera |
 | D3 | Países en el alcance | EE. UU., zona euro, G7 y China (decidido en la sonda), más los agregados mundial y emergentes del Banco Mundial y del WEO |
 | D4 | Proyecciones (SEP, WEO, referencias futuras) | Tabla aparte de proyecciones, fuera de la base curada |
-| D5 | Agente que usa cada serie | Propuesta automática (reglas por grupo y `bucket`, más el criterio del agente); tú revisas solo las dudosas |
+| D5 | ~~Agente que usa cada serie~~ | **Descartada** (2026-11-17): se decide al construir los agentes, no en el dataset |
 | D6 | Ficha del BoE | «bloqueada» (`robots.txt`), igual que en el README |
 | D7 | Dónde va el inventario | `results/ingesta/mercados_series/tablas/inventario_*.csv`, versionado (solo metadatos, sin valores) |
 
