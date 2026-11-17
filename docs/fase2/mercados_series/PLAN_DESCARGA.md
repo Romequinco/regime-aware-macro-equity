@@ -163,7 +163,7 @@ Lo que dejaban los notebooks antiguos y no recoge el README (originales en la et
 | Paso | Estado | Commit |
 |---|---|---|
 | 1 | Hecho (2026-11-17): `01_resumen_sonda` (21 KB); 9 notebooks borrados; enlaces del README y de `docs/fase2` al día; el test de salidas de notebooks cubre ya todos los del tema | este |
-| 2 | Pendiente | |
+| 2 | Hecho (2026-11-17): módulos `inventario` y `redundancia` (órdenes del mismo nombre), 10 tablas de metadatos en `results/.../tablas/`, notebook `02_inventario` (230 KB). Crítico: 8 hallazgos, corregidos en una ronda. Pendiente de tus decisiones D2 (grupos «a decidir»), D6, D8, D9 y D10 | este |
 | 3 | Pendiente | |
 | 3b | Pendiente | |
 | 4 | Pendiente | |

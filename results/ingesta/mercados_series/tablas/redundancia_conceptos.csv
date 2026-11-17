@@ -1,0 +1,67 @@
+grupo,concepto,pais,n_miembros,miembros,fuentes,n_fuentes,frecuencias,detectado_por,duplicadas_catalogo,inicio_comun,fin_comun,solape_comun_anios,n_pares,n_pares_medidos,n_pares_base_semanal,corr_min,corr_mediana,solape_min_anios_par
+1,tipo_oficial,CAN,2,bis:WS_CBPOL.M.CA; boc:V39079,bis; boc,2,diaria; mensual,regla,,2009-04-21,2026-09-01,17.4,1,1,0,0.785,0.785,17.34
+2,tipo_oficial,JPN,2,bis:WS_CBPOL.M.JP; boj:FM01.STRDCLUCON,bis; boj,2,diaria; mensual,regla,,1998-01-05,2026-09-01,28.7,1,1,0,0.459,0.459,28.58
+3,tipo_oficial,USA,4,bis:WS_CBPOL.M.US; fred:DFF; fred:EFFR; fred:FEDFUNDS,bis; fred_alfred,2,diaria; mensual,duplicado_de; regla,,2000-07-03,2026-09-01,26.2,6,6,0,0.471,0.855,26.08
+4,tipo_oficial,EA,3,bis:WS_CBPOL.M.XM; ecb:DFR; ecb:MRO,bce; bis,2,diaria; mensual,regla,,1999-01-01,2026-09-01,27.7,3,3,0,0.864,0.947,27.42
+5,tipo_cambio_efectivo_real,USA,2,bis:WS_EER.M.R.B.US; fred:RNUSBIS,bis; fred_alfred,2,mensual,regla,,1994-01-01,2026-07-01,32.5,1,1,0,0.976,0.976,32.41
+6,bono_gobierno_10Y,CAN,2,boc:BD.CDN.10YR.DQ.YLD; boc:BOND.10Y,boc; boc_curva,2,diaria,regla,,2001-01-02,2026-10-08,25.8,1,1,1,1.0,1.0,25.74
+7,sp500_precio,USA,4,datahub:SP500_MENSUAL; gw:M.Index; shiller:P; yf:^GSPC,datahub; goyal_welch; shiller; yfinance,4,diaria; mensual,duplicado_de; regla,,1927-12-30,2025-12-01,97.9,6,6,0,0.664,0.864,97.92
+8,bono_gobierno_10Y,USA,7,datahub:US10Y_MENSUAL; fred:DGS10; fred:GS10; fred:IRLTLT01USM156N; shiller:LONGRATE; ust:PAR.10Y; yf:^TNX,datahub; fred_alfred; shiller; ust_curva; yfinance,5,diaria; mensual,duplicado_de; regla,datahub:US10Y_MENSUAL; fred:IRLTLT01USM156N,1990-01-02,2026-05-01,36.3,21,21,2,0.991,1.0,36.24
+9,diferencial_baa_10a,USA,2,deriv:DBAA-DGS10; fred:BAA10Y,calculo_propio; fred_alfred,2,diaria,duplicado_de; regla,fred:BAA10Y,1986-01-02,2026-10-08,40.8,1,1,1,1.0,1.0,40.74
+10,diferencial_papel_comercial_ff,USA,2,deriv:DCPF3M-DFF; fred:CPFF,calculo_propio; fred_alfred,2,diaria,duplicado_de; regla,fred:CPFF,1997-01-02,2026-10-06,29.8,1,1,0,1.0,1.0,29.75
+11,ted_spread,USA,2,deriv:DED3-DTB3; fred:TEDRATE,calculo_propio; fred_alfred,2,diaria,regla,,1986-01-02,2016-10-07,30.8,1,1,1,0.949,0.949,30.74
+12,diferencial_10a_ff,USA,2,deriv:DGS10-DFF; fred:T10YFF,calculo_propio; fred_alfred,2,diaria,duplicado_de; regla,fred:T10YFF,1962-01-02,2026-10-08,64.8,1,1,0,1.0,1.0,64.76
+13,diferencial_5a_ff,USA,2,deriv:DGS5-DFF; fred:T5YFF,calculo_propio; fred_alfred,2,diaria,duplicado_de; regla,fred:T5YFF,1962-01-02,2026-10-08,64.8,1,1,0,1.0,1.0,64.76
+14,pib_real,USA,7,deriv:PIB_REAL_USA_VINTAGES; fred:A191RL1Q225SBEA; fred:BBKMGDP; fred:GDPC1; imf:WEO.USA.NGDP_RPCH; philly:ROUTPUT; wb:USA.NY.GDP.MKTP.KD.ZG,calculo_propio; fred_alfred; imf_weo; philly_rtdsm; worldbank,5,mensual; trimestral; anual,regla,,1980-01-01,1991-07-01,11.5,21,21,0,0.258,0.868,10.0
+15,eurusd,EA,2,ecb:EXR.D.USD.EUR; fred:DEXUSEU,bce; fred_alfred,2,diaria,regla,,1999-01-04,2026-10-02,27.7,1,1,1,0.975,0.975,27.71
+16,inflacion_ipc,EA,9,ecb:HICP.M.U2.N.000000.4D0.ANR; eurostat:HICP_EMP.EA; eurostat:HICP_EMP.EA20; eurostat:prc_hicp_manr.M.RCH_A.CP00.EA; eurostat:prc_hicp_manr.M.RCH_A.CP00.EA20; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.EA; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.EA20; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.EA21; oecd:CP.EA20,bce; eurostat; oecd,3,mensual,regla,,2000-12-01,2025-12-01,25.0,36,36,0,0.99,0.992,24.91
+17,paro,EA,3,ecb:LFSI.M.U2.S.UNEHRT.TOTAL0.15_74.T; eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.EA21; oecd:UNEMP.EA20,bce; eurostat; oecd,3,mensual,regla,,2000-01-01,2026-08-01,26.6,3,3,0,0.751,0.782,26.5
+18,pib_real,EA,4,ecb:MNA.Q.Y.I10.W2.S1.S1.B.B1GQ._Z._Z._Z.EUR.LR.GY; eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.EA; eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.EA20; eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.EA21,bce; eurostat,2,trimestral,regla,,1996-01-01,2026-04-01,30.2,6,6,0,1.0,1.0,30.0
+19,inflacion_ipc,DEU,6,eurostat:HICP_EMP.DE; eurostat:prc_hicp_manr.M.RCH_A.CP00.DE; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.DE; imf:WEO.DEU.PCPIPCH; oecd:CP.DEU; wb:DEU.FP.CPI.TOTL.ZG,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1997-01-01,2025-01-01,28.0,15,15,0,0.588,0.964,27.0
+20,inflacion_ipc,EU,3,eurostat:HICP_EMP.EU27_2020; eurostat:prc_hicp_manr.M.RCH_A.CP00.EU27_2020; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.EU27_2020,eurostat,1,mensual,regla,,2000-12-01,2025-12-01,25.0,3,3,0,0.995,0.995,24.91
+21,inflacion_ipc,FRA,6,eurostat:HICP_EMP.FR; eurostat:prc_hicp_manr.M.RCH_A.CP00.FR; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.FR; imf:WEO.FRA.PCPIPCH; oecd:CP.FRA; wb:FRA.FP.CPI.TOTL.ZG,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1997-01-01,2025-01-01,28.0,15,15,0,0.611,0.995,27.0
+22,inflacion_ipc,ITA,6,eurostat:HICP_EMP.IT; eurostat:prc_hicp_manr.M.RCH_A.CP00.IT; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.IT; imf:WEO.ITA.PCPIPCH; oecd:CP.ITA; wb:ITA.FP.CPI.TOTL.ZG,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1997-01-01,2025-01-01,28.0,15,15,0,0.716,0.986,27.0
+23,inflacion_ipc,GBR,6,eurostat:HICP_EMP.UK; eurostat:prc_hicp_manr.M.RCH_A.CP00.UK; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.UK; imf:WEO.GBR.PCPIPCH; oecd:CP.GBR; wb:GBR.FP.CPI.TOTL.ZG,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1997-01-01,2020-11-01,23.8,15,15,0,0.825,0.976,22.0
+24,inflacion_ipc,USA,9,eurostat:HICP_EMP.US; eurostat:prc_hicp_manr.M.RCH_A.CP00.US; eurostat:prc_hicp_minr.M.RCH_A.TOTAL.US; fred:CPIAUCSL; gw:M.infl; imf:WEO.USA.PCPIPCH; oecd:CP.USA; shiller:CPI; wb:USA.FP.CPI.TOTL.ZG,eurostat; fred_alfred; goyal_welch; imf_weo; oecd; shiller; worldbank,7,mensual; anual,regla,,2002-12-01,2024-01-01,21.1,36,36,0,0.172,0.981,21.0
+25,sentimiento_esi,EA,2,eurostat:ei_bssi_m_r2.M.BS-ESI-I.SA.EA20; eurostat:ei_bssi_m_r2.M.BS-ESI-I.SA.EA21,eurostat,1,mensual,regla,,1980-01-01,2025-12-01,45.9,1,1,0,0.999,0.999,45.83
+26,pib_real,DEU,3,eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.DE; imf:WEO.DEU.NGDP_RPCH; wb:DEU.NY.GDP.MKTP.KD.ZG,eurostat; imf_weo; worldbank,3,trimestral; anual,regla,,1992-01-01,2025-01-01,33.0,3,3,0,0.996,0.996,32.0
+27,pib_real,FRA,3,eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.FR; imf:WEO.FRA.NGDP_RPCH; wb:FRA.NY.GDP.MKTP.KD.ZG,eurostat; imf_weo; worldbank,3,trimestral; anual,regla,,1981-01-01,2025-01-01,44.0,3,3,0,0.998,0.998,43.0
+28,pib_real,ITA,3,eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.IT; imf:WEO.ITA.NGDP_RPCH; wb:ITA.NY.GDP.MKTP.KD.ZG,eurostat; imf_weo; worldbank,3,trimestral; anual,regla,,1997-01-01,2025-01-01,28.0,3,3,0,0.972,0.999,27.0
+29,pib_real,GBR,3,eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.UK; imf:WEO.GBR.NGDP_RPCH; wb:GBR.NY.GDP.MKTP.KD.ZG,eurostat; imf_weo; worldbank,3,trimestral; anual,regla,,1980-01-01,2020-07-01,40.5,3,3,0,0.963,0.978,39.0
+30,paro,DEU,4,eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.DE; imf:WEO.DEU.LUR; oecd:UNEMP.DEU; wb:DEU.SL.UEM.TOTL.ZS,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1991-01-01,2025-01-01,34.0,6,6,0,0.951,0.976,33.0
+31,paro,FRA,4,eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.FR; imf:WEO.FRA.LUR; oecd:UNEMP.FRA; wb:FRA.SL.UEM.TOTL.ZS,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1991-01-01,2025-01-01,34.0,6,6,0,0.91,0.953,33.0
+32,paro,ITA,4,eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.IT; imf:WEO.ITA.LUR; oecd:UNEMP.ITA; wb:ITA.SL.UEM.TOTL.ZS,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1991-01-01,2025-01-01,34.0,6,6,0,0.932,0.958,33.0
+33,paro,JPN,4,eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.JP; imf:WEO.JPN.LUR; oecd:UNEMP.JPN; wb:JPN.SL.UEM.TOTL.ZS,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1991-01-01,2025-01-01,34.0,6,6,0,0.995,0.998,33.0
+34,paro,GBR,4,eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.UK; imf:WEO.GBR.LUR; oecd:UNEMP.GBR; wb:GBR.SL.UEM.TOTL.ZS,eurostat; imf_weo; oecd; worldbank,4,mensual; anual,regla,,1991-01-01,2020-09-01,29.7,6,6,0,0.84,0.973,28.0
+35,paro,USA,5,eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.US; fred:UNRATE; imf:WEO.USA.LUR; oecd:UNEMP.USA; wb:USA.SL.UEM.TOTL.ZS,eurostat; fred_alfred; imf_weo; oecd; worldbank,5,mensual; anual,regla,,1991-01-01,2025-01-01,34.0,10,10,0,1.0,1.0,33.0
+36,ff_HML,USA,2,ff:F3D.HML; ff:F5D.HML,ken_french,1,diaria,duplicado_de; regla,ff:F5D.HML,1963-07-01,2026-08-31,63.2,1,1,0,1.0,1.0,63.17
+37,ff_Mkt-RF,USA,3,ff:F3D.Mkt-RF; ff:F3M.Mkt-RF; ff:F5D.Mkt-RF,ken_french,1,diaria; mensual,duplicado_de; regla,ff:F5D.Mkt-RF,1963-07-01,2026-08-01,63.1,3,3,0,0.992,0.997,63.09
+38,tipo_libre_riesgo_ff,USA,3,ff:F3D.RF; ff:F5D.RF; gw:M.Rfree,goyal_welch; ken_french,2,diaria; mensual,duplicado_de; regla,ff:F5D.RF,1963-07-01,2025-12-01,62.4,3,3,0,0.516,0.52,62.34
+39,ff_SMB,USA,2,ff:F3D.SMB; ff:F5D.SMB,ken_french,1,diaria,regla,,1963-07-01,2026-08-31,63.2,1,1,0,0.971,0.971,63.17
+40,bonos_aaa,USA,3,fred:AAA; fred:DAAA; gw:M.AAA,fred_alfred; goyal_welch,2,diaria; mensual,duplicado_de; regla,gw:M.AAA,1983-01-03,2025-12-01,42.9,3,3,0,1.0,1.0,42.83
+41,bonos_baa,USA,3,fred:BAA; fred:DBAA; gw:M.BAA,fred_alfred; goyal_welch,2,diaria; mensual,duplicado_de; regla,gw:M.BAA,1986-01-02,2025-12-01,39.9,3,3,0,1.0,1.0,39.83
+42,bono_gobierno_1Y,USA,4,fred:DGS1; fred:DTB1YR; fred:GS1; ust:PAR.1Y,fred_alfred; ust_curva,2,diaria; mensual,regla,,1990-01-02,2026-09-01,36.7,6,6,0,0.876,0.989,36.58
+43,bono_gobierno_1M,USA,2,fred:DGS1MO; ust:PAR.1M,fred_alfred; ust_curva,2,diaria,regla,,2001-07-31,2026-10-08,25.2,1,1,0,1.0,1.0,25.19
+44,bono_gobierno_2Y,USA,2,fred:DGS2; ust:PAR.2Y,fred_alfred; ust_curva,2,diaria,regla,,1990-01-02,2026-10-08,36.8,1,1,0,1.0,1.0,36.76
+45,bono_gobierno_20Y,USA,2,fred:DGS20; ust:PAR.20Y,fred_alfred; ust_curva,2,diaria,regla,,1993-10-01,2026-10-08,33.0,1,1,0,1.0,1.0,33.01
+46,bono_gobierno_3Y,USA,2,fred:DGS3; ust:PAR.3Y,fred_alfred; ust_curva,2,diaria,regla,,1990-01-02,2026-10-08,36.8,1,1,0,1.0,1.0,36.76
+47,bono_gobierno_30Y,USA,3,fred:DGS30; ust:PAR.30Y; yf:^TYX,fred_alfred; ust_curva; yfinance,3,diaria,regla,,1990-01-02,2026-07-17,36.5,3,3,2,0.973,0.99,36.51
+48,bono_gobierno_3M,USA,6,fred:DGS3MO; fred:DTB3; fred:TB3MS; gw:M.tbl; ust:PAR.3M; yf:^IRX,fred_alfred; goyal_welch; ust_curva; yfinance,4,diaria; mensual,duplicado_de; regla,,1990-01-02,2025-12-01,35.9,15,15,5,0.935,0.999,35.83
+49,bono_gobierno_5Y,USA,4,fred:DGS5; fred:GS5; ust:PAR.5Y; yf:^FVX,fred_alfred; ust_curva; yfinance,3,diaria; mensual,regla,,1990-01-02,2026-07-17,36.5,6,6,2,0.991,1.0,36.51
+50,bono_gobierno_6M,USA,3,fred:DGS6MO; fred:DTB6; ust:PAR.6M,fred_alfred; ust_curva,2,diaria,regla,,1990-01-02,2026-10-08,36.8,3,3,1,0.969,0.995,36.74
+51,bono_gobierno_7Y,USA,2,fred:DGS7; ust:PAR.7Y,fred_alfred; ust_curva,2,diaria,regla,,1990-01-02,2026-10-08,36.8,1,1,0,1.0,1.0,36.76
+52,dolar_economias_avanzadas,USA,2,fred:DTWEXAFEGS; fred:TWEXAFEGSMTH,fred_alfred,1,diaria; mensual,regla,,2006-01-02,2026-09-01,20.7,1,1,0,1.0,1.0,20.58
+53,dolar_monedas_principales,USA,3,fred:DTWEXM; fred:TWEXMMTH; yf:DX-Y.NYB,fred_alfred; yfinance,2,diaria; mensual,regla,,1973-01-02,2019-12-01,46.9,3,3,1,0.951,0.962,46.83
+54,consumo_real,USA,2,fred:PCEC96; fred:PCECC96,fred_alfred,1,mensual; trimestral,regla,,2007-01-01,2026-04-01,19.2,1,1,0,1.0,1.0,19.0
+55,cli_ocde,USA,2,fred:USALOLITOAASTSAM; oecd:LI_AA.USA,fred_alfred; oecd,2,mensual,regla,,1955-01-01,2026-08-01,71.6,1,1,0,0.96,0.96,71.5
+56,recesion_nber,USA,2,fred:USREC; fred:USRECD,fred_alfred,1,diaria; mensual,regla,,1854-12-01,2026-09-01,171.7,1,1,0,1.0,1.0,171.66
+57,dividendos_sp,USA,2,gw:M.D12; shiller:D,goyal_welch; shiller,2,mensual,regla,,1871-01-01,2025-12-01,154.9,1,1,0,1.0,1.0,154.83
+58,beneficios_sp,USA,2,gw:M.E12; shiller:E,goyal_welch; shiller,2,mensual,regla,,1871-01-01,2025-12-01,154.9,1,1,0,1.0,1.0,154.83
+59,paro,CAN,3,imf:WEO.CAN.LUR; oecd:UNEMP.CAN; wb:CAN.SL.UEM.TOTL.ZS,imf_weo; oecd; worldbank,3,mensual; anual,regla,,1991-01-01,2025-01-01,34.0,3,3,0,0.999,0.999,33.0
+60,pib_real,CAN,2,imf:WEO.CAN.NGDP_RPCH; wb:CAN.NY.GDP.MKTP.KD.ZG,imf_weo; worldbank,2,anual,regla,,1980-01-01,2025-01-01,45.0,1,1,0,1.0,1.0,44.0
+61,inflacion_ipc,CAN,3,imf:WEO.CAN.PCPIPCH; oecd:CP.CAN; wb:CAN.FP.CPI.TOTL.ZG,imf_weo; oecd; worldbank,3,mensual; anual,regla,,1980-01-01,2025-01-01,45.0,3,3,0,0.556,0.999,44.0
+62,paro,CHN,2,imf:WEO.CHN.LUR; wb:CHN.SL.UEM.TOTL.ZS,imf_weo; worldbank,2,anual,regla,,2017-01-01,2025-01-01,8.0,1,1,0,0.99,0.99,7.0
+63,pib_real,CHN,2,imf:WEO.CHN.NGDP_RPCH; wb:CHN.NY.GDP.MKTP.KD.ZG,imf_weo; worldbank,2,anual,regla,,1980-01-01,2025-01-01,45.0,1,1,0,0.998,0.998,44.0
+64,inflacion_ipc,CHN,3,imf:WEO.CHN.PCPIPCH; oecd:CP.CHN; wb:CHN.FP.CPI.TOTL.ZG,imf_weo; oecd; worldbank,3,mensual; anual,regla,,1993-01-01,2025-01-01,32.0,3,3,0,0.997,0.998,30.0
+65,pib_real,JPN,2,imf:WEO.JPN.NGDP_RPCH; wb:JPN.NY.GDP.MKTP.KD.ZG,imf_weo; worldbank,2,anual,regla,,1980-01-01,2025-01-01,45.0,1,1,0,0.999,0.999,44.0
+66,inflacion_ipc,JPN,3,imf:WEO.JPN.PCPIPCH; oecd:CP.JPN; wb:JPN.FP.CPI.TOTL.ZG,imf_weo; oecd; worldbank,3,mensual; anual,regla,,1980-01-01,2022-04-01,42.2,3,3,0,0.984,0.985,41.0

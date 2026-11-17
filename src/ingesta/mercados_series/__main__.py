@@ -25,6 +25,15 @@
   serie, en %, sin niveles) y ``tablas/alfred_vs_lag.csv`` (adelantos de la regla previa frente a la
   primera publicación real).
 - ``resumen [--csv]``: recuentos de la base guardada (y, con ``--csv``, rehace la tabla de cobertura).
+- ``inventario [--consultar-boe | --sin-red]`` (paso 2 de la descarga completa): ``inventario.construir_inventario``
+  escribe ``tablas/inventario_series.csv``, ``inventario_precios.csv`` y ``fiabilidad_c.csv`` (solo metadatos
+  y medidas) e imprime un resumen. El ``robots.txt`` del BoE (una petición: ``tablas/boe_rutas.csv`` y ficha
+  ``boe``: motivo del bloqueo, estado ``fallo``) solo se consulta si aún no existe ``boe_rutas.csv`` o con
+  ``--consultar-boe``;
+  ``--sin-red`` no lo consulta nunca.
+- ``redundancia [--destino DIR] [--max-tickers N] [--solo series|precios]`` (paso 2): delega en
+  ``redundancia.main`` (pares de series y de ETF por correlación, sensibilidad del umbral, conceptos, Banco
+  Mundial/WEO y mínimos de tickers en ``tablas/redundancia_*.csv`` y ``tickers_sensibilidad.csv``).
 - ``excepciones-alfred [--ids ...] [--sin-red]``: contrasta las reglas de publicación de las series de
   FRED con la primera vintage de ALFRED (``fuentes.fred.medir_excepciones``) y escribe
   ``config/excepciones_publicacion.csv`` y ``tablas/publicacion_alfred_medida.csv`` (solo fechas).
@@ -184,6 +193,36 @@ def _resumen(a: argparse.Namespace) -> int:
     return 0
 
 
+def _inventario(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import almacen, inventario
+
+    if not almacen.ruta_series().exists():
+        print(f"no hay base en {almacen.ruta_series()}: python -m ingesta.mercados_series construir-base --sin-red",
+              file=sys.stderr)
+        return 1
+    consultar = False if a.sin_red else (True if a.consultar_boe else None)
+    res = inventario.construir_inventario(consultar_boe_red=consultar, registro=print)
+    for nombre, ruta in res.pop("rutas").items():
+        print(f"{nombre} -> {ruta}")
+    _imprimir(res)
+    return 0
+
+
+def _redundancia(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import redundancia
+
+    argumentos = []
+    if a.destino is not None:
+        argumentos += ["--destino", str(a.destino)]
+    if a.max_tickers is not None:
+        argumentos += ["--max-tickers", str(a.max_tickers)]
+    if a.solo:
+        argumentos += ["--solo", a.solo]
+    for nombre, ruta in redundancia.main(argumentos).items():
+        print(f"{nombre} -> {ruta}")
+    return 0
+
+
 def _excepciones(a: argparse.Namespace) -> int:
     import pandas as pd
 
@@ -291,6 +330,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     r = sub.add_parser("resumen", help="recuentos de la base guardada")
     r.add_argument("--csv", action="store_true", help="rehace tablas/cobertura_series.csv")
     r.set_defaults(func=_resumen)
+    iv = sub.add_parser("inventario", help="inventario de series y precios, fiabilidad del nivel C y BoE (paso 2)")
+    gb = iv.add_mutually_exclusive_group()
+    gb.add_argument("--consultar-boe", action="store_true",
+                    help="vuelve a consultar el robots.txt del BoE aunque exista tablas/boe_rutas.csv")
+    gb.add_argument("--sin-red", action="store_true", help="no consulta el robots.txt del BoE")
+    iv.set_defaults(func=_inventario)
+    rd = sub.add_parser("redundancia", help="redundancia de series y ETF y sensibilidad de umbrales (paso 2)")
+    rd.add_argument("--destino", type=Path, default=None, help="carpeta de las tablas (por defecto results/.../tablas)")
+    rd.add_argument("--max-tickers", type=int, default=None, help="solo los N primeros tickers por proveedor (prueba)")
+    rd.add_argument("--solo", choices=("series", "precios"), default=None)
+    rd.set_defaults(func=_redundancia)
     x = sub.add_parser("excepciones-alfred", help="fechas de publicación medidas en ALFRED (excepciones)")
     x.add_argument("--ids", nargs="*", help="ids del catálogo (por defecto fuentes.fred.ids_excepciones())")
     x.add_argument("--sin-red", action="store_true", help="solo lo descargado hoy (caché)")

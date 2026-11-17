@@ -1,0 +1,9 @@
+tipo,id,n_miembros,miembros,buckets,clases,origen,mercados,inicios,corr_min,corr_mediana,base_correlacion,corr_diaria,corr_semanal,solape_min_anios,n_pares_umbral
+grupo,g1,2,IWD; JAVA,factor_eeuu,etf,ampliado; universo,ARCX,2000-05-26; 2021-10-05,0.9809,0.9809,diaria,,,5.02,1
+grupo,g2,2,SPY; QUAL,factor_eeuu; rv_eeuu,etf,universo,ARCX; XNYS,1993-01-29; 2013-07-18,0.9803,0.9803,diaria,,,13.23,1
+bucket,cripto,2,ETHA; IBIT,cripto,etf,universo,XNAS,2024-07-23; 2024-01-11,0.8295,0.8295,mejor,,,,0
+bucket,factor_eeuu,5,IWD; IWF; MTUM; QUAL; USMV,factor_eeuu,etf,universo,ARCX; XNYS,2000-05-26; 2000-05-26; 2013-04-18; 2013-07-18; 2011-10-20,0.7578,0.876,mejor,,,,0
+bucket,rf_gobierno_eeuu,3,IEF; SHY; TLT,rf_gobierno_eeuu,etf,universo,XNAS,2002-07-30; 2002-07-30; 2002-07-30,0.5867,0.7767,mejor,,,,0
+bucket,rv_eeuu,7,CSPX.L; DIA; IJR; IWM; QQQ; RSP; SPY,rv_eeuu,etf,universo,ARCX; XLON; XNAS,2010-09-15; 1998-01-20; 2000-05-26; 2000-05-26; 1999-03-10; 2003-05-01; 1993-01-29,0.744,0.8654,mejor,,,,0
+bucket,sector_eeuu,11,XLB; XLC; XLE; XLF; XLI; XLK; XLP; XLRE; XLU; XLV; XLY,sector_eeuu,etf,universo,ARCX,1998-12-22; 2018-06-19; 1998-12-22; 1998-12-22; 1998-12-22; 1998-12-22; 1998-12-22; 2015-10-08; 1998-12-22; 1998-12-22; 1998-12-22,0.4097,0.6117,mejor,,,,0
+ucits,SPY~CSPX.L,2,SPY; CSPX.L,rv_eeuu,etf,universo,ARCX; XLON,1993-01-29; 2010-09-15,0.9094,0.9094,semanal,0.55,0.9094,,0

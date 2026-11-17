@@ -1,0 +1,15 @@
+ruta,tipo,formato,permitida,uso,nota
+/boeapps/database/ShowChart.asp,regla disallow (user-agent *),,False,,
+/boeapps/database/_iadb-FromShowColumns.asp,regla disallow (user-agent *),,False,,
+/boeapps/iadb,regla disallow (user-agent *),,False,,
+/boeapps/titan,regla disallow (user-agent *),,False,,
+/boeapps/database/_iadb-FromShowColumns.asp?csv.x=yes&SeriesCodes=IUDBEDR,candidata,csv,False,vetada,descarga de series (CSV)
+/boeapps/database/_iadb-FromShowColumns.asp?xml.x=yes&SeriesCodes=IUDBEDR,candidata,xml,False,vetada,descarga de series (XML)
+/boeapps/database/fromshowcolumns.asp?Travel=NIxIRx&SeriesCodes=IUDBEDR,candidata,html,True,permitida solo en HTML (no es descarga CSV/XML): decisión del usuario,tabla de series (HTML)
+/boeapps/database/FromShowColumns.asp?Travel=NIxIRx&SeriesCodes=IUDBEDR,candidata,html,True,permitida solo en HTML (no es descarga CSV/XML): decisión del usuario,tabla de series (HTML)
+/boeapps/database/ShowChart.asp?SeriesCodes=IUDBEDR,candidata,html,False,vetada,gráfico de una serie
+/boeapps/database/Bank-Rate.asp,candidata,html,True,permitida solo en HTML (no es descarga CSV/XML): decisión del usuario,página del Bank Rate
+/boeapps/database/index.asp,candidata,html,True,permitida solo en HTML (no es descarga CSV/XML): decisión del usuario,portada de la base
+/boeapps/iadb/FromShowColumns.asp?csv.x=yes&SeriesCodes=IUDBEDR,candidata,csv,False,vetada,ruta antigua de la IADB (CSV)
+/statistics/yield-curves,candidata,html,True,"permitida (curvas, ya descargadas)",curvas (contraste: ya descargadas)
+/-/media/boe/files/statistics/yield-curves/glcnominalddata.zip,candidata,zip,True,"permitida (curvas, ya descargadas)",curvas (contraste: ya descargadas)
