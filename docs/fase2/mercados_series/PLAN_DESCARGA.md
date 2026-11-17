@@ -89,6 +89,55 @@ Una serie o un ticker se queda si pasa las cuatro preguntas:
 | 5 | Formato del catálogo para los agentes | Tabla con id, descripción, agente, frecuencia, desde y fiabilidad de fecha |
 | Fuera | Fronteras con los compañeros | Universo de empresas común con el Tema 3; SKEW, GPR y EPU en el Tema 4; series del BCE y del BIS sin duplicar con el Tema 2 |
 
+## Paso 2 · `02_inventario`: decisiones y plan
+
+**Qué hace.** Cuenta lo que hay, serie a serie y ticker a ticker, con los metadatos que ya existen:
+- de `catalogo_series.yaml`: frecuencia, unidad, divisa, método, `revisable`, `estado` (incluida `duplicada`),
+  `verificado` y `agentes`;
+- de `universo.yaml`: clase, `bucket` y capa.
+
+A eso le añade lo que se mide en el corpus: cobertura, huecos, primera publicación visible, número de vintages,
+volumen y si hay precio de apertura. También mide la redundancia y fija las reglas del criterio. **No aplica el
+filtro**, que es el paso 3. Para elegir los umbrales con datos, enseña cuántas series y tickers caerían con cada uno.
+
+**Decisiones antes de lanzar:**
+
+| # | Decisión | Propuesta |
+|---|---|---|
+| D1 | Qué significa «tiene historia desde 2000» | Que la **primera publicación visible** (`fecha_publicacion`, no la de referencia) sea ≤ 2001-01-02 |
+| D2 | Niveles de fiabilidad de la fecha | A = vintage exacto o publicación medida; B = regla verificada; C = regla sin verificar; D = sin fecha. Entran A y B; C entra con aviso; D se queda fuera |
+| D3 | Países en el alcance | EE. UU., zona euro, G7 y China (decidido en la sonda), más los agregados mundial y emergentes del Banco Mundial y del WEO |
+| D4 | Proyecciones (SEP, WEO, referencias futuras) | Tabla aparte de proyecciones, fuera de la base curada |
+| D5 | Agente que usa cada serie | Propuesta automática (reglas por grupo y `bucket`, más el criterio del agente); tú revisas solo las dudosas |
+| D6 | Ficha del BoE | «bloqueada» (`robots.txt`), igual que en el README |
+| D7 | Dónde va el inventario | `results/ingesta/mercados_series/tablas/inventario_*.csv`, versionado (solo metadatos, sin valores) |
+
+**Se deciden viendo el notebook** (lo enseña con tablas de sensibilidad):
+
+| # | Decisión | Lo que enseña el notebook |
+|---|---|---|
+| D8 | Umbral de redundancia y solape mínimo | Cuántos alias salen con 0,90, 0,95 y 0,98, con 3, 5 o 10 años de solape |
+| D9 | Banco Mundial (594) y WEO (280) | Cobertura por país e indicador y duplicidad con OCDE, FRED o Eurostat |
+| D10 | Mínimos de un ticker (historia y liquidez) | Cuántos de los 1.388 quedan según el inicio, las sesiones y el volumen mediano |
+
+**Lo que hace falta del equipo:** las fronteras con los otros temas:
+- con el Tema 3, el universo de empresas común;
+- con el Tema 4, SKEW, GPR y EPU;
+- con el Tema 2, las series del BCE y del BIS.
+
+El inventario marca los posibles duplicados con otros temas; la frontera se cierra antes del paso 3.
+
+**Plan con 3 agentes:**
+
+| Agente | Cuándo | Qué hace | Entrega |
+|---|---|---|---|
+| A1 · Inventario | En paralelo con A2 | Módulo `inventario.py` y orden `python -m ingesta.mercados_series inventario`: una fila por serie y una por ticker. Al final escribe y ejecuta `02_inventario` con las dos tablas | `inventario_series.csv`, `inventario_precios.csv`, tests y notebook |
+| A2 · Redundancia | En paralelo con A1 | Módulo `redundancia.py`. Correlación de los cambios por pares dentro de cada frecuencia, con solape mínimo. Mismo concepto en dos fuentes (por nombre e id de origen, más la correlación). Grupos de ETF por `bucket` y por la correlación de sus rentabilidades. Tabla de sensibilidad del umbral | `redundancia_pares.csv`, `redundancia_sensibilidad.csv` y tests |
+| A3 · Crítico y verificador | Cuando acaban A1 y A2 | Revisa:<br>- la causalidad: historia por fecha de publicación, no por la de referencia;<br>- que las cifras cuadran con el `01`;<br>- que no salen valores en las salidas;<br>- la memoria con 10,5 M filas y 16 GB de RAM;<br>- los tests y el tamaño del notebook (< 2 MB).<br>Máximo 8 hallazgos; una ronda de corrección por A1 y A2 | Informe y verificación final |
+
+Yo preparo las instrucciones de cada agente, reviso los diff, corro los tests, hago el commit en local, actualizo este
+documento y me paro para que decidas D8–D10 con preguntas clicables. Unos 40 minutos.
+
 ## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
 
 Lo que dejaban los notebooks antiguos y no recoge el README (originales en la etiqueta `sonda-tema1`):
