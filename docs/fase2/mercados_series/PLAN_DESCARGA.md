@@ -105,13 +105,13 @@ filtro**, que es el paso 3. Para elegir los umbrales con datos, enseña cuántas
 
 | # | Decisión | Propuesta |
 |---|---|---|
-| D1 | Qué significa «tiene historia desde 2000» | Que la **primera publicación visible** (`fecha_publicacion`, no la de referencia) sea ≤ 2001-01-02 |
-| D2 | Niveles de fiabilidad de la fecha | A = vintage exacto o publicación medida; B = regla verificada; C = regla sin verificar; D = sin fecha. Entran A y B; C entra con aviso; D se queda fuera |
-| D3 | Países en el alcance | EE. UU., zona euro, G7 y China (decidido en la sonda), más los agregados mundial y emergentes del Banco Mundial y del WEO |
-| D4 | Proyecciones (SEP, WEO, referencias futuras) | Tabla aparte de proyecciones, fuera de la base curada |
+| D1 | Qué significa «tiene historia desde 2000» | **Aprobada:** que la **primera publicación visible** (`fecha_publicacion`, no la de referencia) sea ≤ 2001-01-02 |
+| D2 | Niveles de fiabilidad de la fecha | **Aprobada con cambio:** A = vintage exacto o publicación medida; B = regla verificada; C = regla sin verificar; D = sin fecha. Entran A y B; D se queda fuera. El nivel **C se explica y se analiza en el notebook** (cuánto se desvía la regla de la fecha real donde se puede medir y en qué sentido); si no es fiable, se quita |
+| D3 | Países en el alcance | **Aprobada:** EE. UU., zona euro, G7 y China (decidido en la sonda), más los agregados mundial y emergentes del Banco Mundial y del WEO |
+| D4 | Proyecciones (SEP, WEO, referencias futuras) | **Aprobada:** tabla aparte de proyecciones, fuera de la base curada |
 | D5 | ~~Agente que usa cada serie~~ | **Descartada** (2026-11-17): se decide al construir los agentes, no en el dataset |
-| D6 | Ficha del BoE | «bloqueada» (`robots.txt`), igual que en el README |
-| D7 | Dónde va el inventario | `results/ingesta/mercados_series/tablas/inventario_*.csv`, versionado (solo metadatos, sin valores) |
+| D6 | Ficha del BoE | **Aprobada con cambio:** «bloqueada» en la ficha, pero si existe una ruta que `robots.txt` permita, se descarga en el paso 3b |
+| D7 | Dónde va el inventario | **Aprobada:** `results/ingesta/mercados_series/tablas/inventario_*.csv`, versionado (solo metadatos, sin valores) |
 
 **Se deciden viendo el notebook** (lo enseña con tablas de sensibilidad):
 
@@ -132,7 +132,7 @@ El inventario marca los posibles duplicados con otros temas; la frontera se cier
 
 | Agente | Cuándo | Qué hace | Entrega |
 |---|---|---|---|
-| A1 · Inventario | En paralelo con A2 | Módulo `inventario.py` y orden `python -m ingesta.mercados_series inventario`: una fila por serie y una por ticker. Al final escribe y ejecuta `02_inventario` con las dos tablas | `inventario_series.csv`, `inventario_precios.csv`, tests y notebook |
+| A1 · Inventario | En paralelo con A2 | Módulo `inventario.py` y orden `python -m ingesta.mercados_series inventario`: una fila por serie y una por ticker, con el nivel de fecha A–D, la marca de proyección y la de posible frontera con otro tema. **Análisis del nivel C** (D2): donde haya fecha real con la que comparar (ALFRED, ediciones archivadas), cuántos días se desvía la regla y si adelanta (peligroso) o retrasa (conservador). **BoE** (D6): una sola consulta a su `robots.txt` para ver si alguna ruta está permitida. Al final escribe y ejecuta `02_inventario` | `inventario_series.csv`, `inventario_precios.csv`, `fiabilidad_c.csv`, tests y notebook |
 | A2 · Redundancia | En paralelo con A1 | Módulo `redundancia.py`. Correlación de los cambios por pares dentro de cada frecuencia, con solape mínimo. Mismo concepto en dos fuentes (por nombre e id de origen, más la correlación). Grupos de ETF por `bucket` y por la correlación de sus rentabilidades. Tabla de sensibilidad del umbral | `redundancia_pares.csv`, `redundancia_sensibilidad.csv` y tests |
 | A3 · Crítico y verificador | Cuando acaban A1 y A2 | Revisa:<br>- la causalidad: historia por fecha de publicación, no por la de referencia;<br>- que las cifras cuadran con el `01`;<br>- que no salen valores en las salidas;<br>- la memoria con 10,5 M filas y 16 GB de RAM;<br>- los tests y el tamaño del notebook (< 2 MB).<br>Máximo 8 hallazgos; una ronda de corrección por A1 y A2 | Informe y verificación final |
 
