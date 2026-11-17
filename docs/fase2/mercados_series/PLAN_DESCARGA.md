@@ -139,6 +139,47 @@ El inventario marca los posibles duplicados con otros temas; la frontera se cier
 Yo preparo las instrucciones de cada agente, reviso los diff, corro los tests, hago el commit en local, actualizo este
 documento y me paro para que decidas D8–D10 con preguntas clicables. Unos 40 minutos.
 
+## Paso 3 · `03_seleccion_eda`: propuesta (pendiente de tu revisión)
+
+**Qué hace.**
+1. Aplica a las tablas del paso 2 las decisiones D1–D9 y saca la **lista curada**: una entrada por serie y por ticker
+   con «se queda», «alias de X» o «fuera», y el motivo.
+2. Hace un **EDA sencillo** de lo que se queda.
+3. Deja escrito el **plan de preprocesado del paso 4, sin aplicarlo**: reglas de fecha conservadoras, tramos que se
+   recortan, canónicos, proyecciones aparte y homogeneización de unidades.
+4. Saca la **lista de descargas del paso 3b**.
+
+El crudo y la base actual no se tocan.
+
+**Entregables.**
+- `config/lista_curada.yaml` (entrada del paso 4).
+- `config/preprocesado.yaml` (borrador; no se ejecuta).
+- `tablas/seleccion_resumen.csv`, `tablas/eda_*.csv` y `tablas/descargas_3b.csv`.
+- El notebook `03_seleccion_eda`.
+
+**Decisiones del paso 3** (propuesta primero; se preguntan de forma clicable antes de lanzar):
+
+| # | Decisión | Propuesta |
+|---|---|---|
+| E1 | Cuál es el **canónico** de cada concepto en varias fuentes (p. ej. el 10 años: FRED, curva del Tesoro, Fase 1, ^TNX) | Regla automática por orden: mejor nivel de fecha (A > B > C) → más historia visible → mayor frecuencia → fuente oficial frente a derivada. El notebook enseña los casos en que la regla duda, para que los resuelvas tú |
+| E2 | **Plazos vecinos de una curva** (salen como alias a 0,95: 1M, 2Y, 3Y, 7Y, 20Y del Tesoro…) | **No** se tratan como alias: la curva entera se queda, porque los agentes y la cartera pueden pedir cualquier plazo y la pendiente se calcula entre plazos. La regla de alias se aplica solo entre fuentes o entre versiones de una misma serie |
+| E3 | **Versiones de Eurostat** (HICP v1/v2, agregados EA/EA20/EA21) | Se queda la zona euro de composición cambiante (la oficial de cada fecha) y una versión del HICP; el resto como alias |
+| E4 | **Regla conservadora** de cada grupo «no medible» (D2) | La fecha más tardía plausible según el calendario documentado de cada fuente, a partir de `publicaciones.yaml`, las fichas y las notas de la sonda, con la fuente citada en el YAML. Sin red; si falta algún calendario, se te pregunta antes de buscarlo fuera |
+| E5 | Tramo **«no fiable»** (antes de `fiable_desde`) | No se borra: pasa a una regla conservadora (la regla, más el adelanto máximo medido, más un margen). Así se conserva la historia sin dejar ver el futuro |
+| E6 | **Fronteras** con los Temas 2 y 4 (122 y 8 series marcadas) | Se quedan de forma provisional con la marca «frontera» hasta que lo hables con tus compañeros; no bloquean el paso 3 |
+| E7 | **Qué mira el EDA** | En series: huecos largos, saltos y rupturas de nivel, cambios de unidad entre vintages, escalas raras y rachas planas. En precios: saltos sin split (AAPL, ASML.AS, CL=F, NVDA, SHEL.L, ^VIX), contrasplits y aperturas iguales al cierre. Solo detecta y propone; no corrige |
+
+**Plan con 3 agentes** (mismas reglas que en el paso 2):
+
+| Agente | Cuándo | Qué hace | Entrega |
+|---|---|---|---|
+| B1 · Selección | En paralelo con B2 | Módulo `seleccion.py` y orden `seleccion`: aplica D1–D9 y E1–E3/E6 sobre `inventario_*` y `redundancia_*`, y genera la lista curada con su motivo y la lista del 3b. Al final escribe y ejecuta el `03` | `lista_curada.yaml`, `seleccion_resumen.csv`, `descargas_3b.csv`, tests y notebook |
+| B2 · EDA y plan de preprocesado | En paralelo con B1 (trabaja sobre todo lo que no es «fuera» seguro) | Módulo `eda.py` y orden `eda` con los controles de E7. Borrador de `preprocesado.yaml` con E4 y E5 por grupo y regla, citando la fuente de cada calendario | `eda_*.csv`, `preprocesado.yaml` (borrador) y tests |
+| B3 · Crítico y verificador | Cuando acaban B1 y B2 | Revisa:<br>- que la lista aplica de verdad las decisiones;<br>- que ninguna regla conservadora adelanta;<br>- que no quedan canónicos ambiguos sin señalar;<br>- que no hay valores en las salidas;<br>- tests y tamaño.<br>Máximo 8 hallazgos y una sola ronda de corrección | Informe |
+
+Yo me encargo de las instrucciones de los agentes, la revisión, los tests, el commit en local, este documento y las preguntas
+clicables al final. Calculo unos 45 minutos.
+
 ## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
 
 Lo que dejaban los notebooks antiguos y no recoge el README (originales en la etiqueta `sonda-tema1`):
