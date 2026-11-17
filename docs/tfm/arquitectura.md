@@ -59,7 +59,7 @@ Cada tool aplica el TimeGate con `fecha`. Las marcadas **D** son deterministas (
 | `get_precios(tk, fecha)` | yfinance (ETF y acciones) | | x | | x | |
 | `get_fundamentales(tk, fecha)` | SEC XBRL: ventas, márgenes, deuda | | x | | | |
 | `get_polymarket(evento, fecha)` | Probabilidad implícita de eventos de cola | | | x | | |
-| `get_regimen(fecha)` | Detector de régimen (Fase 1): estado, probabilidad, días | x | | x | x | |
+| `get_regimen(fecha)` | Detector de régimen (Fase 1): estado, probabilidad de crisis, días en el estado y consenso del resto de detectores (§5) | x | | x | x | x |
 | `composite_score(bucket, fecha)` **D** | Ranking del bucket: fundamental 40 · momentum 35 · calidad 25 | | x | | | |
 | `riesgo_cartera(pesos, fecha)` **D** | Vol ex-ante, VaR, estrés por escenarios | | | x | x | |
 | `optimizar_cartera(motor, fecha)` **D** | Risk parity, mínima varianza, máxima diversificación | | | | x | |
@@ -73,17 +73,42 @@ Los parámetros del `composite_score` (40/35/25) vienen de la propuesta y su uni
 
 ## 5. Contrato provisional de `get_regimen(fecha)`
 
-Salida de la Fase 1; se congela en el notebook `21_decision_final` y se valida en `22_pseudolive`.
+Salida de la Fase 1. Ya está implementada y es **provisional**: la lógica está en
+[`src/regimenes/regimen/tool.py`](../../src/regimenes/regimen/tool.py), el detector por pista en
+[`configs/regimen.yaml`](../../configs/regimen.yaml) (hoy D06 en la pista A y D05 en la B) y la tool tipada que ven
+los agentes en [`src/herramientas/regimen.py`](../../src/herramientas/regimen.py). Está registrada para los agentes
+Macro, Risk, Portfolio y CIO. La regla definitiva se congela en el notebook `21_decision_final` (futura ADR-006) y se
+valida en `22_pseudolive`.
+
+Entrada: la `fecha` de la decisión, que pone el sistema y nunca el LLM, y una `pista` opcional (`A` o `B`); sin
+`pista`, se usa la B desde el inicio de su OOS y la A antes.
+
+Salida (`SalidaRegimen`):
 
 | Campo | Contenido |
 |---|---|
-| `estado` | Uno de los estados fijados por el **detector final** (futura ADR-006). Hipótesis de trabajo: calma / alerta / crisis |
-| `probabilidad` | Confianza del detector en ese estado |
-| `dias_en_estado` | Días consecutivos en el estado actual |
+| `tool`, `fecha_consulta` | Comunes a todas las tools (`SalidaTool` de [`src/herramientas/contrato.py`](../../src/herramientas/contrato.py)) |
+| `citas` | Panel OOS del detector con su SHA-256 y, si hay contexto, los dos ficheros del consenso |
+| `avisos` | «régimen provisional hasta la ADR-006» mientras `provisional` sea verdadero |
+| `fecha_dato` | Última sesión con dato visible (≤ `fecha`); fines de semana y festivos se resuelven al último día hábil |
+| `pista`, `detector` | Pista y detector efectivos |
+| `estado` | Hoy `calma` o `crisis`: `crisis` es el estado canónico de crisis del detector y cualquier otro se publica como `calma` |
+| `estados_posibles` | Los estados expuestos, hoy `[calma, crisis]` |
+| `prob_crisis` | Probabilidad de crisis del detector, o nulo si no la da. El estado no sale de umbralizarla: con histéresis se puede seguir en crisis con probabilidad baja |
+| `dias_en_estado` | Sesiones consecutivas en el estado publicado, contando `fecha_dato` (mínimo 1) |
+| `dias_en_estado_censurado` | Verdadero si la racha llega al inicio del panel (la cuenta real podría ser mayor) |
+| `provisional` | Verdadero hasta la ADR-006 |
+| `contexto` | Consenso del resto de detectores no supervisados en `fecha_dato` (fusión online del ADR-011): `prob_crisis_consenso`, `estado_consenso`, `detectores_en_crisis`, `detectores_total`, `confianza` (acuerdo con el principal, no una probabilidad calibrada), `coincide_consenso` y `lectura`; nulo si faltan sus ficheros |
 
-- Correspondencia de trabajo con la máquina de fusión (`regimenes.fusion`): calma ≈ *normal*, alerta ≈ *vigilancia*, crisis ≈ *confirmado*.
-- Solo usa información publicada hasta `fecha` (TimeGate).
-- Los estados definitivos y la definición exacta de la probabilidad **no están decididos**.
+- Solo usa información publicada hasta `fecha` (TimeGate): lee los paneles walk-forward OOS del benchmark, sin
+  ajustar ni recalcular nada.
+- **Convención de fecha.** La fila de `fecha` usa los datos al cierre de `fecha` (la rentabilidad y los niveles del
+  propio día; ver el docstring de `regimenes.regimen.tool`), así que quien decida a ese mismo cierre o durante la
+  sesión debe pedir `t − 1`. La convención que usarán los agentes queda **pendiente de fijar antes de la Fase 4**.
+- **Lo que fijará la ADR-006:** el detector final, los estados definitivos (si se añade `alerta`; correspondencia de
+  trabajo con la máquina de fusión `regimenes.fusion`: calma ≈ *normal*, alerta ≈ *vigilancia*, crisis ≈
+  *confirmado*) y la definición exacta de la probabilidad que se publica. El contrato tipado de
+  `src/herramientas/regimen.py` no debería cambiar con el detector.
 
 ## 6. Los cinco agentes
 
@@ -135,7 +160,7 @@ presentación al tutor: son **diseño propuesto, sujeto a revisión**. Los ejemp
 
 *¿Cuál es la decisión final y cómo se explica a un comité?*
 
-- **Tools:** estado del grafo (informes estructurados de los otros cuatro), `ajustar_pesos` (Δ ≤ 5 pp, desviación registrada con su motivo), `comprobar_limites`, `verificar_citas`.
+- **Tools:** estado del grafo (informes estructurados de los otros cuatro), `get_regimen`, `ajustar_pesos` (Δ ≤ 5 pp, desviación registrada con su motivo), `comprobar_limites`, `verificar_citas`.
 - **Skills:** redactar un memo institucional (plantilla fija), contrastar agentes que discrepan, no afirmar nada sin cita.
 - **Condicionado por el régimen:** calma → memo breve que prioriza el coste; alerta → contrasta opiniones discrepantes; crisis → memo detallado con plan de reentrada.
 - **Salvaguarda:** ningún ajuste puede saltarse un límite (comprobación determinista).

@@ -74,7 +74,7 @@ docs/
 
 ### `fase1/` — el régimen de mercado (`src/regimenes`, notebooks en `notebooks/fase1/`)
 - [`fase1/README.md`](fase1/README.md) — pipeline `00`–`22`, orden de ejecución, huellas de caché, rutas en disco e
-  índice de detectores D01–D13 por familia. El mapa de módulos está en [`src/regimenes/README.md`](../src/regimenes/README.md).
+  índice de detectores D01–D18 por familia (F1–F8, con los del pool sin comprimir del ADR-010). El mapa de módulos está en [`src/regimenes/README.md`](../src/regimenes/README.md).
 - [`fase1/eda.md`](fase1/eda.md) — informe EDA (figuras en [`fase1/figs/`](fase1/figs/)).
 - Teoría de cada familia con sus detectores: [F1 reglas](fase1/F1_reglas.md) · [F2 clustering](fase1/F2_clustering.md) ·
   [F3 HMM](fase1/F3_hmm.md) · [F4 Markov-Switching](fase1/F4_markov_switching.md) ·

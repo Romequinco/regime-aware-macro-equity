@@ -2,16 +2,21 @@
 
 - **Estado:** Aceptada · 2026-09-29 (decisión del usuario).
 - **Actualización (2026-11-11):** instalación y dependencias sustituidas por [ADR-012](ADR-012-estructura-repo.md) §2.2.
+- **Actualización (2026-11-17):** numeración de notebooks. La tabla de §3 y los «hoy» de la revisión del 2026-10-06
+  usaban todavía el esquema 00–23 (sin el 04, el 13 ni el 16 y con «plantilla 05–11»). Se cambian a la numeración
+  vigente, `notebooks/fase1/00`–`22`: tras unificar las fusiones fijas en el 15 ([ADR-011](ADR-011-preregistro-fusiones.md)
+  §7.3), la fusión online pasa al 16, los sintéticos al 17–20, la decisión final al 21 y el pseudolive al 22
+  ([ADR-012](ADR-012-estructura-repo.md) movió los notebooks a `notebooks/fase1/`). La decisión no cambia.
 - **Revisión posterior (2026-10-06):** [ADR-005](ADR-005-reencuadre-tfm-multiagente.md) corrige §2:
   «todo el TFM vive en `regimenes`» pasa a ser «`regimenes` es el código de la **Fase 1** (régimen) del TFM».
-  Estado actual de lo que §3 llamaba esqueletos: los notebooks 15–17 (hoy 18–20) están **hechos** (`configs/sinteticos.yaml`
+  Estado actual de lo que §3 llamaba esqueletos: los notebooks 15–17 (hoy 17–19) están **hechos** (`configs/sinteticos.yaml`
   y la validación F8 completos; subpaquetes de `regimenes.sinteticos`: `parametricos`, `neuronales`,
-  `validacion` y `laboratorio`); el 18 (hoy 21) se mantiene y los 19 (`decision_final`, hoy 22) y 20 (`pseudolive`, hoy 23) son el cierre
+  `validacion` y `laboratorio`); el 18 (hoy 20, el aumento, también hecho) se mantiene y los 19 (`decision_final`, hoy 21) y 20 (`pseudolive`, hoy 22) son el cierre
   de la Fase 1: la señal de régimen que consumirán los agentes, no «el sistema final del TFM».
 - **Revisión posterior (2026-10-30):** los notebooks se renumeran al esquema 00–23 (`git mv`): entran
-  `04_termometros`, `13_familia_F8_supervisado` y `17_fusion_online`, y los demás se desplazan. Los nombres
-  y la tabla de notebooks de este ADR usan la numeración nueva; los números sueltos de §2–§3 describen el
-  esquema 00–20 de entonces.
+  `04_termometros`, `13_familia_F8_supervisado` y `17_fusion_online`, y los demás se desplazan. Los números
+  sueltos de §2–§3 describen el esquema 00–20 de entonces; la tabla de notebooks usa la numeración vigente 00–22
+  (actualización del 2026-11-17).
 - **Revisión posterior (2026-10-14):** [ADR-007](ADR-007-fase2-ingesta-y-docs.md) sustituye el árbol de `docs/` de
   §2 (punto 4) y §3; la estructura vigente está en el índice [`docs/README.md`](../README.md).
 - **Revierte:** [ADR-001](ADR-001-rebase-datos.md) §7, último punto (*"Capa 1 se mantiene intacta"*),
@@ -116,17 +121,22 @@ Todo el TFM vive en **un repositorio plano y un paquete instalable**, `regimenes
 
 ### Notebooks
 
+Numeración vigente (actualización del 2026-11-17), en `notebooks/fase1/`; el detalle notebook a notebook está en
+[`docs/fase1/README.md`](../fase1/README.md#notebook-a-notebook).
+
 | Nº | Notebook | Contenido |
 |---|---|---|
 | 00–03 | `00_descarga` · `01_eda` · `02_diseno_preprocesado` · `03_preprocesado` | datos, EDA y paneles causales por pista |
+| 04 | `04_termometros` | termómetros por bloque (menú T, [ADR-008](ADR-008-preregistro-pool-termometros.md)) |
 | 05 | `05_protocolo_evaluacion` | walk-forward, gate/preflight, caché, CLI paralela |
-| 06–12 | `06_familia_F1_reglas` … `12_familia_F7_deep` | una familia cada uno (D01–D13) |
+| 06–12 | `06_familia_F1_reglas` … `12_familia_F7_deep` | una familia cada uno (D01–D13, más D14, D15 y D18 del pool sin comprimir) |
+| 13 | `13_familia_F8_supervisado` | supervisados D16 y D17 ([ADR-010](ADR-010-preregistro-pool-crudo.md)), aparte del ranking |
 | 14 | `14_comparativa` | scorecards y ranking por pista |
-| 15–16 | `15_fusiones_fijas` (unifica los antiguos 15 y 16, [ADR-011](ADR-011-preregistro-fusiones.md) §7.3) | alerta + confirmación |
-| 18–21 | `18_sinteticos_generadores` · `19_sinteticos_validacion` · `20_sinteticos_laboratorio` · `21_sinteticos_aumento` | fase de datos sintéticos (esqueletos) |
-| 22–23 | `22_decision_final` · `23_pseudolive` | sistema a congelar y prueba pseudolive (esqueletos) |
+| 15–16 | `15_fusiones_fijas` (unifica los antiguos 15 y 16, [ADR-011](ADR-011-preregistro-fusiones.md) §7.3) · `16_fusion_online` | alerta + confirmación; fusión online |
+| 17–20 | `17_sinteticos_generadores` · `18_sinteticos_validacion` · `19_sinteticos_laboratorio` · `20_sinteticos_aumento` | fase de datos sintéticos (hecha; el aumento no se adopta) |
+| 21–22 | `21_decision_final` · `22_pseudolive` | sistema a congelar y prueba pseudolive (esqueletos) |
 
-**Plantilla de notebook de familia (05–11):** título y resumen · teoría de la familia (de
+**Plantilla de notebook de familia (06–12; en el esquema 00–20 de entonces, 05–11):** título y resumen · teoría de la familia (de
 `docs/teoria/` y las fichas de detector; hoy `docs/fase1/F1…F7`) · configuración generada desde
 `regimenes.detectores.registry` · ejecución con `EJECUTAR = False` por defecto (carga la caché de
 `results/benchmark` y falla con el comando exacto si no está vigente) · por detector y pista: estados
@@ -159,4 +169,4 @@ Toda cifra del texto sale de una celda; figuras en `results/detectores/<fk_nombr
   conservan sus rutas originales; su README §7 las traduce.
 - **Reversibilidad:** total vía los tags `capa1-final` y `v2-pre-unificacion`.
 - **Fuera de alcance:** cambiar detectores, ventanas, crisis o el criterio de ranking (ADR-003); la
-  elección del sistema final y el pseudolive (notebooks 19–20).
+  elección del sistema final y el pseudolive (notebooks 19–20 de entonces; hoy 21–22).

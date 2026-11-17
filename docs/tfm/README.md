@@ -81,7 +81,7 @@ del repositorio la había reducido a «detección». El reencuadre ([ADR-005](..
 
 | Se mantiene | Cambia | Por analizar (§2.3 de ADR-005) |
 |---|---|---|
-| Título y objetivo: agentes Macro, Equity, Risk, Portfolio y CIO con LangGraph, RAG, memo con citas, TimeGate | El **régimen es la Fase 1** y se entrega como tool `get_regimen(fecha)` con tres estados provisionales (calma / alerta / crisis), fijados por el detector final | Universo en dos capas (42 ETFs y ~1.300 acciones) y *composite score* sobre él, infraestructura AWS, modo operacional, reglas de rebalanceo, ventanas de backtest 2000–2024 |
+| Título y objetivo: agentes Macro, Equity, Risk, Portfolio y CIO con LangGraph, RAG, memo con citas, TimeGate | El **régimen es la Fase 1** y se entrega como tool `get_regimen(fecha)`, ya implementada con dos estados provisionales (calma / crisis); los estados definitivos (¿también alerta?) los fija el detector final (futura ADR-006) | Universo en dos capas (42 ETFs y ~1.300 acciones) y *composite score* sobre él, infraestructura AWS, modo operacional, reglas de rebalanceo, ventanas de backtest 2000–2024 |
 | Evaluación con TimeGate frente a baselines | El HMM t-Student de 4 estados de la propuesta no es el detector por defecto: la comparativa de la Fase 1 decide | No se descartan ni se confirman; el plan de datos ([`plan_datos.md`](../fase2/plan_datos.md)) ya acota la ventana del backtest y el universo |
 | | Requisitos nuevos de la tutoría: cliente y perfil, dos carteras, memoria, datos alternativos, cataclismo | |
 

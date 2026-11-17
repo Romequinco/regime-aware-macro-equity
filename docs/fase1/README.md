@@ -29,7 +29,7 @@ las fases 1–5 del TFM).
 |---|---|---|
 | **Datos** | `00_descarga` → `01_eda` | `data/raw/` + informe EDA |
 | **Features** | `02_diseno_preprocesado` → `03_preprocesado` → `04_termometros` | `data/processed/pista{A,B}_{diaria,mensual}.parquet` + labels; `pista{A,B}_termometros.parquet` (menú T, ADR-008) |
-| **D — detectores** | `05_protocolo_evaluacion` → `14_comparativa` → `06`–`12` (una familia cada uno) · `13_familia_F8_supervisado` (esqueleto) | `results/benchmark/` (métricas, ranking, paneles OOS) + `results/benchmark/vara/` + `results/detectores/` (menús N y T en `menus/`, ablaciones en `ablaciones/`, pool sin comprimir en `pool/`) |
+| **D — detectores** | `05_protocolo_evaluacion` → `14_comparativa` → `06`–`12` (una familia cada uno) · `13_familia_F8_supervisado` (supervisados, categoría aparte del ranking) | `results/benchmark/` (métricas, ranking, paneles OOS) + `results/benchmark/vara/` + `results/detectores/` (menús N y T en `menus/`, ablaciones en `ablaciones/`, pool sin comprimir en `pool/`) |
 | **E — fusión** | `15_fusiones_fijas` · `16_fusion_online` | `results/fusion/fijas/` · `results/fusion/online/` (antecedentes en `d07_d08/` y `d02_d06/`) |
 | **S — sintéticos** | `17_sinteticos_generadores` → `18_sinteticos_validacion` → `19_sinteticos_laboratorio` → `20_sinteticos_aumento` | Generadores, validación por niveles, laboratorio con régimen conocido y aumento real + sintético (no se adopta). Método en [`sinteticos.md`](sinteticos.md) |
 | **F — cierre** | `21_decision_final` → `22_pseudolive` | `21`: decisión final del detector de régimen y contrato de `get_regimen` (futura ADR-006); `22`: validación de la tool sobre datos no usados en `results/pseudolive/` (esqueletos) |
@@ -44,14 +44,14 @@ las fases 1–5 del TFM).
 | 03 | [`03_preprocesado`](../../notebooks/fase1/03_preprocesado.ipynb) | features | paneles causales `pista{A,B}_{diaria,mensual}` + labels, con gates |
 | 04 | [`04_termometros`](../../notebooks/fase1/04_termometros.ipynb) | features | termómetros por bloque (PCA causal por bloque, ADR-008): construcción sobre los datos verificados, validación 1–3 sin etiquetas de crisis, relevancia frente a crisis y trampas (4) y menú N frente a T |
 | 05 | [`05_protocolo_evaluacion`](../../notebooks/fase1/05_protocolo_evaluacion.ipynb) | D | protocolo walk-forward, gate/preflight, caché por huella, CLI paralela · vara de medir ADR-008 (§9–12): `VOL_P90`, MCS diario, curvas a igual FA/año y tabla CP1 → `results/benchmark/vara/` |
-| 06 | [`06_familia_F1_reglas`](../../notebooks/fase1/06_familia_F1_reglas.ipynb) | D | D01 umbral de volatilidad (VIX solo en B) · D02 riesgo compuesto · D10 turbulencia Mahalanobis |
-| 07 | [`07_familia_F2_clustering`](../../notebooks/fase1/07_familia_F2_clustering.ipynb) | D | D03 GMM · D09 Statistical Jump Model |
+| 06 | [`06_familia_F1_reglas`](../../notebooks/fase1/06_familia_F1_reglas.ipynb) | D | D01 umbral de volatilidad (VIX solo en B) · D02 riesgo compuesto · D10 turbulencia Mahalanobis · del pool sin comprimir ([ADR-010](../decisions/ADR-010-preregistro-pool-crudo.md)): D10-P y D10-R (D10 sobre los menús P y R) y D14 absorption ratio (menú R, solo B) |
+| 07 | [`07_familia_F2_clustering`](../../notebooks/fase1/07_familia_F2_clustering.ipynb) | D | D03 GMM · D09 Statistical Jump Model · del pool sin comprimir (ADR-010): D15 jump model de Shu, Yu y Mulvey (menú U) y D18 sparse jump model (menú P) |
 | 08 | [`08_familia_F3_hmm`](../../notebooks/fase1/08_familia_F3_hmm.ipynb) | D | D04 HMM gaussiano · D08 HMM t-Student · D13 HSMM (ablación) |
 | 09 | [`09_familia_F4_markov_switching`](../../notebooks/fase1/09_familia_F4_markov_switching.ipynb) | D | D05 Markov-Switching de media y varianza (univariante; pese al nombre `markov_switching_var`, no es un VAR) |
 | 10 | [`10_familia_F5_garch`](../../notebooks/fase1/10_familia_F5_garch.ipynb) | D | D06 GJR-GARCH-t · D11 MS-GARCH |
 | 11 | [`11_familia_F6_changepoint`](../../notebooks/fase1/11_familia_F6_changepoint.ipynb) | D | D07 CUSUM online robusto |
 | 12 | [`12_familia_F7_deep`](../../notebooks/fase1/12_familia_F7_deep.ipynb) | D | D12 autoencoder + GMM |
-| 13 | [`13_familia_F8_supervisado`](../../notebooks/fase1/13_familia_F8_supervisado.ipynb) | D | D16 logit L1 · D17 random forest, entrenados solo con crisis terminadas; categoría supervisada aparte del ranking no supervisado (esqueleto) |
+| 13 | [`13_familia_F8_supervisado`](../../notebooks/fase1/13_familia_F8_supervisado.ipynb) | D | D16 logit L1 · D17 random forest, entrenados solo con crisis terminadas; categoría supervisada («techo») aparte del ranking no supervisado; ninguno mejora al mejor no supervisado ([ADR-010](../decisions/ADR-010-preregistro-pool-crudo.md) §9.4, `results/detectores/pool/techo_supervisados.csv`) |
 | 14 | [`14_comparativa`](../../notebooks/fase1/14_comparativa.ipynb) | D | scorecards, ranking ADR-003 y comparación entre familias |
 | 15 | [`15_fusiones_fijas`](../../notebooks/fase1/15_fusiones_fijas.ipynb) | E | fusiones fijas del [ADR-011](../decisions/ADR-011-preregistro-fusiones.md): antecedentes D7+D8 y D2+D6 y las tres familias (alerta→confirmación, votación k-de-n, OR/AND), elegidas en H1 y evaluadas en H2 con la vara de los individuales |
 | 16 | [`16_fusion_online`](../../notebooks/fase1/16_fusion_online.ipynb) | E | C1: agregación online de los detectores con pesos mensuales según acierto pasado, frente a la mejor fusión fija F\*, la media simple, la votación por mayoría y el mejor individual (ADR-011) |
@@ -140,7 +140,7 @@ datos ([ADR-001](../decisions/ADR-001-rebase-datos.md)); las posteriores se nomb
 | 4 | Diseño + preprocesado causal v2 | ✅ notebooks 02–03 |
 | D | Re-evaluar D01–D12 sobre `benchmark_spec.yaml` con lags de publicación, propagación de estado y ranking por detección | ✅ benchmark completo (24/24, caché verificada) · [ADR-003](../decisions/ADR-003-causalidad-calendario-estado-ranking.md) · notebooks 05–14 |
 | — | Paquete único `regimenes` y un notebook por familia | ✅ [ADR-004](../decisions/ADR-004-unificacion.md) |
-| E | Fusión alerta + confirmación | 🟡 fusiones fijas: no aportan frente al mejor detector solo (notebook 15, ADR-011); fusión online C1 en el 16 |
+| E | Fusión alerta + confirmación | ✅ cerrada ([ADR-011](../decisions/ADR-011-preregistro-fusiones.md) §9): las fusiones fijas no aportan frente al mejor detector solo (notebook 15); la fusión online da un indicio solo en la pista A y sus pesos no aprenden (notebook 16) |
 | S | Datos sintéticos: generadores, validación, laboratorio, aumento | ✅ hecha (notebooks 17–20; el aumento no se adopta) · [generadores sintéticos](sinteticos.md) |
 | F | Decisión final del detector y contrato de `get_regimen` (futura ADR-006) + validación pseudolive de la tool | 🔜 notebooks 21–22 (esqueletos) |
 
@@ -152,13 +152,23 @@ puesto y el `score_deteccion` de cada detector por pista están en `results/benc
 [`14_comparativa`](../../notebooks/fase1/14_comparativa.ipynb); su comentario, en la sección de resultados de cada ficha de
 familia.
 
+D14–D18 y las variantes D10-P y D10-R son los detectores del pool sin comprimir
+([ADR-010](../decisions/ADR-010-preregistro-pool-crudo.md) §3). Viven en `detectores/pool/`, fuera de la huella de la
+caché v2 y con la suya propia (`pool.huella_codigo`), y sus resultados están en `results/detectores/pool/`
+(`criterio_adr010.csv`, `techo_supervisados.csv`). D16 y D17 son supervisados: forman la categoría «techo» (ADR-010 §6),
+aparte del ranking principal, y no tienen ficha de familia propia (su teoría está en el ADR-010 y en el notebook 13).
+
 | Familia (teoría y detectores) | Detector | Código (`src/regimenes/detectores/`) | Notebook |
 |---|---|---|---|
 | [F1 reglas y umbrales](F1_reglas.md) | D01 `rule_vix_threshold` | `f1_reglas/rule_vix_threshold.py` | [`06_familia_F1_reglas`](../../notebooks/fase1/06_familia_F1_reglas.ipynb) |
 | | D02 `rule_composite_riskoff` | `f1_reglas/rule_composite_riskoff.py` | ídem |
 | | D10 `turbulence_mahalanobis` (multivariante) | `f1_reglas/turbulence_mahalanobis.py` | ídem |
+| | D10-P · D10-R (D10 sobre los menús P y R; pool) | `f1_reglas/turbulence_mahalanobis.py` vía `pool/pool_crudo.py` | ídem |
+| | D14 `AbsorptionRatio` (menú R, solo B; pool) | `pool/absorption_ratio.py` | ídem |
 | [F2 clustering](F2_clustering.md) | D03 `clustering_gmm` | `f2_clustering/clustering_gmm.py` | [`07_familia_F2_clustering`](../../notebooks/fase1/07_familia_F2_clustering.ipynb) |
 | | D09 `jump_model` | `f2_clustering/jump_model.py` | ídem |
+| | D15 `ShuJumpModel` (Shu, Yu y Mulvey, 2024; menú U; pool) | `pool/shu.py` | ídem |
+| | D18 `SparseJumpPool` (sparse jump model; menú P; pool) | `pool/sparse_jump.py` | ídem |
 | [F3 HMM](F3_hmm.md) | D04 `hmm_gaussian_2s` | `f3_hmm/hmm_gaussian_2s.py` | [`08_familia_F3_hmm`](../../notebooks/fase1/08_familia_F3_hmm.ipynb) |
 | | D08 `hmm_tstudent` | `f3_hmm/hmm_tstudent.py` | ídem |
 | | D13 `hsmm_tstudent` (ablación) | `f3_hmm/hsmm_tstudent.py` | ídem |
@@ -167,6 +177,8 @@ familia.
 | | D11 `msgarch_regime` | `f5_garch/msgarch_regime.py` | ídem |
 | [F6 change-point](F6_change_point.md) | D07 `changepoint_online` | `f6_changepoint/changepoint_online.py` | [`11_familia_F6_changepoint`](../../notebooks/fase1/11_familia_F6_changepoint.ipynb) |
 | [F7 redes neuronales](F7_redes_neuronales.md) | D12 `deep_ae_regime` | `f7_deep/deep_ae_regime.py` | [`12_familia_F7_deep`](../../notebooks/fase1/12_familia_F7_deep.ipynb) |
+| F8 supervisados ([ADR-010](../decisions/ADR-010-preregistro-pool-crudo.md) §3, §6) | D16 `LogitL1` (logit L1; menús P y N) | `pool/supervisados.py` | [`13_familia_F8_supervisado`](../../notebooks/fase1/13_familia_F8_supervisado.ipynb) |
+| | D17 `BosqueAleatorio` (random forest; menús P y N) | `pool/supervisados.py` | ídem |
 
 Los nombres heredados que confunden (D01 en la pista A no usa el VIX; D05 no es un VAR) están aclarados en el
 [GLOSARIO](../GLOSARIO.md#nombres-de-detectores-que-confunden). Qué features recibe cada detector:

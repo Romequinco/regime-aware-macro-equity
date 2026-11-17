@@ -6,6 +6,9 @@
 - **Sustituye en parte:** la instalación con `requirements.txt` de [ADR-004](ADR-004-unificacion.md) y los
   `requirements/ingesta-<tema>.txt` de [ADR-007](ADR-007-fase2-ingesta-y-docs.md) §2.1 (§2 de este ADR).
 - **Numeración:** ADR-006 sigue reservada a la decisión final del detector de régimen (notebook `21_decision_final`).
+- **Actualización (2026-11-17):** §3 corregida tras una auditoría de coherencia: la lista de comentarios con
+  numeración antigua en ficheros con huella no era exacta, y faltaban `src/regimenes/sinteticos/`,
+  `configs/sinteticos.yaml` y ADR-003. La decisión no cambia.
 
 ---
 
@@ -126,14 +129,29 @@ Estos textos citan nombres antiguos, pero están en ficheros que entran en una h
 Corregirlos invalidaría una caché o reescribiría un pre-registro.
 
 - **`src/regimenes/benchmark/ejecucion.py:208`:** «pip install -r requirements.txt». Por eso se conserva el alias.
-- **Comentarios con la numeración de ADR-004 en ficheros con huella** («notebook 23», «22_decision_final»…):
-  `evaluacion/metricas.py`, `detectores/__init__.py` y `detectores/pool/__init__.py`.
+- **Comentarios con la numeración de ADR-004 en ficheros con huella** (actualizado el 2026-11-17): el único caso en
+  el código del benchmark y del pool es `detectores/pool/__init__.py:5`, que llama «notebook 21» al aumento (hoy 20);
+  entra en la huella del pool (`detectores/pool/*.py`). `evaluacion/metricas.py` y `detectores/__init__.py` ya no
+  citan la numeración antigua.
+- **`src/regimenes/sinteticos/`** (actualizado el 2026-11-17): sus docstrings usan el esquema 00–23 («18» =
+  generadores, hoy 17; «19» = validación, hoy 18; «20» = laboratorio, hoy 19; «21» = aumento, hoy 20). Por ejemplo
+  `neuronales/difusion.py:70`, `neuronales/flow_matching.py:40`, `neuronales/_redes_flujo.py:19`,
+  `parametricos/garch_regimen.py:123`, `parametricos/var_regimen.py:54`, `persistencia.py:82`,
+  `aumento/__init__.py:1` y `laboratorio/__init__.py:1`. Casi todos entran en la huella del aumento
+  (`aumento.config.huella_generador` hashea `sinteticos/*.py`, la carpeta de familia del generador y `validacion/`),
+  así que corregirlos obligaría a reajustar todos los generadores por ancla. Los pocos que no entran (como
+  `aumento/__init__.py` o `laboratorio/__init__.py`) se dejan igual porque el subpaquete se devolvió idéntico a la
+  etiqueta (§2.4).
+- **`configs/sinteticos.yaml`:** sus comentarios usan el mismo esquema 00–23 (líneas 86, 175, 257, 409 y 462:
+  validación «notebook 19», laboratorio «20», aumento «21» y decisión final «el 22», hoy 21). Son el pre-registro
+  congelado del laboratorio y del aumento, y el fichero entra en sus huellas.
 - **`configs/bloques.yaml` y `features/bloques.py`:** citan `PendientesOscar.md` solo por su nombre, sin ruta.
 - **`configs/benchmark_spec.yaml` y `configs/bloques.yaml`:** sus comentarios citan `notebooks/NN_*.ipynb` sin la
   carpeta `fase1/` (la Fase 1 se movió a `notebooks/fase1/` después; los notebooks no están en ninguna huella).
-- **ADR-004, ADR-005 y ADR-007 a ADR-011:** usan la numeración de notebooks de su fecha. Equivalencias: notebook
-  «21» de ADR-009–011 = aumento (hoy 20); «17» = fusión online (hoy 16); «22»/«23» de ADR-004–005
-  = decisión final y pseudolive (hoy 21 y 22).
+- **ADR-003 (revisión del 2026-10-06, línea 5), ADR-004, ADR-005 y ADR-007 a ADR-011:** usan la numeración de
+  notebooks de su fecha. Equivalencias: notebook «21» de ADR-009–011 = aumento (hoy 20); «17» = fusión online
+  (hoy 16); «22»/«23» de ADR-003–005 y ADR-007 = decisión final y pseudolive (hoy 21 y 22). Excepción: la tabla de
+  notebooks de ADR-004 §3 se actualizó a la numeración vigente el 2026-11-17.
 
 ## 4. Consecuencias
 

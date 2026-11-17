@@ -15,6 +15,6 @@ mapa del codigo y pipeline 00-22 en docs/fase1/README.md):
 - ``regimenes.sinteticos``   generadores sinteticos con regimen conocido, su validacion, el laboratorio y el aumento.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = ["__version__"]
