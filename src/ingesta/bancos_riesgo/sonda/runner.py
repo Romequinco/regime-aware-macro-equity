@@ -40,7 +40,7 @@ def _dia_primero(fuente):
 class ConfigSonda:
     raiz: Path
     max_por_familia: int = 3
-    max_paginas: int = 40
+    max_paginas: int | None = 40
     max_filas: int = 3
     usar_cache: bool = True
     corte_utc: str = field(default_factory=_inicio_dia_utc)
@@ -50,7 +50,7 @@ class ConfigSonda:
     inventario: Path = INVENTARIO
 
     def __post_init__(self):
-        if min(self.max_por_familia, self.max_paginas, self.max_filas) < 1:
+        if min(self.max_por_familia, self.max_filas) < 1 or (self.max_paginas is not None and self.max_paginas < 1):
             raise ValueError('Los límites de la sonda deben ser positivos')
 
 
@@ -80,11 +80,15 @@ class Sonda:
                 'fragmentos': 0, 'segundos': 0, 'consulta_utc': datetime.now(timezone.utc).isoformat(),
                 'policy_version': POLICY_VERSION, 'zona_fuente': ZONES.get(spec['fuente']),
                 'titulo': spec['tipo'], 'version_id': None, 'sha256': None, 'retrieved_at': None,
-                'cache': False, 'formato': None}
+                'cache': False, 'formato': None,
+                'tipo_dato': spec.get('tipo_dato'), 'funcion': spec.get('funcion'),
+                'idioma': spec.get('idioma'), 'licencia': spec.get('licencia'),
+                'evidencia_version': ''}
 
     def _normalize(self, spec, original, extracted, started):
         record = self._base(spec, original.url)
-        record.update({k: v for k, v in extracted.items() if k not in ('texto', 'ejemplo_datos')})
+        record.update({k: v for k, v in extracted.items() if k not in
+                       ('texto', 'ejemplo_datos', 'paginas_texto', 'fragmentos_texto')})
         text = extracted.get('texto', '')
         raw = publication_clock(record.get('fecha_publicacion_raw'), text, spec['fuente'])
         normalized, precision, utc = parse_date(raw, dayfirst=_dia_primero(spec['fuente']))
@@ -102,15 +106,16 @@ class Sonda:
                       bytes=len(original.content), bytes_gzip=len(gzip.compress(original.content)),
                       palabras=len(re.findall(r'\b\w+\b', text)), segundos=time.monotonic() - started)
         if raw != record.get('fecha_publicacion_raw'):
-            record['evidencia_publicacion'] += ' + aviso For release at con EST/EDT'
+            record['evidencia_publicacion'] = (record.get('evidencia_publicacion') or '') + ' + aviso For release at con EST/EDT'
         if spec['apartado'] == 14:
             record.update(fecha_evento='2008-09-15', evidencia_evento='Corte ilustrativo explícito GFC; no fecha de aplicación')
         record['disponible_desde_utc'] = available_at(record)
         record['estado_historico'] = ('acreditado' if record['disponible_desde_utc'] else
                                      'pendiente_versión' if normalized else 'sin_fecha')
-        segments = chunks(text, original.sha256)
+        segments = chunks(text, original.sha256, pages=extracted.get('paginas_texto'))
         record['fragmentos'] = len(segments)
         document = dict(record, texto=text, fragmentos_texto=segments,
+                        paginas_texto=extracted.get('paginas_texto', []),
                         ejemplo_datos=extracted.get('ejemplo_datos'))
         return record, document
 
