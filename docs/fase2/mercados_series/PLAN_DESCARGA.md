@@ -139,7 +139,7 @@ El inventario marca los posibles duplicados con otros temas; la frontera se cier
 Yo preparo las instrucciones de cada agente, reviso los diff, corro los tests, hago el commit en local, actualizo este
 documento y me paro para que decidas D8–D10 con preguntas clicables. Unos 40 minutos.
 
-## Paso 3 · `03_seleccion_eda`: propuesta (pendiente de tu revisión)
+## Paso 3 · `03_seleccion_eda`: plan (E1–E7 aprobadas el 2026-11-19 tal como se proponen)
 
 **Qué hace.**
 1. Aplica a las tablas del paso 2 las decisiones D1–D9 y saca la **lista curada**: una entrada por serie y por ticker
@@ -205,7 +205,7 @@ Lo que dejaban los notebooks antiguos y no recoge el README (originales en la et
 |---|---|---|
 | 1 | Hecho (2026-11-17): `01_resumen_sonda` (21 KB); 9 notebooks borrados; enlaces del README y de `docs/fase2` al día; el test de salidas de notebooks cubre ya todos los del tema | este |
 | 2 | Hecho (2026-11-17): módulos `inventario` y `redundancia` (órdenes del mismo nombre), 10 tablas de metadatos en `results/.../tablas/`, notebook `02_inventario` (230 KB). Crítico: 8 hallazgos, corregidos en una ronda. Pendiente de tus decisiones D2 (grupos «a decidir»), D6, D8, D9 y D10 | este |
-| 3 | Pendiente | |
+| 3 | Hecho (2026-11-19): módulos `seleccion`, `eda` y `preprocesado` (órdenes del mismo nombre), `config/lista_curada.yaml`, `config/preprocesado.yaml` (borrador sin aplicar), 15 tablas y notebook `03_seleccion_eda` (0,84 MB, 11 figuras).<br>- Series: quedan 516, alias 105, fuera 570, proyecciones 243.<br>- Tickers: quedan 1.462 (26 con aviso de sospecha).<br>- Simulación: 1,07 M filas se retrasan y 0 se adelantan.<br>- 3b: 268 descargas.<br>Proceso: 3 constructores, 2 verificadores (16 hallazgos, corregidos en una ronda) y 2 agentes del notebook.<br>Pendiente de tus decisiones:<br>- Ken French (`pendiente_calendario`);<br>- fecha de creación de OFR FSI, Goyal-Welch y BIS (buscar fuera);<br>- Q1;<br>- canónicos dudosos;<br>- fronteras | este |
 | 3b | Pendiente | |
 | 4 | Pendiente | |
 | 5 | Pendiente | |

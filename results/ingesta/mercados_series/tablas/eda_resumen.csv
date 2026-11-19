@@ -1,0 +1,130 @@
+ambito,tipo,grupo,n_filas,n_eventos,n_afectadas,propuesta_paso4,descripcion
+series,cambio_unidad,(todas),15,15,10,reescalar vintages anteriores; revisar a mano; sin acción,cambio de escala entre vintages consecutivos (log10 del factor)
+series,cambio_unidad,fred_alfred,15,15,10,reescalar vintages anteriores; revisar a mano; sin acción,cambio de escala entre vintages consecutivos (log10 del factor)
+series,festivo,(todas),55,55,8,marcar,posible error de fecha de la fuente: cierre de mercado en festivo
+series,festivo,fred_alfred,55,55,8,marcar,posible error de fecha de la fuente: cierre de mercado en festivo
+series,fin_de_semana,(todas),2,2,2,marcar,posible error de fecha de la fuente: cierre de mercado en fin de semana
+series,fin_de_semana,fred_alfred,2,2,2,marcar,posible error de fecha de la fuente: cierre de mercado en fin de semana
+series,hueco_largo,(todas),709,709,91,marcar; sin acción,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,bce,113,113,4,marcar; sin acción,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,bis,3,3,1,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,boe_curvas,63,63,4,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,boj,9,9,1,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,calculo_propio,45,45,3,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,fred_alfred,110,110,17,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,ken_french,26,26,16,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,mof_jgb,307,307,15,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,ofr_fsi,5,5,5,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,ust_curva,1,1,1,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,worldbank,3,3,3,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,hueco_largo,yfinance,24,24,21,marcar,periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)
+series,pct_parece_tanto_por_uno,(todas),1,1,1,revisar a mano,"unidad en %, pero todos los valores en [-1, 1]"
+series,pct_parece_tanto_por_uno,worldbank,1,1,1,revisar a mano,"unidad en %, pero todos los valores en [-1, 1]"
+series,racha_plana,(todas),74,74,3,marcar; sin acción,posible dato congelado de la fuente: racha plana de 120 o más observaciones diarias seguidas con el mismo dato
+series,racha_plana,fred_alfred,4,4,1,marcar,posible dato congelado de la fuente: racha plana de 120 o más observaciones diarias seguidas con el mismo dato
+series,racha_plana,ken_french,70,70,2,sin acción,posible dato congelado de la fuente: racha plana de 120 o más observaciones diarias seguidas con el mismo dato
+series,ruptura_nivel,(todas),446,446,199,revisar a mano; sin acción,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,bce,42,42,18,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,bce_curvas,6,6,3,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,bis,16,16,7,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,boc,1,1,1,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,boc_curva,6,6,5,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,boe_curvas,18,18,9,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,boj,13,13,1,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,calculo_propio,6,6,3,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,eurostat,1,1,1,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,fred_alfred,187,187,73,revisar a mano; sin acción,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,goyal_welch,11,11,8,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,mof_jgb,42,42,11,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,oecd,23,23,13,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,ofr_fsi,2,2,2,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,philly_rtdsm,1,1,1,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,rba,1,1,1,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,shiller,5,5,5,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,ust_curva,20,20,8,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,worldbank,19,19,19,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,ruptura_nivel,yfinance,26,26,10,revisar a mano,salto de la mediana móvil (antes frente a después)
+series,salto,(todas),5162,5162,519,revisar a mano; sin acción,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,bce,692,692,36,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,bce_curvas,86,86,17,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,bis,61,61,2,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,boc_curva,4,4,2,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,boe_curvas,96,96,12,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,boj,166,166,1,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,bundesbank,1,1,1,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,calculo_propio,797,797,9,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,eurostat,34,34,15,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,fred_alfred,1435,1435,135,revisar a mano; sin acción,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,goyal_welch,46,46,9,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,imf_weo,7,7,7,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,ken_french,161,161,13,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,mof_jgb,653,653,15,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,oecd,39,39,16,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,ofr_fsi,104,104,5,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,shiller,1,1,1,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,ust_curva,126,126,9,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,worldbank,459,459,188,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+series,salto,yfinance,194,194,26,revisar a mano,cambio a más de 8 desviaciones robustas de los cambios de la serie
+precios,apertura_igual_cierre,(todas),1078,343652,1078,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,accion,1010,307672,1010,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,divisa,4,984,4,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,etf,46,4559,46,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,fondo,2,12321,2,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,futuro,3,883,3,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,indice,10,16364,10,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,otro,2,361,2,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,apertura_igual_cierre,volatilidad,1,508,1,nulo + aviso,open == close y high == low: relleno de Yahoo; no vale como apertura de t+1
+precios,cierre_repetido,(todas),1444,548493,1444,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,accion,1341,537531,1341,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,cripto,1,6,1,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,divisa,4,818,4,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,etf,76,5055,76,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,fondo,2,4077,2,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,futuro,5,339,5,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,indice,13,612,13,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,otro,1,4,1,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,cierre_repetido,volatilidad,1,51,1,marcar,calidad.incidencias_precios: cierre igual al de la sesión previa
+precios,contrasplit,(todas),260,260,173,marcar,split < 1 (contrasplit)
+precios,contrasplit,accion,248,248,166,marcar,split < 1 (contrasplit)
+precios,contrasplit,etf,12,12,7,marcar,split < 1 (contrasplit)
+precios,dividendo_alto,(todas),183,183,78,revisar a mano,calidad.incidencias_precios: dividendo > 20 % del cierre previo
+precios,dividendo_alto,accion,183,183,78,revisar a mano,calidad.incidencias_precios: dividendo > 20 % del cierre previo
+precios,salto_sin_split,(todas),2193,2193,300,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,accion,2133,2133,292,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,cripto,2,2,2,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,etf,1,1,1,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,fondo,41,41,1,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,futuro,2,2,1,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,indice,1,1,1,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,otro,1,1,1,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,salto_sin_split,volatilidad,12,12,1,revisar a mano,"|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente"
+precios,serie_sospechosa,(todas),27,126854,27,marcar,"historial roto: muchos saltos sin split, cierres repetidos o aperturas de relleno"
+precios,serie_sospechosa,accion,18,120375,18,marcar,"historial roto: muchos saltos sin split, cierres repetidos o aperturas de relleno"
+precios,serie_sospechosa,etf,6,1828,6,marcar,"historial roto: muchos saltos sin split, cierres repetidos o aperturas de relleno"
+precios,serie_sospechosa,fondo,1,4198,1,marcar,"historial roto: muchos saltos sin split, cierres repetidos o aperturas de relleno"
+precios,serie_sospechosa,otro,2,453,2,marcar,"historial roto: muchos saltos sin split, cierres repetidos o aperturas de relleno"
+precios,sesion_faltante,(todas),605,5762,605,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,accion,578,3457,578,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,cripto,1,2,1,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,divisa,4,371,4,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,etf,2,4,2,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,fondo,1,114,1,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,futuro,5,866,5,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,indice,12,410,12,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_faltante,otro,2,538,2,marcar,día hábil del calendario del mercado sin vela
+precios,sesion_fuera_calendario,(todas),339,2879,339,revisar a mano,vela en un día que el calendario del mercado da cerrado (con movimiento o volumen)
+precios,sesion_fuera_calendario,accion,325,2811,325,revisar a mano,vela en un día que el calendario del mercado da cerrado (con movimiento o volumen)
+precios,sesion_fuera_calendario,futuro,5,13,5,revisar a mano,vela en un día que el calendario del mercado da cerrado (con movimiento o volumen)
+precios,sesion_fuera_calendario,indice,8,53,8,revisar a mano,vela en un día que el calendario del mercado da cerrado (con movimiento o volumen)
+precios,sesion_fuera_calendario,volatilidad,1,2,1,revisar a mano,vela en un día que el calendario del mercado da cerrado (con movimiento o volumen)
+precios,sesion_fuera_calendario_relleno,(todas),538,29534,538,nulo + aviso,vela de relleno en día cerrado: repite el cierre y no tiene volumen
+precios,sesion_fuera_calendario_relleno,accion,531,29519,531,nulo + aviso,vela de relleno en día cerrado: repite el cierre y no tiene volumen
+precios,sesion_fuera_calendario_relleno,etf,2,2,2,nulo + aviso,vela de relleno en día cerrado: repite el cierre y no tiene volumen
+precios,sesion_fuera_calendario_relleno,indice,5,13,5,nulo + aviso,vela de relleno en día cerrado: repite el cierre y no tiene volumen
+precios,split_fraccionario,(todas),17,17,17,marcar,"split > 1 no entero que no explica el precio: |log(close_t·split/close_t-1)| > 0,2"
+precios,split_fraccionario,accion,17,17,17,marcar,"split > 1 no entero que no explica el precio: |log(close_t·split/close_t-1)| > 0,2"
+precios,volumen_cero,(todas),900,182332,900,marcar,calidad.incidencias_precios: volumen 0 en instrumento con volumen
+precios,volumen_cero,accion,866,179820,866,marcar,calidad.incidencias_precios: volumen 0 en instrumento con volumen
+precios,volumen_cero,etf,27,1562,27,marcar,calidad.incidencias_precios: volumen 0 en instrumento con volumen
+precios,volumen_cero,futuro,5,525,5,marcar,calidad.incidencias_precios: volumen 0 en instrumento con volumen
+precios,volumen_cero,otro,2,425,2,marcar,calidad.incidencias_precios: volumen 0 en instrumento con volumen

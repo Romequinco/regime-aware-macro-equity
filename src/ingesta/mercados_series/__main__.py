@@ -34,6 +34,8 @@
 - ``redundancia [--destino DIR] [--max-tickers N] [--solo series|precios]`` (paso 2): delega en
   ``redundancia.main`` (pares de series y de ETF por correlación, sensibilidad del umbral, conceptos, Banco
   Mundial/WEO y mínimos de tickers en ``tablas/redundancia_*.csv`` y ``tickers_sensibilidad.csv``).
+- ``eda``, ``seleccion`` y ``preprocesado`` (paso 3): delegan en ``<modulo>.main`` con el resto de argumentos.
+  Orden de regeneración: ``eda`` → ``seleccion`` (lee ``eda_precios.csv``) → ``preprocesado`` (lee la lista curada).
 - ``excepciones-alfred [--ids ...] [--sin-red]``: contrasta las reglas de publicación de las series de
   FRED con la primera vintage de ALFRED (``fuentes.fred.medir_excepciones``) y escribe
   ``config/excepciones_publicacion.csv`` y ``tablas/publicacion_alfred_medida.csv`` (solo fechas).
@@ -223,6 +225,18 @@ def _redundancia(a: argparse.Namespace) -> int:
     return 0
 
 
+def _paso3(a: argparse.Namespace) -> int:
+    """Delega en ``<modulo>.main`` con el resto de argumentos (pasos 3: seleccion, eda, preprocesado)."""
+    import importlib
+
+    modulo = importlib.import_module(f"ingesta.mercados_series.{a.orden}")
+    salida = modulo.main(list(a.resto))
+    if isinstance(salida, dict):
+        for nombre, ruta in salida.items():
+            print(f"{nombre} -> {ruta}")
+    return 0
+
+
 def _excepciones(a: argparse.Namespace) -> int:
     import pandas as pd
 
@@ -341,6 +355,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     rd.add_argument("--max-tickers", type=int, default=None, help="solo los N primeros tickers por proveedor (prueba)")
     rd.add_argument("--solo", choices=("series", "precios"), default=None)
     rd.set_defaults(func=_redundancia)
+    for orden, ayuda in (
+        ("eda", "EDA de series y precios: detecta incidencias y propone, no corrige (paso 3)"),
+        ("seleccion", "lista curada (queda / alias / fuera / proyecciones) y lista de descargas del paso 3b (paso 3)"),
+        ("preprocesado", "valida config/preprocesado.yaml y simula su efecto sin escribir ninguna base (paso 3)"),
+    ):
+        p3 = sub.add_parser(orden, help=ayuda, add_help=False)
+        p3.add_argument("resto", nargs=argparse.REMAINDER, help=f"argumentos de python -m ingesta.mercados_series.{orden}")
+        p3.set_defaults(func=_paso3)
     x = sub.add_parser("excepciones-alfred", help="fechas de publicación medidas en ALFRED (excepciones)")
     x.add_argument("--ids", nargs="*", help="ids del catálogo (por defecto fuentes.fred.ids_excepciones())")
     x.add_argument("--sin-red", action="store_true", help="solo lo descargado hoy (caché)")
@@ -360,9 +382,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     dp.set_defaults(func=_descargar_precios)
     a, resto = p.parse_known_args(argv)
     if resto:
-        if a.func is not _descargar_fuente:
+        if a.func is _paso3:
+            a.resto = [*a.resto, *resto]
+        elif a.func is not _descargar_fuente:
             p.error(f"argumentos no reconocidos: {' '.join(resto)}")
-        a.argumentos = [*a.argumentos, *resto]
+        else:
+            a.argumentos = [*a.argumentos, *resto]
     return a.func(a)
 
 
