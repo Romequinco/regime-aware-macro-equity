@@ -112,6 +112,18 @@ deslistado). ``aviso = 'serie sospechosa'`` (``serie_sospechosa`` de ``eda_preci
 regla: más de 20 saltos sin split o más de un 40 % de cierres repetidos) se queda con aviso y fila en
 el 3b. Las acciones llevan ``frontera = 'tema3'`` (universo de empresas común con el Tema 3).
 
+**Decisiones de cierre del paso 3** (``PLAN_DESCARGA.md``):
+
+- **F3 · Q1 = solo Yahoo** (``aplicar_f3``): en ``descargas_3b.csv`` la columna ``estado`` dice
+  ``pendiente`` o ``limitacion_declarada``; las filas que dependían de Q1 (deslistados, sospechosas,
+  supervivencia, aperturas) y los instrumentos que Yahoo no sirve (``SIN_YAHOO``) pasan a
+  ``limitacion_declarada`` con ``prioridad = 'no se descarga'``. Las sospechosas siguen «queda» con
+  ``aviso = 'serie sospechosa; limitación declarada (F3)'``.
+- **F4 · empates** (``UNICAS_F4``, ``DUDOSOS_RESUELTOS_F4``): ``ecb:DFR``, ``ecb:MRO``,
+  ``bis:WS_CBPOL.M.XM`` y ``ff:F3M.Mkt-RF`` no se agrupan con nadie (únicas); el grupo de
+  ``shiller:P`` (``datahub:SP500_MENSUAL`` es copia) deja de ser dudoso; el resto de dudosos se
+  acepta con E1 y su ``motivo_dudoso`` empieza por «aceptado E1 (F4)».
+
 **Salidas**: ``config/lista_curada.yaml`` (entrada del paso 4; una línea por entrada, sin campos vacíos
 ni ``false``) y, en ``tablas/``,
 ``seleccion_series.csv``, ``seleccion_precios.csv``, ``seleccion_resumen.csv`` (decisión × fuente y
@@ -171,10 +183,23 @@ COLUMNAS_PRECIOS = ["id", "proveedor", "clase", "bucket", "en_universo", "desde"
                     "desde_2016", "volumen_aplica", "con_volumen", "truncado", "deslistado"]
 # Notas fijas de series concretas (se copian a la lista curada)
 NOTAS_SERIES = {"deriv:PIB_REAL_USA_VINTAGES": "historia_previa 1965–1991: vintages exactos del RTDSM (PNB)"}
+# F4 (decisión del usuario, cierre del paso 3): series que no se agrupan con nadie (quedan como únicas):
+# DFR y MRO son tipos distintos (facilidad de depósito y operaciones principales); el tipo oficial del BIS
+# para la zona euro es uno u otro según el periodo (en la duda, única); Fama-French mensual y diario se
+# quedan los dos (el mensual es el oficial de su frecuencia).
+UNICAS_F4 = ("ecb:DFR", "ecb:MRO", "bis:WS_CBPOL.M.XM", "ff:F3M.Mkt-RF")
+# F4: empates resueltos a mano (sin canonico_dudoso en su grupo): datahub:SP500_MENSUAL es copia de Shiller
+DUDOSOS_RESUELTOS_F4 = ("shiller:P",)
+NOTA_DUDOSO_F4 = "aceptado E1 (F4)"
+# F3 (decisión del usuario): Q1 = solo Yahoo; no se paga ninguna fuente
+MOTIVO_F3 = "solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda"
+AVISO_SOSPECHOSA = "serie sospechosa; limitación declarada (F3)"
+# Instrumentos del universo que Yahoo no sirve (README · Deudas pendientes; notas de universo.yaml)
+SIN_YAHOO = {"yf:^V2TX": "VSTOXX no está en Yahoo", "yf:AIGA.L": "Yahoo solo devuelve una vela (ticker sin historia)"}
 # Serie de precios sospechosa (ticker reciclado o datos basura; misma regla que eda.py de B2)
 SOSPECHOSA_SALTOS = 20                   # más de N saltos sin split
 SOSPECHOSA_PCT_REPETIDOS = 40.0          # más de este % de cierres repetidos
-COLUMNAS_3B = ["id", "tipo", "fuente", "prioridad", "motivo", "clase", "bucket", "detalle", "depende_de"]
+COLUMNAS_3B = ["id", "tipo", "fuente", "estado", "prioridad", "motivo", "clase", "bucket", "detalle", "depende_de"]
 
 
 def _vacio(v: Any) -> bool:
@@ -659,8 +684,8 @@ def seleccionar_series(inv: pd.DataFrame, fia: pd.DataFrame, pares: pd.DataFrame
     e3, sin_ea = alias_e3(libres, meta)
     for s, (pref, mot) in e3.items():
         decide(s, "alias", "E3_version_eurostat", mot, pref)
-    # 7: D8 en estrella con E2
-    libres = [s for s in meta.index if s not in decision]
+    # 7: D8 en estrella con E2 (las de UNICAS_F4 no se agrupan con nadie)
+    libres = [s for s in meta.index if s not in decision and s not in UNICAS_F4]
     aristas = aristas_admisibles(pares, libres)
     alias, componentes = alias_estrella(aristas, meta)
     directos = {}
@@ -675,7 +700,7 @@ def seleccionar_series(inv: pd.DataFrame, fia: pd.DataFrame, pares: pd.DataFrame
         base, pe = directos[(s, c)]
         decide(s, "alias", "D8_estrella", f"D8: |Pearson| {abs(pe):.3f} ({base}) con {c}, regla en estrella", c)
     # 8: grupos de concepto
-    libres = [s for s in meta.index if s not in decision]
+    libres = [s for s in meta.index if s not in decision and s not in UNICAS_F4]
     al_c, grupos_c = alias_conceptos(conc, meta, libres)
     for miembros, c, es_dudoso, mot_d, _ in grupos_c:
         for s in miembros:
@@ -684,10 +709,11 @@ def seleccionar_series(inv: pd.DataFrame, fia: pd.DataFrame, pares: pd.DataFrame
                 dudoso.setdefault(s, mot_d)
     for s, (c, mot) in al_c.items():
         decide(s, "alias", "concepto_confirmado", mot, c)
-    # 9: el resto se queda
+    # 9: el resto se queda (destino de un alias del catálogo, D9 o E3 sin grupo propio: canónico)
+    destinos = set(alias_de.values())
     for s in meta.index:
         if s not in decision:
-            if canonico.get(s) == s:
+            if canonico.get(s) == s or (s not in canonico and s in destinos):
                 decide(s, "queda", "canonico", "queda: canónico E1 de su grupo")
             elif s in canonico:
                 decide(s, "queda", "validacion", f"queda: mismo grupo que {canonico[s]} sin llegar a alias")
@@ -711,6 +737,11 @@ def seleccionar_series(inv: pd.DataFrame, fia: pd.DataFrame, pares: pd.DataFrame
             motivo[s] = f"{motivo[s]} ({txt})"
     for s, x in raiz.items():
         alias_de[s] = x
+    # F4: empates resueltos a mano; el resto de dudosos, aceptados con la regla E1
+    for s in [s for s in dudoso if canonico.get(s) in DUDOSOS_RESUELTOS_F4 or s in DUDOSOS_RESUELTOS_F4]:
+        dudoso.pop(s)
+    for s in dudoso:
+        dudoso[s] = f"{NOTA_DUDOSO_F4}: {dudoso[s]}"
     # el canónico dudoso se ve también en los alias que apuntan a él
     for s, x in alias_de.items():
         if decision[s] == "alias" and x in dudoso:
@@ -847,9 +878,9 @@ def seleccionar_precios(pre: pd.DataFrame, etf: pd.DataFrame, clases: Mapping[st
         if a and d == "queda":
             mot += (f"; alias informativo de {a[0]} (UCITS: invertible para un minorista de la UE; los dos se quedan)"
                     if a[1] == "ucits" else f"; alias ETF informativo de {a[0]} ({a[1]})")
-        aviso = "serie sospechosa" if t in sospechosas else None
+        aviso = AVISO_SOSPECHOSA if t in sospechosas else None
         if aviso and d == "queda":
-            mot += "; serie sospechosa (ticker reciclado o datos basura: ver Q1, CRSP/PERMNO)"
+            mot += f"; serie sospechosa (ticker reciclado o datos basura): {MOTIVO_F3}"
         frontera = r["posible_frontera"] if not _vacio(r.get("posible_frontera")) else None
         filas.append({
             "id": t, "proveedor": r["proveedor"], "clase": clase, "bucket": r["bucket"] if not _vacio(r.get("bucket"))
@@ -895,7 +926,6 @@ DEUDAS_README = (
      "supervivencia: 459 de 759 salidos del índice sin precio en Yahoo (la PIT cubre el 66 % de cada mes)", Q1),
     ("supervivencia:sp500_quiebras_q", "precios", "wrds_crsp", "baja",
      "S&P 500: 28 tramos con ticker de quiebra (sufijo Q/QQ); el mapeo exige CIK/PERMNO", Q1),
-    ("yf:^V2TX", "precios", "otra", "media", "VSTOXX no está en Yahoo: buscar otra fuente", ""),
     ("constituyentes:nikkei225_ibovespa", "constituyentes", "otra", "baja",
      "constituyentes de Nikkei 225 e Ibovespa sin fuente", ""),
     ("baseline:6040_europeo", "precios", "yahoo", "media",
@@ -926,8 +956,23 @@ DEUDAS_README = (
 
 def _fila3b(id_: str, tipo: str, fuente: str, prioridad: str, motivo: str, clase: str = "", bucket: str = "",
             detalle: str = "", depende_de: str = "") -> dict[str, str]:
-    return {"id": id_, "tipo": tipo, "fuente": fuente, "prioridad": prioridad, "motivo": motivo, "clase": clase,
-            "bucket": bucket, "detalle": detalle, "depende_de": depende_de}
+    return {"id": id_, "tipo": tipo, "fuente": fuente, "estado": "pendiente", "prioridad": prioridad,
+            "motivo": motivo, "clase": clase, "bucket": bucket, "detalle": detalle, "depende_de": depende_de}
+
+
+def aplicar_f3(d3b: pd.DataFrame) -> pd.DataFrame:
+    """F3 (Q1 = solo Yahoo): las filas que dependían de Q1 (deslistados, sospechosas, supervivencia, aperturas)
+    y los instrumentos que Yahoo no sirve (``SIN_YAHOO``) dejan de ser descargas pendientes:
+    ``estado = 'limitacion_declarada'``, ``prioridad = 'no se descarga'`` y el motivo de F3 delante.
+    El resto queda ``estado = 'pendiente'`` con su prioridad (los UCITS de bolsas europeas se intentan en Yahoo)."""
+    d = d3b.copy()
+    limit = d["depende_de"].astype(str).str.contains("Q1") | d["id"].isin(list(SIN_YAHOO))
+    d.loc[limit, "estado"] = "limitacion_declarada"
+    d.loc[limit, "prioridad"] = "no se descarga"
+    d.loc[limit, "motivo"] = MOTIVO_F3 + " · " + d.loc[limit, "motivo"].astype(str)
+    sin = d["id"].isin(list(SIN_YAHOO))
+    d.loc[sin, "detalle"] = d.loc[sin, "id"].map(SIN_YAHOO)
+    return d
 
 
 def tabla_descargas_3b(series: pd.DataFrame, precios: pd.DataFrame, universo: pd.DataFrame, pre: pd.DataFrame,
@@ -984,15 +1029,15 @@ def tabla_descargas_3b(series: pd.DataFrame, precios: pd.DataFrame, universo: pd
         filas.append(_fila3b(r["id"], "deslistado", str(r["proveedor"]), "media",
                              f"deslistado (última sesión {r['hasta']}): historia completa y salida", str(r["clase"]),
                              depende_de=Q1))
-    for _, r in precios[precios["aviso"] == "serie sospechosa"].iterrows():
+    for _, r in precios[precios["aviso"] == AVISO_SOSPECHOSA].iterrows():
         filas.append(_fila3b(r["id"], "serie_sospechosa", str(r["proveedor"]), "media",
                              "serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres "
                              "repetidos): rehacer con identificador permanente", str(r["clase"]),
                              depende_de="Q1 (CRSP/PERMNO)"))
     for id_, tipo, fuente, prio, mot, dep in DEUDAS_README:
         filas.append(_fila3b(id_, tipo, fuente, prio, mot, detalle="README · Deudas pendientes", depende_de=dep))
-    out = pd.DataFrame(filas, columns=COLUMNAS_3B)
-    orden = {"alta": 0, "media": 1, "baja": 2}
+    out = aplicar_f3(pd.DataFrame(filas, columns=COLUMNAS_3B))
+    orden = {"alta": 0, "media": 1, "baja": 2, "no se descarga": 3}
     return (out.assign(_o=out["prioridad"].map(orden)).sort_values(["_o", "tipo", "id"], kind="mergesort")
             .drop(columns="_o").reset_index(drop=True))
 

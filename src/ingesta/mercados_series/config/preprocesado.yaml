@@ -238,12 +238,20 @@ reglas_conservadoras:
         fuente: 'lags.yaml (BIS_WS_CREDIT_GAP: publicación trimestral del BIS con 3-6 meses de retraso); ficha bis
           (retraso observado mínimo 196 días)'
         motivo: 'retraso máximo documentado (6 meses) + 7 días'
+        notas:
+          - 'F2: retraso medido de unos 5,5 meses tras el fin del trimestre (la publicación del 2026-09-14 trae 2026-Q1);
+            6M7D lo cubre (2026-Q1 visible el 2026-10-07; test). Confianza media: una sola publicación comprobada'
+          - 'Publicado desde 2016-09-18 (https://www.bis.org/publ/qtrpdf/r_qt1609c.htm): reconstruidas.externas'
       BIS_WS_DSR:
         actual: {lag: "6M", fin_periodo: trimestre}
         conservadora: {lag: "6M7D", fin_periodo: trimestre}
         fuente: 'lags.yaml (BIS_WS_DSR: se publica con el crédito total, 3-6 meses); ficha bis (retraso observado mínimo
           196 días)'
         motivo: 'retraso máximo documentado (6 meses) + 7 días'
+        notas:
+          - 'F2: retraso medido de unos 5,5 meses tras el fin del trimestre (la publicación del 2026-09-14 trae 2026-Q1);
+            6M7D lo cubre (2026-Q1 visible el 2026-10-07; test). Confianza media: una sola publicación comprobada'
+          - 'Publicado desde 2015-09-13 (https://www.bis.org/press/p150913.htm): reconstruidas.externas'
       BIS_WS_EER:
         actual: {lag: "1M", fin_periodo: mes}
         conservadora: {lag: "1M7D", fin_periodo: mes}
@@ -257,36 +265,47 @@ reglas_conservadoras:
     notas:
       - 'Solo se mueven las filas fechadas por la regla: las de ediciones archivadas posteriores ya llevan su fecha real,
         más tardía, y max(actual, regla) no las cambia'
-      - 'OFR FSI y Goyal-Welch son reconstrucciones hacia atrás: la regla de retraso no lo arregla; van en
-        reconstruidas.pendiente_calendario (falta su fecha de creación)'
+      - 'Ken French, OFR FSI y Goyal-Welch se reconstruyen hacia atrás: además de la regla, publicado_desde en
+        reconstruidas.externas (F1 y F2, fechas comprobadas en la web)'
     reglas:
       FF_MENSUAL:
         actual: {lag: "45D", fin_periodo: mes}
-        pendiente_calendario: true
-        falta: 'cadencia histórica de actualización de la biblioteca de Ken French entre 2000 y la primera edición
-          archivada (2026-07): fechas de las ediciones antiguas (Wayback Machine de
-          mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html, que respondió 429 en el bloque 3)'
-        alternativas:
-          a_anual:
-            descripcion: 'cadencia anual antes de la primera edición archivada: fin del año de referencia + 12 meses + 7
-              días (el dato de un mes de t se ve a primeros de enero de t+2)'
-            regla: {lag: "12M7D", fin_periodo: anio}
-            hasta_vintage: '2026-07'
-          b_actual_con_aviso:
-            descripcion: 'la regla actual (fin de mes + 45 días) con aviso de fecha no medible y prueba de robustez (D2)'
-            regla: {lag: "45D", fin_periodo: mes}
-        fuente: 'lags.yaml (FF_MENSUAL: fichero mensual con los datos hasta el fin del mes anterior); ficha ken_french
-          (una sola edición medida, a 25 días; regla - edición = 19 días); fiabilidad_c.csv (n = 1, +19 días); README
-          (deudas: antes de las ediciones archivadas la biblioteca se actualizaba con menos frecuencia)'
-        motivo: 'n = 1 no basta y el README dice que antes se actualizaba con menos frecuencia que cada mes: una regla
-          mensual (como 2M7D) puede adelantar meses entre 2000 y 2015. Decide el usuario entre a y b'
+        conservadora:
+          segmentos:
+            - hasta: '2005-08-31'
+              regla: {lag: "12M7D", fin_periodo: anio}
+            - desde: '2005-09-01'
+              regla: {lag: "2M7D", fin_periodo: mes}
+        fuente: 'F1, verificado en la Wayback Machine (2026-11-19):
+          https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+          y las capturas posteriores (la página decía «updated at least once a year» y no hay zips archivados antes de
+          2005); archivo anual de factores desde 2005:
+          https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors_archive.html; ficha
+          ken_french y fiabilidad_c.csv (n = 1, +19 días)'
+        motivo: 'por periodo de referencia: antes de 2005-09, cadencia anual (fin del año + 12 meses + 7 días: el dato de
+          un mes de t se ve a primeros de enero de t+2); desde 2005-09, mensual, medida a 17-30 días del fin de mes y a
+          veces más de 45 (en 2006 septiembre aún no estaba el 17 de noviembre; en 2025, 42 días): 2M7D cubre ese máximo'
+        notas:
+          - 'French reconstruye TODA la historia en cada actualización (revisiones): los valores son los de la edición
+            descargada, no los de su fecha (archivo anual desde 2005 en f-f_factors_archive.html)'
+          - 'publicado_desde por fichero en reconstruidas.externas (F3M 2001-12-18, F3D 2002-06-04, F5M 2014-12-19, F5D
+            2015-06-01)'
       GW_ANUAL:
         actual: {lag: "7M1D", fin_periodo: anio}
-        conservadora: {lag: "8M", fin_periodo: anio}
-        fuente: 'lags.yaml (GW_ANUAL: hoja actualizada una vez al año; 2025 completo ya estaba el 2026-07-20); ficha
-          goyal_welch (edición del 2026-08-18, xlsx modificado)'
-        motivo: 'edición anual de fecha variable: la edición documentada más tardía (18 de agosto) + 7 días, redondeado al
-          fin de agosto de t+1'
+        conservadora:
+          lag: "13M"
+          fin_periodo: anio
+          tramos:
+            - {desde: '2022-01-01', hasta: '2022-12-31', lag: "15M15D", verificado: true,
+               fuente: 'Wayback Machine (2026-11-19): la web pasa de «hasta 2021» a «hasta 2023» entre 2023-03-25 y
+                 2024-04-15; los datos de 2022 nunca salieron sueltos: visibles el 2024-04-15'}
+        fuente: 'F2, verificado en la Wayback Machine (2026-11-19):
+          https://web.archive.org/web/20040413082023/http://www.bus.emory.edu:80/AGoyal/ y capturas posteriores (datos
+          hasta 2009 guardados el 2010-11-10; los de 2011 enlazados entre febrero y diciembre de 2012); lags.yaml y
+          ficha goyal_welch'
+        motivo: 'la edición anual sale entre abril y noviembre de t+1 y a veces más tarde: 13 fines de mes tras el fin
+          del año (31 de enero de t+2). El año 2022, con fecha fija (2024-04-15). Vale para las mensuales y trimestrales
+          del año t, que salen en la misma edición anual (fin_periodo: anio)'
       SHILLER_FICHERO:
         actual: {lag: "1M1D", fin_periodo: mes}
         conservadora: {lag: "2M1D", fin_periodo: mes}
@@ -304,7 +323,10 @@ reglas_conservadoras:
         conservadora: {lag: "7D", fin_periodo: fecha, habiles: us_federal}
         fuente: 'lags.yaml (OFR_FSI: unos 2 días hábiles de retraso; el lunes 2026-07-20 el último dato era el jueves
           anterior); ficha ofr_fsi (edición a 4 días, fichero diario)'
-        motivo: 'cadencia diaria con 2 hábiles de retraso: una semana y el primer hábil us_federal cubren dos festivos'
+        motivo: 'cadencia diaria con 2 hábiles de retraso: una semana y el primer hábil us_federal cubren dos festivos
+          (comprobado en un test: siempre >= el segundo hábil us_federal tras el dato)'
+        notas:
+          - 'Publicado desde 2017-10-25 (reconstruidas.externas): las filas anteriores no existían'
       GH_US10Y_MONTHLY:
         actual: {lag: "2M1D", fin_periodo: mes}
         conservadora: {lag: "3M1D", fin_periodo: mes}
@@ -734,8 +756,9 @@ h15_diario:
 # Un índice creado en publicado_desde no existía antes: sus filas anteriores, aunque la regla las dé por visibles,
 # pasan a publicado_desde (catalogo.anotar_reconstruidas solo anota NOTA_RECONSTRUIDA; aquí se aplica a la fecha).
 reconstruidas:
-  descripcion: 'fecha curada = max(curada, publicado_desde) en las filas publicadas antes de publicado_desde'
-  fuente: 'config/catalogo_series.yaml (publicado_desde, primera vintage de ALFRED; catalogo.anotar_reconstruidas y
+  descripcion: 'fecha curada = max(curada, publicado_desde) en las filas publicadas antes de publicado_desde: antes de
+    esa fecha no se ve nada'
+  fuente: 'series: config/catalogo_series.yaml (publicado_desde, primera vintage de ALFRED; catalogo.anotar_reconstruidas y
     NOTA_RECONSTRUIDA); un test comprueba que coincide con el catálogo'
   series:
     fred:ANFCI: '2011-05-25'
@@ -746,25 +769,49 @@ reconstruidas:
     fred:SAHMCURRENT: '2019-09-06'
     fred:SAHMREALTIME: '2019-09-06'
     fred:STLFSI4: '2022-11-10'
-  pendiente_calendario:   # reconstrucciones sin fecha de creación en el repo: decide el usuario si se busca fuera
+  externas:   # F1 y F2: fechas de creación comprobadas en la web (Wayback Machine y páginas oficiales, 2026-11-19)
     ofr:FSI*:
-      falta: 'fecha de la primera publicación del OFR Financial Stress Index (los valores desde 2000 son una
-        reconstrucción)'
-      web: 'https://www.financialresearch.gov/financial-stress-index/ (y la nota metodológica de la OFR)'
-      motivo: 'publicado_desde para ofr:FSI y sus componentes'
+      publicado_desde: '2017-10-25'
+      fuente: 'https://www.financialresearch.gov/working-papers/2017/10/25/the-ofr-financial-stability-index/ (y la
+        entrada del director del mismo día)'
     gw:*:
-      falta: 'fecha de la primera publicación de la base de predictores de Goyal y Welch (y de cada predictor añadido
-        después)'
-      web: 'https://sites.google.com/view/agoyal145 (página de Amit Goyal, datos de Welch y Goyal 2008, RFS)'
-      motivo: 'publicado_desde de la hoja de predictores'
+      publicado_desde: '2004-04-13'
+      fuente: 'https://web.archive.org/web/20040413082023/http://www.bus.emory.edu:80/AGoyal/ (primer enlace a los datos
+        en la web de Emory)'
     bis:WS_CREDIT_GAP.*:
-      falta: 'fecha de la primera publicación de las brechas de crédito/PIB del BIS'
-      web: 'https://data.bis.org/topics/CREDIT_GAPS (y la documentación de las estadísticas de crédito total del BIS)'
-      motivo: 'publicado_desde de las brechas de crédito'
+      publicado_desde: '2016-09-18'
+      fuente: 'https://www.bis.org/publ/qtrpdf/r_qt1609c.htm'
     bis:WS_DSR.*:
-      falta: 'fecha de la primera publicación de los ratios de servicio de la deuda del BIS'
-      web: 'https://data.bis.org/topics/DSR'
-      motivo: 'publicado_desde de los DSR'
+      publicado_desde: '2015-09-13'
+      fuente: 'https://www.bis.org/press/p150913.htm y https://www.bis.org/publ/qtrpdf/r_qt1509h.htm'
+    ff:F3M.*:
+      publicado_desde: '2001-12-18'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html (primera captura de la biblioteca: tres factores mensuales)'
+    ff:F3D.*:
+      publicado_desde: '2002-06-04'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html y capturas posteriores (tres factores diarios desde 2002-06-04)'
+    ff:F5M.*:
+      publicado_desde: '2014-12-19'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html y capturas posteriores (cinco factores mensuales desde 2014-12-19)'
+    ff:F5D.*:
+      publicado_desde: '2015-06-01'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html y capturas posteriores (cinco factores diarios desde 2015-06-01)'
+    ff:MOMD.*:
+      publicado_desde: '2005-07-26'
+      fuente: 'http://web.archive.org/web/20050726075154/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        (primera captura con el fichero; en la anterior, http://web.archive.org/web/20050606003547/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html,
+        aún no está). https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        es la primera captura de la biblioteca'
+      nota: 'F-F_Momentum_Factor_daily y 5_Industry_Portfolios_daily aparecen a la vez entre 2005-06-06 y 2005-07-26: se
+        toma 2005-07-26 (conservador)'
+    ff:IND5D.*:
+      publicado_desde: '2005-07-26'
+      fuente: 'http://web.archive.org/web/20050726075154/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        (primera captura con el fichero; en la anterior, http://web.archive.org/web/20050606003547/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html,
+        aún no está). https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        es la primera captura de la biblioteca'
+      nota: 'F-F_Momentum_Factor_daily y 5_Industry_Portfolios_daily aparecen a la vez entre 2005-06-06 y 2005-07-26: se
+        toma 2005-07-26 (conservador)'
   notas:
     - 'fred:STLFSI4: publicado_desde 2022-11-10 (versión 4 del índice): las filas anteriores son la metodología nueva
       recalculada hacia atrás'

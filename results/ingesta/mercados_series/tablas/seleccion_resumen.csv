@@ -53,10 +53,10 @@ series,regla,alias,catalogo_duplicada,11
 series,regla,alias,concepto_confirmado,2
 series,regla,fuera,D9_fuera_alcance,570
 series,regla,proyecciones,D4_proyeccion,243
-series,regla,queda,canonico,63
+series,regla,queda,canonico,77
 series,regla,queda,historia_previa_d1,5
-series,regla,queda,unica,416
-series,regla,queda,validacion,32
+series,regla,queda,unica,405
+series,regla,queda,validacion,29
 series,total,alias,total,105
 series,total,fuera,total,570
 series,total,proyecciones,total,243

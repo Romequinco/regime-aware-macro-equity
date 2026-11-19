@@ -180,6 +180,17 @@ El crudo y la base actual no se tocan.
 Yo me encargo de las instrucciones de los agentes, la revisión, los tests, el commit en local, este documento y las preguntas
 clicables al final. Calculo unos 45 minutos.
 
+**Decisiones de cierre del paso 3 (2026-11-19):**
+
+| # | Decisión | Qué se hace |
+|---|---|---|
+| F1 | Ken French antes de las ediciones archivadas | **Cadencia anual** (opción a, conservadora), **verificada** contra la historia real de la biblioteca (Wayback Machine). Si la verificación da otra cadencia, se usa la medida |
+| F2 | Fecha de creación de OFR FSI, Goyal-Welch y BIS (brecha de crédito y DSR) | **Se busca en sus webs** y pasa a `publicado_desde`: no se puede ver nada antes de esa fecha |
+| F3 | Q1 · fuente final de precios | **Solo Yahoo.** Los deslistados, los tickers sospechosos y los instrumentos sin precios en Yahoo se quedan como **limitación declarada** (sesgo de supervivencia medido en la sonda). No se paga ninguna fuente. Las filas del 3b que dependían de Q1 pasan a «no se descarga: limitación declarada» |
+| F4 | Canónicos dudosos | Se acepta la regla E1. Los empates se resuelven a mano:<br>- `ecb:DFR` y `ecb:MRO` son tipos distintos: los dos se quedan como únicas;<br>- `datahub:SP500_MENSUAL` es una copia de Shiller: alias de `shiller:P`;<br>- Fama-French diario y mensual: los dos se quedan |
+| F1–F2 · verificado en la web | Comprobado en la Wayback Machine y en páginas oficiales (2026-11-19) | **Ken French:** biblioteca visible desde 2001-12-18 (diario desde 2002-06, 5 factores desde 2014-12 y 2015-06). Antes de 2005-09, cadencia anual (la propia web decía «at least once a year»); desde entonces, mensual a 17–30 días, a veces más de 45 (regla 2M7D). Reconstruye toda la historia en cada actualización.<br>**OFR FSI:** público desde 2017-10-25.<br>**Goyal-Welch:** desde 2004-04-13; actualización anual de abril a noviembre de t+1. Los datos de 2022 nunca salieron sueltos, así que se ven desde 2024-04-15. Regla nueva: 13M.<br>**BIS:** brecha de crédito desde 2016-09-18 y DSR desde 2015-09-13; trimestral, unos 5,5 meses tras el trimestre |
+| F5 | Fronteras con los otros temas | Las series numéricas del BCE y del BIS, SKEW, el ESI y UMCSENT se quedan en el Tema 1; los textos son del Tema 2 y del Tema 4. Las acciones: los precios, en el Tema 1; los informes, en el Tema 3, con la misma lista de empresas. Falta confirmarlo con los compañeros |
+
 ## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
 
 Lo que dejaban los notebooks antiguos y no recoge el README (originales en la etiqueta `sonda-tema1`):

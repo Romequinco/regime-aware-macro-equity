@@ -298,7 +298,8 @@ def test_truncado_frente_a_deslistado():
     assert out.at["TRUNC", "decision"] == "fuera" and bool(out.at["TRUNC", "truncado"])
     assert not bool(out.at["TRUNC", "deslistado"])
     assert out.at["SALIDO", "decision"] == "queda" and bool(out.at["SALIDO", "deslistado"])
-    assert out.at["SALIDO", "aviso"] == "serie sospechosa" and out.at["SALIDO", "frontera"] == "tema3"
+    assert out.at["SALIDO", "aviso"] == sel.AVISO_SOSPECHOSA and out.at["SALIDO", "frontera"] == "tema3"
+    assert "limitación declarada (F3)" in out.at["SALIDO", "aviso"]
     vacio = pd.DataFrame(columns=["id", "clase", "capa", "bucket", "tickers", "invertible_minorista_ue"])
     series = pd.DataFrame(columns=["id", "estado", "decision", "fuente"])
     bmw = pd.DataFrame(columns=["fuente", "en_alcance_estricto", "indicador"])
@@ -306,6 +307,11 @@ def test_truncado_frente_a_deslistado():
     tipos = d.groupby("id")["tipo"].apply(set)
     assert tipos["TRUNC"] == {"redescarga"}
     assert tipos["SALIDO"] == {"deslistado", "serie_sospechosa"}
+    # F3: lo que dependía de Q1 no se descarga (limitación declarada); el truncado sí
+    est = d.set_index(["id", "tipo"])
+    assert est.loc[("SALIDO", "deslistado"), "estado"] == "limitacion_declarada"
+    assert est.loc[("SALIDO", "serie_sospechosa"), "prioridad"] == "no se descarga"
+    assert est.loc[("TRUNC", "redescarga"), "estado"] == "pendiente"
     assert "imf_weo:edicion:2026-04" in set(d["id"])
     assert (d.loc[d["tipo"] == "ediciones", "depende_de"] != "").all()
 
@@ -408,3 +414,53 @@ def test_lista_curada_sobre_las_tablas_reales():
     assert (precios.loc[precios["decision"] == "fuera", "sesiones"] < sel.MIN_SESIONES).all()
     # sin valores: ninguna columna numérica de las tablas es un valor de serie
     assert not {"valor", "close", "open"} & (set(series.columns) | set(precios.columns))
+
+
+# --- Decisiones de cierre: F3 y F4 --------------------------------------------------------------
+def test_f3_solo_yahoo_limitacion_declarada():
+    d3b = pd.DataFrame([
+        sel._fila3b("DWD", "deslistado", "yahoo", "media", "deslistado", depende_de=sel.Q1),
+        sel._fila3b("MCIC", "serie_sospechosa", "yahoo", "media", "sospechosa", depende_de="Q1 (CRSP/PERMNO)"),
+        sel._fila3b("yf:^V2TX", "precios", "yahoo", "media", "universo sin fichero"),
+        sel._fila3b("yf:CSPX.MI", "precios", "yahoo", "alta", "universo sin fichero (UCITS europeo)"),
+        sel._fila3b("refresco:fred_alfred", "refresco", "fred_alfred", "alta", "refresco")])
+    out = sel.aplicar_f3(d3b).set_index("id")
+    for s in ("DWD", "MCIC", "yf:^V2TX"):
+        assert out.at[s, "estado"] == "limitacion_declarada" and out.at[s, "prioridad"] == "no se descarga"
+        assert out.at[s, "motivo"].startswith(sel.MOTIVO_F3)
+    for s in ("yf:CSPX.MI", "refresco:fred_alfred"):
+        assert out.at[s, "estado"] == "pendiente" and out.at[s, "prioridad"] in ("alta", "media", "baja")
+
+
+def test_f4_empates_resueltos_a_mano():
+    inv = _inv([
+        {"id": "ecb:DFR", "fuente": "bce", "nivel_fecha": "C", "pub_desde": "1999-01-01"},
+        {"id": "ecb:MRO", "fuente": "bce", "nivel_fecha": "C", "pub_desde": "1999-01-01"},
+        {"id": "bis:WS_CBPOL.M.XM", "fuente": "bis", "nivel_fecha": "C", "pub_desde": "1999-02-01",
+         "frecuencia": "mensual"},
+        {"id": "shiller:P", "fuente": "shiller", "nivel_fecha": "C", "pub_desde": "1871-03-01", "frecuencia": "mensual"},
+        {"id": "datahub:SP500_MENSUAL", "fuente": "datahub", "nivel_fecha": "C", "pub_desde": "1871-03-01",
+         "frecuencia": "mensual"},
+        {"id": "ff:F3D.Mkt-RF", "fuente": "ken_french", "nivel_fecha": "C", "pub_desde": "1963-07-01"},
+        {"id": "ff:F3M.Mkt-RF", "fuente": "ken_french", "nivel_fecha": "C", "pub_desde": "1963-07-01",
+         "frecuencia": "mensual"},
+        {"id": "x:A", "fuente": "f1", "nivel_fecha": "A", "pub_desde": "2000-01-01"},
+        {"id": "y:B", "fuente": "f2", "nivel_fecha": "C", "pub_desde": "1950-01-01"}])
+    conc = pd.DataFrame([
+        {"grupo": 4, "concepto": "tipo_oficial", "pais": "EA", "miembros": "bis:WS_CBPOL.M.XM; ecb:DFR; ecb:MRO",
+         "n_pares": 3, "n_pares_medidos": 3, "corr_min": 0.86, "solape_min_anios_par": 27},
+        {"grupo": 37, "concepto": "ff_Mkt-RF", "pais": "USA", "miembros": "ff:F3D.Mkt-RF; ff:F3M.Mkt-RF",
+         "n_pares": 1, "n_pares_medidos": 1, "corr_min": 0.99, "solape_min_anios_par": 60}])
+    pares = [_par("ecb:DFR", "ecb:MRO", "bce", "bce", 0.99, 0.99, mismo_concepto=True),
+             _par("datahub:SP500_MENSUAL", "shiller:P", "datahub", "shiller", 1.0, 1.0, mismo_concepto=True),
+             _par("x:A", "y:B", "f1", "f2", 0.99, 0.99)]
+    out = _seleccion(inv, pares, conc=conc)
+    for s in ("ecb:DFR", "ecb:MRO", "bis:WS_CBPOL.M.XM", "ff:F3M.Mkt-RF"):
+        assert out.at[s, "decision"] == "queda" and out.at[s, "rol"] == "unica", s
+        assert not bool(out.at[s, "canonico_dudoso"]), s
+    assert out.at["datahub:SP500_MENSUAL", "alias_de"] == "shiller:P"
+    assert not bool(out.at["datahub:SP500_MENSUAL", "canonico_dudoso"]) and not bool(out.at["shiller:P", "canonico_dudoso"])
+    assert not bool(out.at["ff:F3D.Mkt-RF", "canonico_dudoso"])
+    # el resto de dudosos: se aceptan con E1 y se marcan
+    assert bool(out.at["x:A", "canonico_dudoso"])
+    assert out.at["x:A", "motivo_dudoso"].startswith(sel.NOTA_DUDOSO_F4)

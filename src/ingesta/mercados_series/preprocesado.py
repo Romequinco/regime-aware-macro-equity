@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import fnmatch
 import json
 import math
 import re
@@ -63,7 +64,7 @@ __all__ = [
     "cargar_plan", "validar_plan", "cargar_lista", "regla_actual", "fecha_regla", "fecha_conservadora",
     "filas_afectadas", "tope_primer_vintage", "sumar_dias_lag", "adelantos_por_serie", "propuesta_tramo",
     "propuesta_escalas_vintage", "propuesta_incidencias", "reglas_poca_muestra", "asignar_series",
-    "fechas_curadas", "verificar", "separar_proyecciones", "simular", "main",
+    "fechas_curadas", "publicado_desde", "verificar", "separar_proyecciones", "simular", "main",
 ]
 
 TEMA = "mercados_series"
@@ -81,7 +82,7 @@ COLUMNAS_SIMULACION = ("seccion", "grupo", "regla", "n_series", "filas_regla", "
                        "filas_disponible_incoherente", "filas_orden_roto", "filas_con_tope", "pendiente_calendario")
 VEREDICTOS_TRAMO = {"no fiable": "no_fiable", "fiable con margen": "fiable_con_margen"}
 
-_CLAVES_REGLA = {"publicador", "lag", "fin_periodo", "habiles", "n_habiles", "tramos"}
+_CLAVES_REGLA = {"publicador", "lag", "fin_periodo", "habiles", "n_habiles", "tramos", "segmentos"}
 _CLAVES_GRUPO = {"descripcion", "reglas"}
 _CLAVES_GRUPO_OPC = {"notas"}
 _CLAVES_ENTRADA = {"actual", "fuente", "motivo"}
@@ -121,6 +122,17 @@ def _validar_regla(regla: Any, donde: str, publicadores: dict[str, Any]) -> dict
     if desconocidas:
         raise ValueError(f"{donde}: claves desconocidas {sorted(desconocidas)}")
     try:
+        if "segmentos" in regla:
+            if set(regla) != {"segmentos"} or not isinstance(regla["segmentos"], list) or not regla["segmentos"]:
+                raise ValueError("una regla por segmentos solo lleva 'segmentos' (lista no vacía)")
+            for i, sg in enumerate(regla["segmentos"]):
+                visibilidad._claves(sg, {"regla"}, {"desde", "hasta"}, f"segmento {i}")
+                if "segmentos" in sg["regla"]:
+                    raise ValueError(f"segmento {i}: sin segmentos anidados")
+                _validar_regla(sg["regla"], f"{donde}, segmento {i}", publicadores)
+                catalogo._fecha_tramo(sg.get("desde"), f"segmento {i}")
+                catalogo._fecha_tramo(sg.get("hasta"), f"segmento {i}")
+            return regla
         if "publicador" in regla:
             if regla["publicador"] not in publicadores:
                 raise ValueError(f"publicador {regla['publicador']!r} no está en publicaciones.yaml")
@@ -290,13 +302,15 @@ def validar_plan(crudo: Any, origen: str = "preprocesado.yaml", *, lags: dict[st
                         f"{origen}: h15_diario")
     _validar_regla(h["conservadora"], f"{origen}: h15_diario.conservadora", pubs)
     rec = plan["reconstruidas"]
-    visibilidad._claves(rec, {"descripcion", "fuente", "series", "pendiente_calendario"}, {"notas"},
-                        f"{origen}: reconstruidas")
+    visibilidad._claves(rec, {"descripcion", "fuente", "series", "externas"}, {"notas"}, f"{origen}: reconstruidas")
     for sid, f in (rec["series"] or {}).items():
         catalogo._fecha_tramo(f, f"{origen}: reconstruidas.series.{sid}")
-    for patron, e in (rec["pendiente_calendario"] or {}).items():
-        dp = f"{origen}: reconstruidas.pendiente_calendario.{patron}"
-        visibilidad._claves(e, {"falta", "web", "motivo"}, set(), dp)
+    for patron, e in (rec["externas"] or {}).items():
+        dp = f"{origen}: reconstruidas.externas.{patron}"
+        visibilidad._claves(e, {"publicado_desde", "fuente"}, {"nota"}, dp)
+        catalogo._fecha_tramo(e["publicado_desde"], dp)
+        if "https://" not in str(e["fuente"]):
+            raise ValueError(f"{dp}: la fuente debe citar la URL donde se comprobó la fecha")
 
     # 4. Proyecciones (D4)
     pr = plan["proyecciones"]
@@ -369,10 +383,23 @@ def fecha_regla(fechas_referencia: Any, regla: dict[str, Any],
     """Fecha de decisión que da ``regla`` a cada fecha de referencia (``datetime64[ns]``, mismo índice).
 
     De retraso: ``catalogo.fecha_publicacion_tramos`` (lags.yaml). De publicador: la fecha de decisión del
-    publicador más ``lag`` días y, con ``habiles``, el primer hábil (``catalogo.fecha_publicacion_lag``). Se calcula
-    una vez por fecha distinta: sirve para millones de filas.
+    publicador más ``lag`` días y, con ``habiles``, el primer hábil (``catalogo.fecha_publicacion_lag``). Por
+    segmentos (``{segmentos: [{desde?, hasta?, regla}]}``, fechas de REFERENCIA inclusivas): cada periodo con la
+    regla de su segmento, que puede tener otro ``fin_periodo`` (Ken French: anual antes de 2005-09, mensual después).
+    Se calcula una vez por fecha distinta: sirve para millones de filas.
     """
     s = pd.Series(pd.to_datetime(fechas_referencia)).dt.normalize()
+    if "segmentos" in regla:
+        out = pd.Series(pd.NaT, index=s.index, dtype="datetime64[ns]")
+        for sg in regla["segmentos"]:
+            m = s.notna()
+            if sg.get("desde") is not None:
+                m &= s >= pd.Timestamp(str(sg["desde"]))
+            if sg.get("hasta") is not None:
+                m &= s <= pd.Timestamp(str(sg["hasta"]))
+            if m.any():
+                out[m] = fecha_regla(s[m], sg["regla"], publicaciones).to_numpy()
+        return out
     codigos, unicos = pd.factorize(s)
     u = pd.Series(pd.DatetimeIndex(unicos), dtype="datetime64[ns]")
     if "publicador" in regla:
@@ -659,6 +686,18 @@ def _series_h15(plan: dict[str, Any], catalogo_series: dict[str, dict] | None) -
     return {s for s, e in cat.items() if e.get("publicador") == pub and e.get("frecuencia") == "diaria"}
 
 
+def publicado_desde(plan: dict[str, Any], ids: Iterable[str]) -> dict[str, str]:
+    """``{id: publicado_desde}`` de ``reconstruidas``: las del catálogo (``series``) y las externas por patrón
+    (``fnmatch``; si dos patrones casan, la fecha más tardía)."""
+    rec = plan["reconstruidas"]
+    out = {str(k): str(v) for k, v in (rec["series"] or {}).items()}
+    for sid in ids:
+        for patron, e in (rec["externas"] or {}).items():
+            if fnmatch.fnmatch(sid, patron):
+                out[sid] = max(out.get(sid, "0000"), str(e["publicado_desde"]))
+    return out
+
+
 def fechas_curadas(base: pd.DataFrame, plan: dict[str, Any], asignacion: pd.DataFrame,
                    publicaciones: dict[str, Any] | None = None,
                    catalogo_series: dict[str, dict] | None = None) -> pd.DataFrame:
@@ -720,8 +759,8 @@ def fechas_curadas(base: pd.DataFrame, plan: dict[str, Any], asignacion: pd.Data
             h15[ix] = f > nueva[ix]
             nueva[ix] = f
 
-    # Capa 3: índices reconstruidos hacia atrás
-    for sid, desde in (plan["reconstruidas"]["series"] or {}).items():
+    # Capa 3: índices reconstruidos hacia atrás (catálogo y fechas externas comprobadas en la web, por patrón)
+    for sid, desde in publicado_desde(plan, por_serie).items():
         ix = por_serie.get(sid)
         if ix is None:
             continue

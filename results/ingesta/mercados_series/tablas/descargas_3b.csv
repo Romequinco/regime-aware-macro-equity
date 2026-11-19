@@ -1,269 +1,268 @@
-id,tipo,fuente,prioridad,motivo,clase,bucket,detalle,depende_de
-fred:BAMLC0A0CM,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLC0A0CMEY,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLC0A1CAAA,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLC0A4CBBB,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLH0A0HYM2,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLH0A0HYM2EY,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLH0A1HYBB,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-fred:BAMLH0A3HYC,archivo_periodico,fred_alfred,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
-imf_weo:edicion:2008-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2008-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2009-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2009-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2010-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2010-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2011-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2011-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2012-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2012-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2013-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2013-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2014-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2014-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2015-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2015-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2016-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2016-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2017-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2017-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2018-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2018-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2019-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2019-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2020-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2020-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2021-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2021-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2022-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2022-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2023-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2023-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2024-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2024-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2025-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2025-10,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-imf_weo:edicion:2026-04,ediciones,imf_weo,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
-yf:ABTC.SW,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,cripto,invertible minorista UE,
-yf:AETH.SW,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,cripto,invertible minorista UE,
-yf:AIGA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,materias_primas,invertible minorista UE,
-yf:CNDX.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_eeuu,invertible minorista UE,
-yf:COPA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,metales_industriales,invertible minorista UE,
-yf:CPXJ.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,invertible minorista UE,
-yf:CRUD.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,energia,invertible minorista UE,
-yf:EIMI.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_emergentes,invertible minorista UE,
-yf:EUNK.DE,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_europa,invertible minorista UE,
-yf:FXC.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_china,invertible minorista UE,
-yf:IB01.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,liquidez_usd,invertible minorista UE,
-yf:IBTM.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_gobierno_eeuu,invertible minorista UE,
-yf:IBTS.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_gobierno_eeuu,invertible minorista UE,
-yf:IBZL.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,invertible minorista UE,
-yf:ICOM.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,materias_primas,invertible minorista UE,
-yf:IDTL.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_gobierno_eeuu,invertible minorista UE,
-yf:IEMB.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_emergentes,invertible minorista UE,
-yf:IGLN.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etp,oro,invertible minorista UE,
-yf:IHYU.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_credito_hy,invertible minorista UE,
-yf:ITPS.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_ligada_inflacion,invertible minorista UE,
-yf:IUAA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa baseline),etf,rf_agregado_eeuu,invertible minorista UE,
-yf:IUSP.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,inmobiliario,invertible minorista UE,
-yf:IWDP.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,inmobiliario,invertible minorista UE,
-yf:IWMO.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
-yf:IWQU.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
-yf:IWSZ.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
-yf:IWVL.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
-yf:LQDE.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_credito_ig,invertible minorista UE,
-yf:MVOL.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
-yf:NDIA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,invertible minorista UE,
-yf:NGAS.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,energia,invertible minorista UE,
-yf:SJPA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_japon,invertible minorista UE,
-yf:SSLN.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etp,metales_preciosos,invertible minorista UE,
-yf:SWDA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_global,invertible minorista UE,
-yf:SXLB.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLC.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLE.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLF.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLI.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLK.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLP.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLU.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLV.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:SXLY.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
-yf:VWRA.L,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_global,invertible minorista UE,
-yf:XCS6.DE,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_china,invertible minorista UE,
-yf:XDEW.DE,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa baseline),etf,rv_eeuu,invertible minorista UE,
-yf:ZPRR.DE,precios,yahoo,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_eeuu,invertible minorista UE,
-refresco:bce,refresco,bce,alta,refresco hasta hoy (último: 2026-10-14),,,51 series que se quedan,
-refresco:bce_curvas,refresco,bce_curvas,alta,refresco hasta hoy (último: 2026-10-14),,,22 series que se quedan,
-refresco:bis,refresco,bis,alta,refresco hasta hoy (último: 2026-10-14),,,34 series que se quedan,
-refresco:boc,refresco,boc,alta,refresco hasta hoy (último: 2026-10-14),,,2 series que se quedan,
-refresco:boc_curva,refresco,boc_curva,alta,refresco hasta hoy (último: 2026-10-14),,,6 series que se quedan,
-refresco:boe_curvas,refresco,boe_curvas,alta,refresco hasta hoy (último: 2026-10-14),,,12 series que se quedan,
-refresco:boj,refresco,boj,alta,refresco hasta hoy (último: 2026-10-14),,,1 serie que se queda,
-refresco:bundesbank,refresco,bundesbank,alta,refresco hasta hoy (último: 2026-10-14),,,1 serie que se queda,
-refresco:calculo_propio,refresco,calculo_propio,alta,refresco hasta hoy (último: 2026-10-14),,,8 series que se quedan,
-refresco:eurostat,refresco,eurostat,alta,refresco hasta hoy (último: 2026-10-14),,,20 series que se quedan,
-refresco:fred_alfred,refresco,fred_alfred,alta,refresco hasta hoy (último: 2026-10-14),,,229 series que se quedan,
-refresco:goyal_welch,refresco,goyal_welch,alta,refresco hasta hoy (último: 2026-10-14),,,12 series que se quedan,
-refresco:imf_weo,refresco,imf_weo,alta,refresco hasta hoy (último: 2026-10-14),,,20 series que se quedan,
-refresco:ken_french,refresco,ken_french,alta,refresco hasta hoy (último: 2026-10-14),,,13 series que se quedan,
-refresco:mof_jgb,refresco,mof_jgb,alta,refresco hasta hoy (último: 2026-10-14),,,15 series que se quedan,
-refresco:oecd,refresco,oecd,alta,refresco hasta hoy (último: 2026-10-14),,,24 series que se quedan,
-refresco:ofr_fsi,refresco,ofr_fsi,alta,refresco hasta hoy (último: 2026-10-14),,,5 series que se quedan,
-refresco:philly_rtdsm,refresco,philly_rtdsm,alta,refresco hasta hoy (último: 2026-10-14),,,1 serie que se queda,
-refresco:precios:coinbase,refresco,coinbase,alta,refresco hasta hoy (último: 2026-10-14),,,2 ficheros,
-refresco:precios:yahoo,refresco,yahoo,alta,refresco hasta hoy (último: 2026-10-14),,,1460 ficheros,
-refresco:rba,refresco,rba,alta,refresco hasta hoy (último: 2026-10-14),,,2 series que se quedan,
-refresco:shiller,refresco,shiller,alta,refresco hasta hoy (último: 2026-10-14),,,5 series que se quedan,
-refresco:ust_curva,refresco,ust_curva,alta,refresco hasta hoy (último: 2026-10-14),,,3 series que se quedan,
-refresco:worldbank,refresco,worldbank,alta,refresco hasta hoy (último: 2026-10-14),,,4 series que se quedan,
-refresco:yfinance,refresco,yfinance,alta,refresco hasta hoy (último: 2026-10-14),,,26 series que se quedan,
-academicas:archivo_periodico,archivo_periodico,academicas,media,archivo periódico de las ediciones académicas (se reeditan enteras),,,README · Deudas pendientes,
-DWD,deslistado,yahoo,media,deslistado (última sesión 2017-03-20): historia completa y salida,otro,,,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
-GR,deslistado,yahoo,media,deslistado (última sesión 2018-02-22): historia completa y salida,fondo,,,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
-fred:h15_diario_pre2005,fechas,fed_h15,media,"H.15 diario antes de 2005-06-28: archivo de h15/update para contrastar la fecha (hoy, edición semanal)",,,README · Deudas pendientes,
-ken_french:ediciones_antiguas,fechas,ken_french,media,ediciones archivadas de Ken French anteriores al archivo propio (regla «+45 días» sin verificar),,,README · Deudas pendientes,
-baseline:6040_europeo,precios,yahoo,media,el 60/40 europeo arranca en 2017-11 (EUNA.DE): agregado UCITS más antiguo o empalme con BNDX,,,README · Deudas pendientes,
-precios:aperturas,precios,yahoo,media,precios de apertura para la ejecución en t+1 (arquitectura): validar o rehacer según la fuente final,,,README · Deudas pendientes,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
-supervivencia:salidos_sin_precio,precios,wrds_crsp|tiingo,media,supervivencia: 459 de 759 salidos del índice sin precio en Yahoo (la PIT cubre el 66 % de cada mes),,,README · Deudas pendientes,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
-yf:6E=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,divisas,,
-yf:ACWI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_global,,
-yf:AUDUSD=X,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
-yf:BIL,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,liquidez_usd,,
-yf:BITO,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,cripto,,
-yf:BND,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_agregado_eeuu,,
-yf:BNDX,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_global,,
-yf:BWX,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_global,,
-yf:BZ=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,energia,,
-yf:CPER,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,metales_industriales,,
-yf:DBA,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,materias_primas,,
-yf:DX-Y.NYB,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
-yf:EDV,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_gobierno_eeuu,,
-yf:EMLC,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_emergentes,,
-yf:ETHE,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,cripto,,
-yf:EWA,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,,
-yf:EWC,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
-yf:EWG,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
-yf:EWH,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,,
-yf:EWI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
-yf:EWP,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_europa,,
-yf:EWQ,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
-yf:EWT,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:EWU,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
-yf:EWW,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:EWY,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:EWZ,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:EZA,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:EZU,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_europa,,
-yf:FLOT,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_ig,,
-yf:FTSEMIB.MI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_pais_g7,,
-yf:GOVT,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_gobierno_eeuu,,
-yf:IAU,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,oro,,
-yf:IEI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_gobierno_eeuu,,
-yf:IJH,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_eeuu,,
-yf:INDA,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:JNK,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_hy,,
-yf:MBB,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_titulizaciones,,
-yf:MCHI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_china,,
-yf:MUB,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_municipal,,
-yf:NG=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,energia,,
-yf:NQ=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rv_eeuu,,
-yf:PDBC,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,materias_primas,,
-yf:RTY=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rv_eeuu,,
-yf:SCHP,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_ligada_inflacion,,
-yf:SHV,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,liquidez_usd,,
-yf:SI=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,metales_preciosos,,
-yf:SIZE,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
-yf:UNG,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,energia,,
-yf:USDCAD=X,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
-yf:USDCHF=X,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
-yf:USDCNY=X,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
-yf:USDJPY=X,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
-yf:VCIT,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_ig,,
-yf:VCSH,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_ig,,
-yf:VEA,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_desarrollados_ex_eeuu,,
-yf:VIXY,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,volatilidad,,
-yf:VLUE,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
-yf:VNQI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,inmobiliario,,
-yf:VPL,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,,
-yf:VT,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_global,,
-yf:VTI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_eeuu,,
-yf:VTV,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
-yf:VUG,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
-yf:VWO,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
-yf:VXUS,precios,yahoo,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_desarrollados_ex_eeuu,,
-yf:YM=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rv_eeuu,,
-yf:ZB=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rf_gobierno_eeuu,,
-yf:ZC=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,materias_primas,,
-yf:ZF=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rf_gobierno_eeuu,,
-yf:ZS=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,materias_primas,,
-yf:ZT=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rf_gobierno_eeuu,,
-yf:ZW=F,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),futuro,materias_primas,,
-yf:^AEX,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_europa,,
-yf:^AXJO,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_asia_pacifico,,
-yf:^DJI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_eeuu,,
-yf:^GSPTSE,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_pais_g7,,
-yf:^MOVE,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad_tipos,,
-yf:^SSMI,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_europa,,
-yf:^STOXX,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_europa,,
-yf:^V2TX,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
-yf:^V2TX,precios,otra,media,VSTOXX no está en Yahoo: buscar otra fuente,,,README · Deudas pendientes,
-yf:^VIX3M,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
-yf:^VVIX,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
-yf:^VXN,precios,yahoo,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
-AT,redescarga,yahoo,media,"re-descarga completa: fichero truncado (18 sesiones, 2026-09-17 a 2026-10-12)",etf,,,
-AVB,redescarga,yahoo,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-14 a 2026-08-14)",accion,,,
-BLY,redescarga,yahoo,media,"re-descarga completa: fichero truncado (2 sesiones, 2016-01-27 a 2016-09-28)",otro,,,
-EA,redescarga,yahoo,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-04 a 2026-08-04)",accion,,,
-EQR,redescarga,yahoo,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-17 a 2026-08-17)",accion,,,
-LEG,redescarga,yahoo,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-26 a 2026-08-26)",accion,,,
-PSKY,redescarga,yahoo,media,"re-descarga completa: fichero truncado (12 sesiones, 2026-07-29 a 2026-10-13)",accion,,,
-QRVO,redescarga,yahoo,media,"re-descarga completa: fichero truncado (5 sesiones, 2026-07-29 a 2026-09-14)",accion,,,
-WBD,redescarga,yahoo,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-10-05 a 2026-10-05)",accion,,,
-refresco:proyecciones:fred_alfred,refresco,fred_alfred,media,refresco de las proyecciones hasta hoy (último: 2026-10-14); tabla aparte (D4),,,3 proyecciones,
-001440.KS,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-032640.KS,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-ABI,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
-AMCR,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-BA.L,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-BAY,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
-BLY,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,otro,,,Q1 (CRSP/PERMNO)
-COMS,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-CPWR,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-DIGI,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-DWD,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,otro,,,Q1 (CRSP/PERMNO)
-EP,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-FERG,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-GR,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,fondo,,,Q1 (CRSP/PERMNO)
-HUBB,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-M&M.NS,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-MCIC,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-MI,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-MNST,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-PCL,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
-PCS,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
-PWER,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
-SW,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-TATASTEEL.NS,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-ULVR.L,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-UN,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
-USBC,serie_sospechosa,yahoo,media,serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
-boc:historia_pre2001,series,boc,media,historia larga del Banco de Canadá (antes de 2001),,,README · Deudas pendientes,
-eurostat:ei_bssi_m_r2.EA,series,eurostat,media,E3: falta la zona euro de composición cambiante (EA); hoy solo hay composiciones fijas,,,ei_bssi_m_r2,
-eurostat:une_rt_m.EA,series,eurostat,media,E3: falta la zona euro de composición cambiante (EA); hoy solo hay composiciones fijas,,,une_rt_m,
-imf:WEO.001,series,imf_weo,media,D3: agregado mundo del WEO,,,GGXCNL_NGDP; GGXWDG_NGDP; LUR; NGDP_RPCH; PCPIPCH,
-imf:WEO.163,series,imf_weo,media,D3: agregado zona euro del WEO,,,GGXCNL_NGDP; GGXWDG_NGDP; LUR; NGDP_RPCH; PCPIPCH,
-imf:WEO.200,series,imf_weo,media,D3: agregado emergentes y en desarrollo del WEO,,,GGXCNL_NGDP; GGXWDG_NGDP; LUR; NGDP_RPCH; PCPIPCH,
-oecd:LI_AA.EA20,series,oecd,media,sin filas en la base (CLI de la zona euro; G4E es sustituto),,,README · Deudas pendientes,
-oecd:UNEMP.CHN,series,oecd,media,sin filas en la base,,,README · Deudas pendientes,
-philly:EMPLOY,series,philly_rtdsm,media,sin filas en la base,,,README · Deudas pendientes,
-philly:PCPI,series,philly_rtdsm,media,sin filas en la base,,,README · Deudas pendientes,
-philly:RUC,series,philly_rtdsm,media,sin filas en la base,,,README · Deudas pendientes,
-rba:historia_pre2011,series,rba,media,historia larga del RBA (antes de 2011),,,README · Deudas pendientes,
-wb:EMU,series,worldbank,media,D3: agregado zona euro del Banco Mundial (hoy lo descarta fuentes/worldbank.py),,,FP.CPI.TOTL.ZG; NY.GDP.MKTP.KD.ZG; SL.UEM.TOTL.ZS,
-wb:LMY,series,worldbank,media,D3: agregado emergentes (renta baja y media) del Banco Mundial (hoy lo descarta fuentes/worldbank.py),,,FP.CPI.TOTL.ZG; NY.GDP.MKTP.KD.ZG; SL.UEM.TOTL.ZS,
-wb:WLD,series,worldbank,media,D3: agregado mundo del Banco Mundial (hoy lo descarta fuentes/worldbank.py),,,FP.CPI.TOTL.ZG; NY.GDP.MKTP.KD.ZG; SL.UEM.TOTL.ZS,
-constituyentes:nikkei225_ibovespa,constituyentes,otra,baja,constituyentes de Nikkei 225 e Ibovespa sin fuente,,,README · Deudas pendientes,
-academicas:reglas_sin_verificar,fechas,goyal_welch|nber|ofr_fsi,baja,"ediciones de Goyal-Welch, NBER y OFR para verificar sus reglas de fecha",,,README · Deudas pendientes,
-eurostat:calendarios,fechas,eurostat,baja,"calendarios de Eurostat sin verificar: paro antes de 2012, PIB antes de 2003, CREACION_GEO de EA20/EA21",,,README · Deudas pendientes,
-supervivencia:sp500_quiebras_q,precios,wrds_crsp,baja,S&P 500: 28 tramos con ticker de quiebra (sufijo Q/QQ); el mapeo exige CIK/PERMNO,,,README · Deudas pendientes,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
-vintages:bce_eurostat_bis_bm,vintages,bce|eurostat|bis|worldbank,baja,"historia de revisiones de BCE, Eurostat, BIS y Banco Mundial (hoy, valores de hoy con regla)",,,README · Deudas pendientes,
+id,tipo,fuente,estado,prioridad,motivo,clase,bucket,detalle,depende_de
+fred:BAMLC0A0CM,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLC0A0CMEY,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLC0A1CAAA,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLC0A4CBBB,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLH0A0HYM2,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLH0A0HYM2EY,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLH0A1HYBB,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+fred:BAMLH0A3HYC,archivo_periodico,fred_alfred,pendiente,alta,OAS de ICE: FRED solo guarda 3 años (ventana móvil); archivo periódico para acumular historia,,,,
+imf_weo:edicion:2008-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2008-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2009-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2009-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2010-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2010-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2011-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2011-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2012-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2012-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2013-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2013-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2014-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2014-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2015-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2015-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2016-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2016-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2017-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2017-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2018-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2018-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2019-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2019-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2020-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2020-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2021-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2021-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2022-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2022-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2023-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2023-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2024-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2024-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2025-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2025-10,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+imf_weo:edicion:2026-04,ediciones,imf_weo,pendiente,alta,D1: el WEO solo tiene la edición de 2026; hacen falta las ediciones 2008–2025 (dato y proyecciones) para su historia visible,,,"DBnomics en Disallow; trae también las 240 series de proyecciones del WEO (tabla aparte, D4)",permiso o archivo del FMI
+yf:ABTC.SW,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etp,cripto,invertible minorista UE,
+yf:AETH.SW,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etp,cripto,invertible minorista UE,
+yf:CNDX.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_eeuu,invertible minorista UE,
+yf:COPA.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etp,metales_industriales,invertible minorista UE,
+yf:CPXJ.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,invertible minorista UE,
+yf:CRUD.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etp,energia,invertible minorista UE,
+yf:EIMI.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_emergentes,invertible minorista UE,
+yf:EUNK.DE,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_europa,invertible minorista UE,
+yf:FXC.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_china,invertible minorista UE,
+yf:IB01.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,liquidez_usd,invertible minorista UE,
+yf:IBTM.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_gobierno_eeuu,invertible minorista UE,
+yf:IBTS.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_gobierno_eeuu,invertible minorista UE,
+yf:IBZL.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,invertible minorista UE,
+yf:ICOM.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,materias_primas,invertible minorista UE,
+yf:IDTL.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_gobierno_eeuu,invertible minorista UE,
+yf:IEMB.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_emergentes,invertible minorista UE,
+yf:IGLN.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etp,oro,invertible minorista UE,
+yf:IHYU.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_credito_hy,invertible minorista UE,
+yf:ITPS.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_ligada_inflacion,invertible minorista UE,
+yf:IUAA.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa baseline),etf,rf_agregado_eeuu,invertible minorista UE,
+yf:IUSP.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,inmobiliario,invertible minorista UE,
+yf:IWDP.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,inmobiliario,invertible minorista UE,
+yf:IWMO.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
+yf:IWQU.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
+yf:IWSZ.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
+yf:IWVL.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
+yf:LQDE.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rf_credito_ig,invertible minorista UE,
+yf:MVOL.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,factor_global,invertible minorista UE,
+yf:NDIA.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,invertible minorista UE,
+yf:NGAS.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etp,energia,invertible minorista UE,
+yf:SJPA.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_japon,invertible minorista UE,
+yf:SSLN.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etp,metales_preciosos,invertible minorista UE,
+yf:SWDA.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_global,invertible minorista UE,
+yf:SXLB.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLC.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLE.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLF.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLI.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLK.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLP.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLU.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLV.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:SXLY.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa tactica),etf,sector_eeuu,invertible minorista UE,
+yf:VWRA.L,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_global,invertible minorista UE,
+yf:XCS6.DE,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_china,invertible minorista UE,
+yf:XDEW.DE,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa baseline),etf,rv_eeuu,invertible minorista UE,
+yf:ZPRR.DE,precios,yahoo,pendiente,alta,instrumento del universo sin fichero de precios (capa estrategica),etf,rv_eeuu,invertible minorista UE,
+refresco:bce,refresco,bce,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,51 series que se quedan,
+refresco:bce_curvas,refresco,bce_curvas,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,22 series que se quedan,
+refresco:bis,refresco,bis,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,34 series que se quedan,
+refresco:boc,refresco,boc,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,2 series que se quedan,
+refresco:boc_curva,refresco,boc_curva,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,6 series que se quedan,
+refresco:boe_curvas,refresco,boe_curvas,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,12 series que se quedan,
+refresco:boj,refresco,boj,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,1 serie que se queda,
+refresco:bundesbank,refresco,bundesbank,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,1 serie que se queda,
+refresco:calculo_propio,refresco,calculo_propio,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,8 series que se quedan,
+refresco:eurostat,refresco,eurostat,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,20 series que se quedan,
+refresco:fred_alfred,refresco,fred_alfred,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,229 series que se quedan,
+refresco:goyal_welch,refresco,goyal_welch,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,12 series que se quedan,
+refresco:imf_weo,refresco,imf_weo,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,20 series que se quedan,
+refresco:ken_french,refresco,ken_french,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,13 series que se quedan,
+refresco:mof_jgb,refresco,mof_jgb,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,15 series que se quedan,
+refresco:oecd,refresco,oecd,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,24 series que se quedan,
+refresco:ofr_fsi,refresco,ofr_fsi,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,5 series que se quedan,
+refresco:philly_rtdsm,refresco,philly_rtdsm,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,1 serie que se queda,
+refresco:precios:coinbase,refresco,coinbase,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,2 ficheros,
+refresco:precios:yahoo,refresco,yahoo,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,1460 ficheros,
+refresco:rba,refresco,rba,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,2 series que se quedan,
+refresco:shiller,refresco,shiller,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,5 series que se quedan,
+refresco:ust_curva,refresco,ust_curva,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,3 series que se quedan,
+refresco:worldbank,refresco,worldbank,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,4 series que se quedan,
+refresco:yfinance,refresco,yfinance,pendiente,alta,refresco hasta hoy (último: 2026-10-14),,,26 series que se quedan,
+academicas:archivo_periodico,archivo_periodico,academicas,pendiente,media,archivo periódico de las ediciones académicas (se reeditan enteras),,,README · Deudas pendientes,
+fred:h15_diario_pre2005,fechas,fed_h15,pendiente,media,"H.15 diario antes de 2005-06-28: archivo de h15/update para contrastar la fecha (hoy, edición semanal)",,,README · Deudas pendientes,
+ken_french:ediciones_antiguas,fechas,ken_french,pendiente,media,ediciones archivadas de Ken French anteriores al archivo propio (regla «+45 días» sin verificar),,,README · Deudas pendientes,
+baseline:6040_europeo,precios,yahoo,pendiente,media,el 60/40 europeo arranca en 2017-11 (EUNA.DE): agregado UCITS más antiguo o empalme con BNDX,,,README · Deudas pendientes,
+yf:6E=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,divisas,,
+yf:ACWI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_global,,
+yf:AUDUSD=X,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
+yf:BIL,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,liquidez_usd,,
+yf:BITO,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,cripto,,
+yf:BND,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_agregado_eeuu,,
+yf:BNDX,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_global,,
+yf:BWX,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_global,,
+yf:BZ=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,energia,,
+yf:CPER,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,metales_industriales,,
+yf:DBA,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,materias_primas,,
+yf:DX-Y.NYB,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
+yf:EDV,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_gobierno_eeuu,,
+yf:EMLC,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_emergentes,,
+yf:ETHE,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,cripto,,
+yf:EWA,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,,
+yf:EWC,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
+yf:EWG,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
+yf:EWH,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,,
+yf:EWI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
+yf:EWP,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_europa,,
+yf:EWQ,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
+yf:EWT,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:EWU,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_pais_g7,,
+yf:EWW,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:EWY,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:EWZ,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:EZA,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:EZU,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_europa,,
+yf:FLOT,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_ig,,
+yf:FTSEMIB.MI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_pais_g7,,
+yf:GOVT,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_gobierno_eeuu,,
+yf:IAU,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,oro,,
+yf:IEI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_gobierno_eeuu,,
+yf:IJH,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_eeuu,,
+yf:INDA,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:JNK,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_hy,,
+yf:MBB,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_titulizaciones,,
+yf:MCHI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_china,,
+yf:MUB,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_municipal,,
+yf:NG=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,energia,,
+yf:NQ=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rv_eeuu,,
+yf:PDBC,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,materias_primas,,
+yf:RTY=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rv_eeuu,,
+yf:SCHP,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_ligada_inflacion,,
+yf:SHV,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,liquidez_usd,,
+yf:SI=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,metales_preciosos,,
+yf:SIZE,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
+yf:UNG,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,energia,,
+yf:USDCAD=X,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
+yf:USDCHF=X,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
+yf:USDCNY=X,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
+yf:USDJPY=X,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),divisa,divisas,,
+yf:VCIT,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_ig,,
+yf:VCSH,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rf_credito_ig,,
+yf:VEA,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_desarrollados_ex_eeuu,,
+yf:VIXY,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,volatilidad,,
+yf:VLUE,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
+yf:VNQI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,inmobiliario,,
+yf:VPL,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_asia_pacifico,,
+yf:VT,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_global,,
+yf:VTI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_eeuu,,
+yf:VTV,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
+yf:VUG,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,factor_eeuu,,
+yf:VWO,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_emergentes,,
+yf:VXUS,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa tactica),etf,rv_desarrollados_ex_eeuu,,
+yf:YM=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rv_eeuu,,
+yf:ZB=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rf_gobierno_eeuu,,
+yf:ZC=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,materias_primas,,
+yf:ZF=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rf_gobierno_eeuu,,
+yf:ZS=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,materias_primas,,
+yf:ZT=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,rf_gobierno_eeuu,,
+yf:ZW=F,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),futuro,materias_primas,,
+yf:^AEX,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_europa,,
+yf:^AXJO,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_asia_pacifico,,
+yf:^DJI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_eeuu,,
+yf:^GSPTSE,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_pais_g7,,
+yf:^MOVE,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad_tipos,,
+yf:^SSMI,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_europa,,
+yf:^STOXX,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),indice,rv_europa,,
+yf:^VIX3M,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
+yf:^VVIX,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
+yf:^VXN,precios,yahoo,pendiente,media,instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,,
+AT,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (18 sesiones, 2026-09-17 a 2026-10-12)",etf,,,
+AVB,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-14 a 2026-08-14)",accion,,,
+BLY,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (2 sesiones, 2016-01-27 a 2016-09-28)",otro,,,
+EA,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-04 a 2026-08-04)",accion,,,
+EQR,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-17 a 2026-08-17)",accion,,,
+LEG,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-08-26 a 2026-08-26)",accion,,,
+PSKY,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (12 sesiones, 2026-07-29 a 2026-10-13)",accion,,,
+QRVO,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (5 sesiones, 2026-07-29 a 2026-09-14)",accion,,,
+WBD,redescarga,yahoo,pendiente,media,"re-descarga completa: fichero truncado (1 sesiones, 2026-10-05 a 2026-10-05)",accion,,,
+refresco:proyecciones:fred_alfred,refresco,fred_alfred,pendiente,media,refresco de las proyecciones hasta hoy (último: 2026-10-14); tabla aparte (D4),,,3 proyecciones,
+boc:historia_pre2001,series,boc,pendiente,media,historia larga del Banco de Canadá (antes de 2001),,,README · Deudas pendientes,
+eurostat:ei_bssi_m_r2.EA,series,eurostat,pendiente,media,E3: falta la zona euro de composición cambiante (EA); hoy solo hay composiciones fijas,,,ei_bssi_m_r2,
+eurostat:une_rt_m.EA,series,eurostat,pendiente,media,E3: falta la zona euro de composición cambiante (EA); hoy solo hay composiciones fijas,,,une_rt_m,
+imf:WEO.001,series,imf_weo,pendiente,media,D3: agregado mundo del WEO,,,GGXCNL_NGDP; GGXWDG_NGDP; LUR; NGDP_RPCH; PCPIPCH,
+imf:WEO.163,series,imf_weo,pendiente,media,D3: agregado zona euro del WEO,,,GGXCNL_NGDP; GGXWDG_NGDP; LUR; NGDP_RPCH; PCPIPCH,
+imf:WEO.200,series,imf_weo,pendiente,media,D3: agregado emergentes y en desarrollo del WEO,,,GGXCNL_NGDP; GGXWDG_NGDP; LUR; NGDP_RPCH; PCPIPCH,
+oecd:LI_AA.EA20,series,oecd,pendiente,media,sin filas en la base (CLI de la zona euro; G4E es sustituto),,,README · Deudas pendientes,
+oecd:UNEMP.CHN,series,oecd,pendiente,media,sin filas en la base,,,README · Deudas pendientes,
+philly:EMPLOY,series,philly_rtdsm,pendiente,media,sin filas en la base,,,README · Deudas pendientes,
+philly:PCPI,series,philly_rtdsm,pendiente,media,sin filas en la base,,,README · Deudas pendientes,
+philly:RUC,series,philly_rtdsm,pendiente,media,sin filas en la base,,,README · Deudas pendientes,
+rba:historia_pre2011,series,rba,pendiente,media,historia larga del RBA (antes de 2011),,,README · Deudas pendientes,
+wb:EMU,series,worldbank,pendiente,media,D3: agregado zona euro del Banco Mundial (hoy lo descarta fuentes/worldbank.py),,,FP.CPI.TOTL.ZG; NY.GDP.MKTP.KD.ZG; SL.UEM.TOTL.ZS,
+wb:LMY,series,worldbank,pendiente,media,D3: agregado emergentes (renta baja y media) del Banco Mundial (hoy lo descarta fuentes/worldbank.py),,,FP.CPI.TOTL.ZG; NY.GDP.MKTP.KD.ZG; SL.UEM.TOTL.ZS,
+wb:WLD,series,worldbank,pendiente,media,D3: agregado mundo del Banco Mundial (hoy lo descarta fuentes/worldbank.py),,,FP.CPI.TOTL.ZG; NY.GDP.MKTP.KD.ZG; SL.UEM.TOTL.ZS,
+constituyentes:nikkei225_ibovespa,constituyentes,otra,pendiente,baja,constituyentes de Nikkei 225 e Ibovespa sin fuente,,,README · Deudas pendientes,
+academicas:reglas_sin_verificar,fechas,goyal_welch|nber|ofr_fsi,pendiente,baja,"ediciones de Goyal-Welch, NBER y OFR para verificar sus reglas de fecha",,,README · Deudas pendientes,
+eurostat:calendarios,fechas,eurostat,pendiente,baja,"calendarios de Eurostat sin verificar: paro antes de 2012, PIB antes de 2003, CREACION_GEO de EA20/EA21",,,README · Deudas pendientes,
+vintages:bce_eurostat_bis_bm,vintages,bce|eurostat|bis|worldbank,pendiente,baja,"historia de revisiones de BCE, Eurostat, BIS y Banco Mundial (hoy, valores de hoy con regla)",,,README · Deudas pendientes,
+DWD,deslistado,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · deslistado (última sesión 2017-03-20): historia completa y salida,otro,,,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
+GR,deslistado,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · deslistado (última sesión 2018-02-22): historia completa y salida,fondo,,,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
+precios:aperturas,precios,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · precios de apertura para la ejecución en t+1 (arquitectura): validar o rehacer según la fuente final,,,README · Deudas pendientes,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
+supervivencia:salidos_sin_precio,precios,wrds_crsp|tiingo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · supervivencia: 459 de 759 salidos del índice sin precio en Yahoo (la PIT cubre el 66 % de cada mes),,,README · Deudas pendientes,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
+supervivencia:sp500_quiebras_q,precios,wrds_crsp,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · S&P 500: 28 tramos con ticker de quiebra (sufijo Q/QQ); el mapeo exige CIK/PERMNO,,,README · Deudas pendientes,"Q1: fuente final de precios (Yahoo, EODHD, Tiingo o WRDS)"
+yf:AIGA.L,precios,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · instrumento del universo sin fichero de precios (capa tactica),etp,materias_primas,Yahoo solo devuelve una vela (ticker sin historia),
+yf:^V2TX,precios,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · instrumento del universo sin fichero de precios (capa contexto),volatilidad,volatilidad,VSTOXX no está en Yahoo,
+001440.KS,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+032640.KS,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+ABI,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
+AMCR,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+BA.L,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+BAY,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
+BLY,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,otro,,,Q1 (CRSP/PERMNO)
+COMS,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+CPWR,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+DIGI,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+DWD,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,otro,,,Q1 (CRSP/PERMNO)
+EP,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+FERG,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+GR,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,fondo,,,Q1 (CRSP/PERMNO)
+HUBB,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+M&M.NS,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+MCIC,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+MI,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+MNST,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+PCL,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
+PCS,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
+PWER,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
+SW,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+TATASTEEL.NS,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+ULVR.L,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)
+UN,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,etf,,,Q1 (CRSP/PERMNO)
+USBC,serie_sospechosa,yahoo,limitacion_declarada,no se descarga,solo Yahoo (F3): limitación declarada; sesgo de supervivencia medido en la sonda · serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres repetidos): rehacer con identificador permanente,accion,,,Q1 (CRSP/PERMNO)

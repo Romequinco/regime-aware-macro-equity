@@ -73,7 +73,9 @@ def test_plan_valida_y_es_borrador(plan):
     (lambda p: p["tramo_no_fiable"]["series"]["fred:ICSA"].update(dias_extra=1), "dias_extra"),
     (lambda p: p["incidencias_eda"]["tipos"]["salto"].update(accion="borrar"), "accion"),
     (lambda p: p["homogeneizacion"]["frecuencias"].update(remuestrear=True), "remuestrear"),
-    (lambda p: p["reglas_conservadoras"]["academicas"]["reglas"]["FF_MENSUAL"].pop("falta"), "falta"),
+    (lambda p: p["reglas_conservadoras"]["academicas"]["reglas"]["FF_MENSUAL"].update(
+        conservadora=None, pendiente_calendario=True), "falta"),
+    (lambda p: p["reconstruidas"]["externas"]["gw:*"].update(fuente="la web de Goyal"), "URL"),
 ])
 def test_plan_rechaza_errores(romper, error):
     crudo = copy.deepcopy(pp._yaml(pp.RUTA_PLAN))
@@ -82,16 +84,57 @@ def test_plan_rechaza_errores(romper, error):
         pp.validar_plan(crudo)
 
 
+def test_no_queda_pendiente_calendario(plan):
+    """F1 y F2 cerradas: ninguna regla ni reconstrucción queda pendiente de calendario."""
+    assert not [c for g in plan["reglas_conservadoras"].values() for c, e in g["reglas"].items()
+                if e.get("pendiente_calendario")]
+    assert "pendiente_calendario" not in pp.RUTA_PLAN.read_text(encoding="utf-8")
+
+
 def test_pendiente_calendario_no_cambia_fechas(plan):
-    e = plan["reglas_conservadoras"]["academicas"]["reglas"]["FF_MENSUAL"]
-    assert e["pendiente_calendario"] is True and "conservadora" not in e and set(e["alternativas"]) == {
-        "a_anual", "b_actual_con_aviso"}
+    crudo = copy.deepcopy(pp._yaml(pp.RUTA_PLAN))
+    e = crudo["reglas_conservadoras"]["academicas"]["reglas"]["FF_MENSUAL"]
+    e.pop("conservadora")
+    e.update(pendiente_calendario=True, falta="prueba")
+    p = pp.validar_plan(crudo)
     asig = pd.DataFrame([{"id": "ff:X", "seccion": "reglas_conservadoras", "grupo": "academicas",
                           "regla": "FF_MENSUAL", "corte": pd.NaT}])
     b = pd.DataFrame({"serie": "ff:X", "fecha_referencia": pd.to_datetime(["2005-01-01"]),
                       "fecha_publicacion": pd.to_datetime(["2005-03-17"]), "metodo_publicacion": "fichero"})
-    cur = pp.fechas_curadas(b, plan, asig, catalogo_series={})
+    cur = pp.fechas_curadas(b, p, asig, catalogo_series={})
     assert cur["pendiente"].all() and (cur["fecha_publicacion_curada"] == b["fecha_publicacion"]).all()
+
+
+def _conservadora(plan: dict, grupo: str, clave: str) -> dict:
+    return plan["reglas_conservadoras"][grupo]["reglas"][clave]["conservadora"]
+
+
+def test_french_anual_antes_de_2005_09_y_mensual_despues(plan):
+    regla = _conservadora(plan, "academicas", "FF_MENSUAL")
+    refs = pd.Series(pd.to_datetime(["2003-03-01", "2005-08-15", "2005-09-01", "2025-06-30"]))
+    f = pp.fecha_regla(refs, regla)
+    assert list(f.dt.date.astype(str)) == ["2005-01-07", "2007-01-07", "2005-12-07", "2025-09-07"]
+    # desde 2005-09 cubre los retrasos medidos: septiembre de 2006 aún no estaba el 17 de noviembre; 42 días en 2025
+    assert pp.fecha_regla(pd.Series(pd.to_datetime(["2006-09-01"])), regla).iloc[0] > pd.Timestamp("2006-11-17")
+
+
+def test_goyal_welch_13m_y_2022_fijo(plan):
+    regla = _conservadora(plan, "academicas", "GW_ANUAL")
+    refs = pd.Series(pd.to_datetime(["2009-06-01", "2021-12-01", "2022-01-01", "2022-12-01", "2023-01-01"]))
+    f = pp.fecha_regla(refs, regla)
+    assert list(f.dt.date.astype(str)) == ["2011-01-31", "2023-01-31", "2024-04-15", "2024-04-15", "2025-01-31"]
+    assert f.iloc[0] > pd.Timestamp("2010-11-10")       # datos hasta 2009 guardados el 2010-11-10
+
+
+def test_ofr_cubre_dos_habiles_y_bis_cinco_meses_y_medio(plan):
+    refs = _barrido("fecha")
+    ofr = pp.fecha_regla(refs, _conservadora(plan, "academicas", "OFR_FSI"))
+    dos = catalogo.fecha_publicacion_lag(refs, "1D", "fecha", habiles="us_federal", n_habiles=2)
+    assert (ofr >= dos.to_numpy()).all()
+    q1 = pd.Series([pd.Timestamp("2026-01-01")])
+    for clave in ("BIS_WS_CREDIT_GAP", "BIS_WS_DSR"):
+        assert pp.fecha_regla(q1, _conservadora(plan, "macro_eurostat_bce_bis", clave)).iloc[0] >= \
+            pd.Timestamp("2026-09-14")
 
 
 def test_tramo_sale_de_las_tablas(plan, lista, lags):
@@ -287,10 +330,28 @@ def test_reconstruidas_coinciden_con_el_catalogo(plan, lista):
     esperadas = {s: str(e["publicado_desde"]) for s, e in cat.items() if e.get("publicado_desde") and s in queda}
     assert {k: str(v) for k, v in plan["reconstruidas"]["series"].items()} == esperadas
     assert "fred:STLFSI4" in esperadas
-    pend = plan["reconstruidas"]["pendiente_calendario"]
-    for sid in ("ofr:FSI", "gw:M.lty", "bis:WS_CREDIT_GAP.Q.CA.P.A.C", "bis:WS_DSR.Q.CA.P"):
-        assert any(fnmatch.fnmatch(sid, pat) for pat in pend), sid
-    assert all(e["web"].startswith("https://") for e in pend.values())
+    ext = plan["reconstruidas"]["externas"]
+    assert all("https://" in e["fuente"] for e in ext.values())
+    esperado = {"ofr:FSI": "2017-10-25", "ofr:FSI_CREDIT": "2017-10-25", "gw:M.lty": "2004-04-13",
+                "bis:WS_CREDIT_GAP.Q.CA.P.A.C": "2016-09-18", "bis:WS_DSR.Q.CA.P": "2015-09-13",
+                "ff:F3M.Mkt-RF": "2001-12-18", "ff:F3D.HML": "2002-06-04", "ff:F5M.SMB": "2014-12-19",
+                "ff:F5D.RMW": "2015-06-01", "ff:MOMD.Mom": "2005-07-26", "ff:IND5D.Hlth": "2005-07-26",
+                "fred:NFCI": "2011-05-25"}
+    pd_ = pp.publicado_desde(plan, esperado)
+    assert {k: pd_[k] for k in esperado} == esperado
+    # toda serie que se queda de estas fuentes tiene su publicado_desde
+    for sid in queda:
+        if sid.startswith(("ofr:", "gw:", "ff:", "bis:WS_CREDIT_GAP", "bis:WS_DSR")):
+            assert any(fnmatch.fnmatch(sid, pat) for pat in ext), sid
+
+
+def test_reconstruida_externa_no_deja_ver_antes(plan):
+    b = pd.DataFrame({"serie": "gw:M.lty", "fecha_referencia": pd.to_datetime(["1990-01-01", "2010-01-01"]),
+                      "fecha_publicacion": pd.to_datetime(["1991-08-01", "2011-08-01"]),
+                      "metodo_publicacion": "fichero", "nota": None})
+    asig = pd.DataFrame(columns=["id", "seccion", "grupo", "regla", "corte"])
+    cur = pp.fechas_curadas(b, plan, asig, catalogo_series={})
+    assert list(cur["fecha_publicacion_curada"]) == [pd.Timestamp("2004-04-13"), pd.Timestamp("2011-08-01")]
 
 
 # --- Proyecciones (D4) --------------------------------------------------------------------------------------------
