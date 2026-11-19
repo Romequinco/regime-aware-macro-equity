@@ -191,6 +191,45 @@ clicables al final. Calculo unos 45 minutos.
 | F1–F2 · verificado en la web | Comprobado en la Wayback Machine y en páginas oficiales (2026-11-19) | **Ken French:** biblioteca visible desde 2001-12-18 (diario desde 2002-06, 5 factores desde 2014-12 y 2015-06). Antes de 2005-09, cadencia anual (la propia web decía «at least once a year»); desde entonces, mensual a 17–30 días, a veces más de 45 (regla 2M7D). Reconstruye toda la historia en cada actualización.<br>**OFR FSI:** público desde 2017-10-25.<br>**Goyal-Welch:** desde 2004-04-13; actualización anual de abril a noviembre de t+1. Los datos de 2022 nunca salieron sueltos, así que se ven desde 2024-04-15. Regla nueva: 13M.<br>**BIS:** brecha de crédito desde 2016-09-18 y DSR desde 2015-09-13; trimestral, unos 5,5 meses tras el trimestre |
 | F5 | Fronteras con los otros temas | Las series numéricas del BCE y del BIS, SKEW, el ESI y UMCSENT se quedan en el Tema 1; los textos son del Tema 2 y del Tema 4. Las acciones: los precios, en el Tema 1; los informes, en el Tema 3, con la misma lista de empresas. Falta confirmarlo con los compañeros |
 
+## Paso 3b · descargas: propuesta (pendiente de tu OK)
+
+**Qué hay.** `descargas_3b.csv` tiene 233 filas pendientes y 34 en limitación declarada (F3). Las pendientes, por tipo:
+
+| Tipo | Filas | Qué es |
+|---|---|---|
+| Refresco | 26 | Poner al día, una a una, las fuentes de lo que se queda: 229 de FRED/ALFRED, 1.460 precios de Yahoo y 2 de Coinbase, BCE, OCDE… Último refresco: 2026-10-14 |
+| Precios del universo | 131 | Instrumentos del universo sin fichero (93 ETF, 7 ETP, 13 futuros, 7 índices, 6 divisas, 4 de volatilidad), casi todos UCITS de Londres, Xetra y Suiza |
+| Redescarga | 9 | Ficheros truncados (AT, AVB, BLY, EA, EQR, LEG, PSKY, QRVO, WBD) |
+| Series nuevas | 15 | Agregados del Banco Mundial (mundo, renta media/baja, UEM), agregados del WEO, zona euro (EA) del ESI y del paro de Eurostat, CLI EA20 y paro de China de la OCDE, 3 de Philadelphia, historia de BoC antes de 2001 y de RBA antes de 2011 |
+| Ediciones del WEO | 37 | Abril y octubre de 2008 a 2026; DBnomics lo prohíbe en `robots.txt` |
+| Archivo periódico | 9 | OAS de ICE (FRED solo guarda 3 años) y ediciones académicas |
+| Fechas, vintages, constituyentes | 6 | Deudas de verificación (H.15 antes de 2005, calendarios de Eurostat, vintages de BCE/BIS/BM, Nikkei e Ibovespa) |
+
+**Decisiones del 3b** (propuesta primero):
+
+| # | Decisión | Propuesta |
+|---|---|---|
+| G1 | Alcance | Se hacen las prioridades alta y media. Lo de prioridad baja (vintages de BCE, Eurostat, BIS y BM; constituyentes de Nikkei e Ibovespa; calendarios de Eurostat) pasa a limitación declarada: no hay fuente gratuita y legal. Las fechas de H.15 antes de 2005, de Ken French y de las académicas ya quedan cubiertas por F1, F2 y las reglas conservadoras: se marcan como resueltas |
+| G2 | Fecha de corte del dataset | Se fija una fecha de corte común (el último viernes con cierre completo antes de lanzar) para que todas las fuentes queden coherentes. Lo posterior entra en el siguiente refresco |
+| G3 | Ediciones del WEO | Se buscan en el archivo oficial del FMI (`imf.org`, base de datos del WEO por edición) solo si su `robots.txt` lo permite. Si no, limitación declarada. DBnomics, no |
+| G4 | Archivo de las OAS de ICE | Una orden nueva, `archivar-oas`, que guarda en el corpus la ventana actual de FRED con la fecha de captura y la une a las capturas anteriores sin perder historia. Se ejecuta ahora y después a mano cada mes (o con una tarea programada en el PC si lo prefieres) |
+| G5 | Precios del universo (131) | Se intentan todos en Yahoo con el mismo adaptador (as-traded, reanudable). Los que Yahoo no sirva pasan a limitación declarada (F3) |
+| G6 | Después de descargar | Se reconstruye la base (`construir-base`) y se regenera la cadena de los pasos 2 y 3 (inventario, redundancia, EDA, selección, preprocesado). Si la lista curada cambia más allá de las series y tickers nuevos, me paro y te lo enseño |
+| G7 | Ejecución | Descargas largas en segundo plano (`Start-Process`) desde esta rama, sin cambiar de rama mientras duran. Todo reanudable y con registro |
+
+**Plan con agentes:**
+
+| Agente | Cuándo | Qué hace |
+|---|---|---|
+| C1 · Refresco y redescarga | En paralelo | Comprueba que cada descargador sabe traer solo lo nuevo; si no, lo dice antes de lanzar. Lanza en segundo plano el refresco de las 26 fuentes hasta la fecha de corte y la redescarga de los 9 truncados. Vigila los registros |
+| C2 · Series nuevas | En paralelo | Código mínimo en los extractores de `worldbank`, `imf`, `eurostat`, `oecd`, `philly_rtdsm` y bancos centrales para las 15 series nuevas, con su catálogo, fecha de publicación (regla conservadora si no se puede medir) y tests. Las descarga |
+| C3 · Universo, WEO y OAS | En paralelo | Fichero de los 131 tickers y descarga en Yahoo (G5). Comprueba `robots.txt` del FMI y, si lo permite, descarga las ediciones del WEO (G3). Orden `archivar-oas` y primera captura (G4) |
+| (yo) | Al acabar los tres | `construir-base`, cadena de los pasos 2 y 3, diferencias de la lista curada (G6), `descargas_3b_estado.csv` con lo hecho, lo pendiente y lo que pasa a limitación |
+| V1 · Fechas | Al final | Las filas nuevas respetan el TimeGate: ninguna `fecha_publicacion` anterior a su disponibilidad real, refresco sin adelantar nada, aperturas de los nuevos tickers |
+| V2 · Cobertura | Al final | Cada fila del 3b está hecha, en limitación con su motivo o pendiente con causa. Recuentos coherentes. Ningún valor en el repo |
+
+El 3b no tiene notebook propio: su resultado se verá en el `05_resultado`. Tiempo: el código, alrededor de una hora; las descargas, varias horas en segundo plano (la de Yahoo es la más larga).
+
 ## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
 
 Lo que dejaban los notebooks antiguos y no recoge el README (originales en la etiqueta `sonda-tema1`):
