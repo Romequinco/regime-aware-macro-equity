@@ -191,7 +191,28 @@ clicables al final. Calculo unos 45 minutos.
 | F1–F2 · verificado en la web | Comprobado en la Wayback Machine y en páginas oficiales (2026-11-19) | **Ken French:** biblioteca visible desde 2001-12-18 (diario desde 2002-06, 5 factores desde 2014-12 y 2015-06). Antes de 2005-09, cadencia anual (la propia web decía «at least once a year»); desde entonces, mensual a 17–30 días, a veces más de 45 (regla 2M7D). Reconstruye toda la historia en cada actualización.<br>**OFR FSI:** público desde 2017-10-25.<br>**Goyal-Welch:** desde 2004-04-13; actualización anual de abril a noviembre de t+1. Los datos de 2022 nunca salieron sueltos, así que se ven desde 2024-04-15. Regla nueva: 13M.<br>**BIS:** brecha de crédito desde 2016-09-18 y DSR desde 2015-09-13; trimestral, unos 5,5 meses tras el trimestre |
 | F5 | Fronteras con los otros temas | Las series numéricas del BCE y del BIS, SKEW, el ESI y UMCSENT se quedan en el Tema 1; los textos son del Tema 2 y del Tema 4. Las acciones: los precios, en el Tema 1; los informes, en el Tema 3, con la misma lista de empresas. Falta confirmarlo con los compañeros |
 
-## Paso 3b · descargas: propuesta (pendiente de tu OK)
+## Paso 3b · descargas (G1–G7 aprobadas el 2026-11-19, con el alcance reducido de H1)
+
+**H1 · Alcance de esta tanda (decisión del usuario, 2026-11-19):** centrarse en el **S&P 500 y lo básico**, alineado con lo
+que hacen los compañeros (el Tema 3 trabaja con empresas del S&P 500 y deja como opción el S&P 500 histórico con
+constituyentes por fecha).
+
+- **Entra en el 3b-1 (ahora):**
+  - precios de todos los miembros del S&P 500 a cada fecha (el histórico desde 1996 que Yahoo sirva) y del núcleo del
+    universo, refrescados hasta la fecha de corte;
+  - redescarga de los truncados que sean del S&P 500;
+  - refresco de las series que se quedan de EE. UU. (FRED/ALFRED, curva del Tesoro, Ken French, Shiller, Goyal-Welch,
+    OFR) y de lo básico de mercado global (tipos de cambio y tipos oficiales del BCE, curvas soberanas);
+  - archivo de las OAS de ICE (G4).
+- **Se aplaza al 3b-2:**
+  - los 131 instrumentos del universo sin precios (UCITS);
+  - las acciones no estadounidenses del nivel ampliado;
+  - las 15 series nuevas internacionales;
+  - las ediciones del WEO;
+  - los agregados del Banco Mundial;
+  - el refresco de la macro internacional (OCDE, Eurostat, BIS, Banco Mundial, WEO).
+
+  Siguen en `descargas_3b.csv` como pendientes.
 
 **Qué hay.** `descargas_3b.csv` tiene 233 filas pendientes y 34 en limitación declarada (F3). Las pendientes, por tipo:
 
