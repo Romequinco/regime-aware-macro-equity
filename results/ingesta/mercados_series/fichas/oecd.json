@@ -12,290 +12,489 @@
   "coste": "0 €",
   "licencia_y_terminos": "OCDE: CC BY 4.0 (términos de la OCDE); citar la fuente",
   "cobertura_inicio": "1949-01",
-  "cobertura_fin": "2026-09",
+  "cobertura_fin": "2026-10",
   "frecuencia": "mensual (una edición al mes)",
   "retraso_publicacion": "medido: meses de la edición al último periodo publicado (mediana): USA.LI_AA 2; USA.CP 2; USA.UNEMP 1; EA20.CP 2; EA20.UNEMP 2; DEU.LI_AA 2; DEU.CP 2; DEU.UNEMP 2; FRA.LI_AA 2; FRA.CP 2; FRA.UNEMP 2; ITA.LI_AA 2; ITA.CP 1; ITA.UNEMP 2; GBR.LI_AA 2; GBR.CP 2; GBR.UNEMP 4; JPN.LI_AA 2; JPN.CP 2; JPN.UNEMP 2; CAN.LI_AA 2; CAN.CP 2; CAN.UNEMP 2; CHN.LI_AA 2; CHN.CP 2; G4E.LI_AA 2. Fecha conservadora: fin del mes de la edición, 23:59 París",
   "formato": "csv (SDMX)",
-  "volumen_estimado": "442.9 MB de CSV crudo para 26 pares área-medida",
+  "volumen_estimado": "444.7 MB de CSV crudo para 26 pares área-medida",
   "limites": "sin clave; límite de peticiones por IP no documentado (aquí 1/s); sonda 2026-10-13: 200 sin Cloudflare. Plan B DBnomics (solo última edición) si devuelve 403",
   "estado_sonda": "parcial",
   "mediciones": {
     "pares": {
       "USA.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1955-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 195809,
-        "filas_contrato": 95953
+        "filas_crudo": 196611,
+        "filas_contrato": 96112
       },
       "USA.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 207942,
-        "filas_contrato": 6194
+        "filas_crudo": 208742,
+        "filas_contrato": 6195
       },
       "USA.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 1.0,
-        "filas_crudo": 208122,
-        "filas_contrato": 2096
+        "filas_crudo": 208923,
+        "filas_contrato": 2097
       },
       "EA20.LI_AA": {
-        "estado": "sin_datos"
+        "estado": "limitacion",
+        "motivo": "la OCDE no publica el CLI de la zona euro: la edición 202610 de DF_STES_REVISIONS da LI_AA de 22 áreas (G7, G20, G4E, A5M, NAFTA y 17 países) y ninguna del euro; sustituto oecd:LI_AA.G4E"
       },
       "EA20.CP": {
         "primera_edicion": "2023-04",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 43,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 44,
         "periodo_inicio": "1990-01",
         "periodo_fin": "2025-12",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 17862,
+        "filas_crudo": 18294,
         "filas_contrato": 436
       },
       "EA20.UNEMP": {
         "primera_edicion": "2023-04",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 43,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 44,
         "periodo_inicio": "1990-07",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 17759,
-        "filas_contrato": 956
+        "filas_crudo": 18194,
+        "filas_contrato": 961
       },
       "DEU.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1960-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 192775,
-        "filas_contrato": 95100
+        "filas_crudo": 193565,
+        "filas_contrato": 95325
       },
       "DEU.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 207963,
-        "filas_contrato": 6092
+        "filas_crudo": 208764,
+        "filas_contrato": 6093
       },
       "DEU.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1978-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 101987,
-        "filas_contrato": 5009
+        "filas_crudo": 102416,
+        "filas_contrato": 5013
       },
       "FRA.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1960-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 177156,
-        "filas_contrato": 103522
+        "filas_crudo": 177930,
+        "filas_contrato": 104094
       },
       "FRA.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
         "periodo_fin": "2025-12",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 207955,
+        "filas_crudo": 208747,
         "filas_contrato": 4868
       },
       "FRA.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1978-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 123128,
-        "filas_contrato": 7821
+        "filas_crudo": 123653,
+        "filas_contrato": 7833
       },
       "ITA.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1961-12",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 182532,
-        "filas_contrato": 103914
+        "filas_crudo": 183311,
+        "filas_contrato": 104564
       },
       "ITA.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
         "periodo_fin": "2025-12",
         "meses_edicion_a_ultimo_periodo_mediana": 1.0,
-        "filas_crudo": 208111,
+        "filas_crudo": 208903,
         "filas_contrato": 3493
       },
       "ITA.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1978-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 121387,
-        "filas_contrato": 8503
+        "filas_crudo": 121912,
+        "filas_contrato": 8517
       },
       "GBR.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1957-12",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 195278,
-        "filas_contrato": 111492
+        "filas_crudo": 196080,
+        "filas_contrato": 111998
       },
       "GBR.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 213644,
-        "filas_contrato": 6098
+        "filas_crudo": 214445,
+        "filas_contrato": 6099
       },
       "GBR.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1971-01",
-        "periodo_fin": "2026-06",
+        "periodo_fin": "2026-07",
         "meses_edicion_a_ultimo_periodo_mediana": 4.0,
-        "filas_crudo": 127505,
-        "filas_contrato": 5090
+        "filas_crudo": 128028,
+        "filas_contrato": 5091
       },
       "JPN.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1959-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 195754,
-        "filas_contrato": 102379
+        "filas_crudo": 196556,
+        "filas_contrato": 102514
       },
       "JPN.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
         "periodo_fin": "2022-04",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 204364,
+        "filas_crudo": 205102,
         "filas_contrato": 5973
       },
       "JPN.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1955-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 207939,
-        "filas_contrato": 3682
+        "filas_crudo": 208740,
+        "filas_contrato": 3683
       },
       "CAN.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1956-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 195798,
-        "filas_contrato": 97817
+        "filas_crudo": 196600,
+        "filas_contrato": 98070
       },
       "CAN.CP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1949-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-09",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 208012,
-        "filas_contrato": 4023
+        "filas_crudo": 208813,
+        "filas_contrato": 4024
       },
       "CAN.UNEMP": {
         "primera_edicion": "1999-02",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 333,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 334,
         "periodo_inicio": "1956-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 208036,
-        "filas_contrato": 4406
+        "filas_crudo": 208838,
+        "filas_contrato": 4408
       },
       "CHN.LI_AA": {
         "primera_edicion": "2006-04",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 241,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 242,
         "periodo_inicio": "1983-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 77273,
-        "filas_contrato": 61790
+        "filas_crudo": 77687,
+        "filas_contrato": 62159
       },
       "CHN.CP": {
         "primera_edicion": "2000-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 312,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 313,
         "periodo_inicio": "1993-01",
-        "periodo_fin": "2026-08",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 75070,
-        "filas_contrato": 2375
+        "filas_crudo": 75476,
+        "filas_contrato": 2377
       },
       "CHN.UNEMP": {
-        "estado": "sin_datos"
+        "estado": "limitacion",
+        "motivo": "la OCDE no publica el paro de China: la edición 202610 trae para CHN solo CP, EX, IM, LI_AA, LI_TR, MABM, PRVM, RS y TOVM; sustituto anual wb:CHN.SL.UEM.TOTL.ZS"
       },
       "G4E.LI_AA": {
         "primera_edicion": "2001-01",
-        "ultima_edicion": "2026-10",
-        "n_ediciones": 304,
+        "ultima_edicion": "2026-11",
+        "n_ediciones": 305,
         "periodo_inicio": "1961-01",
-        "periodo_fin": "2026-09",
+        "periodo_fin": "2026-10",
         "meses_edicion_a_ultimo_periodo_mediana": 2.0,
-        "filas_crudo": 188186,
-        "filas_contrato": 104089
+        "filas_crudo": 188965,
+        "filas_contrato": 104646
       },
       "G4E.CP": {
-        "estado": "sin_datos"
+        "estado": "sin_crudo"
       },
       "G4E.UNEMP": {
-        "estado": "sin_datos"
+        "estado": "sin_crudo"
       }
     },
-    "descarga": {},
-    "bytes_crudo": 442879793
+    "descarga": {
+      "USA.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "USA.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "USA.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "EA20.LI_AA": {
+        "estado": "limitacion",
+        "motivo": "la OCDE no publica el CLI de la zona euro: la edición 202610 de DF_STES_REVISIONS da LI_AA de 22 áreas (G7, G20, G4E, A5M, NAFTA y 17 países) y ninguna del euro; sustituto oecd:LI_AA.G4E"
+      },
+      "EA20.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "EA20.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "DEU.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "DEU.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "DEU.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "FRA.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "FRA.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "FRA.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "ITA.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "ITA.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "ITA.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "GBR.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "GBR.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "GBR.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "JPN.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "JPN.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "JPN.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "CAN.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "CAN.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "CAN.UNEMP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "CHN.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "CHN.CP": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "CHN.UNEMP": {
+        "estado": "limitacion",
+        "motivo": "la OCDE no publica el paro de China: la edición 202610 trae para CHN solo CP, EX, IM, LI_AA, LI_TR, MABM, PRVM, RS y TOVM; sustituto anual wb:CHN.SL.UEM.TOTL.ZS"
+      },
+      "G4E.LI_AA": {
+        "ultima_previa": "202610",
+        "nuevas": [
+          "202611"
+        ],
+        "estado": "refrescado"
+      },
+      "G4E.CP": {
+        "estado": "sin_crudo"
+      },
+      "G4E.UNEMP": {
+        "estado": "sin_crudo"
+      }
+    },
+    "bytes_crudo": 444745619
   },
   "notas": [
     "vintage = edición AAAA-MM; fecha_publicacion = primera decisión tras el fin del mes de la edición",
@@ -303,8 +502,11 @@
     "EA20: composición cambiante según la OCDE (zona euro a 21 en 2026: comprobar el código del área)",
     "G4E = 'Major four European countries' de la OCDE (Alemania, Francia, Italia y Reino Unido): NO es la zona euro; la OCDE no publica el CLI de EA19/EA20 (404 en DF_STES_REVISIONS y DF_CLI, 2026-10-13)",
     "CLI revisado en parte en cada edición (mediana 44-48 % de los periodos comunes, USA y DEU): usar siempre el vintage de la fecha; no es un índice re-estimado entero",
+    "limitación EA20.LI_AA: la OCDE no publica el CLI de la zona euro: la edición 202610 de DF_STES_REVISIONS da LI_AA de 22 áreas (G7, G20, G4E, A5M, NAFTA y 17 países) y ninguna del euro; sustituto oecd:LI_AA.G4E",
+    "limitación CHN.UNEMP: la OCDE no publica el paro de China: la edición 202610 trae para CHN solo CP, EX, IM, LI_AA, LI_TR, MABM, PRVM, RS y TOVM; sustituto anual wb:CHN.SL.UEM.TOTL.ZS",
+    "Refresco (paso 3b-2): solo las ediciones nuevas, una petición por edición, en ficheros aparte (revisions_<área>_<medida>__ed<AAAAMM>.csv); los crudos guardados no se tocan",
     "IPC de Japón: se toma de aquí (el Banco de Japón no publica el IPC; lo hace el MIC)",
     "Crudo en <corpus>/mercados_series/crudo/oecd/"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }

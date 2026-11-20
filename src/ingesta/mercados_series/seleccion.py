@@ -117,6 +117,10 @@ histórico (``constituyentes/sp500.parquet``) cuyo fichero no solapa con NINGUNO
 pertenencia, o es de una clase que no puede ser una acción del índice (``CLASES_NO_MIEMBRO``: GR es un
 fondo), se queda con ``aviso = 'ticker reutilizado: el fichero no es el miembro del S&P'`` (AT: un ETF de
 ARCX desde 2026-09-17, no Alltel; DWD, GP, LU...).
+**Avisos del 3b-2**: los instrumentos del universo que Yahoo empieza más de 30 días después de su lanzamiento
+(``historia_recortada``) llevan ``aviso = 'historia recortada por Yahoo: faltan N días desde el lanzamiento'``; los
+alias UCITS con correlación semanal < 0,9 con su ETF de EE. UU. (``ucits_poco_correlados``), ``AVISO_UCITS``; y los
+ficheros rotos verificados a mano (``SOSPECHOSAS_VERIFICADAS``: IBTS.L) son serie sospechosa.
 
 **Decisiones de cierre del paso 3** (``PLAN_DESCARGA.md``):
 
@@ -944,6 +948,57 @@ def resumen_cobertura_sp500(cobertura: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(filas, columns=["metrica", "valor"], dtype=object)
 
 
+# --- Avisos del 3b-2: historia recortada, alias UCITS con poca correlación, sospechosas verificadas ----------------
+#: Un instrumento del universo que Yahoo empieza más de estos días después de su lanzamiento (``inicio_esperado``,
+#: justETF) tiene la historia recortada (igual que ``proveedores.yahoo.HOLGURA_INICIO``).
+HOLGURA_HISTORIA_DIAS = 30
+AVISO_RECORTADA = "historia recortada por Yahoo: faltan {n} días desde el lanzamiento"
+#: Un alias UCITS cuya correlación semanal con su ETF de EE. UU. no llega a esto lleva aviso (``redundancia_etf``).
+UMBRAL_UCITS_SEMANAL = 0.9
+AVISO_UCITS = "alias UCITS con correlación semanal baja con {etf} ({c} < {u})"
+#: Ficheros que el EDA no marca (menos de 20 saltos) pero están rotos, verificados a mano (3b-2, 2026-11-20). El
+#: resto de alias UCITS con poca correlación la explica la divisa: cotizan en GBP o GBp en Londres y su ETF en USD,
+#: así que en un fondo de poca volatilidad (letras y bonos del Tesoro) la rentabilidad semanal es casi solo el tipo
+#: de cambio (IBTM.L 0,5 e ITPS.L 0,4 desde 2010, ya sin saltos; IDTL.L, en USD, 0,94 con TLT).
+SOSPECHOSAS_VERIFICADAS = {
+    "IBTS.L": ("letras del Tesoro de 1 a 3 años con 32 sesiones de más de un 10 % desde 2010, velas a la mitad que "
+               "se revierten al día siguiente en 2008 y un salto ×145 el 2009-01-02 sin split: fichero roto"),
+}
+
+
+def historia_recortada(pre: pd.DataFrame, universo: pd.DataFrame,
+                       holgura: int = HOLGURA_HISTORIA_DIAS) -> dict[str, int]:
+    """``ticker → días`` que faltan desde el lanzamiento: instrumentos del universo (``id_universo`` de
+    ``inventario_precios``) cuyo fichero empieza más de ``holgura`` días después de su ``inicio_esperado``."""
+    if universo is None or "inicio_esperado" not in universo or "id_universo" not in pre:
+        return {}
+    esperado = pd.to_datetime(universo.set_index("id")["inicio_esperado"])
+    out = {}
+    for t, u, d in zip(pre["ticker"], pre["id_universo"], pre["desde"]):
+        e = esperado.get(u) if not _vacio(u) else None
+        if e is None or pd.isna(e) or _vacio(d):
+            continue
+        n = int((pd.Timestamp(d) - e).days)
+        if n > holgura:
+            out[str(t)] = n
+    return out
+
+
+def ucits_poco_correlados(etf: pd.DataFrame, umbral: float = UMBRAL_UCITS_SEMANAL) -> dict[tuple[str, str], float]:
+    """``(ucits, etf) → correlación semanal`` de los pares UCITS de ``redundancia_etf`` por debajo de ``umbral``
+    (sin la semanal, la de su base)."""
+    out: dict[tuple[str, str], float] = {}
+    if etf is None or etf.empty:
+        return out
+    for _, f in etf[etf["tipo"] == "ucits"].iterrows():
+        miembros = [m.strip() for m in str(f["miembros"]).split(";")]
+        c = f.get("corr_semanal")
+        c = float(c) if not _vacio(c) else float(f["corr_min"])
+        if len(miembros) == 2 and c < umbral:
+            out[(miembros[1], miembros[0])] = c
+    return out
+
+
 def es_truncado(sesiones: int) -> bool:
     """Fichero truncado (menos de ``MIN_SESIONES`` sesiones con cierre): sin datos útiles, se re-descarga entero.
     Un truncado no se cuenta como deslistado: su última sesión no dice nada de la salida."""
@@ -951,16 +1006,21 @@ def es_truncado(sesiones: int) -> bool:
 
 
 def seleccionar_precios(pre: pd.DataFrame, etf: pd.DataFrame, clases: Mapping[str, str] | None = None,
-                        sospechosas: Iterable[str] = (), reutilizados: Mapping[str, str] | None = None) -> pd.DataFrame:
+                        sospechosas: Iterable[str] = (), reutilizados: Mapping[str, str] | None = None,
+                        recortados: Mapping[str, int] | None = None) -> pd.DataFrame:
     """Lista curada de ficheros de precios (``COLUMNAS_PRECIOS``). D10 abierta: fuera solo los truncados.
 
-    ``aviso = 'serie sospechosa'`` (ticker reciclado o datos basura, ``series_sospechosas``): se queda con
-    aviso. ``reutilizados`` (``tickers_reutilizados``: ticker del S&P 500 cuyo fichero no es el miembro): se
-    queda con ``AVISO_REUTILIZADO`` (los dos avisos se unen con «; »). Las acciones llevan
+    ``aviso = 'serie sospechosa'`` (ticker reciclado o datos basura, ``series_sospechosas`` y
+    ``SOSPECHOSAS_VERIFICADAS``): se queda con aviso. ``reutilizados`` (``tickers_reutilizados``: ticker del S&P 500
+    cuyo fichero no es el miembro): se queda con ``AVISO_REUTILIZADO``. 3b-2: ``recortados``
+    (``historia_recortada``) llevan ``AVISO_RECORTADA`` y los alias UCITS con correlación semanal < 0,9 con su ETF
+    (``ucits_poco_correlados``), ``AVISO_UCITS``. Los avisos se unen con «; ». Las acciones llevan
     ``frontera = 'tema3'`` (universo de empresas común con el Tema 3)."""
     clases = dict(clases or {})
-    sospechosas = set(sospechosas)
+    sospechosas = set(sospechosas) | set(SOSPECHOSAS_VERIFICADAS)
     reutilizados = dict(reutilizados or {})
+    recortados = dict(recortados or {})
+    poca_corr = ucits_poco_correlados(etf)
     buckets = {str(k): v for k, v in zip(pre["ticker"], pre["bucket"]) if not _vacio(v)}
     alias = alias_etf(etf, buckets=buckets)
     filas = []
@@ -981,8 +1041,15 @@ def seleccionar_precios(pre: pd.DataFrame, etf: pd.DataFrame, clases: Mapping[st
             mot += (f"; alias informativo de {a[0]} (UCITS: invertible para un minorista de la UE; los dos se quedan)"
                     if a[1] == "ucits" else f"; alias ETF informativo de {a[0]} ({a[1]})")
         avisos = [AVISO_SOSPECHOSA] * (t in sospechosas) + [AVISO_REUTILIZADO] * (t in reutilizados)
+        if t in recortados:
+            avisos.append(AVISO_RECORTADA.format(n=recortados[t]))
+        if a and a[1] == "ucits" and (t, a[0]) in poca_corr:
+            avisos.append(AVISO_UCITS.format(etf=a[0], c=f"{poca_corr[(t, a[0])]:.3f}".replace(".", ","),
+                                             u=f"{UMBRAL_UCITS_SEMANAL:.2f}".replace(".", ",")))
         aviso = "; ".join(avisos) or None
-        if t in sospechosas and d == "queda":
+        if t in SOSPECHOSAS_VERIFICADAS and d == "queda":
+            mot += f"; serie sospechosa verificada: {SOSPECHOSAS_VERIFICADAS[t]}: {MOTIVO_F3}"
+        elif t in sospechosas and d == "queda":
             mot += f"; serie sospechosa (ticker reciclado o datos basura): {MOTIVO_F3}"
         if t in reutilizados:
             mot += f"; {AVISO_REUTILIZADO} ({reutilizados[t]})"
@@ -1253,8 +1320,10 @@ def calcular(tablas: Path) -> dict[str, Any]:
     tramos = pd.read_parquet(ruta_tramos_sp500()) if ruta_tramos_sp500().exists() else None
     cob = cobertura_tramos_sp500(tramos, pre, clases) if tramos is not None else None
     reutilizados = tickers_reutilizados(cob) if cob is not None else {}
-    precios = seleccionar_precios(pre, etf, clases, series_sospechosas(eda), reutilizados)
-    descargas = tabla_descargas_3b(series, precios, universo.tabla_universo(), pre, bmw, sin_ea)
+    uni = universo.tabla_universo()
+    precios = seleccionar_precios(pre, etf, clases, series_sospechosas(eda), reutilizados,
+                                  historia_recortada(pre, uni))
+    descargas = tabla_descargas_3b(series, precios, uni, pre, bmw, sin_ea)
     return {"series": series, "precios": precios, "resumen": tabla_resumen(series, precios), "descargas": descargas,
             "cobertura_sp500": cob}
 

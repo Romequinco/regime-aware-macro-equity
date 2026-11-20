@@ -98,10 +98,10 @@ TWEXAFEGSMTH,retraso,C,1,0,0,0,1,alfred_medida,92,0,0.0,,,28.0,,,0.0,0.0,fiable 
 TWEXMMTH,retraso,C,1,0,0,0,1,alfred_medida,69,0,0.0,,,54.0,,,0.0,0.0,fiable con margen,conservadora: retrasa 54 días en mediana,fiable con margen
 UMCSENT,retraso,C,8,6,2,2,2,alfred_previa,669,669,4.33,88.19,7.47,4.0,0.0,10.0,16.79999999999995,26.0,no fiable,adelanta hasta 26 días (> 7) en el 4.3 % de los casos,no fiable
 UNRATE,retraso,C,15,0,15,10,15,alfred_previa,7270,7270,0.33,99.67,0.0,26.0,22.0,30.0,19.0,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.3 % de los casos,no fiable
-WB_ANUAL,retraso,C,594,594,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
+WB_ANUAL,retraso,C,603,603,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 WTI_SPOT_MONTHLY,retraso,C,1,0,0,0,1,alfred_medida,120,0,26.67,,,5.0,,,26.0,26.0,no fiable,adelanta en el 26.7 % de los casos (> 5 %),no fiable
 boc_bonos,publicador,C,7,7,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
-boc_valet,publicador,C,2,2,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
+boc_valet,publicador,C,3,3,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 boe_yc,publicador,C,12,12,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 boj_diario,publicador,C,1,1,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 bundesbank_diario,publicador,C,1,1,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible

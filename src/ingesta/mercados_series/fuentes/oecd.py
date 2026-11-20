@@ -20,20 +20,31 @@ el ÚLTIMO día del mes de la edición a las 23:59 de París (publicador ``oecd_
 fragmento): la OCDE publica a mitad de mes, así que nunca se adelanta. Solo valores nuevos o
 revisados entre ediciones consecutivas (``b4_comun.compactar_vintages``).
 
+Limitaciones (paso 3b-2, medidas el 2026-11-20 con la edición 202610; ``SIN_DATOS``): la OCDE no
+publica el CLI de la zona euro (``LI_AA`` sale para 22 áreas, ninguna del euro) ni el paro de China
+(``CHN`` solo trae CP, EX, IM, LI_AA, LI_TR, MABM, PRVM, RS y TOVM). Esos dos pares no se piden.
+
+Refresco (``refrescar``, paso 3b-2): la descarga inicial guarda todas las ediciones; el refresco pide
+solo las ediciones posteriores a la última guardada, una a una (``EDITION`` = ``AAAAMM`` en la clave),
+hasta el mes en curso, y las guarda aparte (``revisions_<área>_<medida>__ed<AAAAMM>.csv``): los crudos
+ya guardados no se tocan. ``cargar_crudo`` une todos los ficheros del par. Ritmo: una petición cada
+``SEGUNDOS_REFRESCO`` s; un 403/429 o un reto para la tanda (no se esquiva).
+
 Plan B (``descargar_dbnomics``): si ``sdmx.oecd.org`` responde 403 o un reto anti-bot no se
 esquiva: se usa DBnomics (proveedor ``OECD``, conjunto ``DSD_STES@DF_CLI``), que solo da la ÚLTIMA
 edición: se guarda como vintage ``AAAA-MM`` del mes de descarga (fin de mes, conservador) con la nota
 de revisión. Sonda del 2026-10-13: ``sdmx.oecd.org`` respondió 200 (sin bloqueo); DBnomics también.
 
 CLI: ``python -m ingesta.mercados_series.fuentes.oecd [--areas USA ...] [--medidas LI_AA ...]
-[--desde 2000-01] [--descargar] [--ficha]`` (reanudable: un CSV por área y medida en el corpus;
-``--forzar`` vuelve a pedirlo).
+[--desde 2000-01] [--descargar] [--refrescar] [--ficha]`` (reanudable: un CSV por área y medida en el
+corpus; ``--forzar`` vuelve a pedirlo; ``--refrescar`` añade solo las ediciones nuevas).
 """
 from __future__ import annotations
 
 import argparse
 import io
 import json
+import re
 import time
 from collections.abc import Iterable, Sequence
 from pathlib import Path
@@ -65,17 +76,39 @@ MEDIDAS = {"LI_AA": "índice (100 = tendencia de largo plazo)", "CP": "índice (
 NOTA_EDICION = "OCDE, edición {edicion}: fecha conservadora = fin del mes de la edición"
 NOTA_DBNOMICS = ("DBnomics (última edición de la OCDE): vintage = mes de descarga; valores del último vintage: "
                  "posible fuga de revisiones")
+# Pares que la OCDE no publica (paso 3b-2, medido el 2026-11-20 con la edición 202610): no se piden.
+SIN_DATOS = {
+    ("EA20", "LI_AA"): ("la OCDE no publica el CLI de la zona euro: la edición 202610 de DF_STES_REVISIONS da LI_AA de "
+                        "22 áreas (G7, G20, G4E, A5M, NAFTA y 17 países) y ninguna del euro; sustituto oecd:LI_AA.G4E"),
+    ("CHN", "UNEMP"): ("la OCDE no publica el paro de China: la edición 202610 trae para CHN solo CP, EX, IM, LI_AA, "
+                       "LI_TR, MABM, PRVM, RS y TOVM; sustituto anual wb:CHN.SL.UEM.TOTL.ZS"),
+}
+SEGUNDOS_REFRESCO = 5.0
 
-__all__ = ["FUENTE", "AREAS", "MEDIDAS", "url_sdmx", "leer_csv_revisiones", "tabla_oecd", "descargar",
-           "leer_dbnomics", "tabla_dbnomics", "descargar_dbnomics", "ficha_oecd"]
+__all__ = ["FUENTE", "AREAS", "MEDIDAS", "SIN_DATOS", "url_sdmx", "url_edicion", "leer_csv_revisiones", "tabla_oecd",
+           "descargar", "ediciones_pendientes", "refrescar", "cargar_crudo", "leer_dbnomics", "tabla_dbnomics",
+           "descargar_dbnomics", "ficha_oecd"]
 
 
 def url_sdmx(area: str, medida: str) -> str:
     return URL_SDMX.format(area=area, medida=medida)
 
 
+def url_edicion(area: str, medida: str, edicion: str) -> str:
+    """Clave de UNA edición (``AAAAMM``): ``<área>.M.<medida>...<edición>``."""
+    return url_sdmx(area, medida) + edicion
+
+
 def _ruta(area: str, medida: str) -> Path:
     return ruta_crudo(FUENTE) / f"revisions_{area}_{medida}.csv"
+
+
+def _rutas_par(area: str, medida: str, carpeta: Path | None = None) -> list[Path]:
+    """Crudo inicial del par y sus refrescos por edición (``__ed<AAAAMM>``), en orden."""
+    base = Path(carpeta) if carpeta is not None else ruta_crudo(FUENTE)
+    inicial = base / f"revisions_{area}_{medida}.csv"
+    extra = sorted(base.glob(f"revisions_{area}_{medida}__ed*.csv"))
+    return [r for r in [inicial, *extra] if r.exists() and r.stat().st_size > 0]
 
 
 def leer_csv_revisiones(fuente: Path | str | bytes) -> pd.DataFrame:
@@ -138,6 +171,9 @@ def descargar(areas: Iterable[str] = AREAS, medidas: Iterable[str] = tuple(MEDID
     for area in areas:
         for medida in medidas:
             clave = f"{area}.{medida}"
+            if (area, medida) in SIN_DATOS:
+                informe[clave] = {"estado": "limitacion", "motivo": SIN_DATOS[(area, medida)]}
+                continue
             ruta = _ruta(area, medida)
             if ruta.exists() and not forzar:
                 informe[clave] = {"estado": "en_cache", "bytes": ruta.stat().st_size}
@@ -162,9 +198,86 @@ def descargar(areas: Iterable[str] = AREAS, medidas: Iterable[str] = tuple(MEDID
     return informe
 
 
-def cargar_crudo(area: str, medida: str) -> pd.DataFrame | None:
-    ruta = _ruta(area, medida)
-    return leer_csv_revisiones(ruta) if ruta.exists() and ruta.stat().st_size > 0 else None
+def cargar_crudo(area: str, medida: str, carpeta: Path | None = None) -> pd.DataFrame | None:
+    """Todas las ediciones guardadas del par (crudo inicial + refrescos); None si no hay ninguno.
+
+    Una misma edición en dos ficheros (refresco repetido) se queda una vez: gana el último fichero.
+    """
+    rutas = _rutas_par(area, medida, carpeta)
+    if not rutas:
+        return None
+    d = pd.concat([leer_csv_revisiones(r) for r in rutas], ignore_index=True)
+    claves = ["area", "medida", "unidad_sdmx", "actividad", "edicion", "periodo"]
+    return d.drop_duplicates(claves, keep="last").reset_index(drop=True)
+
+
+def ediciones_pendientes(ultima: pd.Timestamp | str, hoy: pd.Timestamp | str) -> list[str]:
+    """Ediciones ``AAAAMM`` posteriores a ``ultima`` hasta el mes de ``hoy`` (incluido)."""
+    desde = pd.Timestamp(ultima).to_period("M") + 1
+    hasta = pd.Timestamp(hoy).to_period("M")
+    return [str(m).replace("-", "") for m in pd.period_range(desde, hasta, freq="M")] if desde <= hasta else []
+
+
+def refrescar(areas: Iterable[str] = AREAS, medidas: Iterable[str] = tuple(MEDIDAS), *, hoy: Any = None,
+              segundos: float = SEGUNDOS_REFRESCO, transporte: Any = None,
+              carpeta: Path | None = None) -> dict[str, dict[str, Any]]:
+    """Añade solo las ediciones nuevas de cada par ya descargado (una petición por edición).
+
+    Para cada par con crudo: ediciones de la última guardada + 1 al mes de ``hoy``. 404 o respuesta
+    vacía → la edición aún no existe (se para ese par). 403/429 o reto → ``bloqueado`` y se para la
+    tanda entera (no se esquiva). ``transporte(url, params) -> bytes`` sustituye a la red en los tests.
+    """
+    hoy = pd.Timestamp(hoy) if hoy is not None else pd.Timestamp.now(tz="America/New_York").tz_localize(None)
+    base = Path(carpeta) if carpeta is not None else ruta_crudo(FUENTE)
+    informe: dict[str, dict[str, Any]] = {}
+    bloqueado = False
+    for area in areas:
+        for medida in medidas:
+            clave = f"{area}.{medida}"
+            if (area, medida) in SIN_DATOS:
+                informe[clave] = {"estado": "limitacion", "motivo": SIN_DATOS[(area, medida)]}
+                continue
+            crudo = cargar_crudo(area, medida, base)
+            if crudo is None or crudo.empty:
+                informe[clave] = {"estado": "sin_crudo"}
+                continue
+            ultima = crudo["edicion"].max()
+            pend = ediciones_pendientes(ultima, hoy)
+            info: dict[str, Any] = {"ultima_previa": ultima.strftime("%Y%m"), "nuevas": [], "estado": "al_dia"}
+            for ed in pend:
+                if bloqueado:
+                    info["estado"] = "pendiente_bloqueo"
+                    break
+                url = url_edicion(area, medida, ed)
+                try:
+                    if transporte is not None:
+                        contenido = transporte(url, {"format": "csvfile"})
+                    else:
+                        contenido = get(url, params={"format": "csvfile"}, timeout=120, reintentos=1,
+                                        por_segundo=1.0 / segundos).content
+                except Exception as e:  # noqa: BLE001 — se documenta y se sigue
+                    txt = str(e)
+                    # Estado HTTP al principio del mensaje (la URL lleva la edición: «202604» contiene «404»).
+                    m = re.match(r"\s*(\d{3})\b", txt)
+                    codigo = int(m.group(1)) if m else None
+                    if codigo == 404:
+                        break   # la edición aún no está publicada: las siguientes tampoco
+                    if codigo in (403, 429) or "cloudflare" in txt.lower():
+                        info["estado"], info["error"], bloqueado = "bloqueado", txt[:200], True
+                        break
+                    info["estado"], info["error"] = "fallo", txt[:200]
+                    break
+                if not contenido or not contenido.strip() or contenido.lstrip()[:1] == b"<":
+                    break
+                nombre = f"revisions_{area}_{medida}__ed{ed}.csv"
+                if carpeta is not None:
+                    (base / nombre).write_bytes(contenido)
+                else:
+                    guardar_crudo(FUENTE, nombre, contenido)
+                info["nuevas"].append(ed)
+                info["estado"] = "refrescado"
+            informe[clave] = info
+    return informe
 
 
 # --- Plan B: DBnomics (solo la última edición) ----------------------------------------------------
@@ -219,6 +332,9 @@ def ficha_oecd(areas: Iterable[str] = AREAS, medidas: Iterable[str] = tuple(MEDI
     med: dict[str, Any] = {}
     for area in areas:
         for medida in medidas:
+            if (area, medida) in SIN_DATOS:
+                med[f"{area}.{medida}"] = {"estado": "limitacion", "motivo": SIN_DATOS[(area, medida)]}
+                continue
             crudo = cargar_crudo(area, medida)
             if crudo is None or crudo.empty:
                 med[f"{area}.{medida}"] = {"estado": (informe or {}).get(f"{area}.{medida}", {}).get("estado", "sin_datos")}
@@ -237,6 +353,7 @@ def ficha_oecd(areas: Iterable[str] = AREAS, medidas: Iterable[str] = tuple(MEDI
                 "meses_edicion_a_ultimo_periodo_mediana": float(meses.median()),
                 "filas_crudo": int(len(d)), "filas_contrato": int(len(tabla))}
     ok = {k: v for k, v in med.items() if "n_ediciones" in v}
+    limitaciones = {k: v for k, v in med.items() if v.get("estado") == "limitacion"}
     bytes_crudo = sum(p.stat().st_size for p in ruta_crudo(FUENTE).glob("revisions_*.csv"))
     ficha = FichaFuente(
         fuente=FUENTE, nombre="OCDE: ediciones de indicadores de corto plazo (DF_STES_REVISIONS: CLI, IPC, paro)",
@@ -253,12 +370,15 @@ def ficha_oecd(areas: Iterable[str] = AREAS, medidas: Iterable[str] = tuple(MEDI
         volumen_estimado=f"{bytes_crudo / 1e6:.1f} MB de CSV crudo para {len(ok)} pares área-medida",
         limites=("sin clave; límite de peticiones por IP no documentado (aquí 1/s); sonda 2026-10-13: 200 sin "
                  "Cloudflare. Plan B DBnomics (solo última edición) si devuelve 403"),
-        estado_sonda="ok" if ok and len(ok) == len(med) else ("parcial" if ok else "fallo"),
+        estado_sonda="ok" if ok and len(ok) + len(limitaciones) == len(med) else ("parcial" if ok else "fallo"),
         mediciones={"pares": med, "descarga": informe or {}, "bytes_crudo": bytes_crudo},
         notas=["vintage = edición AAAA-MM; fecha_publicacion = primera decisión tras el fin del mes de la edición",
                "Solo valores nuevos o revisados entre ediciones consecutivas",
                "EA20: composición cambiante según la OCDE (zona euro a 21 en 2026: comprobar el código del área)",
                NOTA_G4E, NOTA_REVISIONES_CLI,
+               *[f"limitación {a}.{m}: {motivo}" for (a, m), motivo in SIN_DATOS.items()],
+               "Refresco (paso 3b-2): solo las ediciones nuevas, una petición por edición, en ficheros aparte "
+               "(revisions_<área>_<medida>__ed<AAAAMM>.csv); los crudos guardados no se tocan",
                "IPC de Japón: se toma de aquí (el Banco de Japón no publica el IPC; lo hace el MIC)",
                "Crudo en <corpus>/mercados_series/crudo/oecd/"])
     ruta = guardar_ficha(ficha) if guardar else None
@@ -272,6 +392,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     p.add_argument("--desde", default=None, help="startPeriod AAAA-MM")
     p.add_argument("--descargar", action="store_true")
     p.add_argument("--forzar", action="store_true")
+    p.add_argument("--refrescar", action="store_true", help="solo las ediciones posteriores a la última guardada")
     p.add_argument("--limite-segundos", type=float, default=420.0)
     p.add_argument("--dbnomics", action="store_true", help="plan B: CLI de DBnomics (solo última edición)")
     p.add_argument("--ficha", action="store_true")
@@ -281,6 +402,10 @@ def main(argv: Sequence[str] | None = None) -> None:
         informe = descargar(a.areas, a.medidas, desde=a.desde, forzar=a.forzar, limite_segundos=a.limite_segundos)
         for k, v in informe.items():
             print(k, v.get("estado"), v.get("bytes"))
+    if a.refrescar:
+        informe = {**(informe or {}), **refrescar(a.areas, a.medidas)}
+        for k, v in informe.items():
+            print(k, v.get("estado"), v.get("nuevas", ""), v.get("error", ""))
     if a.dbnomics:
         print(descargar_dbnomics(a.areas))
     if a.ficha:

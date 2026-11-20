@@ -240,6 +240,23 @@ def test_t3b_lote_registra_el_mercado_guardado(tmp_path, monkeypatch) -> None:
     assert len(y.leer_registro("3b1")) == 2
 
 
+@pytest.mark.parametrize("ex", ["NYS", "TEX", "PNK", "OQB", "OQX", "OID"])
+def test_t3b2_exchange_de_eeuu_sin_respaldo_por_huso(ex, caplog) -> None:
+    """3b-2: los exchangeName de EE. UU. que en el 3b-1 caían al huso (^NYA, NYSE Texas y OTC) van a XNYS por el
+    mapa, sin el aviso «sin mapa», y con el mismo cierre que daba el huso (nada guardado cambia)."""
+    meta = {"exchangeName": ex, "exchangeTimezoneName": "America/New_York"}
+    with caplog.at_level("WARNING"):
+        assert y.mercado_de("ZZZZ", meta) == "XNYS" == y.MAPA_HUSO["America/New_York"]
+    assert "sin mapa" not in caplog.text
+
+
+def test_t3b2_lotes_en_la_ficha() -> None:
+    """Los lotes del 3b-2 entran en la ficha yahoo, cada uno con su lista y su cobertura."""
+    for lote in ("3b2_universo", "3b2_ampliado"):
+        assert y.LOTES_FICHA[lote] == f"logs/tickers_{lote}.csv"
+        assert y.fichero_cobertura(lote) == f"yahoo_{lote}_cobertura.csv"
+
+
 def test_t3b_cobertura_de_cada_lote_en_su_fichero() -> None:
     """La cobertura del refresco 3b-1 no pisa la del nivel ampliado."""
     assert y.fichero_cobertura("ampliado") == "yahoo_ampliado_cobertura.csv"

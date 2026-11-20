@@ -12,53 +12,76 @@
   "autenticacion": "ninguna",
   "coste": "0 €",
   "licencia_y_terminos": "Términos del Banco de Canadá (https://www.bankofcanada.ca/terms/): uso libre citando la fuente",
-  "cobertura_inicio": "2001-01-02",
-  "cobertura_fin": "2026-11-17",
-  "frecuencia": "diaria",
-  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: V39079 2; BD.CDN.10YR.DQ.YLD 2. Regla conservadora: hábil siguiente a las 12:00 locales",
+  "cobertura_inicio": "1996-01-01",
+  "cobertura_fin": "2026-11-19",
+  "frecuencia": "diaria (y mensual: STATIC_ATABLE_V39079, objetivo a fin de mes)",
+  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: V39079 1; BD.CDN.10YR.DQ.YLD 1; STATIC_ATABLE_V39079 50. Regla conservadora: hábil siguiente a las 12:00 locales",
   "formato": "json",
-  "volumen_estimado": "1.38 MB (2 series)",
+  "volumen_estimado": "1.43 MB (3 series)",
   "limites": "sin clave; 1 petición/s; reintento único ante error",
   "estado_sonda": "ok",
   "mediciones": {
     "series": {
       "boc:V39079": {
         "inicio": "2009-04-21",
-        "fin": "2026-11-17",
-        "n_obs": 4572,
-        "filas_contrato": 4572,
-        "bytes": 540170,
-        "dias_naturales_ultimo_dato_a_sonda": 2,
+        "fin": "2026-11-19",
+        "inicio_tabla_vigente": "2009-04-21",
+        "filas_tramo_historico": 0,
+        "n_obs": 4574,
+        "filas_contrato": 4574,
+        "bytes": 540406,
+        "dias_naturales_ultimo_dato_a_sonda": 1,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
       },
       "boc:BD.CDN.10YR.DQ.YLD": {
         "inicio": "2001-01-02",
-        "fin": "2026-11-17",
-        "n_obs": 6470,
-        "filas_contrato": 6470,
-        "bytes": 841851,
-        "dias_naturales_ultimo_dato_a_sonda": 2,
+        "fin": "2026-11-19",
+        "inicio_tabla_vigente": "2001-01-02",
+        "filas_tramo_historico": 0,
+        "n_obs": 6472,
+        "filas_contrato": 6472,
+        "bytes": 842111,
+        "dias_naturales_ultimo_dato_a_sonda": 1,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
+      },
+      "boc:STATIC_ATABLE_V39079": {
+        "inicio": "1996-01-01",
+        "fin": "2026-10-01",
+        "inicio_tabla_vigente": "1996-01-01",
+        "filas_tramo_historico": 0,
+        "n_obs": 370,
+        "filas_contrato": 370,
+        "bytes": 49512,
+        "dias_naturales_ultimo_dato_a_sonda": 50,
+        "fecha_publicacion_mediana_menos_fecha_dias": 31.0
       }
     },
     "descarga": {
       "boc:V39079": {
         "estado": "ok",
-        "bytes": 540170,
-        "segundos": 4.16,
+        "bytes": 540406,
+        "segundos": 1.71,
         "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\boc\\boc_V39079.json"
       },
       "boc:BD.CDN.10YR.DQ.YLD": {
         "estado": "ok",
-        "bytes": 841851,
-        "segundos": 4.49,
+        "bytes": 842111,
+        "segundos": 1.23,
         "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\boc\\boc_BD.CDN.10YR.DQ.YLD.json"
+      },
+      "boc:STATIC_ATABLE_V39079": {
+        "estado": "ok",
+        "bytes": 49512,
+        "segundos": 1.33,
+        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\boc\\boc_STATIC_ATABLE_V39079.json"
       }
     }
   },
   "notas": [
     "vintage 'unico': series de mercado/política monetaria sin revisiones",
-    "huecos de la fuente (festivos, '.') descartados: no se inventan filas"
+    "huecos de la fuente (festivos, '.') descartados: no se inventan filas",
+    "limitación boc:V39079 (diaria antes de 2009-04-21): Valet no sirve el objetivo diario antes de 2009-04-21 (ni V39079 ni B114039); se añade el objetivo a fin de mes desde 1996-01 (boc:STATIC_ATABLE_V39079). Antes de 1996 no había objetivo del tipo a un día (el tipo oficial era el Bank Rate; el tipo oficial mensual largo ya está en bis:WS_CBPOL.M.CA, desde 1960)",
+    "limitación boc:BD.CDN.10YR.DQ.YLD (antes de 2001-01-02): Valet no tiene el bono de referencia a 10 años antes de 2001: los vectores mensuales de Statistics Canada que sirve (V122538, V122539, V122487) empiezan en 2005 y el de 10 años (V122543) da 404. La fuente sería la tabla 10-10-0122-01 de Statistics Canada (otro publicador, fuera del alcance de este extractor)"
   ],
-  "fecha_sonda": "2026-11-19"
+  "fecha_sonda": "2026-11-20"
 }

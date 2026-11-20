@@ -150,7 +150,46 @@ def test_t3b_revision_en_el_sitio_conserva_lo_guardado(construida):
     _, despues, res = construida
     estr = _fila(despues, ESTR, "2026-10-01", "unico")
     assert estr["valor"] == 1.93 and pd.isna(estr["nota"])
-    assert res.solo_anadir["guardada_gana"] == 1 and res.solo_anadir["por_serie"][ESTR] == {"guardada_gana": 1}
+    assert res.solo_anadir["guardada_gana_valor"] == 1 and res.solo_anadir["guardada_gana_nota"] == 0
+    assert res.solo_anadir["por_serie"][ESTR] == {"guardada_gana_valor": 1}
+
+
+def test_t3b2_bandera_cambiada_en_el_sitio_conserva_lo_guardado(cat, corpus_en_tmp):
+    """Paso 3b-2: Eurostat quita la «e» de estimado (misma clave y valor, otra nota): gana la guardada, sin error;
+    la bandera queda congelada y el cambio se cuenta aparte (``guardada_gana_nota``)."""
+    con_e = [("2026-10-01", "2026-10-02", None, "unico", 1.93, "calendario", "bandera e: estimado")]
+    sin_e = [("2026-10-01", "2026-10-02", None, "unico", 1.93, "calendario", None)]
+    _construir(cat, _bce(cat, PARO_1, HICP_1, con_e))
+    res, _ = _construir(cat, _bce(cat, PARO_1, HICP_1, sin_e))
+    assert _fila(almacen.leer_series(), ESTR, "2026-10-01", "unico")["nota"] == "bandera e: estimado"
+    assert res.solo_anadir["por_serie"][ESTR] == {"guardada_gana_nota": 1}
+    assert res.solo_anadir["guardada_gana_valor"] == 0
+
+
+def test_t3b2_fecha_propia_anterior_del_bce_se_respeta(cat, corpus_en_tmp):
+    """Paso 3b-2 (V1): una versión del BCE con VALID_FROM ANTERIOR a la guardada y otro valor (fuente con fecha
+    propia documentada, ``FUENTES_FECHA_PROPIA_ANTERIOR``) se queda con su fecha: el as-of entre las dos fechas ve
+    la versión antigua y, después de la guardada, la guardada."""
+    assert "bce" in base.FUENTES_FECHA_PROPIA_ANTERIOR and "eurostat" not in base.FUENTES_FECHA_PROPIA_ANTERIOR
+    _construir(cat, _bce(cat, PARO_1, HICP_2, ESTR_1))                   # guardada: 2,1 del 2026-10-16
+    res, _ = _construir(cat, _bce(cat, PARO_1, HICP_2 + HICP_1, ESTR_1))  # llega la flash: 2,2 del 2026-10-02
+    b = almacen.leer_series()
+    flash = _fila(b, HICP, "2026-09-01", "2026-10-02")
+    assert flash["fecha_publicacion"] == pd.Timestamp("2026-10-02") and flash["valor"] == 2.2
+    assert flash["disponible_utc"] == pd.Timestamp("2026-10-02 09:00", tz="UTC")
+    assert res.solo_anadir["por_serie"][HICP] == {"fecha_propia": 1}
+    assert timegate.as_of_series(b, HICP, "2026-10-01").empty
+    assert timegate.as_of_series(b, HICP, "2026-10-05").iloc[0]["valor"] == 2.2
+    assert timegate.as_of_series(b, HICP, "2026-10-20").iloc[0]["valor"] == 2.1
+
+
+def test_t3b2_fecha_propia_anterior_de_otra_fuente_no_adelanta(cat, corpus_en_tmp, monkeypatch):
+    """Sin la fuente en ``FUENTES_FECHA_PROPIA_ANTERIOR``, la misma versión anterior se fecha con su observación."""
+    monkeypatch.setattr(base, "FUENTES_FECHA_PROPIA_ANTERIOR", ())
+    _construir(cat, _bce(cat, PARO_1, HICP_2, ESTR_1))
+    _construir(cat, _bce(cat, PARO_1, HICP_2 + HICP_1, ESTR_1))
+    flash = _fila(almacen.leer_series(), HICP, "2026-09-01", "2026-10-02")
+    assert flash["fecha_publicacion"] == DECISION and pd.isna(flash["disponible_utc"])
 
 
 def test_t3b_idempotente(construida, cat):

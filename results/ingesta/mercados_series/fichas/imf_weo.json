@@ -1,33 +1,36 @@
 {
   "fuente": "imf_weo",
-  "nombre": "FMI World Economic Outlook por edición (DBnomics + API SDMX del FMI)",
+  "nombre": "FMI World Economic Outlook por edición (API SDMX del FMI)",
   "tema": "mercados_series",
   "agentes": [
     "macro"
   ],
   "rag": "serie",
-  "url": "https://api.db.nomics.world/v22/series/IMF",
+  "url": "https://api.imf.org/external/sdmx/3.0/",
   "acceso": "api",
   "autenticacion": "ninguna",
   "coste": "0 €",
-  "licencia_y_terminos": "FMI: reutilización con cita (copyright IMF); DBnomics redistribuye sin cambios",
+  "licencia_y_terminos": "FMI: reutilización con cita (copyright IMF, https://www.imf.org/external/terms.htm)",
   "cobertura_inicio": "1980-01-01",
   "cobertura_fin": "2026-01-01",
   "frecuencia": "anual; dos ediciones al año (abril y octubre)",
-  "retraso_publicacion": "vintage exacto por edición: día de publicación documentado a las 09:00 de Washington (2026-10: 07:46 de Nueva York, medida); el año en curso y las proyecciones a 1-5 años en series .PROY.H<h> aparte",
-  "formato": "json (DBnomics) y SDMX-JSON 3.0 (api.imf.org)",
-  "volumen_estimado": "1 ediciones, 1945 filas, 280 series",
-  "limites": "sin clave; DBnomics 1 petición/s; la API del FMI solo sirve las versiones vigentes del flujo",
+  "retraso_publicacion": "vintage exacto por edición: día de publicación documentado a las 09:00 de Washington, contrastado con el PUBLICATION_DATE del fichero (manda lo más tardío, también el UPDATE_DATE si el FMI corrigió la edición); 2026-10: 07:46 de Nueva York, medida; el año en curso y las proyecciones a 1-5 años en series .PROY.H<h> aparte (D4)",
+  "formato": "SDMX-JSON 3.0 (api.imf.org)",
+  "volumen_estimado": "4 ediciones, 9565 filas, 357 series",
+  "limites": "sin clave; 1 petición/s; la API solo sirve las ediciones de 2025-04 a 2026-10",
   "estado_sonda": "parcial",
   "mediciones": {
     "cobertura_inicio": "1980-01-01",
     "cobertura_fin": "2026-01-01",
-    "series": 280,
-    "observaciones": 1945,
+    "series": 357,
+    "observaciones": 9565,
     "ediciones": [
+      "2025-04",
+      "2025-10",
+      "2026-04",
       "2026-10"
     ],
-    "ediciones_pendientes": [
+    "ediciones_limitacion": [
       "2008-04",
       "2008-10",
       "2009-04",
@@ -61,241 +64,163 @@
       "2023-04",
       "2023-10",
       "2024-04",
-      "2024-10",
-      "2025-04",
+      "2024-10"
+    ],
+    "motivo_limitacion": "limitación declarada (G3): ninguna API del FMI sirve la edición (la API SDMX solo tiene 2025-04, 2025-10, 2026-04 y 2026-10); el archivo de www.imf.org no es accesible (robots.txt con 403 de Akamai: todo prohibido) y DBnomics no se usa",
+    "robots_www_imf_org": {
+      "url": "https://www.imf.org/robots.txt",
+      "medido": "2026-11-20",
+      "estado_http": 403,
+      "respuesta": "Access Denied (Akamai, text/html)",
+      "lectura": "401/403 en robots.txt = todo prohibido (semántica estándar, ingesta.comun.http._robots)",
+      "rutas_afectadas": "https://www.imf.org/en/Publications/WEO/weo-database/<AAAA>/<Mes> y sus ficheros"
+    },
+    "flujos_sdmx": [
+      "WEO/9.0.0",
+      "WEO/6.0.0",
+      "WEO_2026_APR_VINTAGE/1.0.0",
+      "WEO_2025_OCT_VINTAGE/1.0.0"
+    ],
+    "areas": [
+      "001",
+      "163",
+      "200",
+      "CAN",
+      "CHN",
+      "DEU",
+      "FRA",
+      "GBR",
+      "ITA",
+      "JPN",
+      "USA"
+    ],
+    "errores": {},
+    "primera_publicacion_visible": "2025-04-22",
+    "cumple_D1": false,
+    "visible_desde_2008": false,
+    "ediciones_fechadas_en_la_actualizacion": [
       "2025-10",
       "2026-04"
     ],
-    "errores": {
-      "2008-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2008-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2009-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2009-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2010-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2010-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2011-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2012-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2012-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2013-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2013-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2014-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2014-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2015-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2015-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2016-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2016-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2017-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2017-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2018-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2018-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2019-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2019-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2020-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2020-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2021-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2021-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2022-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2022-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2023-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2023-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2024-04": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2024-10": "robots.txt no permite la descarga con nuestro User-Agent",
-      "2025-04": "robots.txt no permite la descarga con nuestro User-Agent"
-    },
     "ediciones_indexadas_antes_de_la_fecha_documentada": [],
     "proyecciones_descartadas": 0,
-    "proyecciones_separadas": 240,
+    "proyecciones_separadas": 1224,
     "por_edicion": {
-      "2008-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2008-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2009-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2009-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2010-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2010-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2011-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2012-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2012-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2013-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2013-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2014-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2014-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2015-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2015-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2016-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2016-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2017-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2017-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2018-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2018-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2019-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2019-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2020-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2020-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2021-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2021-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2022-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2022-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2023-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2023-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2024-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
-      },
-      "2024-10": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
+      "2026-10": {
+        "origen": "sdmx WEO/9.0.0",
+        "bytes": 56212,
+        "filas": 2111,
+        "proyecciones": 306,
+        "proyecciones_descartadas": 0,
+        "publicacion_fichero": "2026-10-13T02:00:00+00:00",
+        "actualizacion_fichero": "2026-10-13T02:00:00+00:00",
+        "dia_documentado": "2026-10-13",
+        "fecha_publicacion": "2026-10-13",
+        "disponible_utc": "2026-10-13T11:46:00+00:00",
+        "fechada_en_la_actualizacion": false,
+        "areas": [
+          "001",
+          "163",
+          "200",
+          "CAN",
+          "CHN",
+          "DEU",
+          "FRA",
+          "GBR",
+          "ITA",
+          "JPN",
+          "USA"
+        ]
       },
       "2025-04": {
-        "origen": "dbnomics",
-        "error": "robots.txt no permite la descarga con nuestro User-Agent",
-        "bytes": null
+        "origen": "sdmx WEO/6.0.0",
+        "bytes": 51968,
+        "filas": 2059,
+        "proyecciones": 306,
+        "proyecciones_descartadas": 0,
+        "publicacion_fichero": "2025-04-22T13:00:00+00:00",
+        "actualizacion_fichero": "2025-04-22T13:00:00+00:00",
+        "dia_documentado": "2025-04-22",
+        "fecha_publicacion": "2025-04-22",
+        "disponible_utc": "2025-04-22T13:00:00+00:00",
+        "fechada_en_la_actualizacion": false,
+        "areas": [
+          "001",
+          "163",
+          "200",
+          "CAN",
+          "CHN",
+          "DEU",
+          "FRA",
+          "GBR",
+          "ITA",
+          "JPN",
+          "USA"
+        ]
       },
-      "2026-10": {
-        "origen": "sdmx 9.0.0",
-        "bytes": 46993,
-        "filas": 1705,
-        "proyecciones": 240,
-        "proyecciones_descartadas": 0
+      "2026-04": {
+        "origen": "sdmx WEO_2026_APR_VINTAGE/1.0.0",
+        "bytes": 56243,
+        "filas": 2111,
+        "proyecciones": 306,
+        "proyecciones_descartadas": 0,
+        "publicacion_fichero": "2026-04-14T13:00:00+00:00",
+        "actualizacion_fichero": "2026-04-15T13:00:00+00:00",
+        "dia_documentado": "2026-04-14",
+        "fecha_publicacion": "2026-04-15",
+        "disponible_utc": "2026-04-15T13:00:00+00:00",
+        "fechada_en_la_actualizacion": true,
+        "areas": [
+          "001",
+          "163",
+          "200",
+          "CAN",
+          "CHN",
+          "DEU",
+          "FRA",
+          "GBR",
+          "ITA",
+          "JPN",
+          "USA"
+        ]
       },
-      "sdmx_6.0.0": {
-        "origen": "sdmx",
-        "edicion": null,
-        "descartada": "repetida o sin fecha"
+      "2025-10": {
+        "origen": "sdmx WEO_2025_OCT_VINTAGE/1.0.0",
+        "bytes": 48778,
+        "filas": 2060,
+        "proyecciones": 306,
+        "proyecciones_descartadas": 0,
+        "publicacion_fichero": "2025-10-14T13:00:00+00:00",
+        "actualizacion_fichero": "2025-11-19T21:00:00+00:00",
+        "dia_documentado": "2025-10-14",
+        "fecha_publicacion": "2025-11-19",
+        "disponible_utc": "2025-11-19T21:00:00+00:00",
+        "fechada_en_la_actualizacion": true,
+        "areas": [
+          "001",
+          "163",
+          "200",
+          "CAN",
+          "CHN",
+          "DEU",
+          "FRA",
+          "GBR",
+          "ITA",
+          "JPN",
+          "USA"
+        ]
       }
     }
   },
   "notas": [
-    "DBnomics: robots.txt de api.db.nomics.world es 'Disallow: /' (medido 20261013): 34 ediciones no descargadas; no se esquiva (pedir permiso a DBnomics o ficheros del archivo del FMI)",
-    "FECHAS_EDICION: 2026-04-14 y 2026-10-13 (Bangkok) contrastadas con imf.org; el resto, fechas de las páginas de cada edición; la versión 9.0.0 (edición 2026-10) ya estaba en la API a las 07:46 de Nueva York: disponible_utc = esa hora medida (HORAS_EDICION); fecha de decisión sin cambios",
-    "Estimación del año en curso y proyecciones en series .PROY.H0-H5 (no se mezclan con los datos)",
-    "zona euro pendiente (WEO de agregados, WEOAGG en DBnomics)",
-    "ediciones fuera de DBnomics y de las versiones vigentes de la API SDMX: ver ediciones_pendientes"
+    "G3 (3b-2, 2026-11-20): el robots.txt de www.imf.org responde 403 «Access Denied» de Akamai con nuestro User-Agent; 401/403 = todo prohibido, así que el archivo por edición (/en/Publications/WEO/weo-database/<AAAA>/<Mes>) no se consulta ni se esquiva",
+    "ediciones de 2008-04 a 2024-10 (34): limitación declarada (G3): ninguna API del FMI sirve la edición (la API SDMX solo tiene 2025-04, 2025-10, 2026-04 y 2026-10); el archivo de www.imf.org no es accesible (robots.txt con 403 de Akamai: todo prohibido) y DBnomics no se usa",
+    "DBnomics no se usa (G3); su lector queda en el código solo para los tests",
+    "D1: primera publicación visible 2025-04-22: no cumple D1 (<= 2001-01-02) ni llega a 2008",
+    "API SDMX: WEO/9.0.0 (2026-10), WEO/6.0.0 (2025-04, sin COUNTRY_UPDATE_DATE: edición por PUBLICATION_DATE), WEO_2026_APR_VINTAGE y WEO_2025_OCT_VINTAGE (medido con structure/dataflow/*/*/*)",
+    "agregados 001 (mundo), 163 (zona euro) y 200 (emergentes y en desarrollo): G001, G163 y G200 en la API; el FMI no publica el paro del mundo ni el de los emergentes, ni el saldo y la deuda del mundo",
+    "FECHAS_EDICION: 2025-04, 2025-10, 2026-04 y 2026-10 coinciden con el PUBLICATION_DATE de sus ficheros (2026-10: 02:00 UTC, mañana de Bangkok; disponible_utc = la hora medida, más tardía)",
+    "Estimación del año en curso y proyecciones en series .PROY.H0-H5 (no se mezclan con los datos)"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }

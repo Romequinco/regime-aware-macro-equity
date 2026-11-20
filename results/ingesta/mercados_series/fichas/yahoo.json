@@ -788,9 +788,130 @@
       },
       "incidencias_calidad": null,
       "tabla": "results/ingesta/mercados_series/tablas/yahoo_ampliado_cobertura.csv",
-      "medido_utc": "2026-11-20T09:38:04+00:00"
+      "medido_utc": "2026-11-20T15:37:07+00:00"
     },
     "lotes": {
+      "3b2_universo": {
+        "estado": "completa (125 de 125)",
+        "n_lista": 125,
+        "n_intentados": 125,
+        "n_ok": 125,
+        "fallidos": {},
+        "sin_cotizacion_reciente": 0,
+        "por_indice": {
+          "sin_indice": {
+            "lista": 125,
+            "intentados": 125,
+            "ok": 125,
+            "inicio_mediana": "2008-01-02"
+          }
+        },
+        "incidencias_calidad": {
+          "salto": 69,
+          "volumen_cero": 19026,
+          "cierre_repetido": 18910,
+          "dividendo_alto": 2
+        },
+        "tabla": "results/ingesta/mercados_series/tablas/yahoo_3b2_universo_cobertura.csv",
+        "medido_utc": "2026-11-20T15:36:27+00:00"
+      },
+      "3b2_ampliado": {
+        "estado": "completa (625 de 625)",
+        "n_lista": 625,
+        "n_intentados": 625,
+        "n_ok": 613,
+        "fallidos": {
+          "ALC.SW": "otro",
+          "CFR.SW": "otro",
+          "EXO.AS": "otro",
+          "GIVN.SW": "otro",
+          "JD.L": "otro",
+          "LOGN.SW": "otro",
+          "LONN.SW": "otro",
+          "PGHN.SW": "otro",
+          "SIKA.SW": "otro",
+          "SLHN.SW": "otro",
+          "UBSG.SW": "otro",
+          "ZURN.SW": "otro"
+        },
+        "sin_cotizacion_reciente": 0,
+        "por_indice": {
+          "aex": {
+            "lista": 24,
+            "intentados": 24,
+            "ok": 23,
+            "inicio_mediana": "1999-01-06"
+          },
+          "cac40": {
+            "lista": 39,
+            "intentados": 39,
+            "ok": 39,
+            "inicio_mediana": "2000-01-03"
+          },
+          "dax": {
+            "lista": 39,
+            "intentados": 39,
+            "ok": 39,
+            "inicio_mediana": "1998-07-27"
+          },
+          "ftse100": {
+            "lista": 97,
+            "intentados": 97,
+            "ok": 96,
+            "inicio_mediana": "1991-01-21"
+          },
+          "ftse_mib": {
+            "lista": 40,
+            "intentados": 40,
+            "ok": 40,
+            "inicio_mediana": "2001-11-03"
+          },
+          "hang_seng": {
+            "lista": 84,
+            "intentados": 84,
+            "ok": 84,
+            "inicio_mediana": "2005-10-13"
+          },
+          "ibex35": {
+            "lista": 33,
+            "intentados": 33,
+            "ok": 33,
+            "inicio_mediana": "2002-05-15"
+          },
+          "kospi200": {
+            "lista": 200,
+            "intentados": 200,
+            "ok": 200,
+            "inicio_mediana": "2002-06-05"
+          },
+          "nifty50": {
+            "lista": 50,
+            "intentados": 50,
+            "ok": 50,
+            "inicio_mediana": "2002-07-01"
+          },
+          "smi": {
+            "lista": 19,
+            "intentados": 19,
+            "ok": 9,
+            "inicio_mediana": "1999-06-25"
+          },
+          "sin_indice": {
+            "lista": 2,
+            "intentados": 2,
+            "ok": 2,
+            "inicio_mediana": "2014-04-19"
+          }
+        },
+        "incidencias_calidad": {
+          "salto": 475,
+          "volumen_cero": 156270,
+          "cierre_repetido": 209231,
+          "dividendo_alto": 123
+        },
+        "tabla": "results/ingesta/mercados_series/tablas/yahoo_3b2_ampliado_cobertura.csv",
+        "medido_utc": "2026-11-20T15:37:06+00:00"
+      },
       "3b1": {
         "estado": "completa (761 de 761)",
         "n_lista": 761,
@@ -810,14 +931,9 @@
             "inicio_mediana": "1995-09-26"
           }
         },
-        "incidencias_calidad": {
-          "salto": 1594,
-          "volumen_cero": 47569,
-          "cierre_repetido": 353385,
-          "dividendo_alto": 59
-        },
+        "incidencias_calidad": null,
         "tabla": "results/ingesta/mercados_series/tablas/yahoo_3b1_cobertura.csv",
-        "medido_utc": "2026-11-20T09:38:03+00:00"
+        "medido_utc": "2026-11-20T15:37:07+00:00"
       },
       "3b1_altas": {
         "estado": "completa (6 de 6)",
@@ -834,14 +950,9 @@
             "inicio_mediana": "2016-11-14"
           }
         },
-        "incidencias_calidad": {
-          "salto": 4,
-          "volumen_cero": 1,
-          "cierre_repetido": 94,
-          "dividendo_alto": 0
-        },
+        "incidencias_calidad": null,
         "tabla": "results/ingesta/mercados_series/tablas/yahoo_3b1_altas_cobertura.csv",
-        "medido_utc": "2026-11-20T09:38:03+00:00"
+        "medido_utc": "2026-11-20T15:37:07+00:00"
       }
     }
   },
@@ -853,6 +964,8 @@
     "Supervivencia: Yahoo solo sirve tickers vivos (o reutilizados); deslistados fuera (WRDS pendiente)",
     "Dividendos de valores en GBp que Yahoo da en GBP se pasan a peniques; consolidaciones (VOD.L) y dividendos en acciones de Taiwán (splits fraccionarios) se anotan",
     "Nivel AMPLIADO (S&P 500 histórico y constituyentes actuales de 10 índices): completa (1842 de 1842); cobertura por índice y mercado en tablas/yahoo_ampliado_cobertura.csv (orden posproceso); un ticker del S&P 500 histórico reutilizado por otra empresa devuelve la empresa ACTUAL",
+    "Lote 3b2_universo: completa (125 de 125), 125 con datos; cobertura en results/ingesta/mercados_series/tablas/yahoo_3b2_universo_cobertura.csv",
+    "Lote 3b2_ampliado: completa (625 de 625), 613 con datos; cobertura en results/ingesta/mercados_series/tablas/yahoo_3b2_ampliado_cobertura.csv",
     "Lote 3b1: completa (761 de 761), 758 con datos; cobertura en results/ingesta/mercados_series/tablas/yahoo_3b1_cobertura.csv",
     "Lote 3b1_altas: completa (6 de 6), 6 con datos; cobertura en results/ingesta/mercados_series/tablas/yahoo_3b1_altas_cobertura.csv"
   ],

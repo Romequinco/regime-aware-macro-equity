@@ -31,12 +31,24 @@ Serie empalmada para los agentes (``empalmar_hicp``): ``eurostat:HICP_EMP.<geo>`
 composición cambiante: ``HICP_EA`` (``eurostat:HICP_EMP.EA``), ``PIB_EA`` (``namq_10_gdp`` ``EA``) y
 ``PARO_EA`` (BCE ``LFSI`` ``U2``: ``une_rt_m`` no trae ``EA``).
 
+Zona euro de composición cambiante (paso 3b-2, ``SIN_EA``): ni ``ei_bssi_m_r2`` (ESI) ni ``une_rt_m``
+(paro) publican ``EA``: la descarga completa sin zona solo trae ``EA20``/``EA21`` (ESI) y ``EA21`` (paro),
+y la clave con ``EA`` da HTTP 400 (clave inválida), medido el 2026-11-20. Es una limitación de la fuente:
+si Eurostat la publica, ``GEOS`` ya la recoge (id ``...EA``, sin fecha de creación). Mientras, la zona
+euro cambiante del paro es ``PARO_EA`` (BCE ``U2``) y la del ESI no existe (se queda ``EA20``).
+
+Zonas retiradas (paso 3b-2, ``zonas_retiradas``): si la descarga vigente de un conjunto ya no trae una zona de
+``GEOS`` que sí traía una archivada, sus filas salen de la última descarga archivada que la traía y la
+medición del conjunto lo dice (``zonas_retiradas``). Medido el 2026-11-20: Eurostat quitó ``UK`` de
+``namq_10_gdp`` (serie parada en 2020-07); sin esto la serie guardada quedaba huérfana en la base.
+
 CLI: ``python -m ingesta.mercados_series.fuentes.eurostat [--sin-red] [--fichas] [--escribir]``.
 """
 from __future__ import annotations
 
 import argparse
 import io
+from collections.abc import Iterable
 from typing import Any
 
 import pandas as pd
@@ -90,13 +102,19 @@ PREFIJO_EMPALME = "eurostat:HICP_EMP."
 NOTA_EMPALME_HICP = ("HICP empalmado por fecha de publicación: ECOICOP v1 (prc_hicp_manr) en los periodos publicados "
                      "antes de la primera versión de v2 (prc_hicp_minr) y v2 en los demás; diferencias v2-v1 en los "
                      "meses comunes de hasta 0,1-0,2 puntos (mediciones de la ficha)")
+SIN_EA = {
+    "ei_bssi_m_r2": ("Eurostat no publica el ESI de la zona euro cambiante (EA): solo EA20 y EA21; clave EA → HTTP 400 "
+                     "(2026-11-20); se queda EA20"),
+    "une_rt_m": ("Eurostat no publica el paro de la zona euro cambiante (EA): solo EA21; clave EA → HTTP 400 "
+                 "(2026-11-20); zona euro cambiante del paro: BCE LFSI U2 (PARO_EA)"),
+}
 ALIAS_ZONA_EURO = {"HICP_EA": f"{PREFIJO_EMPALME}EA",
                    "PIB_EA": "eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.EA",
                    "PARO_EA": "ecb:LFSI.M.U2.S.UNEHRT.TOTAL0.15_74.T"}
 
 __all__ = ["API_EUROSTAT", "CONJUNTOS", "GEOS", "ClienteEurostat", "parsear_sdmx_csv", "id_eurostat",
            "tabla_conjunto", "tabla_eurostat", "no_antes_de", "CREACION_GEO", "medir_ruptura_hicp",
-           "PREFIJO_EMPALME", "NOTA_EMPALME_HICP", "ALIAS_ZONA_EURO", "empalmar_hicp", "entradas_empalme",
+           "PREFIJO_EMPALME", "NOTA_EMPALME_HICP", "ALIAS_ZONA_EURO", "SIN_EA", "empalmar_hicp", "entradas_empalme",
            "entradas_eurostat", "ficha_eurostat", "main"]
 
 
@@ -194,9 +212,34 @@ def tabla_conjunto(sid: str, obs: pd.DataFrame, espec: dict[str, Any]) -> pd.Dat
     return out[list(COLUMNAS_SERIES)]
 
 
+def zonas_retiradas(cli: ClienteCsv, conjunto: str, clave: str, presentes: Iterable[str],
+                    params: dict[str, Any] | None = None) -> tuple[pd.DataFrame, dict[str, str]]:
+    """Zonas de ``GEOS`` que la descarga vigente ya no trae y sí traía una archivada (Eurostat retira una zona:
+    ``UK`` de ``namq_10_gdp`` en la edición de 2026-11, con la serie parada en 2020). Devuelve las filas de cada
+    zona sacadas de la última descarga archivada que la traía y ``{zona: fichero}``. Así la serie se sigue
+    construyendo con su última publicación (la base solo crece) en lugar de quedar huérfana."""
+    ruta, params = f"{conjunto}/{clave}", {"format": "SDMX-CSV", **(params or {})}
+    faltan = set(GEOS) - set(presentes)
+    carpeta = cli._dir(ruta)
+    if not faltan or not carpeta.exists():
+        return pd.DataFrame(), {}
+    partes, origen = [], {}
+    for f in sorted(carpeta.glob(f"*_{cli.huella(ruta, params)}.csv"), reverse=True):
+        if not faltan:
+            break
+        df = parsear_sdmx_csv(f.read_text(encoding="utf-8"))
+        hay = sorted(faltan & set(df["geo"].dropna()))
+        if hay:
+            partes.append(df[df["geo"].isin(hay)])
+            origen |= {g: f.name for g in hay}
+            faltan -= set(hay)
+    return (pd.concat(partes, ignore_index=True) if partes else pd.DataFrame()), origen
+
+
 def tabla_eurostat(cliente: ClienteEurostat | None = None, *, sin_red: bool = False,
                    conjuntos: list[str] | None = None) -> tuple[pd.DataFrame, dict[str, Any]]:
-    """Series de Eurostat validadas + mediciones (una petición por conjunto)."""
+    """Series de Eurostat validadas + mediciones (una petición por conjunto). Las zonas que Eurostat retira de un
+    conjunto salen de la última descarga archivada que las traía (``zonas_retiradas``)."""
     cli = cliente or ClienteEurostat(sin_red=sin_red)
     partes, med, geos = [], {}, {}
     crudos = {}
@@ -204,10 +247,18 @@ def tabla_eurostat(cliente: ClienteEurostat | None = None, *, sin_red: bool = Fa
         c = CONJUNTOS[conj]
         df = cli.datos(conj, c["clave"])
         df = df[df["geo"].isin(GEOS)]
+        retiradas, origen = zonas_retiradas(cli, conj, c["clave"], df["geo"].unique())
+        if origen:
+            df = pd.concat([df, retiradas], ignore_index=True)
         crudos[conj] = df
         geos[conj] = sorted(df["geo"].unique())
         lu = df["LAST_UPDATE"].dropna() if "LAST_UPDATE" in df else pd.Series(dtype="datetime64[ns]")
         med[conj] = {"geos": geos[conj], "ultima_actualizacion": lu.max().isoformat() if len(lu) else None}
+        if origen:
+            med[conj]["zonas_retiradas"] = {g: f"retirada por Eurostat: última publicación en {f}"
+                                            for g, f in origen.items()}
+        if conj in SIN_EA:
+            med[conj]["ea_cambiante"] = "EA" in geos[conj]
     espec = entradas_eurostat(geos)
     for sid, e in espec.items():
         conj, geo = e["clave"].split("/", 1)[0], e["clave"].rsplit(".", 1)[1]
@@ -314,6 +365,7 @@ def ficha_eurostat(df: pd.DataFrame, med: dict[str, Any]):
         notas=[NOTA_RUPTURA_HICP,
                "La zona euro de composición cambiante ('EA') no está en todos los conjuntos: se guarda la que haya "
                "(EA, EA21, EA20) y la UE-27",
+               *[f"Limitación {c}: {m}" for c, m in SIN_EA.items()],
                "Revisables sin vintages: valor del último fichero descargado (posible fuga de revisiones)",
                "Las banderas OBS_FLAG (p, e, b, d...) se conservan en la nota de cada fila",
                NOTA_EMPALME_HICP + " (eurostat:HICP_EMP.<geo>)",

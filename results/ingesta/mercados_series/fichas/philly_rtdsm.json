@@ -12,7 +12,7 @@
   "coste": "0 €",
   "licencia_y_terminos": "Uso libre citando la fuente (Federal Reserve Bank of Philadelphia)",
   "cobertura_inicio": "1939-01-01",
-  "cobertura_fin": "2026-08-01",
+  "cobertura_fin": "2026-09-01",
   "frecuencia": "vintages trimestrales (ROUTPUT, RUC) y mensuales (PCPI, EMPLOY)",
   "retraso_publicacion": "medido: días del fin del mes del vintage al inicio del último periodo publicado (mediana): ROUTPUT 152; PCPI 60; EMPLOY 60; RUC 60. Fecha del vintage conservadora: fin del mes (23:59 Nueva York)",
   "formato": "xlsx",
@@ -26,42 +26,42 @@
         "primer_vintage_alfred": "1991-12-04",
         "primer_vintage": "ROUTPUT65Q4",
         "primer_vintage_fecha": "1965-11-30",
-        "ultimo_vintage": "ROUTPUT26Q3",
-        "n_vintages": 244,
+        "ultimo_vintage": "ROUTPUT26Q4",
+        "n_vintages": 245,
         "n_vintages_previos_alfred": 105,
         "filas_contrato": 971,
         "periodo_inicio": "1947-01-01",
-        "periodo_fin": "2026-04-01",
+        "periodo_fin": "2026-07-01",
         "dias_vintage_a_ultimo_periodo_mediana": 152.0,
-        "bytes": 243161
+        "bytes": 244845
       },
       "PCPI": {
         "fred": "fred:CPIAUCSL",
         "primer_vintage_alfred": "1972-07-21",
         "primer_vintage": "PCPI98M11",
         "primer_vintage_fecha": "1998-11-30",
-        "ultimo_vintage": "PCPI26M9",
-        "n_vintages": 335,
+        "ultimo_vintage": "PCPI26M10",
+        "n_vintages": 336,
         "n_vintages_previos_alfred": 0,
         "filas_contrato": 0,
         "periodo_inicio": "1947-01-01",
-        "periodo_fin": "2026-08-01",
+        "periodo_fin": "2026-09-01",
         "dias_vintage_a_ultimo_periodo_mediana": 60.0,
-        "bytes": 826467
+        "bytes": 829636
       },
       "EMPLOY": {
         "fred": "fred:PAYEMS",
         "primer_vintage_alfred": "1955-05-06",
         "primer_vintage": "EMPLOY64M12",
         "primer_vintage_fecha": "1964-12-31",
-        "ultimo_vintage": "EMPLOY26M9",
-        "n_vintages": 742,
+        "ultimo_vintage": "EMPLOY26M10",
+        "n_vintages": 743,
         "n_vintages_previos_alfred": 0,
         "filas_contrato": 0,
         "periodo_inicio": "1939-01-01",
-        "periodo_fin": "2026-08-01",
+        "periodo_fin": "2026-09-01",
         "dias_vintage_a_ultimo_periodo_mediana": 60.0,
-        "bytes": 2233651
+        "bytes": 2238603
       },
       "RUC": {
         "fred": "fred:UNRATE",
@@ -78,42 +78,14 @@
         "bytes": 575288
       }
     },
-    "descarga": {
-      "ROUTPUT": {
-        "estado": "ok",
-        "bytes": 243161,
-        "segundos": 1.1,
-        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\philly_rtdsm\\ROUTPUTQvQd.xlsx",
-        "url": "https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/xlsx/ROUTPUTQvQd.xlsx"
-      },
-      "PCPI": {
-        "estado": "ok",
-        "bytes": 826467,
-        "segundos": 1.36,
-        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\philly_rtdsm\\pcpiMvMd.xlsx",
-        "url": "https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/xlsx/pcpiMvMd.xlsx"
-      },
-      "EMPLOY": {
-        "estado": "ok",
-        "bytes": 2233651,
-        "segundos": 1.19,
-        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\philly_rtdsm\\employMvMd.xlsx",
-        "url": "https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/xlsx/employMvMd.xlsx"
-      },
-      "RUC": {
-        "estado": "ok",
-        "bytes": 575288,
-        "segundos": 1.09,
-        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\philly_rtdsm\\rucQvMd.xlsx",
-        "url": "https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/xlsx/rucQvMd.xlsx"
-      }
-    }
+    "descarga": {}
   },
   "notas": [
     "Solo vintages ANTERIORES al primer vintage de ALFRED de la serie equivalente (mapeo ROUTPUT→GDPC1, PCPI→CPIAUCSL, EMPLOY→PAYEMS, RUC→UNRATE)",
     "Corregido el error de siglo: el año sale del orden de columnas (EMPLOY64M12 = 1964, no 2064)",
+    "PCPI, EMPLOY y RUC sin filas por diseño: todos sus vintages son posteriores al primero de ALFRED y ALFRED ve en cada uno los mismos periodos o más (medido el 2026-11-20); no es un fallo de descarga",
     "ROUTPUT: PNB real hasta 1991 y en dólares constantes de la base de cada vintage (unidad_por_vintage)",
     "Matrices crudas en <corpus>/mercados_series/crudo/philly_rtdsm/"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }

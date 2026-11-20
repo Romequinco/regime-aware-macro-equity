@@ -120,7 +120,11 @@ SUFIJO_PREVIA = "_previa.parquet"
 SUFIJO_PREVIA_2 = "_previa_2.parquet"
 FICHERO_SOLO_ANADIR = "solo_anadir_ultima.csv"   # en results/ingesta/mercados_series/tablas/
 CUENTAS_SOLO_ANADIR = ("conservadas", "ya_conservadas", "fechadas_observacion", "mismo_valor", "fecha_propia",
-                       "guardada_gana", "fecha_corregida")
+                       "guardada_gana_valor", "guardada_gana_nota", "fecha_corregida")
+# Fuentes con fecha propia documentada que puede ser ANTERIOR a la guardada (casos 2 y 2c de conservar_revisiones):
+# el WEO (PUBLICATION_DATE / UPDATE_DATE de cada edición, fuentes.imf) y el BCE (VALID_FROM de cada versión,
+# fuentes.bce). En las demás, una fecha propia solo se respeta si es posterior.
+FUENTES_FECHA_PROPIA_ANTERIOR = ("imf_weo", "bce")
 TOLERANCIA_DERIVADA = 1e-9
 AVISO_FRED = ("This product uses the FRED® API but is not endorsed or certified by the Federal Reserve "
               "Bank of St. Louis.")
@@ -244,7 +248,8 @@ def tabla_oficial(nombre: str, *, sin_red: bool = True, registro: Callable[[str]
 
     ``bce``/``eurostat``: crudos archivados (``sin_red``) o descarga del día. ``bis``/``imf``/``worldbank``:
     ``<corpus>/mercados_series/bloque4/<fuente>.parquet``. ``oecd``: CSV de ediciones archivados.
-    ``bancos_centrales``: crudo de cada serie. ``curvas``: ``series/curvas_b6.parquet`` o los crudos.
+    ``bancos_centrales``: crudo de cada serie y sus históricos (``bancos_centrales.tabla_serie``).
+    ``curvas``: ``series/curvas_b6.parquet`` o los crudos.
     ``philly_rtdsm``: matrices xlsx (solo vintages anteriores al primero de ALFRED). Lo que falta en
     el corpus se omite con aviso (una fuente sin descargar no para la construcción).
     """
@@ -274,11 +279,11 @@ def tabla_oficial(nombre: str, *, sin_red: bool = True, registro: Callable[[str]
                     if len(t):
                         partes.append(t)
     elif nombre == "bancos_centrales":
-        from ingesta.mercados_series.fuentes import b4_comun, bancos_centrales as bc
-        for sid, info in bc.SERIES.items():
-            ruta = b4_comun.ruta_crudo(info["fuente"]) / bc._nombre_crudo(sid)
-            if ruta.exists():
-                partes.append(bc.tabla_banco(sid, bc.leer(sid, ruta.read_bytes())))
+        from ingesta.mercados_series.fuentes import bancos_centrales as bc
+        for sid in bc.SERIES:
+            t = bc.tabla_serie(sid)   # crudo vigente + históricos congelados (RBA, paso 3b-2)
+            if t is not None:
+                partes.append(t)
             else:
                 log(f"  aviso: bancos_centrales: {sid} sin crudo")
     elif nombre == "curvas":
@@ -588,7 +593,10 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
        otro valor que el último guardado): ``fecha_publicacion = max(la suya, primera decisión tras
        observado)``, ``disponible_utc`` nulo (como ``catalogo.aplicar_excepciones``) y
        ``NOTA_REVISION_OBSERVADA`` con la fecha de la regla. Excepción: una fecha propia de la fuente
-       (``vintage_exacto`` con ``disponible_utc``) posterior a la última guardada del periodo se respeta.
+       (``vintage_exacto`` con ``disponible_utc``) distinta de la última guardada del periodo se respeta si es
+       posterior (HICP definitivo) y, solo en ``FUENTES_FECHA_PROPIA_ANTERIOR`` (WEO y BCE, con la fecha documentada
+       en la fuente), también si es anterior (una edición más antigua que llega después, como las del WEO en el
+       3b-2: su fecha es la de su publicación real y la vista as-of de hoy sigue en la guardada, más tardía).
     2b. Fila nueva de un periodo guardado con el MISMO valor que el último guardado (la fuente retira una
        versión y vuelve a dar el valor con otra vintage, fechada con la regla): nunca antes que esa fila,
        ``fecha_publicacion = max(la suya, la de la última guardada)``, ``disponible_utc`` nulo y
@@ -597,9 +605,16 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
        6,4 con vintage 2026-12-03 y la regla del 2025-09-10). En todos los casos 2 y 2b la fila nueva
        queda en o después de la menor ``fecha_publicacion`` guardada con su valor; con la misma fecha,
        gana la vintage mayor (``timegate.as_of_series``), que tiene el mismo valor.
+    2c. Fila nueva con fecha propia documentada (``vintage_exacto`` con ``disponible_utc`` de una fuente de
+       ``FUENTES_FECHA_PROPIA_ANTERIOR``) anterior a la última guardada y con su mismo valor (una edición antigua
+       del WEO que no cambió ese año): se queda con su fecha (cuenta en ``fecha_propia``), porque ese valor ya
+       era público entonces. En las demás fuentes va por el caso 2b.
     3. Periodos nuevos: con su regla, sin cambios.
-    4. Clave que viene con otro valor (vintage ``unico``: la fuente revisa en el sitio) o fila ya marcada
-       por esta función: gana la guardada (sin la revisión en la base, nada se ve antes de existir).
+    4. Clave que viene con otro valor (vintage ``unico``: la fuente revisa en el sitio; ``guardada_gana_valor``)
+       o con el mismo valor y otra nota (``guardada_gana_nota``), o fila ya marcada por esta función: gana la
+       guardada (sin la revisión en la base, nada se ve antes de existir). Con otra nota, la bandera de la fuente
+       queda CONGELADA en la de la primera descarga: si Eurostat quita la «e» de estimado de un periodo (refresco
+       del 3b-2), la base sigue diciendo «estimado»; lo guardado se respeta y el cambio solo se cuenta.
 
     Devuelve ``(tabla, info, previsto)``: ``info`` con los recuentos (sin valores) y ``previsto``, las
     filas guardadas de las series cuya nota cambia con la nota que llevarán (``construir_base`` hace con
@@ -627,7 +642,10 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
                | nota_g.str.contains(NOTA_REVISION_OBSERVADA, regex=False)
                | nota_g.str.contains(NOTA_MISMO_VALOR, regex=False)).to_numpy()
     distinto = ~_iguales_valor(nuevo.loc[comun, "valor"], g["valor"].iloc[gi])
-    gana = distinto | marcada[gi]
+    # Misma clave y mismo valor con otra nota: la fuente cambia la bandera en el sitio (Eurostat quita la «e» de
+    # estimado en el refresco del 3b-2): gana la guardada, como con otro valor (caso 4).
+    otra_nota = nuevo.loc[comun, "nota"].fillna("").astype(str).to_numpy() != nota_g.to_numpy()[gi]
+    gana = distinto | otra_nota | marcada[gi]
     usar_g = gi[gana]                                      # clave común: la fila guardada
     quitar_n = np.flatnonzero(comun)[gana]
     # Revisiones con clave nueva de un periodo ya guardado.
@@ -640,11 +658,16 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
     ref = nuevo.loc[sola, ["serie", "fecha_referencia"]].merge(ultima, on=["serie", "fecha_referencia"], how="left")
     ref.index = nuevo.index[sola]
     revisa = ref["_p"].notna() & ~pd.Series(_iguales_valor(nuevo.loc[sola, "valor"], ref["_v"]), index=ref.index)
-    propia = ((nuevo.loc[sola, "metodo_publicacion"] == "vintage_exacto") & nuevo.loc[sola, "disponible_utc"].notna()
-              & (nuevo.loc[sola, "fecha_publicacion"] > ref["_p"]))
+    exacta = (nuevo.loc[sola, "metodo_publicacion"] == "vintage_exacto") & nuevo.loc[sola, "disponible_utc"].notna()
+    # Una fecha propia ANTERIOR a la guardada solo se respeta en las fuentes que la documentan (casos 2 y 2c).
+    exacta_doc = exacta & nuevo.loc[sola, "fuente"].isin(list(FUENTES_FECHA_PROPIA_ANTERIOR))
+    fp = nuevo.loc[sola, "fecha_publicacion"]
+    propia = (exacta & (fp > ref["_p"])) | (exacta_doc & (fp < ref["_p"]))
     respeta = revisa & propia
-    regla = nuevo.loc[sola, "fecha_publicacion"]
+    regla = fp
     fechar = revisa & ~propia & (regla < decision)
+    # Edición más antigua con fecha propia y el mismo valor (WEO del 3b-2): su fecha, no la de la guardada (caso 2c).
+    propia_igual = ref["_p"].notna() & ~revisa & exacta_doc & (regla < ref["_p"])
     idx = fechar[fechar].index
     if len(idx):
         texto = NOTA_REVISION_OBSERVADA + f" {dia} (la regla daba " + regla[idx].dt.strftime("%Y-%m-%d") + ")"
@@ -652,7 +675,7 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
         nuevo.loc[idx, "fecha_publicacion"] = decision
         nuevo.loc[idx, "disponible_utc"] = pd.NaT
     # Mismo valor que la última guardada con una fecha anterior a ella: desde la guardada (caso 2b).
-    mismo = ref["_p"].notna() & ~revisa & (regla < ref["_p"])
+    mismo = ref["_p"].notna() & ~revisa & ~exacta_doc & (regla < ref["_p"])
     idx_m = mismo[mismo].index
     if len(idx_m):
         texto = (NOTA_MISMO_VALOR + " " + ref.loc[idx_m, "_p"].dt.strftime("%Y-%m-%d") + " (la regla daba "
@@ -674,8 +697,9 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
     cuentas = {
         "conservadas": cons.loc[nuevas_cons, "serie"], "ya_conservadas": cons.loc[ya[ya].index, "serie"],
         "fechadas_observacion": nuevo.loc[idx, "serie"], "mismo_valor": nuevo.loc[idx_m, "serie"],
-        "fecha_propia": nuevo.loc[respeta[respeta].index, "serie"],
-        "guardada_gana": g["serie"].iloc[gi[distinto]],
+        "fecha_propia": nuevo.loc[respeta[respeta].index.union(propia_igual[propia_igual].index), "serie"],
+        "guardada_gana_valor": g["serie"].iloc[gi[distinto]],
+        "guardada_gana_nota": g["serie"].iloc[gi[otra_nota & ~distinto]],
     }
     por_serie: dict[str, dict[str, int]] = {}
     for k, s in cuentas.items():
@@ -878,8 +902,9 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
         log(f"solo-añadir ({len(solo_ids)} series): {solo_anadir['conservadas']} filas guardadas conservadas "
             f"como valor anterior, {solo_anadir['fechadas_observacion']} revisiones fechadas con su observación, "
             f"{solo_anadir['mismo_valor']} versiones con el mismo valor fechadas desde la guardada, "
-            f"{solo_anadir['fecha_propia']} con fecha propia de la fuente, {solo_anadir['guardada_gana']} claves "
-            f"con otro valor (gana la guardada)")
+            f"{solo_anadir['fecha_propia']} con fecha propia de la fuente, {solo_anadir['guardada_gana_valor']} "
+            f"claves con otro valor y {solo_anadir['guardada_gana_nota']} con el mismo valor y otra nota (gana la "
+            f"guardada)")
     revisables = sorted(sid for sid in servidas if cat.get(sid, {}).get("revisable")
                         and (tabla.loc[tabla["serie"] == sid, "vintage"] == "unico").all())
     escrita = None

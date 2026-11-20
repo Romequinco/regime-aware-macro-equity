@@ -830,7 +830,8 @@ proyecciones:
     sep: 'fred:FEDTARMD, fred:PCECTPIMD y fred:UNRATEMD (SEP del FOMC, vintage_exacto de ALFRED); horizonte = año de
       fecha_referencia - año del vintage; edicion = vintage (fecha de la reunión)'
     funcion: 'preprocesado.separar_proyecciones (reparte filas; no cambia ninguna)'
-  esperadas: {imf_weo: 240, fred_alfred: 3, total: 243}
+  # 3b-2: + 66 del WEO (11 conceptos de los agregados 001, 163 y 200 × 6 horizontes); antes 240 + 3 = 243
+  esperadas: {imf_weo: 306, fred_alfred: 3, total: 309}
   notas:
     - 'Las fechas de las proyecciones no cambian: son exactas (vintage del WEO o de ALFRED)'
 
@@ -940,7 +941,7 @@ salidas_paso4:
     - 'el truncado se mantiene (TimeGate): ninguna fila visible antes de su fecha_publicacion curada; fecha_publicacion >=
       fecha_referencia (contrato.validar_series)'
     - 'los recuentos cuadran con lista_curada.yaml: series «queda» = series de la base curada; alias = filas de la
-      tabla de alias; proyecciones = 243 series (proyecciones.esperadas)'
+      tabla de alias; proyecciones = 309 series (proyecciones.esperadas)'
     - 'las filas exactas (vintage_exacto, cierre_mercado) y las posteriores al corte no cambian por las capas 1 y 2'
     - 'las derivadas se recalculan con sus componentes curados (fecha = la máxima de los componentes)'
     - 'la simulación del paso 3 (tablas/preprocesado_simulacion.csv) y el registro de cambios dan los mismos recuentos'

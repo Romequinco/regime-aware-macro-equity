@@ -570,7 +570,7 @@ def _tickers_universo(u: dict[str, Any]) -> dict[tuple[str, str], dict[str, Any]
 
 # Metadatos de los lotes de Yahoo, del más antiguo al más reciente (el posterior manda si trae clase).
 TABLAS_TIPO_YAHOO = ("yahoo_ampliado.csv", "yahoo_3b1.csv", "yahoo_3b1_altas.csv", "yahoo_3b1_yf.csv",
-                     "yahoo_nucleo.csv")
+                     "yahoo_nucleo.csv", "yahoo_3b2_ampliado.csv", "yahoo_3b2_universo.csv")
 
 
 def _tipo_yahoo(tablas: Path | None = None) -> dict[str, str]:

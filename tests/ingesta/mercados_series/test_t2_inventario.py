@@ -298,11 +298,15 @@ def test_t2_cifras_de_la_base():
     import pyarrow.parquet as pq
 
     base = pq.read_table(almacen.ruta_series(), columns=["serie"], read_dictionary=["serie"])
-    assert base.num_rows >= 10_516_135  # solo crece: 10.516.135 al cierre de la sonda; 10.596.210 tras el 3b-1
-    assert base.column("serie").to_pandas().nunique() == 1_434
+    # La base y el almacén de precios solo crecen: cotas inferiores (cada refresco añade), no cifras exactas.
+    # Filas: 10.516.135 al cierre de la sonda; 10.598.317 tras el 3b-1; 10.620.113 tras el 3b-2.
+    assert base.num_rows >= 10_620_113
+    # Series: 1.434 tras el 3b-1; 3b-2: + 87 (agregados del WEO y del Banco Mundial, boc:STATIC_ATABLE_V39079).
+    assert base.column("serie").to_pandas().nunique() >= 1_521
     precios = almacen.corpus_dir(almacen.TEMA) / "precios"
-    # 1.471 al cierre del paso 3; 3b-1: + 6 altas del S&P 500 (lote 3b1_altas) + 18 series yf: (lote 3b1_yf)
-    assert sum(1 for p in precios.iterdir() if p.is_dir() for _ in p.glob("*.parquet")) == 1_499
+    # 1.471 al cierre del paso 3; 3b-1: + 6 altas del S&P 500 (lote 3b1_altas) + 18 series yf: (lote 3b1_yf);
+    # 3b-2: + 125 instrumentos del universo (lote 3b2_universo).
+    assert sum(1 for p in precios.iterdir() if p.is_dir() for _ in p.glob("*.parquet")) >= 1_624
 
 
 def test_t3b_deslistado_usa_el_refresco_de_cada_fichero() -> None:

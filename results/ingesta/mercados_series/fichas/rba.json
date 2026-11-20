@@ -12,10 +12,10 @@
   "autenticacion": "ninguna",
   "coste": "0 €",
   "licencia_y_terminos": "RBA: CC BY 4.0",
-  "cobertura_inicio": "2011-01-04",
-  "cobertura_fin": "2026-11-18",
+  "cobertura_inicio": "1990-08-02",
+  "cobertura_fin": "2026-11-19",
   "frecuencia": "diaria",
-  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: FIRMMCRTD 1; FCMYGBAG10D 8. Regla conservadora: hábil siguiente a las 12:00 locales",
+  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: FIRMMCRTD 1; FCMYGBAG10D 2. Regla conservadora: hábil siguiente a las 12:00 locales",
   "formato": "csv",
   "volumen_estimado": "0.51 MB (2 series)",
   "limites": "sin clave; 1 petición/s; reintento único ante error",
@@ -23,42 +23,60 @@
   "mediciones": {
     "series": {
       "rba:FIRMMCRTD": {
-        "inicio": "2011-01-04",
-        "fin": "2026-11-18",
-        "n_obs": 4020,
-        "filas_contrato": 4020,
-        "bytes": 309644,
+        "inicio": "1990-08-02",
+        "fin": "2026-11-19",
+        "inicio_tabla_vigente": "2011-01-04",
+        "filas_tramo_historico": 5171,
+        "n_obs": 9192,
+        "filas_contrato": 9192,
+        "bytes": 309711,
         "dias_naturales_ultimo_dato_a_sonda": 1,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
       },
       "rba:FCMYGBAG10D": {
-        "inicio": "2013-05-20",
-        "fin": "2026-11-11",
-        "n_obs": 3395,
-        "filas_contrato": 3395,
-        "bytes": 202265,
-        "dias_naturales_ultimo_dato_a_sonda": 8,
+        "inicio": "1995-01-03",
+        "fin": "2026-11-18",
+        "inicio_tabla_vigente": "2013-05-20",
+        "filas_tramo_historico": 4639,
+        "n_obs": 8039,
+        "filas_contrato": 8039,
+        "bytes": 202470,
+        "dias_naturales_ultimo_dato_a_sonda": 2,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
       }
     },
     "descarga": {
       "rba:FIRMMCRTD": {
         "estado": "ok",
-        "bytes": 309644,
-        "segundos": 8.09,
-        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\rba\\rba_FIRMMCRTD.csv"
+        "bytes": 309711,
+        "segundos": 1.63,
+        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\rba\\rba_FIRMMCRTD.csv",
+        "historicos": {
+          "f01dhist.xls": {
+            "estado": "en_cache",
+            "bytes": 1467392
+          }
+        }
       },
       "rba:FCMYGBAG10D": {
         "estado": "ok",
-        "bytes": 202265,
-        "segundos": 5.68,
-        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\rba\\rba_FCMYGBAG10D.csv"
+        "bytes": 202470,
+        "segundos": 1.1,
+        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\rba\\rba_FCMYGBAG10D.csv",
+        "historicos": {
+          "f02dhist.xls": {
+            "estado": "en_cache",
+            "bytes": 598016
+          }
+        }
       }
     }
   },
   "notas": [
     "vintage 'unico': series de mercado/política monetaria sin revisiones",
-    "huecos de la fuente (festivos, '.') descartados: no se inventan filas"
+    "huecos de la fuente (festivos, '.') descartados: no se inventan filas",
+    "historia anterior a la tabla vigente: rba:FIRMMCRTD con f01dhist.xls (1976-2010 (objetivo diario desde 1990-08-02)), CC BY 4.0",
+    "historia anterior a la tabla vigente: rba:FCMYGBAG10D con f02dhist.xls (1995-2013), CC BY 4.0"
   ],
-  "fecha_sonda": "2026-11-19"
+  "fecha_sonda": "2026-11-20"
 }

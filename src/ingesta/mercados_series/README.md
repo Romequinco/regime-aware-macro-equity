@@ -254,7 +254,8 @@ planas: `tablas/anomalias_series.csv`). `python -m ingesta.mercados_series resum
 guardada.
 
 **Solo-añadir en las oficiales sin historia de revisiones (paso 3b).** BCE (también sus revisables: `includeHistory`
-da una versión por observación), Eurostat, BIS, FMI (la API solo sirve las ediciones vigentes del WEO), Banco
+da una versión por observación), Eurostat, BIS, FMI (la API solo sirve las ediciones del WEO desde 2025-04; una edición más antigua que llega
+después conserva su fecha propia), Banco
 Mundial, bancos centrales y curvas
 (`base.CARGADORES_SOLO_ANADIR`) traen solo los valores de hoy: lo guardado es lo único que queda de lo que se
 sabía antes. `base.conservar_revisiones` compara con la base guardada antes de escribir: la fila guardada que ya no
@@ -436,22 +437,28 @@ IT, UK, JP, CA) y China; el resto del mundo, anual (Banco Mundial). Prefijos: `e
   Paro y PIB con **tramos por época** en `lags.yaml` (`tramos`, con muestras de notas de prensa y test de no fuga).
 - **BIS** ([`fuentes.bis`](fuentes/bis.py)): tipos oficiales, brecha de crédito, servicio de la deuda y tipos de cambio
   efectivos; lag fijo conservador. **Banco Mundial** ([`fuentes.worldbank`](fuentes/worldbank.py)): PIB, IPC y paro de
-  217 países, anual, fin de t+1. **FMI WEO** ([`fuentes.imf`](fuentes/imf.py)): solo la edición 2026-10. Las series
-  `imf:WEO.<país>.<concepto>` solo traen años anteriores al de la edición; la estimación del año en curso y las
-  proyecciones a 1-5 años van a `...PROY.H<h>` (fecha de referencia = año de la edición, nota «proyección, no dato»).
-  Las ediciones 2008-2025 están en DBnomics, que prohíbe el acceso por `robots.txt`.
+  217 países y de los agregados de D3 (`WLD` mundo, `LMY` renta baja y media, `EMU` zona euro; 3b-2), anual, fin de
+  t+1; rango de años explícito en la petición (`date=1960:<año>`). **FMI WEO** ([`fuentes.imf`](fuentes/imf.py)): las ediciones 2025-04, 2025-10,
+  2026-04 y 2026-10 de la API SDMX del FMI, de G7, China y los agregados `001` (mundo), `163` (zona euro) y `200`
+  (emergentes). Cada edición, fechada en su publicación (`PUBLICATION_DATE` del fichero, o su `UPDATE_DATE` si el FMI
+  la corrigió después). Las series `imf:WEO.<área>.<concepto>` solo traen años anteriores al de la edición; la
+  estimación del año en curso y las proyecciones a 1-5 años van a `...PROY.H<h>` (fecha de referencia = año de la
+  edición, nota «proyección, no dato»). Las ediciones 2008-04 a 2024-10 son limitación declarada (3b-2, G3): el
+  `robots.txt` de www.imf.org responde 403 y DBnomics no se usa.
 - **OCDE** ([`fuentes.oecd`](fuentes/oecd.py)): `DF_STES_REVISIONS` da ediciones reales (`vintage` = `AAAA-MM`, fecha
   conservadora a fin de mes): CLI desde 2001, IPC y paro desde 1999. La OCDE ya no publica el CLI de la zona euro
   (EA19/EA20: 404 en `DF_STES_REVISIONS` y `DF_CLI`); `oecd:LI_AA.G4E` son los cuatro grandes europeos (DE, FR, IT,
-  UK), con nota. Sin paro de China.
+  UK), con nota. Sin paro de China. Refresco (3b-2, `--refrescar`): solo las ediciones nuevas, una petición por
+  edición y en ficheros aparte (`revisions_<área>_<medida>__ed<AAAAMM>.csv`).
 - **Philly RTDSM** ([`fuentes.philly_rtdsm`](fuentes/philly_rtdsm.py)): solo los vintages anteriores al primero de
   ALFRED (ROUTPUT 1965-1991, PNB real); PCPI, EMPLOY y RUC no aportan filas. Empalme por vintage con `fred:GDPC1`:
   `deriv:PIB_REAL_USA_VINTAGES` (alias `PIB_REAL_USA`; `base.empalmar_pib_real_usa`, tramo PNB/PIB en la nota). Un
   solo concepto por vintage: desde el primer vintage de ALFRED (1991-12-04) todo es PIB (las filas «anterior a ALFRED»
   se refechan a esa publicación) y los periodos que solo existían como PNB (1947-1958) se retiran con una fila nula
   hasta que un vintage posterior los publica como PIB.
-- **Bancos centrales** ([`fuentes.bancos_centrales`](fuentes/bancos_centrales.py)): BoC (Valet, desde 2001), BoJ (desde
-  1998), Bundesbank (Svensson a 10 años, desde 1997) y RBA (desde 2011). BoE (IADB) vetado por `robots.txt`; sus curvas
+- **Bancos centrales** ([`fuentes.bancos_centrales`](fuentes/bancos_centrales.py)): BoC (Valet, desde 2001; objetivo
+  a fin de mes desde 1996), BoJ (desde 1998), Bundesbank (Svensson a 10 años, desde 1997) y RBA (desde 1990 con los
+  históricos oficiales; 3b-2). BoE (IADB) vetado por `robots.txt`; sus curvas
   salen de los ficheros publicados (bloque 6).
 
 ## Universo (bloque 5)
@@ -561,9 +568,9 @@ entera, **parcial** si falta una parte documentada en la ficha y **bloqueada** s
 | `ken_french`, `shiller`, `goyal_welch`, `ofr_fsi`, `jst_macrohistory` | ok | 1870 – 2026-08 | ediciones archivadas desde 2026; JST solo validación |
 | `bce`, `eurostat`, `bis`, `worldbank` | ok | 1945 – 2026-10 | sin vintages salvo la versión vigente |
 | `oecd` | parcial | 1949 – 2026-09 | sin CLI de la zona euro ni paro de China |
-| `imf_weo` | parcial | 1980 – 2026 | solo la edición 2026-10 (DBnomics vetado por `robots.txt`) |
+| `imf_weo` | parcial | 1980 – 2026 | ediciones 2025-04 a 2026-10 (API del FMI); 2008-2024, limitación (G3) |
 | `philly_rtdsm` | ok | 1939 – 2026-08 | solo aporta ROUTPUT anterior a ALFRED |
-| `boc`, `boj`, `bundesbank`, `rba` | ok | 1997 – 2026-10 | RBA desde 2011; BoC desde 2001 |
+| `boc`, `boj`, `bundesbank`, `rba` | ok | 1997 – 2026-10 | RBA desde 1990 (históricos, 3b-2); BoC desde 2001 (mensual desde 1996) |
 | `boe` (IADB) | bloqueada | – | `robots.txt` prohíbe la ruta CSV |
 | `ust_curva`, `bce_curvas`, `boe_curvas`, `mof_jgb`, `boc_curva` | ok | 1974 – 2026-10 | curvas oficiales |
 | `yahoo` | ok | 1927 – 2026-10 | núcleo de 92 tickers; ampliado completo (2026-10-14): 1.388 de 1.842 con datos (449 deslistados, 5 rechazos del almacén, ya tolerados) |
@@ -630,14 +637,22 @@ después de las 16:30 NY o en otro día):
 - EONIA se fecha con el publicador de €STR (hábil siguiente a las 08:00): conservador.
 
 Macro internacional:
-- FMI WEO: ediciones 2008-2025 (DBnomics en `Disallow: /`, comprobado el 2026-10-13: pedir permiso o localizar el
-  archivo del FMI) y WEO de agregados de la zona euro; fechas de edición contrastadas solo las de 2026.
+- FMI WEO: ediciones 2008-04 a 2024-10 (3b-2, G3): la API del FMI solo sirve 2025-04 a 2026-10, el `robots.txt`
+  de www.imf.org responde 403 (todo prohibido) y DBnomics no se usa. El WEO no cumple D1 (primera publicación visible:
+  2025-04-22). Fechas de edición contrastadas con el fichero solo de 2025-04 a 2026-10.
 - BCE, Eurostat, BIS y Banco Mundial sin historia de revisiones (valores de hoy con regla y nota de revisable).
-- Historia larga de RBA (antes de 2011) y BoC (antes de 2001); BoE IADB vetado por `robots.txt`.
+- Historia larga (3b-2): el RBA ya llega a 1990 (objetivo) y 1995 (bono a 10 años) con sus ficheros históricos
+  oficiales (`xls-hist/f01dhist.xls` y `f02dhist.xls`, misma serie con nota de tramo). BoC: el objetivo a fin de mes
+  desde 1996 es `boc:STATIC_ATABLE_V39079`; el diario antes de 2009-04 y el bono a 10 años antes de 2001 no están en
+  Valet (limitación; el bono, en la tabla 10-10-0122-01 de Statistics Canada). BoE IADB vetado por `robots.txt`.
 - Eurostat sin verificar (conservadoras): paro antes de 2012 (fin de M+2), PIB antes de 2003 (t+71) y PIB por país
   (`EUROSTAT_PIB_PAISES`; no aprovecha los t+30 nacionales). `CREACION_GEO` de EA20 y EA21 sin el registro de cambios
-  de Eurostat. OCDE: no hay CLI de la zona euro (G4E es un sustituto con nota). Sin filas en la base:
-  `oecd:LI_AA.EA20`, `oecd:UNEMP.CHN`, `philly:EMPLOY`, `philly:PCPI` y `philly:RUC`.
+  de Eurostat. Zona euro cambiante (`EA`) del ESI y del paro: Eurostat no la publica (solo EA20/EA21; la clave `EA`
+  da 400, medido 2026-11-20; `eurostat.SIN_EA`); el paro cambiante sale del BCE (`PARO_EA`).
+- Sin filas por limitación de la fuente (3b-2, medido 2026-11-20): `oecd:LI_AA.EA20` (la OCDE no publica el CLI de
+  ninguna zona euro; sustituto `oecd:LI_AA.G4E`) y `oecd:UNEMP.CHN` (no publica el paro de China; sustituto anual
+  `wb:CHN.SL.UEM.TOTL.ZS`), en `oecd.SIN_DATOS`. Sin filas por diseño: `philly:EMPLOY`, `philly:PCPI` y `philly:RUC`
+  (todos sus vintages son posteriores al primero de ALFRED, que ve los mismos periodos o más).
 
 Mantenimiento y pruebas:
 - **Archivo periódico de las OAS de ICE** (ventana móvil de 3 años en FRED): el archivo ya existe

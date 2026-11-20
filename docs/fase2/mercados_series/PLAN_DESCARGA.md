@@ -251,6 +251,48 @@ constituyentes por fecha).
 
 El 3b no tiene notebook propio: su resultado se verá en el `05_resultado`. Tiempo: el código, alrededor de una hora; las descargas, varias horas en segundo plano (la de Yahoo es la más larga).
 
+## Paso 3b-2 · el resto de descargas: HECHO (2026-11-20)
+
+**Resultado:**
+
+- **Precios:**
+  - 125 instrumentos del universo descargados (UCITS, futuros, índices y divisas);
+  - 613 acciones no estadounidenses refrescadas;
+  - 12 que Yahoo revisó, con lo guardado conservado.
+- **WEO:** ediciones 2025-04, 2025-10 y 2026-04 por la API SDMX del FMI, con sus agregados 001, 163 y 200. Los de la zona euro pasan a alias por D9.
+  Las otras 34 ediciones quedan como limitación: `www.imf.org` responde 403 al `robots.txt`.
+- **Banco Mundial:** agregados WLD, LMY y EMU.
+- **Bancos centrales:** historia del RBA desde 1990 y objetivo mensual de la BoC desde 1996.
+- **Refrescos:** BIS, Eurostat, OCDE (edición 202611), Banco Mundial y Philadelphia.
+- **Limitaciones medidas:**
+  - zona euro cambiante de Eurostat;
+  - CLI EA20 y paro de China de la OCDE;
+  - tres series de Philadelphia que ya cubre ALFRED.
+- **Base:** 10.620.113 filas y 1.521 series, sin perder nada.
+- **Base curada:** 533 series.
+- **Precios curados:** 1.616 tickers.
+- **Avisos nuevos:** historia recortada (18), no llega al corte (21) y UCITS con correlación < 0,90 (23).
+- **Estado** (`descargas_3b_estado.csv`, comprobado con evidencia del corpus): 48 hechos, 1 parcial, 3 resueltos, 124 limitaciones y 1 aplazado (cartera 60/40 europea, derivada).
+- **Verificación:** dos verificadores (sin fallos de TimeGate; 1 hallazgo alto de cobertura, D9 en el WEO, corregido) y suite con 1.270 tests en verde.
+
+### Plan con el que se lanzó
+
+Lo aplazado por H1 en `descargas_3b_estado.csv`:
+
+| Grupo | Filas pendientes | Qué incluye |
+|---|---|---|
+| Precios | 751 | 126 instrumentos del universo sin fichero (UCITS de Londres, Xetra y Suiza, futuros, índices, divisas) y refresco de los 623 no estadounidenses del ampliado y de 2 del universo |
+| Macro internacional | 6 | Refresco de OCDE, Eurostat, BIS, Banco Mundial, WEO y Philadelphia |
+| Series nuevas | 15 | Agregados del Banco Mundial (WLD, LMY, EMU) y del WEO (001, 163, 200), zona euro (EA) del ESI y del paro, CLI EA20 y paro de China de la OCDE, 3 series de Philadelphia, historia de BoC y RBA |
+| Ediciones del WEO | 37 | Solo del archivo oficial del FMI y solo si su `robots.txt` lo permite (G3); DBnomics, no |
+
+Agentes:
+- **R1 · precios**, en segundo plano.
+- **R2 · FMI y BIS**: ediciones y agregados del WEO, y refresco del BIS.
+- **R3 · fuentes macro**: Banco Mundial, Eurostat, OCDE, Philadelphia, BoC y RBA, con las series nuevas y su refresco.
+
+Después, la cadena completa (base, pasos 2–3, `curar`, `curar-precios`, estado), los verificadores y los notebooks `03` y `04` regenerados con las cifras nuevas.
+
 ## Paso 4 · `04_preprocesado` (lanzado el 2026-11-20)
 
 Aplica a la base de trabajo **sin tocarla** el plan ya decidido:

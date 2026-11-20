@@ -396,7 +396,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         ("eda", "EDA de series y precios: detecta incidencias y propone, no corrige (paso 3)"),
         ("seleccion", "lista curada (queda / alias / fuera / proyecciones) y lista de descargas del paso 3b (paso 3)"),
         ("preprocesado", "valida config/preprocesado.yaml y simula su efecto sin escribir ninguna base (paso 3)"),
-        ("estado_3b", "estado de cada fila del 3b: hecho, resuelto, limitación declarada o aplazado al 3b-2"),
+        ("estado_3b", "estado de cada fila del 3b (3b-1 y 3b-2): hecho, parcial, resuelto, limitación declarada "
+                      "o aplazado"),
     ):
         p3 = sub.add_parser(orden, help=ayuda, add_help=False)
         p3.add_argument("resto", nargs=argparse.REMAINDER, help=f"argumentos de python -m ingesta.mercados_series.{orden}")

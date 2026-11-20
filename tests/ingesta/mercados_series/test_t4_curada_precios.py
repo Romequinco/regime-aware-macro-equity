@@ -140,6 +140,29 @@ def test_avisos_de_apertura_con_volumen_y_sin_apertura(tmp_path):
     assert {"apertura_igual_cierre_con_volumen", "sin_apertura"} <= set(guardado["tipo"])
 
 
+def test_aviso_no_llega_corte_con_su_motivo(tmp_path):
+    """3b-2: un fichero cuyo último dato es anterior a la última sesión de su calendario antes del corte lleva
+    ``no_llega_corte`` con el motivo de ``estado_3b.MOTIVOS_REFRESCO``; uno que llega, no."""
+    from ingesta.mercados_series import estado_3b
+
+    origen = tmp_path / "precios"
+    corto = _precios("NESN.SW")
+    almacen.escribir_precios(corto[corto["sesion"] <= "2026-10-13"], "yahoo", ruta=origen / "yahoo")
+    almacen.escribir_precios(_precios("AAA"), "yahoo", ruta=origen / "yahoo")
+    lista = {"AAA": {"decision": "queda"}, "NESN.SW": {"decision": "queda"}}
+    r = curada_precios.curar_precios(origen, tmp_path / "precios_curados", tmp_path / "tablas", lista,
+                                     meta=META_VACIA, registro=None)
+    assert r["ok"], r["verificaciones"]
+    av = r["avisos"].set_index(["ticker", "tipo"])
+    fila = av.loc[("NESN.SW", "no_llega_corte")]
+    assert fila["primera"] == "2026-10-13" and fila["ultima"] == "2026-11-13" and fila["n"] == 23
+    assert estado_3b.MOTIVOS_REFRESCO["NESN.SW"] in fila["nota"]
+    assert ("AAA", "no_llega_corte") not in av.index
+    # sin calendario del mercado: días L-V; Coinbase publica al día siguiente (retraso 1: el 12 es la última)
+    assert curada_precios.ultima_sesion_esperada(None) == pd.Timestamp("2026-11-13")
+    assert curada_precios.ultima_sesion_esperada("CRYPTO", retraso_dias=1) == pd.Timestamp("2026-11-12")
+
+
 def test_corte_g2(entorno):
     r = _curar(entorno)
     c = _leer(entorno, "AAA")

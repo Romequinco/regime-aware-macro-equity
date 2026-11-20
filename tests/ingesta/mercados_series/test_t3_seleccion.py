@@ -375,6 +375,35 @@ def test_ningun_ticker_sale_por_fecha_de_inicio():
     assert bool(out.at["VIEJO", "con_volumen"]) and bool(out.at["^IDX", "deslistado"])
 
 
+def test_t3b2_avisos_historia_recortada_ucits_y_sospechosa_verificada():
+    """3b-2: aviso de historia recortada (frente a inicio_esperado), alias UCITS con correlación semanal < 0,9 y
+    ficheros rotos verificados a mano (SOSPECHOSAS_VERIFICADAS)."""
+    base_fila = {"proveedor": "yahoo", "clase": "etf", "bucket": None, "en_universo": True, "hasta": "2026-11-19",
+                 "sesiones": 4000, "volumen_mediano": 1e5, "deslistado": False, "posible_frontera": None}
+    pre = pd.DataFrame([
+        {**base_fila, "ticker": "SHY", "id_universo": "yf:SHY", "desde": "2002-07-30"},
+        {**base_fila, "ticker": "IBTS.L", "id_universo": "yf:IBTS.L", "desde": "2008-01-02"},
+        {**base_fila, "ticker": "EUNK.DE", "id_universo": "yf:EUNK.DE", "desde": "2009-10-20"},
+        {**base_fila, "ticker": "VGK", "id_universo": "yf:VGK", "desde": "2005-03-10"}])
+    uni = pd.DataFrame({"id": ["yf:SHY", "yf:IBTS.L", "yf:EUNK.DE", "yf:VGK"],
+                        "inicio_esperado": pd.to_datetime(["2002-07-22", "2006-06-02", "2009-09-25", None])})
+    rec = sel.historia_recortada(pre, uni)
+    assert rec == {"IBTS.L": 579}                     # EUNK.DE empieza 25 días tarde: dentro de la holgura
+    etf = pd.DataFrame([
+        {"tipo": "ucits", "id": "SHY~IBTS.L", "miembros": "SHY; IBTS.L", "inicios": "2002-07-30; 2008-01-02",
+         "corr_min": 0.013, "corr_semanal": -0.033},
+        {"tipo": "ucits", "id": "VGK~EUNK.DE", "miembros": "VGK; EUNK.DE", "inicios": "2005-03-10; 2009-10-20",
+         "corr_min": 0.839, "corr_semanal": 0.839}])
+    assert sel.ucits_poco_correlados(etf) == {("IBTS.L", "SHY"): -0.033, ("EUNK.DE", "VGK"): 0.839}
+    out = sel.seleccionar_precios(pre, etf, recortados=rec).set_index("id")
+    aviso = out.at["IBTS.L", "aviso"]
+    assert sel.AVISO_SOSPECHOSA in aviso and "faltan 579 días desde el lanzamiento" in aviso
+    assert "correlación semanal baja con SHY (-0,033 < 0,90)" in aviso
+    assert "serie sospechosa verificada" in out.at["IBTS.L", "motivo"]
+    assert out.at["EUNK.DE", "aviso"] == "alias UCITS con correlación semanal baja con VGK (0,839 < 0,90)"
+    assert pd.isna(out.at["SHY", "aviso"]) and out.at["IBTS.L", "decision"] == "queda"
+
+
 def test_alias_etf_grupos_y_ucits():
     etf = pd.DataFrame([
         {"tipo": "grupo", "id": "g1", "miembros": "IWD; JAVA", "inicios": "2000-05-26; 2021-10-05", "corr_min": 0.981},

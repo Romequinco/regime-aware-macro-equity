@@ -22,6 +22,12 @@ del vintage), PCPI → CPIAUCSL, EMPLOY → PAYEMS, RUC → UNRATE. Primer vinta
 1955-05-06, UNRATE 1960-03-15): solo ROUTPUT aporta vintages previos (1965T4-1991T3); los vintages
 de PCPI (desde 1998), EMPLOY (desde 1964) y RUC (desde 1965) son todos posteriores al inicio de ALFRED.
 
+``philly:PCPI``, ``philly:EMPLOY`` y ``philly:RUC`` no tienen filas POR DISEÑO (paso 3b-2, medido el
+2026-11-20, ``NOTA_SIN_PREVIOS``): ALFRED tiene vintages mensuales sin huecos desde su primer vintage
+(solo faltan los meses de cierre de la Administración, 2013-10 y 2025-11) y, en cada vintage del RTDSM
+comparado, ALFRED ve los mismos periodos o más (EMPLOY64M12: 311 y 311; EMPLOY26M4: 951 y 1.047;
+RUC65Q4: 211 y 214; PCPI98M11: 610 y 622). El RTDSM no aporta historia que ALFRED no tenga.
+
 CLI: ``python -m ingesta.mercados_series.fuentes.philly_rtdsm [--variables ROUTPUT ...] [--descargar] [--ficha]``.
 """
 from __future__ import annotations
@@ -30,6 +36,7 @@ import argparse
 import io
 import re
 import time
+import zipfile
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any
@@ -64,10 +71,13 @@ MAPEO: dict[str, dict[str, Any]] = {
 }
 NOTA_PHILLY = ("RTDSM (Fed de Filadelfia): vintage anterior a ALFRED de {fred}; fecha conservadora = fin del mes "
                "del vintage")
+NOTA_SIN_PREVIOS = ("PCPI, EMPLOY y RUC sin filas por diseño: todos sus vintages son posteriores al primero de ALFRED "
+                    "y ALFRED ve en cada uno los mismos periodos o más (medido el 2026-11-20); no es un fallo de "
+                    "descarga")
 _COLUMNA = re.compile(r"^([A-Za-z_]+?)(\d{2})([QM])(\d{1,2})$")
 
-__all__ = ["FUENTE", "MAPEO", "partes_columna", "anios_vintage", "fechas_vintage", "leer_matriz",
-           "primer_vintage_alfred", "tabla_philly", "descargar", "ficha_philly"]
+__all__ = ["FUENTE", "MAPEO", "NOTA_SIN_PREVIOS", "partes_columna", "anios_vintage", "fechas_vintage",
+           "sanear_xlsx", "leer_matriz", "primer_vintage_alfred", "tabla_philly", "descargar", "ficha_philly"]
 
 
 def partes_columna(nombre: str) -> tuple[str, int, str, int]:
@@ -124,15 +134,42 @@ def _fecha_periodo(texto: Any) -> pd.Timestamp:
     raise ValueError(f"periodo RTDSM no reconocido: {texto!r}")
 
 
+_FECHA_SAS = re.compile(rb"(\d{4}-\d{2}-\d{2}T) (\d)")
+
+
+def sanear_xlsx(contenido: bytes) -> bytes:
+    """Corrige las fechas mal formadas de ``docProps/core.xml`` que escribe SAS (``2026-10-30T 9:58:09``).
+
+    Desde octubre de 2026 las matrices ROUTPUT y EMPLOY traen la hora sin el cero inicial y openpyxl no
+    las abre. Solo se tocan los metadatos del fichero (``T 9`` → ``T09``), nunca los datos; sin cambios
+    si no hace falta.
+    """
+    try:
+        z = zipfile.ZipFile(io.BytesIO(contenido))
+        core = z.read("docProps/core.xml")
+    except (zipfile.BadZipFile, KeyError):
+        return contenido
+    arreglado = _FECHA_SAS.sub(rb"\g<1>0\g<2>", core)
+    if arreglado == core:
+        return contenido
+    salida = io.BytesIO()
+    with zipfile.ZipFile(salida, "w", zipfile.ZIP_DEFLATED) as nuevo:
+        for item in z.infolist():
+            nuevo.writestr(item, arreglado if item.filename == "docProps/core.xml" else z.read(item.filename))
+    return salida.getvalue()
+
+
 def leer_matriz(fuente: Path | bytes | pd.DataFrame) -> pd.DataFrame:
     """Matriz de vintages → tabla larga ``periodo, columna, orden, fecha_vintage, valor`` (sin nulos).
 
-    ``#N/A`` y celdas vacías son «no publicado en ese vintage» (no hueco): se descartan.
+    ``#N/A`` y celdas vacías son «no publicado en ese vintage» (no hueco): se descartan. Los metadatos
+    mal formados de SAS se corrigen antes de abrir el fichero (``sanear_xlsx``).
     """
     if isinstance(fuente, pd.DataFrame):
         m = fuente.copy()
     else:
-        m = pd.read_excel(io.BytesIO(fuente) if isinstance(fuente, bytes) else fuente)
+        contenido = fuente if isinstance(fuente, bytes) else Path(fuente).read_bytes()
+        m = pd.read_excel(io.BytesIO(sanear_xlsx(contenido)))
     m = m.rename(columns={m.columns[0]: "DATE"})
     cols = [c for c in m.columns if c != "DATE"]
     fechas = fechas_vintage(cols)
@@ -247,6 +284,7 @@ def ficha_philly(variables: Iterable[str] = tuple(MAPEO), informe: dict[str, dic
         notas=["Solo vintages ANTERIORES al primer vintage de ALFRED de la serie equivalente (mapeo ROUTPUT→GDPC1, "
                "PCPI→CPIAUCSL, EMPLOY→PAYEMS, RUC→UNRATE)",
                "Corregido el error de siglo: el año sale del orden de columnas (EMPLOY64M12 = 1964, no 2064)",
+               NOTA_SIN_PREVIOS,
                "ROUTPUT: PNB real hasta 1991 y en dólares constantes de la base de cada vintage (unidad_por_vintage)",
                "Matrices crudas en <corpus>/mercados_series/crudo/philly_rtdsm/"])
     ruta = guardar_ficha(ficha) if guardar else None

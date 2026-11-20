@@ -193,6 +193,24 @@ def test_t1_b4_tabla_eurostat_y_ruptura(tmp_path):
     assert espec[manr]["estado"] == "retirada" and espec[manr]["sucesor"].startswith("eurostat:prc_hicp_minr")
 
 
+def test_t3b2_eurostat_zona_retirada_sale_del_ultimo_archivo_que_la_traia(tmp_path):
+    """Paso 3b-2: Eurostat quita una zona (UK de namq_10_gdp): la serie sale de la última descarga archivada que
+    la traía, no queda huérfana en la base."""
+    def con_uk(url: str, params: dict) -> str:
+        texto = transporte_estat(url, params)
+        if "/namq_10_gdp/" in url:
+            texto += "\nESTAT:NAMQ_10_GDP(1.0),09/10/26 23:00:00,Q,CLV,SCA,UK,2020-Q3,-8.0,,"
+        return texto
+
+    eurostat.tabla_eurostat(eurostat.ClienteEurostat(transporte=con_uk, carpeta=tmp_path, hoy="2026-10-13"))
+    df, med = eurostat.tabla_eurostat(eurostat.ClienteEurostat(transporte=transporte_estat, carpeta=tmp_path,
+                                                               hoy="2026-11-20"))
+    uk = eurostat.id_eurostat("namq_10_gdp", eurostat.CONJUNTOS["namq_10_gdp"]["clave"], "UK")
+    assert (df["serie"] == uk).sum() == 1
+    assert "20261013_" in med["conjuntos"]["namq_10_gdp"]["zonas_retiradas"]["UK"]
+    assert "zonas_retiradas" not in med["conjuntos"]["une_rt_m"]
+
+
 # --- Fragmento del catálogo ------------------------------------------------------------------------
 def test_t1_b4_fragmento_valida_con_el_catalogo():
     # Fragmento fundido por el integrador: las series del BCE están en catalogo_series.yaml.

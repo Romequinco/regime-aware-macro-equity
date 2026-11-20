@@ -122,11 +122,15 @@ CLASES_ETF = ("etf", "etp")
 G7 = ("USA", "CAN", "FRA", "DEU", "ITA", "JPN", "GBR")
 ZONA_EURO = ("AUT", "BEL", "HRV", "CYP", "EST", "FIN", "FRA", "DEU", "GRC", "IRL", "ITA", "LVA", "LTU",
              "LUX", "MLT", "NLD", "PRT", "SVK", "SVN", "ESP", "BGR")   # BGR desde el 2026-01-01 (EA21)
-AGREGADOS = ("EA", "WLD", "LMY", "MIC", "EMU")  # zona euro, mundo y emergentes (renta baja y media)
+# Zona euro, mundo y emergentes: del Banco Mundial (renta baja y media) y del WEO (001 mundo, 163 zona euro, 200 emergentes).
+AGREGADOS = ("EA", "WLD", "LMY", "MIC", "EMU", "001", "163", "200")
 
 _ISO = {"US": "USA", "UK": "GBR", "GB": "GBR", "DE": "DEU", "FR": "FRA", "IT": "ITA", "JP": "JPN",
         "CA": "CAN", "CN": "CHN", "ES": "ESP", "AU": "AUS", "EA": "EA", "EA19": "EA", "EA20": "EA",
-        "EA21": "EA", "U2": "EA", "XM": "EA", "EMU": "EA", "EU27_2020": "EU"}
+        "EA21": "EA", "U2": "EA", "XM": "EA", "EMU": "EA", "EU27_2020": "EU",
+        # Agregados del WEO (3b-2): 163 es la zona euro; 001 (mundo) y 200 (emergentes y en desarrollo) se comparan
+        # con los del Banco Mundial (WLD, y LMY: renta baja y media), así D9 y D8 se miden entre ellos.
+        "163": "EA", "001": "WLD", "200": "LMY"}
 
 
 def pais_normalizado(codigo: str | None) -> str | None:

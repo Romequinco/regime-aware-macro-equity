@@ -38,7 +38,11 @@ Salidas en ``results/ingesta/mercados_series/tablas/`` (solo metadatos, ninguna 
 - ``precios_curados_avisos.csv`` (``COLUMNAS_AVISOS``): una fila por ticker y tipo, con ``n``, primera y última
   fecha, la acción aplicada (``quitada``, ``nulo`` o ``solo aviso``) y la propuesta del EDA; los tipos del EDA salen
   de ``eda.controles_ticker`` sobre lo que queda tras el corte (datos del 3b-1, no la tabla vieja del paso 3), y el
-  ``aviso`` de la lista curada (serie sospechosa, ticker reutilizado, limitación F3) va como tipo ``aviso_lista``.
+  ``aviso`` de la lista curada (serie sospechosa, ticker reutilizado, historia recortada, alias UCITS con poca
+  correlación, limitación F3) va como tipo ``aviso_lista``. ``no_llega_corte`` (3b-2, ``aviso_no_llega_corte``):
+  el último dato es anterior a la última sesión de su calendario que se publica hasta el corte; ``n`` = sesiones
+  que faltan y la nota lleva el motivo de ``estado_3b.MOTIVOS_REFRESCO`` si lo hay (rechazos del almacén, tickers
+  reutilizados, adquiridos).
 - ``precios_curados_resumen.csv`` (``COLUMNAS_RESUMEN``): por ticker, sesiones antes y después, fuera por el corte,
   velas quitadas, aperturas anuladas y hasta dónde llega.
 - ``precios_curados_verificaciones.csv`` (``COLUMNAS_VERIFICACIONES``): ``ok``, ``fallo`` o ``no aplica``.
@@ -47,7 +51,7 @@ Salidas en ``results/ingesta/mercados_series/tablas/`` (solo metadatos, ninguna 
 disponibilidad iguales a las originales; solo faltan las velas posteriores al corte y las de relleno; ninguna
 sesión posterior al corte; ``close`` y el resto de columnas iguales salvo ``open``/``high``/``low``, que solo pasan
 a nulo en las sesiones de relleno; esquema válido (y el parquet escrito se relee igual); recuentos frente a la
-lista curada (1.491 «queda» en el 3b-1, también frente a su cabecera); y ``precios/`` sin cambios (tamaño y fecha
+lista curada (1.491 «queda» en el 3b-1 y 1.616 en el 3b-2, también frente a su cabecera); y ``precios/`` sin cambios (tamaño y fecha
 de cada fichero leído). Si alguna falla no se publica nada: la carpeta ``precios_curados`` y las tablas de avisos y
 resumen se quedan como estaban; solo se escribe ``precios_curados_verificaciones.csv`` para ver qué falló.
 
@@ -92,6 +96,7 @@ APERTURA = "apertura_igual_cierre"
 APLICADOS = {RELLENO: QUITADA, APERTURA: NULO}       # tipos del EDA que cambian datos y su acción
 APERTURA_CON_VOLUMEN = "apertura_igual_cierre_con_volumen"   # aviso propio: OHLC plano con volumen > 0 (también nulo)
 SIN_APERTURA = "sin_apertura"
+NO_LLEGA_CORTE = "no_llega_corte"   # el último dato es anterior a la última sesión del calendario antes del corte
 UMBRAL_SIN_APERTURA = 99.0   # % de sesiones curadas sin open por encima del cual el instrumento no tiene apertura
 COLUMNAS_OHL = ("open", "high", "low")
 # Columnas que no pueden cambiar en una sesión que se queda (además del close y de las fechas).
@@ -268,12 +273,68 @@ def _fila_aviso(tk: str, pv: str, tipo: str, sesiones: Any, accion: str, propues
             "accion": accion, "propuesta_eda": propuesta, "nota": nota}
 
 
+def _calendario(mercado: str | None, sesiones_cal: np.ndarray | None = None) -> np.ndarray | None:
+    """Sesiones del calendario del mercado (``eda.CALENDARIO_MERCADO``) o ``sesiones_cal``; ``None``: días L-V."""
+    if sesiones_cal is not None:
+        return np.asarray(sesiones_cal).astype("datetime64[D]")
+    nombre = eda.CALENDARIO_MERCADO.get(mercado or "")
+    if not nombre:
+        return None
+    try:
+        return eda.sesiones_calendario(nombre)
+    except Exception:          # calendario que no resuelve: días L-V (como eda.sesiones_faltantes)
+        return None
+
+
+def ultima_sesion_esperada(mercado: str | None, corte: pd.Timestamp = CORTE_G2, retraso_dias: int = 0,
+                           sesiones_cal: np.ndarray | None = None) -> pd.Timestamp | None:
+    """Última sesión del calendario del mercado (``eda.CALENDARIO_MERCADO``; sin calendario, días L-V) que se
+    publica hasta ``corte``: la última con ``sesion + retraso_dias <= corte`` (Coinbase publica al día siguiente)."""
+    tope = np.datetime64((pd.Timestamp(corte) - pd.Timedelta(days=int(retraso_dias))).date(), "D")
+    cal = _calendario(mercado, sesiones_cal)
+    if cal is None:
+        dias = np.arange(tope - np.timedelta64(14, "D"), tope + np.timedelta64(1, "D"), dtype="datetime64[D]")
+        cal = dias[np.is_busday(dias)]
+    cal = cal[cal <= tope]
+    return pd.Timestamp(cal[-1]) if len(cal) else None
+
+
+def aviso_no_llega_corte(tk: str, pv: str, h: pd.DataFrame, corte: pd.Timestamp = CORTE_G2,
+                         motivos: Mapping[str, str] | None = None,
+                         sesiones_cal: np.ndarray | None = None) -> dict[str, Any] | None:
+    """Aviso ``no_llega_corte``: el último dato publicado hasta el corte (``h``, ordenada por sesión) es anterior a
+    la última sesión de su calendario que se publica hasta el corte (``ultima_sesion_esperada``, con el retraso de
+    publicación del propio ticker). ``n`` = sesiones del calendario que faltan; la nota lleva el motivo de
+    ``estado_3b.MOTIVOS_REFRESCO`` si lo hay. ``None`` si llega."""
+    if not len(h):
+        return None
+    ultima = pd.Timestamp(h["sesion"].iloc[-1]).normalize()
+    retraso = max(0, (pd.Timestamp(h["fecha_publicacion"].iloc[-1]).normalize() - ultima).days)
+    mercado = h["mercado"].iloc[-1] if "mercado" in h else None
+    esperada = ultima_sesion_esperada(mercado, corte, retraso, sesiones_cal)
+    if esperada is None or ultima >= esperada:
+        return None
+    cal = _calendario(mercado, sesiones_cal)
+    u, e = np.datetime64(ultima.date(), "D"), np.datetime64(esperada.date(), "D")
+    faltan = (int(((cal > u) & (cal <= e)).sum()) if cal is not None
+              else int(np.busday_count(u + np.timedelta64(1, "D"), e + np.timedelta64(1, "D"))))
+    motivo = dict(motivos or {}).get(tk)
+    nota = (f"último dato {ultima:%Y-%m-%d}, anterior a la última sesión del calendario antes del corte "
+            f"({esperada:%Y-%m-%d})" + (f": {motivo}" if motivo else ""))
+    return _fila_aviso(tk, pv, NO_LLEGA_CORTE, [ultima, esperada], SOLO_AVISO, None, nota, n=faltan)
+
+
 def avisos_ticker(tk: str, pv: str, r: Curado, entrada: Mapping[str, Any], meta: Mapping[str, Any] | None = None,
-                  sesiones_cal: np.ndarray | None = None) -> list[dict[str, Any]]:
+                  sesiones_cal: np.ndarray | None = None, motivos: Mapping[str, str] | None = None,
+                  corte: pd.Timestamp = CORTE_G2) -> list[dict[str, Any]]:
     """Avisos de un ticker: lo aplicado (desde las máscaras), el resto de tipos del EDA (``eda.controles_ticker``
-    sobre lo que queda tras el corte, solo aviso) y el ``aviso`` de la lista curada."""
+    sobre lo que queda tras el corte, solo aviso), ``no_llega_corte`` (``aviso_no_llega_corte``, con ``motivos``)
+    y el ``aviso`` de la lista curada."""
     h = r.hasta_corte
     filas = []
+    falta = aviso_no_llega_corte(tk, pv, h, corte, motivos, sesiones_cal)
+    if falta:
+        filas.append(falta)
     if r.quitada.any():
         filas.append(_fila_aviso(tk, pv, RELLENO, h.loc[r.quitada, "sesion"], QUITADA, eda.PROPUESTAS[RELLENO]))
     if r.relleno_con_evento.any():
@@ -384,6 +445,9 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
     if solo_set is not None and escribir and por_defecto:
         raise ValueError("con 'solo' no se escribe en la carpeta del corpus: pasa otro destino o escribir=False")
     meta = eda.meta_precios() if meta is None else meta
+    from ingesta.mercados_series import estado_3b
+
+    motivos = estado_3b.MOTIVOS_REFRESCO          # motivo de los avisos no_llega_corte
 
     ficheros, dobles = ficheros_origen(origen)
     if solo_set is not None:
@@ -431,7 +495,7 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
             escritos.append(tk)
             m = (pv, tk)
             avisos += avisos_ticker(tk, pv, r, lista[tk], meta.loc[m].to_dict() if m in meta.index else {},
-                                    sesiones_cal)
+                                    sesiones_cal, motivos, corte)
             c = r.curado
             resumen.append({"ticker": tk, "proveedor": pv, "sesiones_antes": len(original),
                             "fuera_corte": r.fuera_corte, "velas_quitadas": int(r.quitada.sum()),

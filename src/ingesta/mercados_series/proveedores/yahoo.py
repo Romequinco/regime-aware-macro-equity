@@ -104,6 +104,10 @@ NUCLEO = ETF_PROPUESTA + ETF_EXTRA + INDICES + FX + FUTUROS + ACCIONES
 MAPA_EXCHANGE = {
     "NMS": "XNAS", "NGM": "XNAS", "NCM": "XNAS", "NAS": "XNAS", "NIM": "XNAS",
     "NYQ": "XNYS", "ASE": "XNYS", "SNP": "XNYS", "WCB": "XNYS", "DJI": "XNYS",
+    # 3b-2 (2026-11-20): salían «sin mapa; mercado por huso» en el 3b-1. Todos cierran a las 16:00 de Nueva
+    # York como XNYS (el huso ya daba XNYS: nada guardado cambia). NYS: índices de NYSE (^NYA); TEX: NYSE
+    # Texas (antes NYSE Chicago); PNK, OQB, OQX y OID: mercados OTC de EE. UU. (Pink, OTCQB, OTCQX y otros).
+    "NYS": "XNYS", "TEX": "XNYS", "PNK": "XNYS", "OQB": "XNYS", "OQX": "XNYS", "OID": "XNYS",
     "PCX": "ARCX", "BTS": "ARCX",
     "CBO": "CBOE_IDX", "CXI": "CBOE_IDX", "CGI": "CBOE_IDX",   # CGI: índices de rendimientos del Tesoro (^TNX...), 2026-11
     "CME": "CME", "CMX": "CME", "NYM": "CME", "CBT": "CME",
@@ -695,7 +699,9 @@ def guardar_ficha_yahoo(etiqueta: str = "nucleo", ampliado: dict[str, Any] | Non
 
 
 # Lotes que la ficha resume además del núcleo y del ampliado: etiqueta → lista de tickers en el corpus.
-LOTES_FICHA = {"3b1": "logs/tickers_sp500_3b1.csv", "3b1_altas": "logs/tickers_sp500_3b1_altas.csv"}
+LOTES_FICHA = {"3b1": "logs/tickers_sp500_3b1.csv", "3b1_altas": "logs/tickers_sp500_3b1_altas.csv",
+               # 3b-2: instrumentos del universo sin fichero y refresco del ampliado no estadounidense
+               "3b2_universo": "logs/tickers_3b2_universo.csv", "3b2_ampliado": "logs/tickers_3b2_ampliado.csv"}
 
 
 def guardar_ficha(etiqueta: str = "nucleo", *, ampliado: dict[str, Any] | None = None,
