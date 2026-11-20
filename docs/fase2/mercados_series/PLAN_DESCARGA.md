@@ -251,6 +251,35 @@ constituyentes por fecha).
 
 El 3b no tiene notebook propio: su resultado se verá en el `05_resultado`. Tiempo: el código, alrededor de una hora; las descargas, varias horas en segundo plano (la de Yahoo es la más larga).
 
+## Paso 4 · `04_preprocesado` (lanzado el 2026-11-20)
+
+Aplica a la base de trabajo **sin tocarla** el plan ya decidido:
+- `lista_curada.yaml` (pasos 2–3 y 3b);
+- `preprocesado.yaml` (E4, E5, reconstruidas, H.15 antes de 2005, tope del primer vintage, escalas por vintage);
+- el corte G2 (2026-11-13).
+
+Escribe en el corpus, fuera del repo:
+
+| Salida | Contenido |
+|---|---|
+| `series/base_curada.parquet` | Mismo contrato que la base. Solo las series que se quedan (también las de `historia_previa`), con las fechas curadas, las escalas corregidas, nada publicado después del corte y las derivadas recalculadas con los componentes curados |
+| `series/alias.parquet` | Alias → canónico, motivo y correlación (sin valores) |
+| `series/proyecciones.parquet` | Las 243 proyecciones (WEO y SEP) en su tabla aparte |
+| `series/registro_cambios.parquet` | Antes y después de cada fecha o escala cambiada |
+| `precios_curados/<proveedor>/` | Los tickers que se quedan, hasta el corte y con las propuestas del EDA aplicadas (las velas de relleno fuera de calendario se quitan y las aperturas de relleno pasan a nulo). Los avisos van en `tablas/precios_curados_avisos.csv` |
+
+En el repo solo van resúmenes de metadatos (`tablas/curada_*.csv`) y el notebook `04_preprocesado`. Las tools
+`get_serie` y `get_precios` ganan un modo curado.
+
+**Agentes** (igual que en el paso 3):
+
+| Fase | Agentes | Qué hacen |
+|---|---|---|
+| Construcción | P1 (series), P2 (precios), P3 (tools) | En paralelo |
+| Verificación | V1 (TimeGate), V2 (coherencia) | Las verificaciones de `salidas_paso4` de `preprocesado.yaml` |
+| Corrección | P1, P2, P3 | Una sola ronda |
+| Notebook | N1 (lo construye), N2 (pulido visual) | `04_preprocesado` |
+
 ## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
 
 Lo que dejaban los notebooks antiguos y no recoge el README (originales en la etiqueta `sonda-tema1`):
@@ -278,5 +307,5 @@ Lo que dejaban los notebooks antiguos y no recoge el README (originales en la et
 | 2 | Hecho (2026-11-17): módulos `inventario` y `redundancia` (órdenes del mismo nombre), 10 tablas de metadatos en `results/.../tablas/`, notebook `02_inventario` (230 KB). Crítico: 8 hallazgos, corregidos en una ronda. Pendiente de tus decisiones D2 (grupos «a decidir»), D6, D8, D9 y D10 | este |
 | 3 | Hecho (2026-11-19): módulos `seleccion`, `eda` y `preprocesado` (órdenes del mismo nombre), `config/lista_curada.yaml`, `config/preprocesado.yaml` (borrador sin aplicar), 15 tablas y notebook `03_seleccion_eda` (0,84 MB, 11 figuras).<br>- Series: quedan 516, alias 105, fuera 570, proyecciones 243.<br>- Tickers: quedan 1.462 (26 con aviso de sospecha).<br>- Simulación: 1,07 M filas se retrasan y 0 se adelantan.<br>- 3b: 268 descargas.<br>Proceso: 3 constructores, 2 verificadores (16 hallazgos, corregidos en una ronda) y 2 agentes del notebook.<br>Pendiente de tus decisiones:<br>- Ken French (`pendiente_calendario`);<br>- fecha de creación de OFR FSI, Goyal-Welch y BIS (buscar fuera);<br>- Q1;<br>- canónicos dudosos;<br>- fronteras | este |
 | 3b | **3b-1 HECHO (2026-11-19/20; alcance H1)**:<br>- **Series:** FRED vivo, ALFRED (161), BCE, curvas, BoC/BoJ/RBA, Ken French (edición 2026-10), Shiller, GW, OFR y 23 índices `yf:` desde el almacén de precios (^GSPC, ^VIX…, rendimientos del Tesoro).<br>- **Precios:** 834 del S&P 500 y del núcleo al día, 6 altas del S&P (BE, P, VYLR, TWLO, OKTA, SKYD) y Coinbase.<br>- **OAS de ICE:** `archivar-oas`; la primera captura recupera 29 días.<br>- **Base:** 10.598.317 filas, sin perder ninguna. Las fuentes sin historia de revisiones solo crecen (132 valores anteriores del BCE conservados y 130 revisiones fechadas desde su observación). Copia previa rotatoria y `tablas/solo_anadir_ultima.csv`.<br>- **Estado** (`tablas/descargas_3b_estado.csv`): 28 hechos, 3 resueltos, 61 limitaciones declaradas y 187 aplazadas al 3b-2.<br>- **Limitaciones principales:** Bundesbank (anti-bots); 112 tickers del S&P reutilizados; KVUE y los truncados; la composición del S&P posterior al 2026-08-18 (fja05680 sin cambios); ^BCOM, ^W5000 y GC=F.<br>- **Cobertura histórica del S&P 500:** 67,8 % de los días-tramo (`tablas/sp500_cobertura_3b1.csv`).<br>- **Corte G2 (2026-11-13):** se aplica en el paso 4.<br>**Pendiente: 3b-2** (UCITS, acciones no estadounidenses, macro internacional, series nuevas, ediciones del WEO) | este |
-| 4 | Pendiente | |
+| 4 | **HECHO (2026-11-20).**<br>**Base curada** (`curada.py`, orden `curar`):<br>- 10.175.961 filas de 517 series, corte 2026-11-13.<br>- 1.416.298 filas retrasadas por las capas del plan y 0 adelantadas.<br>- Escalas por vintage (6 series) y unidades homogeneizadas (27).<br>- Derivadas recalculadas.<br>- 104 alias y 243 proyecciones en tablas aparte.<br>- Registro de cambios y manifiesto firmado; publicación atómica.<br>**Precios curados** (`curada_precios.py`, `curar-precios`):<br>- 1.491 tickers.<br>- 29.530 velas de relleno quitadas.<br>- 399.464 aperturas de relleno anuladas (126.868 con volumen, aviso propio).<br>- VBMFX y ^SKEW, sin apertura.<br>**Tools:** `get_serie`/`get_precios(base='curada')`, `get_proyeccion`, alias con aviso y aviso de datos atrasados.<br>**Verificaciones:** 13 + 13 en 0, revisadas por dos verificadores y corregidas en una ronda.<br>**Notebook:** `04_preprocesado`.<br>**Pendientes menores:** USD de las series en CNY sin fixing visible; la historia anterior a 2000 de 25 alias solo está en la base de trabajo | este |
 | 5 | Pendiente | |

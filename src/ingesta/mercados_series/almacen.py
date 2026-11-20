@@ -5,6 +5,10 @@ Estructura::
     <corpus>/mercados_series/series/base_series.parquet            tabla larga de todas las series
     <corpus>/mercados_series/precios/<proveedor>/<ticker>.parquet  un fichero por ticker
 
+Paso 4 (preprocesado; la base de trabajo no se toca): ``series/base_curada.parquet`` (mismo contrato),
+``series/alias.parquet``, ``series/proyecciones.parquet`` y ``precios_curados/<proveedor>/``. Las
+rutas y lecturas llevan ``curada=True`` (por defecto, la base de trabajo).
+
 Toda escritura valida con ``contrato`` y es atómica (``.tmp`` + ``os.replace``). La base solo
 crece: reescribir una serie no puede perder ni cambiar filas ya guardadas, y una descarga de
 precios no puede cambiar una vela ya guardada (su ``fecha_publicacion`` es la de la sesión, así
@@ -55,6 +59,15 @@ FICHERO_SERIES = "base_series.parquet"
 # Row groups de la base de series (bloque 3: millones de filas con los vintages de ALFRED). Ordenada por
 # serie, una consulta de una serie lee solo sus grupos (``leer_series`` filtra al leer).
 FILAS_POR_GRUPO_SERIES = 65_536
+# Paso 4 (preprocesado): base curada con el mismo contrato, sus tablas aparte (en ``series/``, junto a la
+# base de trabajo) y el almacén de precios curados. La base de trabajo no se toca.
+FICHERO_SERIES_CURADA = "base_curada.parquet"
+FICHERO_ALIAS = "alias.parquet"
+FICHERO_PROYECCIONES = "proyecciones.parquet"
+CARPETA_PRECIOS = "precios"
+CARPETA_PRECIOS_CURADOS = "precios_curados"
+# Columnas de la tabla de alias (preprocesado.yaml, homogeneizacion.alias).
+COLUMNAS_ALIAS: dict[str, str] = {"alias": TEXTO, "canonico": TEXTO, "motivo": TEXTO, "correlacion": REAL}
 
 # Caracteres permitidos tal cual en el nombre de fichero de un ticker; el resto se codifica
 # como ``~XX`` (hexadecimal del byte UTF-8): '^GSPC' → '~5EGSPC', 'ES=F' → 'ES~3DF', 'BTC/USD' →
@@ -143,20 +156,41 @@ def _validar_proveedor(proveedor: str) -> str:
 
 
 # --- Rutas --------------------------------------------------------------------------------------
-def ruta_series() -> Path:
-    """``corpus_dir('mercados_series') / 'series' / FICHERO_SERIES`` (crea la carpeta)."""
+def _carpeta_series() -> Path:
     carpeta = corpus_dir(TEMA) / "series"
     carpeta.mkdir(parents=True, exist_ok=True)
-    return carpeta / FICHERO_SERIES
+    return carpeta
 
 
-def _carpeta_precios(proveedor: str) -> Path:
-    return corpus_dir(TEMA) / "precios" / _validar_proveedor(proveedor)
+def ruta_series(*, curada: bool = False) -> Path:
+    """``corpus_dir('mercados_series') / 'series' / FICHERO_SERIES`` (crea la carpeta).
+
+    ``curada=True``: la base curada del paso 4 (``FICHERO_SERIES_CURADA``, mismo contrato).
+    """
+    return _carpeta_series() / (FICHERO_SERIES_CURADA if curada else FICHERO_SERIES)
 
 
-def ruta_precios(proveedor: str, ticker: str) -> Path:
-    """``corpus_dir('mercados_series') / 'precios' / proveedor / f'{nombre_fichero_ticker(ticker)}.parquet'``."""
-    return _carpeta_precios(proveedor) / f"{nombre_fichero_ticker(ticker)}.parquet"
+def ruta_alias() -> Path:
+    """Tabla de alias del paso 4: ``series/alias.parquet`` (alias, canónico, motivo, correlación; sin valores)."""
+    return _carpeta_series() / FICHERO_ALIAS
+
+
+def ruta_proyecciones() -> Path:
+    """Tabla de proyecciones del paso 4: ``series/proyecciones.parquet`` (fuera de la base curada)."""
+    return _carpeta_series() / FICHERO_PROYECCIONES
+
+
+def _carpeta_precios(proveedor: str, *, curada: bool = False) -> Path:
+    raiz = CARPETA_PRECIOS_CURADOS if curada else CARPETA_PRECIOS
+    return corpus_dir(TEMA) / raiz / _validar_proveedor(proveedor)
+
+
+def ruta_precios(proveedor: str, ticker: str, *, curada: bool = False) -> Path:
+    """``corpus_dir('mercados_series') / 'precios' / proveedor / f'{nombre_fichero_ticker(ticker)}.parquet'``.
+
+    ``curada=True``: el almacén curado del paso 4 (``precios_curados/<proveedor>/``, mismo contrato).
+    """
+    return _carpeta_precios(proveedor, curada=curada) / f"{nombre_fichero_ticker(ticker)}.parquet"
 
 
 # --- Parquet con el esquema del contrato --------------------------------------------------------
@@ -176,8 +210,8 @@ ESQUEMA_SERIES = _esquema(COLUMNAS_SERIES)
 ESQUEMA_PRECIOS = _esquema(COLUMNAS_PRECIOS)
 
 
-def _escribir_atomico(df: pd.DataFrame, esquema: pa.Schema, ruta: Path, *,
-                      filas_por_grupo: int | None = None) -> Path:
+def escribir_parquet_atomico(df: pd.DataFrame, esquema: pa.Schema, ruta: Path, *,
+                             filas_por_grupo: int | None = None) -> Path:
     """Escribe ``df`` en un temporal de la misma carpeta y lo mueve sobre ``ruta`` (``os.replace``).
 
     ``filas_por_grupo``: tamaño de los row groups (con la tabla ordenada por serie, la lectura
@@ -190,6 +224,40 @@ def _escribir_atomico(df: pd.DataFrame, esquema: pa.Schema, ruta: Path, *,
     try:
         tabla = pa.Table.from_pandas(df, schema=esquema, preserve_index=False)
         pq.write_table(tabla, tmp, row_group_size=filas_por_grupo)
+        for intento in range(_REINTENTOS_REPLACE):
+            try:
+                os.replace(tmp, ruta)
+                break
+            except PermissionError:
+                if intento == _REINTENTOS_REPLACE - 1:
+                    raise
+                time.sleep(0.1 * (intento + 1))
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+    return ruta
+
+
+_escribir_atomico = escribir_parquet_atomico   # nombre antiguo (uso interno y compatibilidad)
+
+# Columnas con valores de series o de precios: nunca van a una tabla versionada del repo (solo metadatos).
+COLUMNAS_VALORES = frozenset({"valor", "open", "high", "low", "close", "volume", "dividendo"})
+
+
+def escribir_csv_atomico(df: pd.DataFrame, ruta: Path, *, prohibidas: Iterable[str] = COLUMNAS_VALORES) -> Path:
+    """CSV de metadatos (UTF-8, fin de línea LF) en un temporal de la misma carpeta y ``os.replace`` sobre ``ruta``.
+
+    ``RuntimeError`` si ``df`` lleva alguna columna de ``prohibidas`` (por defecto ``COLUMNAS_VALORES``: las tablas
+    del repo no llevan valores). Si algo falla, ``ruta`` queda como estaba y el temporal se borra.
+    """
+    ruta = Path(ruta)
+    malas = set(prohibidas) & set(df.columns)
+    if malas:
+        raise RuntimeError(f"{ruta.name} lleva columnas de valores: {sorted(malas)}")
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    tmp = ruta.with_name(f"{ruta.name}.{uuid.uuid4().hex[:12]}.tmp")
+    try:
+        df.to_csv(tmp, index=False, encoding="utf-8", lineterminator="\n")
         for intento in range(_REINTENTOS_REPLACE):
             try:
                 os.replace(tmp, ruta)
@@ -310,7 +378,7 @@ def escribir_series(df: pd.DataFrame, ruta: Path | None = None, *, permitir_perd
 
 
 def leer_series(series: Iterable[str] | str | None = None, ruta: Path | None = None, *,
-                hasta: Any = None, validar: bool = True) -> pd.DataFrame:
+                hasta: Any = None, validar: bool = True, curada: bool = False) -> pd.DataFrame:
     """Tabla larga (todas las series o solo ``series``). Sin fichero: tabla vacía del contrato.
 
     Los filtros se aplican al leer el parquet (``filters`` de pyarrow: con la base ordenada por serie
@@ -318,9 +386,10 @@ def leer_series(series: Iterable[str] | str | None = None, ruta: Path | None = N
     ``fecha_publicacion <= hasta`` (truncado al leer: lo publicado después ni se lee).
     ``validar=False`` (consultas de ``tools``): sin ``contrato.validar_series``, solo los dtypes
     del contrato; el parquet propio ya se validó entero al escribirlo (``escribir_series``) y
-    validar un índice re-estimado de un millón de filas cuesta segundos.
+    validar un índice re-estimado de un millón de filas cuesta segundos. ``curada=True``: lee la
+    base curada del paso 4 (``ruta_series(curada=True)``); ``ruta``, si se da, manda.
     """
-    ruta = Path(ruta) if ruta is not None else ruta_series()
+    ruta = Path(ruta) if ruta is not None else ruta_series(curada=curada)
     if not ruta.exists():
         return vacio_series()
     filtros = []
@@ -337,14 +406,15 @@ def leer_series(series: Iterable[str] | str | None = None, ruta: Path | None = N
     return df[list(COLUMNAS_SERIES)].astype(COLUMNAS_SERIES).reset_index(drop=True)
 
 
-def leer_ultimas(serie: str, hasta: Any, ruta: Path | None = None) -> pd.DataFrame:
+def leer_ultimas(serie: str, hasta: Any, ruta: Path | None = None, *, curada: bool = False) -> pd.DataFrame:
     """Por ``fecha_referencia``, la fila de ``serie`` con mayor ``(fecha_publicacion, vintage)`` entre
     las publicadas hasta ``hasta`` (la regla de ``timegate.as_of_series``), resuelta en Arrow.
 
     Para las consultas de ``tools.get_serie`` sobre series de un millón de filas (índices
     re-estimados de ALFRED): solo pasa a pandas una fila por periodo. Sin validar (ver ``leer_series``).
+    ``curada=True``: de la base curada del paso 4 (``ruta``, si se da, manda).
     """
-    ruta = Path(ruta) if ruta is not None else ruta_series()
+    ruta = Path(ruta) if ruta is not None else ruta_series(curada=curada)
     if not ruta.exists():
         return vacio_series()
     filtros = [("serie", "==", serie), ("fecha_publicacion", "<=", pd.Timestamp(hasta).to_datetime64())]
@@ -357,6 +427,43 @@ def leer_ultimas(serie: str, hasta: Any, ruta: Path | None = None) -> pd.DataFra
     ultima = np.r_[ref[1:] != ref[:-1], True]
     df = tabla.take(pa.array(np.flatnonzero(ultima))).to_pandas()
     return df[list(COLUMNAS_SERIES)].astype(COLUMNAS_SERIES).reset_index(drop=True)
+
+
+def leer_alias(ruta: Path | None = None) -> pd.DataFrame:
+    """Tabla de alias del paso 4 (``COLUMNAS_ALIAS``; las columnas de más se conservan). Sin fichero: vacía.
+
+    Solo metadatos (ningún valor ni fecha): un alias no revela nada del futuro.
+    """
+    ruta = Path(ruta) if ruta is not None else ruta_alias()
+    if not ruta.exists():
+        return pd.DataFrame({c: pd.Series(dtype=t) for c, t in COLUMNAS_ALIAS.items()})
+    df = _leer_parquet(ruta)
+    faltan = [c for c in ("alias", "canonico") if c not in df.columns]
+    if faltan:
+        raise ErrorContrato("alias", [f"{ruta.name}: faltan columnas {faltan}"])
+    for c, t in COLUMNAS_ALIAS.items():
+        df[c] = df[c].astype(t) if c in df.columns else pd.Series(index=df.index, dtype=t)
+    return df.reset_index(drop=True)
+
+
+def leer_proyecciones(serie: str | None = None, hasta: Any = None, ruta: Path | None = None) -> pd.DataFrame:
+    """Tabla de proyecciones del paso 4: columnas del contrato de series más ``horizonte`` y ``edicion``.
+
+    ``serie``: solo esa; ``hasta``: solo ``fecha_publicacion <= hasta`` (truncado al leer). Sin
+    validar con el contrato de series: una proyección tiene ``fecha_referencia`` posterior a su
+    publicación, que el contrato no admite. Sin fichero: tabla vacía del contrato de series.
+    """
+    ruta = Path(ruta) if ruta is not None else ruta_proyecciones()
+    if not ruta.exists():
+        return vacio_series()
+    filtros = []
+    if serie is not None:
+        filtros.append(("serie", "==", serie))
+    if hasta is not None:
+        filtros.append(("fecha_publicacion", "<=", pd.Timestamp(hasta).to_datetime64()))
+    df = _leer_parquet(ruta, filtros or None)
+    tipos = {c: t for c, t in COLUMNAS_SERIES.items() if c in df.columns}
+    return df.astype(tipos).reset_index(drop=True)
 
 
 # --- Precios ------------------------------------------------------------------------------------
@@ -467,13 +574,15 @@ def escribir_precios(df: pd.DataFrame, proveedor: str, ruta: Path | None = None,
     return rutas
 
 
-def leer_precios(ticker: str, proveedor: str = "yahoo", ruta: Path | None = None) -> pd.DataFrame:
+def leer_precios(ticker: str, proveedor: str = "yahoo", ruta: Path | None = None, *,
+                 curada: bool = False) -> pd.DataFrame:
     """Precios as-traded validados de ``ticker``. Sin fichero: tabla vacía del contrato.
 
-    ``ruta`` sustituye a la carpeta ``precios/<proveedor>``. ``ErrorContrato`` si el fichero
-    contiene otro ticker (fichero renombrado a mano).
+    ``ruta`` sustituye a la carpeta ``precios/<proveedor>``. ``curada=True``: lee
+    ``precios_curados/<proveedor>`` (paso 4). ``ErrorContrato`` si el fichero contiene otro
+    ticker (fichero renombrado a mano).
     """
-    carpeta = Path(ruta) if ruta is not None else _carpeta_precios(proveedor)
+    carpeta = Path(ruta) if ruta is not None else _carpeta_precios(proveedor, curada=curada)
     fichero = carpeta / f"{nombre_fichero_ticker(ticker)}.parquet"
     if not fichero.exists():
         return vacio_precios()
@@ -484,9 +593,9 @@ def leer_precios(ticker: str, proveedor: str = "yahoo", ruta: Path | None = None
     return out
 
 
-def tickers_guardados(proveedor: str = "yahoo", ruta: Path | None = None) -> list[str]:
-    """Tickers con fichero en ``precios/<proveedor>`` (o en ``ruta``), ordenados."""
-    carpeta = Path(ruta) if ruta is not None else _carpeta_precios(proveedor)
+def tickers_guardados(proveedor: str = "yahoo", ruta: Path | None = None, *, curada: bool = False) -> list[str]:
+    """Tickers con fichero en ``precios/<proveedor>`` (``precios_curados/`` con ``curada``; o en ``ruta``), ordenados."""
+    carpeta = Path(ruta) if ruta is not None else _carpeta_precios(proveedor, curada=curada)
     if not carpeta.exists():
         return []
     return sorted(ticker_de_fichero(p.stem) for p in carpeta.glob("*.parquet"))
@@ -496,4 +605,7 @@ __all__ = [
     "CARACTERES_SEGUROS", "ESQUEMA_PRECIOS", "FICHERO_SERIES", "ESQUEMA_SERIES", "nombre_fichero_ticker",
     "ticker_de_fichero", "ruta_series", "ruta_precios", "escribir_series", "leer_series",
     "escribir_precios", "leer_precios", "tickers_guardados", "ruta_revisiones_precios",
+    "FICHERO_SERIES_CURADA", "FICHERO_ALIAS", "FICHERO_PROYECCIONES", "CARPETA_PRECIOS_CURADOS", "COLUMNAS_ALIAS",
+    "ruta_alias", "ruta_proyecciones", "leer_alias", "leer_proyecciones", "leer_ultimas",
+    "escribir_parquet_atomico", "escribir_csv_atomico", "COLUMNAS_VALORES",
 ]

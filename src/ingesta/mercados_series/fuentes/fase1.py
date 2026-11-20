@@ -107,7 +107,7 @@ _COLUMNAS_RESUMEN = (
     "copias_distintas", "provisionales", "dia_descarga", "desfase_descarga_dias")
 
 __all__ = ["RAIZ_FASE1", "NOTA_HUECO", "NOTA_HUECO_DIARIO", "UMBRAL_HUECO_DIARIO", "DIA_SEMANAL", "tabla_fase1",
-           "extender_con_almacen", "VOL_REALIZADA", "TOLERANCIA_SOLAPE",
+           "extender_con_almacen", "VOL_REALIZADA", "vol_realizada", "TOLERANCIA_SOLAPE",
            "resumen_fase1", "ficha_fase1", "dia_descarga", "instante_descarga", "descargas_declaradas",
            "normalizar_fechas"]
 
@@ -450,8 +450,8 @@ def extender_con_almacen(sid: str, entrada: dict[str, Any], filas: pd.DataFrame,
     return nuevas[list(COLUMNAS_SERIES)], info
 
 
-def _vol_realizada_nueva(sid: str, entrada: dict[str, Any], componente: pd.DataFrame,
-                         desde: pd.Timestamp) -> pd.DataFrame:
+def vol_realizada(sid: str, entrada: dict[str, Any], componente: pd.DataFrame,
+                  desde: pd.Timestamp) -> pd.DataFrame:
     """Volatilidad realizada (``VOL_REALIZADA``) de las fechas de ``componente`` posteriores a ``desde``.
 
     ``std`` muestral (``ddof=1``) de las log-rentabilidades de las últimas ``n`` sesiones × raíz de las
@@ -473,7 +473,7 @@ def _cargar(raiz: Path | None, catalogo: dict[str, dict] | None,
     """Tabla sin validar, lo medido por serie y el catálogo usado.
 
     ``extender_precios``: ``True`` (almacén del corpus) o la carpeta ``precios/yahoo``: extiende las ``yf:``
-    con ``extender_con_almacen`` y la volatilidad realizada con ``_vol_realizada_nueva``.
+    con ``extender_con_almacen`` y la volatilidad realizada con ``vol_realizada``.
     """
     raiz = Path(raiz) if raiz is not None else RAIZ_FASE1
     declaradas = descargas if descargas is not None else _declaradas_por_defecto(raiz)
@@ -509,7 +509,7 @@ def _cargar(raiz: Path | None, catalogo: dict[str, dict] | None,
             infos[sid].incluida = True
             comp = VOL_REALIZADA.get(sid, (None,))[0]
             if extender_precios is not False and comp in tablas and (infos.get(comp) or _Info()).extension.get("nuevas"):
-                extra = _vol_realizada_nueva(sid, e, tablas[comp], crudas[sid].index.max())
+                extra = vol_realizada(sid, e, tablas[comp], crudas[sid].index.max())
                 infos[sid].extension = {"extendida": True, "nuevas": int(len(extra)), "calculo": "desde " + comp}
                 if len(extra):
                     tablas[sid] = pd.concat([tablas[sid], extra], ignore_index=True)

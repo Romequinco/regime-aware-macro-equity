@@ -48,6 +48,13 @@
   Reanudable: lo descargado hoy se sirve de la caché.
 - ``archivar-oas [--sin-red] [--sin-crudo]``: captura fechada de la ventana de FRED de las 8 OAS de ICE
   BofA y unión al acumulado sin perder historia (``archivo_oas``; ejecutar cada mes).
+- ``curar-precios [--sin-escribir] [--tickers A,B]`` (paso 4): ``<corpus>/mercados_series/precios_curados/`` con los
+  tickers «queda», hasta el corte G2 y con las velas de relleno quitadas y las aperturas de relleno a nulo
+  (``curada_precios``; no toca ``precios/``). Tablas ``precios_curados_{avisos,resumen,verificaciones}.csv``.
+- ``curar [--sin-escribir]`` (paso 4): ``series/base_curada.parquet`` (mismo contrato: las «queda» con las fechas
+  curadas, las escalas por vintage, las derivadas recalculadas y el corte G2), ``alias.parquet``,
+  ``proyecciones.parquet`` y ``registro_cambios.parquet`` (``curada``; no toca ``base_series.parquet``). Tablas
+  ``curada_verificaciones.csv`` y ``curada_resumen.csv``; si alguna verificación falla, no escribe nada.
 
 This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.
 """
@@ -325,6 +332,18 @@ def _archivar_oas(a: argparse.Namespace) -> int:
     return archivo_oas.main(["--sin-red"] * a.sin_red + ["--sin-crudo"] * a.sin_crudo)
 
 
+def _curar(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import curada
+
+    return curada.main(["--sin-escribir"] * a.sin_escribir)
+
+
+def _curar_precios(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import curada_precios
+
+    return curada_precios.main(["--sin-escribir"] * a.sin_escribir + (["--tickers", a.tickers] if a.tickers else []))
+
+
 def _sin_red(url: str, params: dict) -> dict:
     raise RuntimeError("sin red (--sin-red): falta en la caché de hoy")
 
@@ -403,6 +422,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     ao.add_argument("--sin-red", action="store_true", help="no descarga: solo capturas antiguas y unión")
     ao.add_argument("--sin-crudo", action="store_true", help="no importa la caché cruda de FRED")
     ao.set_defaults(func=_archivar_oas)
+    cp = sub.add_parser("curar-precios", help="precios curados del paso 4: tickers «queda», corte G2 y propuestas "
+                                              "automáticas del EDA (no toca precios/)")
+    cp.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
+    cp.add_argument("--tickers", default=None, help="solo estos tickers, separados por comas (prueba; no escribe)")
+    cp.set_defaults(func=_curar_precios)
+    cu = sub.add_parser("curar", help="base curada de series del paso 4 (alias, proyecciones y registro de cambios; "
+                                      "no toca base_series.parquet)")
+    cu.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
+    cu.set_defaults(func=_curar)
     a, resto = p.parse_known_args(argv)
     if a.func is _paso3:
         # Tal cual van tras la orden (parse_known_args separa las opciones de los posicionales y las desordena).

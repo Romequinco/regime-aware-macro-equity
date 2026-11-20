@@ -77,7 +77,7 @@ python -m ingesta.mercados_series resumen
 ```
 
 ```python
-from ingesta.mercados_series.tools import get_serie, get_precios
+from ingesta.mercados_series.tools import get_precios, get_proyeccion, get_serie
 
 r = get_serie("DGS10", "2020-03-16")                 # alias o id canónico ('fred:DGS10')
 r.datos      # fecha_referencia, valor, fecha_publicacion, vintage, metodo_publicacion, nota
@@ -88,6 +88,44 @@ p.datos      # sesiones visibles a las 16:30 NY, ajuste reconstruido con lo cono
 
 Las dos tools devuelven solo lo visible a las 16:30 America/New_York del día pedido: nada con `fecha_publicacion`
 posterior, ni sesiones sin cerrar (cierre local + 30 min), ni splits o dividendos futuros en el ajuste.
+
+**Base de trabajo y base curada (paso 4).** `get_serie` y `get_precios` llevan `base=`. Las dos bases usan el
+mismo TimeGate y el mismo truncado; solo cambia de dónde se lee (`almacen.ruta_series(curada=...)`,
+`ruta_precios(..., curada=...)`):
+
+| `base` | Lee | Cuándo usarla |
+|---|---|---|
+| `'trabajo'` (por defecto) | `series/base_series.parquet`, `precios/<proveedor>/` | Auditar, depurar y construir. Es lo de siempre: nada de lo existente cambia |
+| `'curada'` | `series/base_curada.parquet`, `precios_curados/<proveedor>/` | **Los agentes y el backtest** |
+| una tabla en memoria | la tabla tal cual | Tests y recortes (como antes) |
+
+En la base curada:
+- **Alias:** un id que es alias en `series/alias.parquet` (también después de resolver el alias de la Fase 1) sirve
+  su canónico con el aviso «alias de X: se sirve el canónico».
+- **Proyecciones** (WEO y SEP): no salen por `get_serie`, que lanza `KeyError` y remite a
+  `get_proyeccion(id, fecha)`. Esa tool lee `series/proyecciones.parquet` con el mismo TimeGate (la última edición
+  visible por año proyectado, con `horizonte` y `edicion`). En la base de trabajo, las proyecciones siguen saliendo
+  por `get_serie` como hasta ahora.
+- **Avisos de la curación:** las notas con «fecha no medible», «tramo conservador» o «escala corregida»
+  (`tools.NOTAS_CURADA`) pasan a `avisos`, uno por tipo. En precios, las aperturas de relleno que la curación deja
+  a nulo también se avisan.
+- **Datos atrasados:** `get_precios` avisa «última sesión AAAA-MM-DD: datos atrasados (refresco pendiente o sin
+  cotización)» si la última sesión visible queda más de `tools.MAX_DIAS_HABILES_ATRASO` (10) días hábiles antes de la
+  fecha. Es el caso de las acciones no estadounidenses, que llegan a octubre hasta el 3b-2, o de un ticker que dejó de
+  cotizar. `get_serie` avisa igual en las series diarias y semanales, con un umbral que es el mayor entre 10 días
+  hábiles y 3 veces su ritmo de publicación (una diaria que se publica una vez al mes, como los factores diarios de
+  Ken French, no avisa por eso). Las series mensuales, trimestrales y anuales no se miran.
+- **FX:** el de `divisa='USD'` sale de la base curada.
+
+**Cripto (Coinbase).** Los tickers llevan el prefijo `cb:` (`cb:BTC-USD`, `cb:ETH-USD`) y se piden con
+`proveedor='coinbase'`: `get_precios("cb:BTC-USD", fecha, proveedor="coinbase")`. Vela diaria UTC, visible en D+1
+(mercado `CRYPTO`), en USD. Con el proveedor por defecto (`yahoo`) no hay filas y el aviso lo recuerda.
+
+```python
+r = get_serie("fred:DGS10", "2020-03-16", base="curada")
+p = get_precios("SPY", "2020-03-16", base="curada")
+w = get_proyeccion("imf:WEO.USA.LUR.PROY.H1", "2020-03-16")   # solo de la base curada
+```
 
 ## Contrato (bloque 1)
 

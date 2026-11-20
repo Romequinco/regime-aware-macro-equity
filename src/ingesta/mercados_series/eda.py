@@ -241,7 +241,7 @@ COLUMNAS_INC_PRECIOS = ("ticker", "proveedor", "clase", "mercado", "tipo", "fech
                         "pct", "nota", "propuesta_paso4")
 COLUMNAS_RESUMEN = ("ambito", "tipo", "grupo", "n_filas", "n_eventos", "n_afectadas", "propuesta_paso4",
                     "descripcion")
-PROHIBIDAS = frozenset({"valor", "open", "high", "low", "close", "volume", "dividendo"})
+PROHIBIDAS = almacen.COLUMNAS_VALORES   # columnas con valores: nunca en las tablas del repo
 
 
 # --- Utilidades ---------------------------------------------------------------------------------
@@ -621,6 +621,26 @@ def sesiones_faltantes(sesiones: Any, mercado: str | None,
             "faltan": np.setdiff1d(cal_r, s_r), "fuera": np.setdiff1d(s_r, cal_r), "esperadas": int(len(cal_r))}
 
 
+def velas_fuera_calendario(p: pd.DataFrame, mercado: str | None,
+                           sesiones_cal: np.ndarray | None = None) -> tuple[dict[str, Any], np.ndarray, np.ndarray]:
+    """Velas fuera del calendario del mercado y, entre ellas, las de relleno, en el orden de ``p`` (ordenada por
+    sesión): ``(sesiones_faltantes(...), en_fuera, relleno)``.
+
+    Relleno (``sesion_fuera_calendario_relleno``): vela en un día que el calendario da cerrado que repite el cierre
+    de la vela anterior y no tiene volumen (0 o nulo). La usan ``controles_ticker`` y el paso 4
+    (``curada_precios``), que quita esas velas.
+    """
+    sf = sesiones_faltantes(p.loc[p["close"].notna(), "sesion"], mercado, sesiones_cal)
+    if not len(p):
+        return sf, np.zeros(0, bool), np.zeros(0, bool)
+    en_fuera = np.isin(_dias(p["sesion"]), sf["fuera"])
+    c = p["close"].to_numpy(dtype=float)
+    repite = np.r_[False, c[1:] == c[:-1]]
+    vol = p["volume"].to_numpy(dtype=float)
+    relleno = en_fuera & repite & ~(np.nan_to_num(vol) > 0)
+    return sf, en_fuera, relleno
+
+
 # --- Series: lectura y recorrido ----------------------------------------------------------------
 _COLUMNAS_LECTURA = ["serie", "fecha_referencia", "vintage", "valor", "unidad", "fuente", "metodo_publicacion", "nota"]
 _TEXTO_LECTURA = ["serie", "vintage", "unidad", "fuente", "metodo_publicacion", "nota"]
@@ -848,13 +868,18 @@ def calcular_series(ruta: Path | None = None, catalogo: dict[str, dict] | None =
 
 
 # --- Precios: recorrido ------------------------------------------------------------------------
-def _meta_precios() -> pd.DataFrame:
+def meta_precios() -> pd.DataFrame:
+    """Metadatos de ``tablas/inventario_precios.csv`` (``clase``, ``mercado``, ``tipo_yahoo``) con índice
+    ``(proveedor, ticker)``; vacía si la tabla no existe. La usan el EDA y el paso 4 (``curada_precios``)."""
     r = resultados_dir(TEMA) / "tablas" / "inventario_precios.csv"
     if not r.exists():
         return pd.DataFrame(columns=["ticker", "proveedor", "clase", "mercado", "tipo_yahoo"]).set_index(
             ["proveedor", "ticker"])
     t = pd.read_csv(r, usecols=["ticker", "proveedor", "clase", "mercado", "tipo_yahoo"], dtype=str)
     return t.set_index(["proveedor", "ticker"])
+
+
+_meta_precios = meta_precios      # nombre antiguo
 
 
 def _clase(meta: dict[str, Any]) -> str:
@@ -892,14 +917,9 @@ def controles_ticker(p: pd.DataFrame, ticker: str, proveedor: str, meta: dict[st
         return int(len(f))
 
     # 4 (antes, para apartar las velas de relleno). Sesiones de menos y velas fuera de calendario
-    sf = sesiones_faltantes(p.loc[p["close"].notna(), "sesion"], mercado, sesiones_cal)
+    sf, en_fuera, relleno = velas_fuera_calendario(p, mercado, sesiones_cal)
     fuera = set(sf["fuera"].tolist())
     dias = _dias(p["sesion"])
-    en_fuera = np.isin(dias, sf["fuera"])
-    c = p["close"].to_numpy(dtype=float)
-    repite = np.r_[False, c[1:] == c[:-1]]
-    vol = p["volume"].to_numpy(dtype=float)
-    relleno = en_fuera & repite & ~(np.nan_to_num(vol) > 0)
     fila["calendario"] = sf["calendario"]
     fila["calendario_desde"] = sf["calendario_desde"]
     fila["sesiones_faltantes"] = int(len(sf["faltan"]))
@@ -997,7 +1017,7 @@ def calcular_precios(tickers: Iterable[str] | None = None,
     """Las tablas de precios: ``eda_precios.csv`` y ``eda_precios_incidencias.csv`` (sin recortar)."""
     out_log = registro or log.info
     raiz = corpus_dir(TEMA) / "precios"
-    meta = _meta_precios()
+    meta = meta_precios()
     solo = set(tickers) if tickers else None
     filas, incs = [], []
     for carpeta in sorted(p for p in raiz.iterdir() if p.is_dir()):
@@ -1085,11 +1105,7 @@ def main(argv: list[str] | None = None) -> dict[str, Path]:
                                                            "abs_dlog")
     rutas = {}
     for nombre, df in salidas.items():
-        malas = PROHIBIDAS & set(df.columns)
-        if malas:
-            raise RuntimeError(f"{nombre} lleva columnas de valores: {sorted(malas)}")
-        rutas[nombre] = destino / nombre
-        df.to_csv(rutas[nombre], index=False, encoding="utf-8", lineterminator="\n")
+        rutas[nombre] = almacen.escribir_csv_atomico(df, destino / nombre, prohibidas=PROHIBIDAS)
         print(f"{nombre}: {len(df)} filas")
     print(f"tiempo total: {math.ceil(time.time() - t0)} s; memoria pico: {_memoria_pico_mb()} MB")
     return rutas

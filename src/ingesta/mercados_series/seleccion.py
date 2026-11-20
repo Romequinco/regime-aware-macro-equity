@@ -68,7 +68,8 @@ mercado diario) y ``universo.yaml`` (instrumentos sin fichero de precios).
     ``completa_a = <destino>``. Se recorre por profundidad de la cadena, así la versión que elige E3
     nunca acaba como alias de una serie que no cumple D1 (``HICP_EMP.EA`` frente al HICP del BCE,
     visible solo desde 2026). Fuera de ese caso no cambia nada: DFF → EFFR o ``gw:M.tbl`` → TB3MS siguen
-    como alias (solo aportan historia anterior a 2000, que la tabla de alias conserva).
+    como alias: solo aportan historia anterior a 2000 (fuera de D1), que se conserva en la base de trabajo
+    (``get_serie(..., base="trabajo")``); la base curada sirve el canónico y la tabla de alias solo lleva metadatos.
 11. **Cadenas** (``resolver_cadenas``): todo ``alias_de`` apunta a una serie que ``queda`` (A → B → C
     se reescribe A → C). Si el destino no queda (fuera o proyección), la serie se queda.
 
