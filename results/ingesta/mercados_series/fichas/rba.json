@@ -13,9 +13,9 @@
   "coste": "0 €",
   "licencia_y_terminos": "RBA: CC BY 4.0",
   "cobertura_inicio": "2011-01-04",
-  "cobertura_fin": "2026-10-12",
+  "cobertura_fin": "2026-11-18",
   "frecuencia": "diaria",
-  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: FIRMMCRTD 1; FCMYGBAG10D 6. Regla conservadora: hábil siguiente a las 12:00 locales",
+  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: FIRMMCRTD 1; FCMYGBAG10D 8. Regla conservadora: hábil siguiente a las 12:00 locales",
   "formato": "csv",
   "volumen_estimado": "0.51 MB (2 series)",
   "limites": "sin clave; 1 petición/s; reintento único ante error",
@@ -24,28 +24,41 @@
     "series": {
       "rba:FIRMMCRTD": {
         "inicio": "2011-01-04",
-        "fin": "2026-10-12",
-        "n_obs": 3993,
-        "filas_contrato": 3993,
-        "bytes": 307844,
+        "fin": "2026-11-18",
+        "n_obs": 4020,
+        "filas_contrato": 4020,
+        "bytes": 309644,
         "dias_naturales_ultimo_dato_a_sonda": 1,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
       },
       "rba:FCMYGBAG10D": {
         "inicio": "2013-05-20",
-        "fin": "2026-10-07",
-        "n_obs": 3370,
-        "filas_contrato": 3370,
-        "bytes": 201240,
-        "dias_naturales_ultimo_dato_a_sonda": 6,
+        "fin": "2026-11-11",
+        "n_obs": 3395,
+        "filas_contrato": 3395,
+        "bytes": 202265,
+        "dias_naturales_ultimo_dato_a_sonda": 8,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
       }
     },
-    "descarga": {}
+    "descarga": {
+      "rba:FIRMMCRTD": {
+        "estado": "ok",
+        "bytes": 309644,
+        "segundos": 8.09,
+        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\rba\\rba_FIRMMCRTD.csv"
+      },
+      "rba:FCMYGBAG10D": {
+        "estado": "ok",
+        "bytes": 202265,
+        "segundos": 5.68,
+        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\rba\\rba_FCMYGBAG10D.csv"
+      }
+    }
   },
   "notas": [
     "vintage 'unico': series de mercado/política monetaria sin revisiones",
     "huecos de la fuente (festivos, '.') descartados: no se inventan filas"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

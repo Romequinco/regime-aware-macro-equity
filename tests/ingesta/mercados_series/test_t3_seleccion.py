@@ -411,7 +411,13 @@ def test_lista_curada_sobre_las_tablas_reales():
     dentro = series[series["decision"].isin(["queda", "alias"])]
     assert not (dentro["nivel_fecha"] == "D").any()
     # D10 abierta: fuera solo por falta de datos
-    assert (precios.loc[precios["decision"] == "fuera", "sesiones"] < sel.MIN_SESIONES).all()
+    fuera = precios[precios["decision"] == "fuera"]
+    assert (fuera["sesiones"] < sel.MIN_SESIONES).all()
+    # AT (ETF de ARCX desde 2026-09-17, no Alltel) queda con el aviso de ticker reutilizado; GR (fondo) también
+    p = precios.set_index("id")
+    for t in ("AT", "GR", "DWD"):
+        assert p.at[t, "decision"] == "queda" and sel.AVISO_REUTILIZADO in str(p.at[t, "aviso"]), t
+    assert sel.AVISO_REUTILIZADO not in str(p.at["AAPL", "aviso"])
     # sin valores: ninguna columna numérica de las tablas es un valor de serie
     assert not {"valor", "close", "open"} & (set(series.columns) | set(precios.columns))
 
@@ -464,3 +470,67 @@ def test_f4_empates_resueltos_a_mano():
     # el resto de dudosos: se aceptan con E1 y se marcan
     assert bool(out.at["x:A", "canonico_dudoso"])
     assert out.at["x:A", "motivo_dudoso"].startswith(sel.NOTA_DUDOSO_F4)
+
+
+# --- Paso 3b-1: tickers reutilizados del S&P 500 ------------------------------------------------
+def _tramos(filas: list[tuple]) -> pd.DataFrame:
+    return pd.DataFrame([{"ticker": t, "alta": pd.Timestamp(a), "baja": pd.Timestamp(b) if b else pd.NaT}
+                         for t, a, b in filas])
+
+
+def _pre_yahoo(filas: list[tuple]) -> pd.DataFrame:
+    return pd.DataFrame([{"ticker": t, "proveedor": "yahoo", "desde": d, "hasta": h} for t, d, h in filas])
+
+
+def test_t3b_ticker_reutilizado_sin_solape_o_de_otra_clase():
+    """AT: ETF de 2026 (el miembro, Alltel, salió en 2007): reutilizado. GR: fondo que solapa en fechas con
+    Goodrich: reutilizado por la clase. MULTI: dos tramos y el fichero solapa con uno: no. BRK.B → BRK-B."""
+    tramos = _tramos([("AT", "1996-01-02", "2007-11-19"), ("GR", "1996-01-02", "2012-07-27"),
+                      ("MULTI", "1996-01-02", "2000-01-03"), ("MULTI", "2015-01-02", None),
+                      ("BRK.B", "2010-02-16", None), ("SINF", "1996-01-02", "1999-01-04")])
+    pre = _pre_yahoo([("AT", "2026-09-17", "2026-11-18"), ("GR", "2001-01-02", "2018-02-22"),
+                      ("MULTI", "2016-01-04", "2026-11-18"), ("BRK-B", "1996-05-09", "2026-11-18")])
+    cob = sel.cobertura_tramos_sp500(tramos, pre, {"AT": "etf", "GR": "fondo", "MULTI": "accion"},
+                                     corte="2026-11-13")
+    r = sel.tickers_reutilizados(cob)
+    assert set(r) == {"AT", "GR"} and r["AT"].startswith("fichero 2026-09-17 a 2026-11-18")
+    # truncado (LEG: la misma empresa, deslistada en 2026) y del universo (GLD, núcleo): sin marca
+    t2 = _tramos([("LEG", "1999-10-18", "2021-12-20"), ("GLD", "1996-01-02", "1997-05-06")])
+    p2 = _pre_yahoo([("LEG", "2026-08-26", "2026-08-26"), ("GLD", "2004-11-18", "2026-11-18")]).assign(
+        sesiones=[1, 5535], en_universo=[False, True])
+    assert sel.tickers_reutilizados(sel.cobertura_tramos_sp500(t2, p2, {"GLD": "etf"})) == {}
+    c = cob.set_index(["ticker", "alta"])
+    assert not c.loc[("MULTI", pd.Timestamp("1996-01-02")), "solapa"]
+    assert not c.loc[("MULTI", pd.Timestamp("1996-01-02")), "reutilizado"]
+    assert c.loc[("BRK.B", pd.Timestamp("2010-02-16")), "ticker_yahoo"] == "BRK-B"
+    # tramo abierto: hasta el corte (incluido); BRK-B lo cubre entero
+    brk = c.loc[("BRK.B", pd.Timestamp("2010-02-16"))]
+    assert brk["dias_cubiertos"] == brk["dias_tramo"] == (pd.Timestamp("2026-11-14") - pd.Timestamp("2010-02-16")).days
+    res = sel.resumen_cobertura_sp500(cob).set_index("metrica")["valor"]
+    assert res["tramos"] == 6 and res["tramos_sin_fichero"] == 1 and res["tramos_ticker_reutilizado"] == 2
+    assert res["tramos_con_fichero_sin_solape"] == 2      # AT y el primer tramo de MULTI
+    assert res["tickers_reutilizados"] == 2 and 0 < res["pct_dias_tramo_cubiertos"] < 100
+
+
+def test_t3b_reutilizado_queda_con_aviso_y_motivo_propio_en_el_3b():
+    base = {"proveedor": "yahoo", "clase": "accion", "bucket": None, "en_universo": False, "volumen_mediano": 1e5,
+            "posible_frontera": None}
+    pre = pd.DataFrame([{**base, "ticker": "DWD", "desde": "2013-12-16", "hasta": "2017-03-20", "sesiones": 451,
+                         "deslistado": True},
+                        {**base, "ticker": "SALIDO", "desde": "1990-01-02", "hasta": "2017-03-20", "sesiones": 6800,
+                         "deslistado": True}])
+    etf = pd.DataFrame(columns=["tipo", "id", "miembros", "inicios", "corr_min"])
+    out = sel.seleccionar_precios(pre, etf, sospechosas={"DWD"},
+                                  reutilizados={"DWD": "fichero 2013-12-16 a 2017-03-20"}).set_index("id")
+    assert out.at["DWD", "decision"] == "queda" and not bool(out.at["DWD", "truncado"])
+    assert out.at["DWD", "aviso"] == f"{sel.AVISO_SOSPECHOSA}; {sel.AVISO_REUTILIZADO}"
+    assert sel.AVISO_REUTILIZADO in out.at["DWD", "motivo"]
+    vacio = pd.DataFrame(columns=["id", "clase", "capa", "bucket", "tickers", "invertible_minorista_ue"])
+    series = pd.DataFrame(columns=["id", "estado", "decision", "fuente"])
+    bmw = pd.DataFrame(columns=["fuente", "en_alcance_estricto", "indicador"])
+    d = sel.tabla_descargas_3b(series, out.reset_index(), vacio, pd.DataFrame({"id_universo": []}), bmw)
+    d = d.set_index(["id", "tipo"])
+    assert "historia completa y salida" not in d.at[("DWD", "deslistado"), "motivo"]
+    assert sel.AVISO_REUTILIZADO in d.at[("DWD", "deslistado"), "motivo"]
+    assert "historia completa y salida" in d.at[("SALIDO", "deslistado"), "motivo"]
+    assert ("DWD", "serie_sospechosa") in d.index      # el aviso compuesto sigue dando su fila de sospechosa

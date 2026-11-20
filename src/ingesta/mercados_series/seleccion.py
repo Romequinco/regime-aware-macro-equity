@@ -111,6 +111,11 @@ el invertible para un minorista de la UE). Fuera solo los ficheros **truncados**
 deslistado). ``aviso = 'serie sospechosa'`` (``serie_sospechosa`` de ``eda_precios.csv`` o la misma
 regla: más de 20 saltos sin split o más de un 40 % de cierres repetidos) se queda con aviso y fila en
 el 3b. Las acciones llevan ``frontera = 'tema3'`` (universo de empresas común con el Tema 3).
+**Tickers reutilizados del S&P 500** (paso 3b-1, ``cobertura_tramos_sp500``): un ticker del S&P 500
+histórico (``constituyentes/sp500.parquet``) cuyo fichero no solapa con NINGUNO de sus tramos de
+pertenencia, o es de una clase que no puede ser una acción del índice (``CLASES_NO_MIEMBRO``: GR es un
+fondo), se queda con ``aviso = 'ticker reutilizado: el fichero no es el miembro del S&P'`` (AT: un ETF de
+ARCX desde 2026-09-17, no Alltel; DWD, GP, LU...).
 
 **Decisiones de cierre del paso 3** (``PLAN_DESCARGA.md``):
 
@@ -845,6 +850,99 @@ def clases_precios(pre: pd.DataFrame) -> dict[str, str]:
     return {str(t): clase_ticker(c, y) for t, c, y in zip(pre["ticker"], pre["clase"], ty)}
 
 
+# --- Tickers del S&P 500 reutilizados (paso 3b-1) -------------------------------------------------
+#: Un ticker del S&P 500 histórico cuyo fichero de Yahoo no es el miembro: se queda (D10 abierta) con este aviso.
+AVISO_REUTILIZADO = "ticker reutilizado: el fichero no es el miembro del S&P"
+#: Clases que no pueden ser un miembro del S&P 500 (acciones ordinarias): el fichero es otro instrumento
+#: con el mismo ticker aunque sus fechas solapen con el tramo (GR: un fondo de 2001 a 2018, no Goodrich).
+CLASES_NO_MIEMBRO = ("etf", "etp", "fondo", "indice", "divisa", "futuro", "volatilidad", "cripto")
+FECHA_CORTE = "2026-11-13"               # G2: fecha de corte del dataset (fin de los tramos abiertos)
+
+
+def ruta_tramos_sp500() -> Path:
+    """``<corpus>/mercados_series/constituyentes/sp500.parquet`` (``fuentes.constituyentes.descargar_sp500``)."""
+    from ingesta.comun.rutas import corpus_dir
+
+    return corpus_dir(TEMA) / "constituyentes" / "sp500.parquet"
+
+
+def cobertura_tramos_sp500(tramos: pd.DataFrame, pre: pd.DataFrame, clases: Mapping[str, str] | None = None,
+                           corte: str = FECHA_CORTE) -> pd.DataFrame:
+    """Una fila por tramo de pertenencia al S&P 500 con su fichero de Yahoo (sin red ni valores).
+
+    ``tramos``: ``sp500.parquet`` (``ticker, alta, baja``; ``baja`` excluida, vacía si sigue: hasta ``corte``).
+    ``pre``: ``inventario_precios.csv`` (``ticker, proveedor, desde, hasta``). Columnas: ``ticker``,
+    ``ticker_yahoo`` (``BRK.B`` → ``BRK-B``), ``alta``, ``fin`` (excluido), ``tiene_fichero``, ``desde``,
+    ``hasta``, ``solapa`` (el fichero cubre algún día del tramo), ``dias_tramo``, ``dias_cubiertos`` (días
+    naturales) y ``reutilizado``: el ticker tiene fichero y este no es ningún miembro (no solapa con NINGUNO de
+    sus tramos o es de una clase que no puede ser una acción del índice, ``CLASES_NO_MIEMBRO``). No se marcan
+    los truncados (``es_truncado``: LEG y QRVO son la misma empresa, deslistada en 2026, y Yahoo solo guarda
+    la última sesión; salen de la lista con su propio motivo) ni los instrumentos del universo (``en_universo``:
+    su identidad la declara ``universo.yaml``; GLD es el ETF de oro del núcleo)."""
+    from ingesta.mercados_series.proveedores.yahoo import ticker_yahoo_constituyente
+
+    clases = dict(clases or {})
+    yh = pre[pre["proveedor"] == "yahoo"].drop_duplicates("ticker").set_index("ticker")
+    fin_abierto = pd.Timestamp(corte) + pd.Timedelta(days=1)
+    t = tramos[["ticker", "alta", "baja"]].copy()
+    t["ticker_yahoo"] = [ticker_yahoo_constituyente("sp500", x) for x in t["ticker"]]
+    t["alta"] = pd.to_datetime(t["alta"])
+    t["fin"] = pd.to_datetime(t["baja"]).fillna(fin_abierto).clip(upper=fin_abierto)
+    t["tiene_fichero"] = t["ticker_yahoo"].isin(yh.index)
+    desde = pd.to_datetime(t["ticker_yahoo"].map(yh["desde"]))
+    hasta = pd.to_datetime(t["ticker_yahoo"].map(yh["hasta"]))
+    t["desde"], t["hasta"] = desde.dt.strftime("%Y-%m-%d"), hasta.dt.strftime("%Y-%m-%d")
+    t["dias_tramo"] = (t["fin"] - t["alta"]).dt.days.clip(lower=0)
+    ini = pd.concat([desde, t["alta"]], axis=1).max(axis=1)
+    fin = pd.concat([hasta + pd.Timedelta(days=1), t["fin"]], axis=1).min(axis=1)
+    t["dias_cubiertos"] = (fin - ini).dt.days.where(t["tiene_fichero"], 0).fillna(0).clip(lower=0).astype(int)
+    t["solapa"] = t["dias_cubiertos"] > 0
+    no_miembro = t["ticker_yahoo"].map(lambda x: clases.get(x) in CLASES_NO_MIEMBRO)
+    algun_solape = t.groupby("ticker_yahoo")["solapa"].transform("any")
+    sesiones = pd.to_numeric(t["ticker_yahoo"].map(yh["sesiones"]), errors="coerce") if "sesiones" in yh else None
+    excluido = pd.Series(False, index=t.index)
+    if sesiones is not None:
+        excluido |= sesiones.fillna(MIN_SESIONES) < MIN_SESIONES
+    if "en_universo" in yh:
+        excluido |= t["ticker_yahoo"].map(yh["en_universo"]).astype("boolean").fillna(False).astype(bool)
+    t["reutilizado"] = t["tiene_fichero"] & ~excluido & (~algun_solape | no_miembro)
+    return t[["ticker", "ticker_yahoo", "alta", "fin", "tiene_fichero", "desde", "hasta", "solapa", "dias_tramo",
+              "dias_cubiertos", "reutilizado"]].reset_index(drop=True)
+
+
+def tickers_reutilizados(cobertura: pd.DataFrame) -> dict[str, str]:
+    """``ticker_yahoo → detalle`` (fichero y tramos del S&P) de los tramos con ``reutilizado``."""
+    out: dict[str, str] = {}
+    for tk, g in cobertura[cobertura["reutilizado"]].groupby("ticker_yahoo", sort=True):
+        tramos = ", ".join(f"{a:%Y-%m-%d} a {f:%Y-%m-%d}" for a, f in zip(g["alta"], g["fin"]))
+        out[str(tk)] = f"fichero {g['desde'].iloc[0]} a {g['hasta'].iloc[0]}; en el S&P 500: {tramos}"
+    return out
+
+
+def resumen_cobertura_sp500(cobertura: pd.DataFrame) -> pd.DataFrame:
+    """Cobertura histórica del S&P 500 (``metrica, valor``): tramos con fichero que solapa, sin fichero, con
+    fichero sin solape, de tickers reutilizados y % de días-tramo cubiertos (sin contar los reutilizados)."""
+    c = cobertura
+    dias = int(c["dias_tramo"].sum())
+    abiertos = c["fin"] > pd.Timestamp(FECHA_CORTE)
+    cubiertos = int(c.loc[~c["reutilizado"], "dias_cubiertos"].sum())
+    filas = [
+        ("tramos", len(c)),
+        ("tramos_con_fichero", int(c["tiene_fichero"].sum())),
+        ("tramos_con_fichero_que_solapa", int((c["tiene_fichero"] & c["solapa"]).sum())),
+        ("tramos_con_fichero_sin_solape", int((c["tiene_fichero"] & ~c["solapa"]).sum())),
+        ("tramos_sin_fichero", int((~c["tiene_fichero"]).sum())),
+        ("tramos_ticker_reutilizado", int(c["reutilizado"].sum())),
+        ("tickers_reutilizados", int(c.loc[c["reutilizado"], "ticker_yahoo"].nunique())),
+        ("tramos_abiertos", int(abiertos.sum())),
+        ("tramos_abiertos_con_fichero_que_solapa", int((abiertos & c["solapa"] & ~c["reutilizado"]).sum())),
+        ("dias_tramo", dias),
+        ("dias_tramo_cubiertos", cubiertos),
+        ("pct_dias_tramo_cubiertos", round(100 * cubiertos / dias, 2) if dias else None),
+    ]
+    return pd.DataFrame(filas, columns=["metrica", "valor"], dtype=object)
+
+
 def es_truncado(sesiones: int) -> bool:
     """Fichero truncado (menos de ``MIN_SESIONES`` sesiones con cierre): sin datos útiles, se re-descarga entero.
     Un truncado no se cuenta como deslistado: su última sesión no dice nada de la salida."""
@@ -852,13 +950,16 @@ def es_truncado(sesiones: int) -> bool:
 
 
 def seleccionar_precios(pre: pd.DataFrame, etf: pd.DataFrame, clases: Mapping[str, str] | None = None,
-                        sospechosas: Iterable[str] = ()) -> pd.DataFrame:
+                        sospechosas: Iterable[str] = (), reutilizados: Mapping[str, str] | None = None) -> pd.DataFrame:
     """Lista curada de ficheros de precios (``COLUMNAS_PRECIOS``). D10 abierta: fuera solo los truncados.
 
     ``aviso = 'serie sospechosa'`` (ticker reciclado o datos basura, ``series_sospechosas``): se queda con
-    aviso. Las acciones llevan ``frontera = 'tema3'`` (universo de empresas común con el Tema 3)."""
+    aviso. ``reutilizados`` (``tickers_reutilizados``: ticker del S&P 500 cuyo fichero no es el miembro): se
+    queda con ``AVISO_REUTILIZADO`` (los dos avisos se unen con «; »). Las acciones llevan
+    ``frontera = 'tema3'`` (universo de empresas común con el Tema 3)."""
     clases = dict(clases or {})
     sospechosas = set(sospechosas)
+    reutilizados = dict(reutilizados or {})
     buckets = {str(k): v for k, v in zip(pre["ticker"], pre["bucket"]) if not _vacio(v)}
     alias = alias_etf(etf, buckets=buckets)
     filas = []
@@ -878,9 +979,12 @@ def seleccionar_precios(pre: pd.DataFrame, etf: pd.DataFrame, clases: Mapping[st
         if a and d == "queda":
             mot += (f"; alias informativo de {a[0]} (UCITS: invertible para un minorista de la UE; los dos se quedan)"
                     if a[1] == "ucits" else f"; alias ETF informativo de {a[0]} ({a[1]})")
-        aviso = AVISO_SOSPECHOSA if t in sospechosas else None
-        if aviso and d == "queda":
+        avisos = [AVISO_SOSPECHOSA] * (t in sospechosas) + [AVISO_REUTILIZADO] * (t in reutilizados)
+        aviso = "; ".join(avisos) or None
+        if t in sospechosas and d == "queda":
             mot += f"; serie sospechosa (ticker reciclado o datos basura): {MOTIVO_F3}"
+        if t in reutilizados:
+            mot += f"; {AVISO_REUTILIZADO} ({reutilizados[t]})"
         frontera = r["posible_frontera"] if not _vacio(r.get("posible_frontera")) else None
         filas.append({
             "id": t, "proveedor": r["proveedor"], "clase": clase, "bucket": r["bucket"] if not _vacio(r.get("bucket"))
@@ -1025,11 +1129,18 @@ def tabla_descargas_3b(series: pd.DataFrame, precios: pd.DataFrame, universo: pd
         filas.append(_fila3b(r["id"], "redescarga", str(r["proveedor"]), "media",
                              f"re-descarga completa: fichero truncado ({r['sesiones']} sesiones, {r['desde']} a "
                              f"{r['hasta']})", str(r["clase"])))
+    aviso = precios["aviso"].fillna("").astype(str)
     for _, r in precios[precios["deslistado"]].iterrows():
-        filas.append(_fila3b(r["id"], "deslistado", str(r["proveedor"]), "media",
-                             f"deslistado (última sesión {r['hasta']}): historia completa y salida", str(r["clase"]),
+        if AVISO_REUTILIZADO in str(r["aviso"] or ""):
+            # DWD (ECNQUOTE de 2013 a 2017) o GR (un fondo de 2001 a 2018): el fichero no es el miembro del S&P,
+            # así que ni su historia ni su salida son las del miembro.
+            mot = (f"{AVISO_REUTILIZADO} (fichero {r['desde']} a {r['hasta']}): falta la historia del miembro y "
+                   "su salida")
+        else:
+            mot = f"deslistado (última sesión {r['hasta']}): historia completa y salida"
+        filas.append(_fila3b(r["id"], "deslistado", str(r["proveedor"]), "media", mot, str(r["clase"]),
                              depende_de=Q1))
-    for _, r in precios[precios["aviso"] == AVISO_SOSPECHOSA].iterrows():
+    for _, r in precios[aviso.str.contains(AVISO_SOSPECHOSA, regex=False)].iterrows():
         filas.append(_fila3b(r["id"], "serie_sospechosa", str(r["proveedor"]), "media",
                              "serie sospechosa (ticker reciclado o datos basura: saltos sin split o cierres "
                              "repetidos): rehacer con identificador permanente", str(r["clase"]),
@@ -1138,9 +1249,13 @@ def calcular(tablas: Path) -> dict[str, Any]:
     clases = clases_precios(pre)
     ruta_eda = tablas / "eda_precios.csv"
     eda = pd.read_csv(ruta_eda, dtype={"ticker": str}) if ruta_eda.exists() else None
-    precios = seleccionar_precios(pre, etf, clases, series_sospechosas(eda))
+    tramos = pd.read_parquet(ruta_tramos_sp500()) if ruta_tramos_sp500().exists() else None
+    cob = cobertura_tramos_sp500(tramos, pre, clases) if tramos is not None else None
+    reutilizados = tickers_reutilizados(cob) if cob is not None else {}
+    precios = seleccionar_precios(pre, etf, clases, series_sospechosas(eda), reutilizados)
     descargas = tabla_descargas_3b(series, precios, universo.tabla_universo(), pre, bmw, sin_ea)
-    return {"series": series, "precios": precios, "resumen": tabla_resumen(series, precios), "descargas": descargas}
+    return {"series": series, "precios": precios, "resumen": tabla_resumen(series, precios), "descargas": descargas,
+            "cobertura_sp500": cob}
 
 
 def dudosos(series: pd.DataFrame, n: int = 10) -> pd.DataFrame:

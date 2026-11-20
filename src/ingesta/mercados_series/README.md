@@ -215,6 +215,20 @@ reconstruidos y las anomalías de la fuente (picos aislados que se revierten, ci
 planas: `tablas/anomalias_series.csv`). `python -m ingesta.mercados_series resumen [--csv]` resume la base
 guardada.
 
+**Solo-añadir en las oficiales sin historia de revisiones (paso 3b).** BCE (también sus revisables: `includeHistory`
+da una versión por observación), Eurostat, BIS, FMI (la API solo sirve las ediciones vigentes del WEO), Banco
+Mundial, bancos centrales y curvas
+(`base.CARGADORES_SOLO_ANADIR`) traen solo los valores de hoy: lo guardado es lo único que queda de lo que se
+sabía antes. `base.conservar_revisiones` compara con la base guardada antes de escribir: la fila guardada que ya no
+viene se conserva tal cual con la nota «valor anterior a una revisión observada el AAAA-MM-DD»; la fila nueva que
+revisa un periodo guardado se fecha `max(regla, primera decisión tras la construcción)` con `disponible_utc` nulo y
+su nota, salvo una fecha propia posterior de la fuente (el HICP definitivo con su `VALID_FROM`); una clave que vuelve
+con otro valor (vintage `unico`: revisión en el sitio) conserva la guardada; los periodos nuevos siguen su regla.
+La vista as-of es la de cada fecha (la versión antigua antes de la revisión, la nueva después) y no hace falta
+`--reemplazar`. OCDE (todas las ediciones de `DF_STES_REVISIONS`) y RTDSM (todos los vintages) traen su historia y
+no entran. Ni `--desde-cero` ni `--reemplazar`
+la aplican. Recuentos en `solo_anadir` del resumen de la orden.
+
 **Fuentes y estado** (una serie, una fuente; si dos cargadores traen el mismo id gana `alfred` > `academicos` >
 `fred` > `fase1`, el orden de `catalogo.PRIORIDAD_ORIGENES`; las derivadas se recalculan después):
 
@@ -588,7 +602,11 @@ Macro internacional:
   `oecd:LI_AA.EA20`, `oecd:UNEMP.CHN`, `philly:EMPLOY`, `philly:PCPI` y `philly:RUC`.
 
 Mantenimiento y pruebas:
-- **Archivo periódico de las OAS de ICE** (ventana móvil de 3 años en FRED) y de las ediciones académicas: a mano.
+- **Archivo periódico de las OAS de ICE** (ventana móvil de 3 años en FRED): el archivo ya existe
+  (`python -m ingesta.mercados_series archivar-oas`, módulo `archivo_oas`; capturas y acumulado en
+  `<corpus>/mercados_series/archivo/ice_oas/`, primera captura 2026-11-19 más las de la caché cruda de 2026-10-12
+  y 2026-10-13). Hay que ejecutarlo cada mes, a mano o con una tarea programada en el PC; su entrada en
+  `construir-base` queda para el paso 4. Ediciones académicas: a mano.
 - **package-data** de los YAML de config en `pyproject.toml` (PR común; hoy basta `pip install -e`).
 - Comisiones de DEGIRO e IBKR sin verificar; 1/N con la lista estática del núcleo.
 - Sin prueba `live` propia: `bce_curvas` (histórico entero, lento), `boe_curvas`, `jst_macrohistory`,

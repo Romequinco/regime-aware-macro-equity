@@ -200,3 +200,47 @@ def test_live_aapl_nvda_y_adj_close():
     rel = (comun / adj.reindex(comun.index) - 1.0).abs().dropna()
     assert len(rel) > 6000
     assert rel.median() < 1e-4 and rel.max() < 5e-3
+
+
+def test_t3b_respetar_mercado_guardado_mismo_cierre() -> None:
+    """Paso 3b: si Yahoo cambia de bolsa con el mismo cierre, se conserva el mercado guardado."""
+    import pandas as pd
+
+    from ingesta.mercados_series.proveedores.yahoo import respetar_mercado_guardado
+
+    ses = pd.Series(pd.to_datetime(["2026-03-06", "2026-03-09", "2026-11-18"]))
+    nuevo = pd.DataFrame({"ticker": "HLT", "sesion": ses, "mercado": "XNAS"})
+    guardado = pd.DataFrame({"ticker": "HLT", "sesion": ses[:1], "mercado": "XNYS"})
+    out, aviso = respetar_mercado_guardado(nuevo, guardado, declarados={})
+    assert (out["mercado"] == "XNYS").all() and aviso
+    # Declarado en el universo: manda lo declarado, no se toca.
+    out2, aviso2 = respetar_mercado_guardado(nuevo, guardado, declarados={"HLT": "XNAS"})
+    assert (out2["mercado"] == "XNAS").all() and aviso2 is None
+    # Cierre distinto (Londres): no se toca.
+    out3, aviso3 = respetar_mercado_guardado(nuevo, guardado.assign(mercado="XLON"), declarados={})
+    assert (out3["mercado"] == "XNAS").all() and aviso3 is None
+
+
+def test_t3b_lote_registra_el_mercado_guardado(tmp_path, monkeypatch) -> None:
+    """Paso 3b: con ``respetar_mercado_guardado`` el registro del lote dice el mercado que se guarda (HLT: XNYS,
+    no el XNAS de la descarga), y la última fila de cada ticker manda (``reanudar=False`` corrige un error)."""
+    ses = pd.Series(pd.to_datetime(["2026-03-06", "2026-11-18"]))
+    nuevo = pd.DataFrame({"ticker": "HLT", "sesion": ses, "mercado": "XNAS"})
+    guardado = pd.DataFrame({"ticker": "HLT", "sesion": ses[:1], "mercado": "XNYS"})
+    monkeypatch.setattr(y, "_ruta_registro", lambda etiqueta: tmp_path / f"yahoo_{etiqueta}.jsonl")
+    monkeypatch.setattr(y, "descargar", lambda tk: (nuevo, {"ticker": tk, "mercado": "XNAS", "avisos": []}))
+    monkeypatch.setattr(y, "mercados_declarados", lambda: {})
+    monkeypatch.setattr(y.almacen, "ruta_precios", lambda prov, tk: tmp_path)   # existe
+    monkeypatch.setattr(y.almacen, "leer_precios", lambda tk, prov: guardado)
+    (tmp_path / "yahoo_3b1.jsonl").write_text('{"ticker": "HLT", "estado": "error", "descargado": "x"}\n',
+                                               encoding="utf-8")
+    reg = y.descargar_lote(["HLT"], etiqueta="3b1", reanudar=False, escribir=False, ritmo=1000.0)
+    fila = reg.set_index("ticker").loc["HLT"]
+    assert fila["estado"] == "ok" and fila["mercado"] == "XNYS" and "sustituido" in fila["avisos"][0]
+    assert len(y.leer_registro("3b1")) == 2
+
+
+def test_t3b_cobertura_de_cada_lote_en_su_fichero() -> None:
+    """La cobertura del refresco 3b-1 no pisa la del nivel ampliado."""
+    assert y.fichero_cobertura("ampliado") == "yahoo_ampliado_cobertura.csv"
+    assert y.fichero_cobertura("3b1") == "yahoo_3b1_cobertura.csv"

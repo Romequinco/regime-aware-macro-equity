@@ -31,6 +31,19 @@ de 1987 a 1993, DTB1YR de 2002 a 2008) deja UNA fila nula con ``NOTA_HUECO_DIARI
 laborable tras el último dato. Vintage ``unico``; las revisables llevan ``catalogo.NOTA_REVISABLE``
 en todas sus filas.
 
+Extensión con el almacén de precios (paso 3b, ``extender_precios``; la usa ``base.tablas_fuentes``): las
+series ``yf:`` de ``data/raw`` acaban en la descarga de la Fase 1 (2026-07-17). Si el ticker está en
+``<corpus>/mercados_series/precios/yahoo/`` y el solape con la Fase 1 coincide (mismas sesiones y mismo
+cierre en TODAS las fechas comunes, ``TOLERANCIA_SOLAPE``), se añaden las sesiones posteriores al último
+dato de ``data/raw`` con el cierre as-traded del almacén (en índices, el ``Close`` de Yahoo, como en la
+Fase 1) y su ``disponible_utc``, salvo que la regla del catálogo (cierre de su ``mercado`` + margen) dé un
+instante posterior: manda el más tardío (^SKEW, ^VIX9D, ^VIX6M, ^SPGSCI y ^MOVE van en el almacén con otro
+mercado). Un solape que no coincide (GC=F: el futuro continuo de Yahoo cambia con cada vencimiento; ^W5000:
+otras sesiones y mercado XLON) deja la serie como estaba y lo dice el informe. La volatilidad realizada
+(``VOL_REALIZADA``: desviación típica muestral de 21 log-rentabilidades × raíz de 252, la fórmula de
+``data/raw``, medida: difiere en menos de 3e-14) se calcula desde la componente extendida en las fechas
+posteriores al último valor de ``data/raw``; las anteriores siguen siendo las de ``data/raw``.
+
 ``tabla_fase1`` devuelve la tabla validada (``validar_series`` + ``validar_contra_catalogo``);
 ``resumen_fase1`` la cobertura y el retraso medidos por serie. CLI:
 ``python -m ingesta.mercados_series.fuentes.fase1 [--escribir]`` escribe la ficha ``fase1_raw`` y
@@ -75,6 +88,10 @@ HUSO_DESCARGA = "America/New_York"
 RUTA_DESCARGAS = Path(cat_mod.__file__).resolve().parent / "config" / "descargas_fase1.yaml"
 CARPETA_YFINANCE = "yfinance"
 METODOS_FASE1 = ("cierre_mercado", "calendario", "lag_fijo", "fichero", "derivada")
+PROVEEDOR_PRECIOS = "yahoo"
+TOLERANCIA_SOLAPE = 1e-9          # relativa, como almacen.TOLERANCIA_PRECIOS (des-ajuste de Yahoo)
+# Derivadas de volatilidad realizada: id -> (componente, sesiones, sesiones por año).
+VOL_REALIZADA = {"deriv:VOLREAL21_GSPC": ("yf:^GSPC", 21, 252)}
 # Día de cierre de la semana de referencia (0 = lunes) de las semanales de FRED.
 DIA_SEMANAL = {"fred:ICSA": 5, "fred:NFCI": 4, "fred:ANFCI": 4, "fred:NFCIRISK": 4, "fred:NFCICREDIT": 4,
                "fred:NFCILEVERAGE": 4, "fred:STLFSI4": 4}
@@ -90,6 +107,7 @@ _COLUMNAS_RESUMEN = (
     "copias_distintas", "provisionales", "dia_descarga", "desfase_descarga_dias")
 
 __all__ = ["RAIZ_FASE1", "NOTA_HUECO", "NOTA_HUECO_DIARIO", "UMBRAL_HUECO_DIARIO", "DIA_SEMANAL", "tabla_fase1",
+           "extender_con_almacen", "VOL_REALIZADA", "TOLERANCIA_SOLAPE",
            "resumen_fase1", "ficha_fase1", "dia_descarga", "instante_descarga", "descargas_declaradas",
            "normalizar_fechas"]
 
@@ -107,6 +125,7 @@ class _Info:
     dia_descarga: pd.Timestamp | None = None
     provisionales: int = 0
     notas_hueco: dict[pd.Timestamp, str] = field(default_factory=dict)
+    extension: dict[str, Any] = field(default_factory=dict)
 
 
 # --- Lectura ------------------------------------------------------------------------------------
@@ -377,9 +396,85 @@ def _derivada(sid: str, entrada: dict[str, Any], s: pd.Series, tablas: dict[str,
                   fechado.loc[comunes, "disponible_utc"].reset_index(drop=True), info.notas_hueco)
 
 
+# --- Extensión con el almacén de precios (paso 3b) -----------------------------------------------
+def extender_con_almacen(sid: str, entrada: dict[str, Any], filas: pd.DataFrame,
+                         carpeta: Path | None = None) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Sesiones del almacén de precios posteriores al último dato de ``filas`` (serie ``yf:`` de ``data/raw``).
+
+    ``carpeta``: la de ``precios/yahoo`` (por defecto la del corpus). Solo si el solape coincide: las mismas
+    sesiones entre el primer y el último dato de ``filas`` y el mismo cierre (``TOLERANCIA_SOLAPE``) en
+    todas. Fecha: ``disponible_utc`` = el más tardío entre el del almacén y la regla del catálogo (cierre
+    de su ``mercado``); ``fecha_publicacion`` = primera decisión tras él. Devuelve ``(filas nuevas, info)``
+    (``info``: ``extendida``, ``motivo``, ``comunes``, ``nuevas``, ``fin``; sin valores).
+    """
+    from ingesta.mercados_series import almacen
+
+    info: dict[str, Any] = {"extendida": False, "motivo": None, "comunes": 0, "nuevas": 0, "fin": None}
+    vacio = filas.iloc[:0]
+    tk = sid.split(":", 1)[1]
+    p = almacen.leer_precios(tk, PROVEEDOR_PRECIOS, ruta=carpeta)
+    p = p[p["close"].notna()]
+    if p.empty:
+        info["motivo"] = "sin el ticker en el almacén de precios"
+        return vacio, info
+    s = filas[filas["valor"].notna()].set_index("fecha_referencia")["valor"]
+    if s.empty:
+        info["motivo"] = "sin datos en data/raw"
+        return vacio, info
+    cierre = p.set_index("sesion")["close"]
+    tramo = cierre[(cierre.index >= s.index.min()) & (cierre.index <= s.index.max())]
+    solo_raw, solo_alm = s.index.difference(tramo.index), tramo.index.difference(s.index)
+    comunes = s.index.intersection(tramo.index)
+    info["comunes"] = int(len(comunes))
+    if len(solo_raw) or len(solo_alm):
+        info["motivo"] = (f"el solape no coincide: {len(solo_raw)} sesiones solo en data/raw y {len(solo_alm)} solo "
+                          f"en el almacén")
+        return vacio, info
+    distintos = ~np.isclose(s.loc[comunes].to_numpy(float), tramo.loc[comunes].to_numpy(float),
+                            rtol=TOLERANCIA_SOLAPE, atol=0.0)
+    if distintos.any():
+        info["motivo"] = f"el solape no coincide: {int(distintos.sum())} de {len(comunes)} cierres distintos"
+        return vacio, info
+    extra = p[p["sesion"] > s.index.max()].sort_values("sesion").reset_index(drop=True)
+    if extra.empty:
+        info.update(extendida=True, motivo="sin sesiones nuevas")
+        return vacio, info
+    disp_regla = visibilidad.disponible_cierre_serie(extra["sesion"], entrada["mercado"])
+    alm = extra["disponible_utc"].astype(UTC)
+    disp = alm.where(alm >= disp_regla, disp_regla).astype(UTC)
+    serie = pd.Series(extra["close"].to_numpy(float), index=pd.DatetimeIndex(extra["sesion"]))
+    nuevas = _filas(sid, entrada, serie, primera_decision_vec(disp).astype(FECHA), disp)
+    mercados = sorted(set(extra["mercado"].dropna()))
+    info.update(extendida=True, nuevas=int(len(nuevas)), fin=extra["sesion"].max().date().isoformat(),
+                mercado_almacen=mercados, regla_mas_tardia=int((disp_regla > extra["disponible_utc"]).sum()))
+    return nuevas[list(COLUMNAS_SERIES)], info
+
+
+def _vol_realizada_nueva(sid: str, entrada: dict[str, Any], componente: pd.DataFrame,
+                         desde: pd.Timestamp) -> pd.DataFrame:
+    """Volatilidad realizada (``VOL_REALIZADA``) de las fechas de ``componente`` posteriores a ``desde``.
+
+    ``std`` muestral (``ddof=1``) de las log-rentabilidades de las últimas ``n`` sesiones × raíz de las
+    sesiones por año; la fecha de cada valor es la de la componente (su cierre: la derivada no se ve antes).
+    """
+    _, n, anual = VOL_REALIZADA[sid]
+    c = componente[componente["valor"].notna()].sort_values("fecha_referencia").set_index("fecha_referencia")
+    vol = np.log(c["valor"]).diff().rolling(n).std(ddof=1) * np.sqrt(anual)
+    nuevas = vol.index[(vol.index > desde) & vol.notna().to_numpy()]
+    if not len(nuevas):
+        return vacio_series()
+    return _filas(sid, entrada, vol.loc[nuevas], c.loc[nuevas, "fecha_publicacion"].reset_index(drop=True),
+                  c.loc[nuevas, "disponible_utc"].reset_index(drop=True))
+
+
 def _cargar(raiz: Path | None, catalogo: dict[str, dict] | None,
-            descargas: dict[str, Any] | None = None) -> tuple[pd.DataFrame, dict[str, _Info], dict]:
-    """Tabla sin validar, lo medido por serie y el catálogo usado."""
+            descargas: dict[str, Any] | None = None,
+            extender_precios: bool | Path = False) -> tuple[pd.DataFrame, dict[str, _Info], dict]:
+    """Tabla sin validar, lo medido por serie y el catálogo usado.
+
+    ``extender_precios``: ``True`` (almacén del corpus) o la carpeta ``precios/yahoo``: extiende las ``yf:``
+    con ``extender_con_almacen`` y la volatilidad realizada con ``_vol_realizada_nueva``.
+    """
     raiz = Path(raiz) if raiz is not None else RAIZ_FASE1
     declaradas = descargas if descargas is not None else _declaradas_por_defecto(raiz)
     cat = catalogo if catalogo is not None else cat_mod.cargar_catalogo()
@@ -402,11 +497,22 @@ def _cargar(raiz: Path | None, catalogo: dict[str, dict] | None,
         pub, disp = _fechar(e, fechas, cache_pub)
         tablas[sid] = _filas(sid, e, crudas[sid], pub, disp, info.notas_hueco)
         info.incluida = True
+        if extender_precios is not False and sid.startswith("yf:") and e["metodo"] == "cierre_mercado":
+            carpeta = None if extender_precios is True else Path(extender_precios)
+            extra, info.extension = extender_con_almacen(sid, e, tablas[sid], carpeta)
+            if len(extra):
+                tablas[sid] = pd.concat([tablas[sid], extra], ignore_index=True)
     for sid in sorted(crudas):
         e = cat[sid]
         if e["metodo"] == "derivada":
             tablas[sid] = _derivada(sid, e, crudas[sid], tablas, cat, cache_pub, infos[sid])
             infos[sid].incluida = True
+            comp = VOL_REALIZADA.get(sid, (None,))[0]
+            if extender_precios is not False and comp in tablas and (infos.get(comp) or _Info()).extension.get("nuevas"):
+                extra = _vol_realizada_nueva(sid, e, tablas[comp], crudas[sid].index.max())
+                infos[sid].extension = {"extendida": True, "nuevas": int(len(extra)), "calculo": "desde " + comp}
+                if len(extra):
+                    tablas[sid] = pd.concat([tablas[sid], extra], ignore_index=True)
     if not tablas:
         return vacio_series(), infos, cat
     tabla = pd.concat([tablas[k] for k in sorted(tablas)], ignore_index=True)
@@ -414,7 +520,8 @@ def _cargar(raiz: Path | None, catalogo: dict[str, dict] | None,
 
 
 def tabla_fase1(raiz: Path | None = None, catalogo: dict[str, dict] | None = None, *,
-                descargas: dict[str, Any] | None = None) -> pd.DataFrame:
+                descargas: dict[str, Any] | None = None, extender_precios: bool | Path = False,
+                informe: dict[str, dict] | None = None) -> pd.DataFrame:
     """Tabla larga del contrato con todas las series del catálogo que tienen ``fichero_fase1``.
 
     ``raiz``: carpeta ``data/raw`` (por defecto la del repositorio; solo se lee). ``catalogo``:
@@ -422,9 +529,13 @@ def tabla_fase1(raiz: Path | None = None, catalogo: dict[str, dict] | None = Non
     con ``contrato.validar_series`` y ``catalogo.validar_contra_catalogo``; ``ErrorContrato`` si
     algo no cumple. ``descargas``: instantes de descarga declarados (``descargas_declaradas``; por
     defecto los de config para el ``data/raw`` del repositorio, el mtime en otra carpeta). Reglas
-    de carga: docstring del módulo.
+    de carga: docstring del módulo. ``extender_precios`` (``True`` o la carpeta ``precios/yahoo``):
+    extensión de las ``yf:`` con el almacén de precios (docstring del módulo); ``informe`` se rellena con
+    lo medido por serie extendida o no (sin valores).
     """
-    tabla, _, cat = _cargar(raiz, catalogo, descargas)
+    tabla, infos, cat = _cargar(raiz, catalogo, descargas, extender_precios)
+    if informe is not None:
+        informe.update({sid: i.extension for sid, i in infos.items() if i.extension})
     out = validar_series(tabla)
     cat_mod.validar_contra_catalogo(out, cat)
     return out

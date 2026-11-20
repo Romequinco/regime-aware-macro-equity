@@ -533,7 +533,7 @@ def medidas_precios(df: pd.DataFrame) -> dict[str, Any]:
     if d.empty:
         return {"desde": None, "hasta": None, "sesiones": 0, "sesiones_por_anio": np.nan, "pct_huecos_lv": np.nan,
                 "max_hueco_dias": np.nan, "volumen_mediano": np.nan, "volumen_mediano_ultimo_anio": np.nan,
-                "tiene_apertura": False, "mercado_datos": None, "divisa_datos": None}
+                "tiene_apertura": False, "mercado_datos": None, "divisa_datos": None, "descargado_max": None}
     ses = pd.to_datetime(d["sesion"])
     desde, hasta = ses.iloc[0], ses.iloc[-1]
     n = len(d)
@@ -553,6 +553,10 @@ def medidas_precios(df: pd.DataFrame) -> dict[str, Any]:
         "tiene_apertura": bool(df["open"].notna().mean() >= UMBRAL_APERTURA),
         "mercado_datos": moda(d["mercado"]) if "mercado" in d else None,
         "divisa_datos": moda(d["divisa"]) if "divisa" in d else None,
+        # Último refresco de ESTE fichero (columna ``descargado``): un refresco parcial (3b-1) no convierte en
+        # deslistados a los tickers que no se refrescaron.
+        "descargado_max": (_iso(pd.to_datetime(df["descargado"], utc=True).max().tz_localize(None).normalize())
+                           if "descargado" in df and df["descargado"].notna().any() else None),
     }
 
 
@@ -564,27 +568,47 @@ def _tickers_universo(u: dict[str, Any]) -> dict[tuple[str, str], dict[str, Any]
     return out
 
 
-def _tipo_yahoo() -> dict[str, str]:
-    """Tipo de Yahoo (``EQUITY``, ``ETF``, ``INDEX``...) de ``yahoo_nucleo.csv`` y ``yahoo_ampliado.csv``."""
+# Metadatos de los lotes de Yahoo, del más antiguo al más reciente (el posterior manda si trae clase).
+TABLAS_TIPO_YAHOO = ("yahoo_ampliado.csv", "yahoo_3b1.csv", "yahoo_3b1_altas.csv", "yahoo_3b1_yf.csv",
+                     "yahoo_nucleo.csv")
+
+
+def _tipo_yahoo(tablas: Path | None = None) -> dict[str, str]:
+    """Tipo de Yahoo (``EQUITY``, ``ETF``, ``INDEX``...) de los lotes de ``TABLAS_TIPO_YAHOO``.
+
+    Solo cuentan las filas con ``estado == 'ok'`` y clase no vacía: un refresco fallido (NESN.SW en el
+    núcleo del 3b-1) deja la clase vacía y no debe pisar la clase de otro lote (salía ``sin_clase``).
+    """
+    carpeta = tablas if tablas is not None else resultados_dir(TEMA) / "tablas"
     out: dict[str, str] = {}
-    for nombre in ("yahoo_ampliado.csv", "yahoo_nucleo.csv"):
-        r = resultados_dir(TEMA) / "tablas" / nombre
-        if r.exists():
-            t = pd.read_csv(r, usecols=["ticker", "clase"], dtype=str)
-            out.update(dict(zip(t["ticker"], t["clase"])))
+    for nombre in TABLAS_TIPO_YAHOO:
+        r = carpeta / nombre
+        if not r.exists():
+            continue
+        t = pd.read_csv(r, dtype=str)
+        if not {"ticker", "clase"} <= set(t.columns):
+            continue
+        estado = t["estado"] if "estado" in t else pd.Series("ok", index=t.index)
+        clase = t["clase"].fillna("").str.strip()
+        t = t[(estado == "ok") & (clase != "")]
+        out.update(dict(zip(t["ticker"], clase[t.index])))
     return out
 
 
 def tabla_inventario_precios(medidas: pd.DataFrame, u: dict[str, Any] | None = None,
                              tipos: dict[str, str] | None = None) -> pd.DataFrame:
     """Una fila por fichero (``COLUMNAS_PRECIOS_INV``) a partir de ``medidas`` (``ticker``, ``proveedor`` y
-    ``medidas_precios``). ``deslistado``: última sesión más de ``DIAS_DESLISTADO`` días antes de la última
-    del proveedor (el último refresco del corpus)."""
+    ``medidas_precios``). ``deslistado``: última sesión más de ``DIAS_DESLISTADO`` días antes del último
+    refresco de ese fichero (``descargado_max``; si falta, la última sesión del proveedor). Paso 3b-1: con un
+    refresco parcial, comparar con el proveedor marcaba como deslistado todo lo no refrescado."""
     u = u if u is not None else universo.cargar_universo()
     tipos = tipos if tipos is not None else {}
     mapa = _tickers_universo(u)
     hasta = pd.to_datetime(medidas["hasta"])
     refresco = hasta.groupby(medidas["proveedor"]).transform("max")
+    if "descargado_max" in medidas:
+        propio = pd.to_datetime(medidas["descargado_max"])
+        refresco = propio.where(propio.notna(), refresco)
     filas = []
     for (_, m), h, r in zip(medidas.iterrows(), hasta, refresco):
         t = m["ticker"]
@@ -615,7 +639,7 @@ def medir_ficheros_precios(registro: Callable[[str], None] | None = None) -> pd.
     for carpeta in sorted(p for p in raiz.iterdir() if p.is_dir()):
         ficheros = sorted(carpeta.glob("*.parquet"))
         for f in ficheros:
-            df = pq.read_table(f, columns=["sesion", "open", "close", "volume", "mercado", "divisa"],
+            df = pq.read_table(f, columns=["sesion", "open", "close", "volume", "mercado", "divisa", "descargado"],
                                read_dictionary=["mercado", "divisa"]).to_pandas()
             filas.append({"ticker": almacen.ticker_de_fichero(f.stem), "proveedor": carpeta.name,
                           **medidas_precios(df)})
@@ -672,7 +696,10 @@ def comparaciones_previa(base: pd.DataFrame, cat: dict[str, dict]) -> pd.DataFra
     """
     from ingesta.mercados_series.fuentes import alfred
 
-    ids = [s for s, e in cat.items() if e.get("regla_previa_alfred")]
+    # Solo series con la historia completa de primeras publicaciones (ALFRED). El historial del BCE está recortado:
+    # su «primera versión» guardada de un periodo puede ser una revisión posterior (LFSI de 2026, paso 3b-1) y
+    # daría adelantos ficticios de meses.
+    ids = [s for s, e in cat.items() if e.get("regla_previa_alfred") and e.get("fuente") in catalogo.FUENTES_ALFRED]
     b = base[base["serie"].isin(ids)]
     partes = []
     for sid, g in b.groupby("serie", observed=True, sort=True):

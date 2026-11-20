@@ -460,8 +460,8 @@ tramo_no_fiable:
     fred_tesoro_calculadas: {tipo: publicador, actual: {publicador: fred_tesoro_calculadas}}
     moodys: {tipo: publicador, actual: {publicador: moodys}}
   series:
-    ecb:HICP.M.U2.N.000000.4D0.ANR: {regla: CPIAUCSL, veredicto: no fiable, corte: '2026-02-04',
-                                     adelanto_dias: 17.0, medida: regla, n: 2474, dias_extra: 24,
+    ecb:HICP.M.U2.N.000000.4D0.ANR: {regla: CPIAUCSL, veredicto: no fiable, corte: '2026-02-03',
+                                     adelanto_dias: 17.0, medida: regla, n: 2484, dias_extra: 24,
                                      conservadora: {lag: "1M25D", fin_periodo: mes}}
     fred:A191RL1Q225SBEA: {regla: GDP_GROWTH_QOQ, veredicto: no fiable, corte: '2014-09-26',
                            adelanto_dias: 52.0, medida: alfred_previa, n: 48, dias_extra: 59,

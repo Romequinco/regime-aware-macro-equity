@@ -298,7 +298,44 @@ def test_t2_cifras_de_la_base():
     import pyarrow.parquet as pq
 
     base = pq.read_table(almacen.ruta_series(), columns=["serie"], read_dictionary=["serie"])
-    assert base.num_rows == 10_516_135
+    assert base.num_rows >= 10_516_135  # solo crece: 10.516.135 al cierre de la sonda; 10.596.210 tras el 3b-1
     assert base.column("serie").to_pandas().nunique() == 1_434
     precios = almacen.corpus_dir(almacen.TEMA) / "precios"
-    assert sum(1 for p in precios.iterdir() if p.is_dir() for _ in p.glob("*.parquet")) == 1_471
+    # 1.471 al cierre del paso 3; 3b-1: + 6 altas del S&P 500 (lote 3b1_altas) + 18 series yf: (lote 3b1_yf)
+    assert sum(1 for p in precios.iterdir() if p.is_dir() for _ in p.glob("*.parquet")) == 1_499
+
+
+def test_t3b_deslistado_usa_el_refresco_de_cada_fichero() -> None:
+    """Paso 3b-1: un refresco parcial no convierte en deslistado lo que no se refrescó."""
+    import pandas as pd
+
+    from ingesta.mercados_series import inventario as inv
+
+    medidas = pd.DataFrame([
+        {"ticker": "SAP.DE", "proveedor": "yahoo", "hasta": "2026-10-13", "descargado_max": "2026-10-13"},
+        {"ticker": "SPY", "proveedor": "yahoo", "hasta": "2026-11-19", "descargado_max": "2026-11-19"},
+        {"ticker": "LEH", "proveedor": "yahoo", "hasta": "2008-09-12", "descargado_max": "2026-10-13"},
+    ])
+    for c in ("desde", "sesiones", "sesiones_por_anio", "pct_huecos_lv", "max_hueco_dias", "volumen_mediano",
+              "volumen_mediano_ultimo_anio", "tiene_apertura", "mercado_datos", "divisa_datos"):
+        medidas[c] = None
+    u = {"instrumentos": []}
+    out = inv.tabla_inventario_precios(medidas, u=u).set_index("ticker")["deslistado"]
+    assert not out["SAP.DE"] and not out["SPY"] and out["LEH"]
+
+
+def test_t3b_tipo_yahoo_no_pisa_con_un_refresco_fallido(tmp_path) -> None:
+    """Paso 3b-1: NESN.SW salía ``sin_clase`` porque el refresco fallido del núcleo (clase vacía) pisaba el
+    EQUITY del lote ampliado. Solo cuentan las filas ``ok`` con clase; ``yahoo_3b1.csv`` también se lee."""
+    import pandas as pd
+
+    from ingesta.mercados_series import inventario as inv
+
+    pd.DataFrame({"ticker": ["NESN.SW", "AAPL", "GM"], "estado": ["ok", "ok", "ok"],
+                  "clase": ["EQUITY", "EQUITY", "EQUITY"]}).to_csv(tmp_path / "yahoo_ampliado.csv", index=False)
+    pd.DataFrame({"ticker": ["GM", "KVUE"], "estado": ["error", "ok"],
+                  "clase": [None, "EQUITY"]}).to_csv(tmp_path / "yahoo_3b1.csv", index=False)
+    pd.DataFrame({"ticker": ["NESN.SW", "AAPL", "SPY"], "estado": ["error", "ok", "ok"],
+                  "clase": [None, " ", "ETF"]}).to_csv(tmp_path / "yahoo_nucleo.csv", index=False)
+    tipos = inv._tipo_yahoo(tmp_path)
+    assert tipos == {"NESN.SW": "EQUITY", "AAPL": "EQUITY", "GM": "EQUITY", "KVUE": "EQUITY", "SPY": "ETF"}

@@ -24,28 +24,12 @@
     "robots": {
       "url": "https://www.bankofengland.co.uk/boeapps/database/_iadb-FromShowColumns.asp?csv.x=yes&SeriesCodes=IUDBEDR",
       "robots_permite": false,
-      "robots_permite_iadb": false,
-      "consultado": "2026-11-17",
-      "reglas_base_estadistica": [
-        "/boeapps/database/ShowChart.asp",
-        "/boeapps/database/_iadb-FromShowColumns.asp",
-        "/boeapps/iadb",
-        "/boeapps/titan"
-      ],
-      "rutas_csv_xml_permitidas": [],
-      "rutas_html_permitidas": [
-        "/boeapps/database/fromshowcolumns.asp?Travel=NIxIRx&SeriesCodes=IUDBEDR",
-        "/boeapps/database/FromShowColumns.asp?Travel=NIxIRx&SeriesCodes=IUDBEDR",
-        "/boeapps/database/Bank-Rate.asp",
-        "/boeapps/database/index.asp"
-      ],
-      "motivo": "bloqueada por robots.txt: sin ruta CSV/XML permitida; solo páginas HTML"
+      "robots_permite_iadb": false
     }
   },
   "notas": [
     "Vetado por robots.txt (comprobado en la sonda); no se esquiva",
-    "Alternativas: Bank Rate y gilts del Reino Unido vía FRED (p. ej. IRLTLT01GBM156N, mensual, OCDE) o la OCDE; decisión del integrador",
-    "robots.txt consultado el 2026-11-17 (paso 2, D6): bloqueada por robots.txt: sin ruta CSV/XML permitida; solo páginas HTML (/boeapps/database/fromshowcolumns.asp?Travel=NIxIRx&SeriesCodes=IUDBEDR, /boeapps/database/FromShowColumns.asp?Travel=NIxIRx&SeriesCodes=IUDBEDR, /boeapps/database/Bank-Rate.asp, /boeapps/database/index.asp); usar el HTML es decisión del usuario; detalle en tablas/boe_rutas.csv"
+    "Alternativas: Bank Rate y gilts del Reino Unido vía FRED (p. ej. IRLTLT01GBM156N, mensual, OCDE) o la OCDE; decisión del integrador"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

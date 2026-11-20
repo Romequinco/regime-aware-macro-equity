@@ -341,7 +341,10 @@ def test_t1_construir_base_desde_cero_con_respaldo(tablas, cat, cat3, unrate_alf
         base.construir_base(tablas=nuevas, catalogo=cat3, ruta=ruta)
     res, _ = base.construir_base(tablas=nuevas, catalogo=cat3, ruta=ruta, desde_cero=True)
     copia = ruta.with_name(base.RESPALDO)
-    assert res.desde_cero and res.copia_previa == str(copia) and copia.read_bytes() == antes
+    previa = ruta.with_name(f"base_series{base.SUFIJO_PREVIA}")
+    assert res.desde_cero and res.respaldo_desde_cero == str(copia) and copia.read_bytes() == antes
+    # Paso 3b: cada escritura deja además la base anterior en la copia previa (rotatoria).
+    assert res.copia_previa == str(previa) and previa.read_bytes() == antes
     assert set(almacen.leer_series(ruta=ruta)["serie"]) == {"fred:DBAA", "fred:DAAA", "fred:UNRATE",
                                                              "deriv:DBAA-DAAA"}
     assert "fred:VIXCLS" in res.purgadas and res.bytes_disco == ruta.stat().st_size
@@ -350,8 +353,9 @@ def test_t1_construir_base_desde_cero_con_respaldo(tablas, cat, cat3, unrate_alf
     vigente = ruta.read_bytes()
     res2, _ = base.construir_base(tablas={"alfred": unrate_alfred}, catalogo=cat3, ruta=ruta, desde_cero=True)
     assert copia.read_bytes() == antes and set(almacen.leer_series(ruta=ruta)["serie"]) == {"fred:UNRATE"}
-    previa = ruta.with_name(f"base_series{base.SUFIJO_PREVIA}")
+    assert res2.respaldo_desde_cero is None
     assert res2.copia_previa == str(previa) and previa.read_bytes() == vigente
+    assert ruta.with_name(f"base_series{base.SUFIJO_PREVIA_2}").read_bytes() == antes
 
 
 def test_t1_desde_cero_no_escribe_si_falta_un_archivo_de_alfred(tablas, cat, cat3, unrate_alfred, tmp_path,

@@ -41,6 +41,12 @@ Fechado (``metodo`` del catálogo: ``fichero``, o ``lag_fijo`` en la OFR):
   sin perder valores y ``get_serie`` ve en cada fecha la edición vigente. Dos ediciones distintas en
   el mismo mes comparten etiqueta: la posterior sustituye a la anterior en los periodos que cambia
   (sus valores se ven desde la fecha de la posterior; antes, los de la edición previa).
+  Ediciones archivadas (paso 3b): manda la fecha OBSERVADA de la edición (``Last-Modified``, evidencia
+  medida: la edición de Ken French 2026-10 sale fechada el 2026-10-27), aunque sea anterior a lo que
+  daría la regla. La regla conservadora ``FF_MENSUAL`` de ``config/preprocesado.yaml`` (2M7D desde
+  2005-09 y cadencia anual, fin del año + 12M7D, antes) es para la historia ANTERIOR al archivo (la
+  primera edición, fechada con la regla) y se aplica en el paso 4 solo a las filas fechadas por la
+  regla, nunca a las de una edición archivada con fecha observada.
 - OFR: vintage ``unico`` con los valores de la última edición vista y
   ``fecha_publicacion = max(regla, primera_decision(t))``, siendo ``t`` la última vez que se vio
   una edición sin ese periodo (cota inferior PROBADA); revisable con ``catalogo.NOTA_REVISABLE_EDICION``.

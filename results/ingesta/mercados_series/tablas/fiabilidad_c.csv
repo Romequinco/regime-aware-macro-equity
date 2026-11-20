@@ -1,103 +1,103 @@
 regla,tipo_regla,nivel,n_series,n_series_c,n_series_previa,n_series_sin_riesgo_2000,n_series_medidas,comparaciones,n_comparaciones,n_por_periodo,pct_adelanta,pct_retrasa,pct_igual,desvio_mediano_dias,desvio_p05_dias,desvio_p95_dias,adelanto_p95_dias,adelanto_max_dias,veredicto,motivo,veredicto_desde_2000
-ANFCI,retraso,C,1,0,1,0,1,alfred_previa,802,802,0.62,0.87,98.5,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.6 % de los casos,no fiable
+ANFCI,retraso,C,1,0,1,0,1,alfred_previa,808,808,0.62,0.87,98.51,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.6 % de los casos,no fiable
 BAAFFM,retraso,C,1,0,0,0,1,alfred_medida,149,0,21.48,,,0.0,,,141.0,141.0,no fiable,adelanta en el 21.5 % de los casos (> 5 %),no fiable
-BEA_MTIS_REAL,retraso,C,1,0,1,0,1,alfred_previa,161,161,1.24,98.14,0.62,32.0,10.0,40.0,21.85,22.0,no fiable,adelanta hasta 22 días (> 7) en el 1.2 % de los casos,no fiable
+BEA_MTIS_REAL,retraso,C,1,0,1,0,1,alfred_previa,162,162,1.23,98.15,0.62,32.0,10.05,40.0,21.85,22.0,no fiable,adelanta hasta 22 días (> 7) en el 1.2 % de los casos,no fiable
 BEA_PIB_SEGUNDA,retraso,C,3,0,3,2,3,alfred_previa,455,455,1.54,98.46,0.0,33.0,2.0,43.0,18.0,18.0,no fiable,adelanta hasta 18 días (> 7) en el 1.5 % de los casos,no fiable
-BEA_RENTA_GASTO,retraso,C,9,0,9,7,9,alfred_previa,3849,3849,15.09,74.28,10.63,2.0,-18.0,13.0,28.0,59.0,no fiable,adelanta en el 15.1 % de los casos (> 5 %),no fiable
-BEA_VEHICULOS,retraso,C,1,0,1,0,1,alfred_previa,165,165,1.82,98.18,0.0,27.0,4.0,30.0,31.199999999999996,34.0,no fiable,adelanta hasta 34 días (> 7) en el 1.8 % de los casos,no fiable
+BEA_RENTA_GASTO,retraso,C,9,0,9,7,9,alfred_previa,3858,3858,15.06,74.34,10.6,2.0,-18.0,13.0,28.0,59.0,no fiable,adelanta en el 15.1 % de los casos (> 5 %),no fiable
+BEA_VEHICULOS,retraso,C,1,0,1,0,1,alfred_previa,166,166,1.81,98.19,0.0,27.0,4.0,30.0,31.199999999999996,34.0,no fiable,adelanta hasta 34 días (> 7) en el 1.8 % de los casos,no fiable
 BIS_WS_CBPOL,retraso,C,9,9,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 BIS_WS_CREDIT_GAP,retraso,C,9,9,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 BIS_WS_DSR,retraso,C,8,8,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 BIS_WS_EER,retraso,C,9,9,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
-CASE_SHILLER,retraso,C,1,0,1,0,1,alfred_previa,142,142,0.0,100.0,0.0,4.0,1.0,7.0,0.0,0.0,fiable,no adelanta nunca y el retraso mediano es pequeño,fiable
+CASE_SHILLER,retraso,C,1,0,1,0,1,alfred_previa,143,143,0.0,100.0,0.0,4.0,1.0,7.0,0.0,0.0,fiable,no adelanta nunca y el retraso mediano es pequeño,fiable
 CBO,retraso,C,2,0,2,1,2,alfred_previa,200,200,9.0,91.0,0.0,156.5,-28.049999999999997,249.09999999999997,113.69999999999995,146.0,no fiable,adelanta en el 9.0 % de los casos (> 5 %),no fiable
-CENSUS_CONSTRUCCION,retraso,C,1,0,1,0,1,alfred_previa,183,183,3.83,95.63,0.55,30.0,9.1,31.0,43.499999999999986,51.0,no fiable,adelanta hasta 51 días (> 7) en el 3.8 % de los casos,no fiable
-CENSUS_M3,retraso,C,3,0,3,2,3,alfred_previa,865,865,0.69,99.31,0.0,35.0,26.0,40.0,14.25,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.7 % de los casos,no fiable
-CENSUS_MTIS,retraso,C,2,0,2,2,2,alfred_previa,712,712,1.97,97.47,0.56,17.0,14.0,20.0,24.0,24.0,no fiable,adelanta hasta 24 días (> 7) en el 2.0 % de los casos,sin riesgo desde 2000
-CENSUS_VENTAS_MINORISTAS,retraso,C,2,0,2,0,2,alfred_previa,605,605,2.31,97.36,0.33,16.0,9.0,20.0,24.35,25.0,no fiable,adelanta hasta 25 días (> 7) en el 2.3 % de los casos,no fiable
-CENSUS_VIVIENDA_NUEVA,retraso,C,2,0,2,1,2,alfred_previa,510,510,6.47,93.53,0.0,6.0,-3.0,9.0,59.19999999999997,73.0,no fiable,adelanta en el 6.5 % de los casos (> 5 %),no fiable
-CENSUS_VIVIENDA_NUEVA_TRIMESTRAL,retraso,C,1,0,1,0,1,alfred_previa,61,61,27.87,72.13,0.0,6.0,-81.0,8.0,117.59999999999998,144.0,no fiable,adelanta en el 27.9 % de los casos (> 5 %),no fiable
-CFNAI,retraso,C,1,0,1,0,1,alfred_previa,184,184,3.26,96.74,0.0,8.0,4.0,11.0,54.75,56.0,no fiable,adelanta hasta 56 días (> 7) en el 3.3 % de los casos,no fiable
-CFNAIMA3,retraso,C,1,0,1,0,1,alfred_previa,184,184,3.26,96.74,0.0,8.0,4.0,11.0,54.75,56.0,no fiable,adelanta hasta 56 días (> 7) en el 3.3 % de los casos,no fiable
+CENSUS_CONSTRUCCION,retraso,C,1,0,1,0,1,alfred_previa,184,184,3.8,95.65,0.54,30.0,9.15,31.0,43.499999999999986,51.0,no fiable,adelanta hasta 51 días (> 7) en el 3.8 % de los casos,no fiable
+CENSUS_M3,retraso,C,3,0,3,2,3,alfred_previa,868,868,0.69,99.31,0.0,35.0,26.0,40.0,14.25,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.7 % de los casos,no fiable
+CENSUS_MTIS,retraso,C,2,0,2,2,2,alfred_previa,716,716,1.96,97.49,0.56,17.0,14.0,20.0,24.0,24.0,no fiable,adelanta hasta 24 días (> 7) en el 2.0 % de los casos,sin riesgo desde 2000
+CENSUS_VENTAS_MINORISTAS,retraso,C,2,0,2,0,2,alfred_previa,609,609,2.3,97.37,0.33,16.0,9.0,20.0,24.35,25.0,no fiable,adelanta hasta 25 días (> 7) en el 2.3 % de los casos,no fiable
+CENSUS_VIVIENDA_NUEVA,retraso,C,2,0,2,1,2,alfred_previa,512,512,6.45,93.55,0.0,6.0,-3.0,9.0,59.19999999999997,73.0,no fiable,adelanta en el 6.5 % de los casos (> 5 %),no fiable
+CENSUS_VIVIENDA_NUEVA_TRIMESTRAL,retraso,C,1,0,1,0,1,alfred_previa,62,62,27.42,72.58,0.0,6.0,-80.7,8.0,117.59999999999998,144.0,no fiable,adelanta en el 27.4 % de los casos (> 5 %),no fiable
+CFNAI,retraso,C,1,0,1,0,1,alfred_previa,185,185,3.24,96.76,0.0,8.0,4.0,11.0,54.75,56.0,no fiable,adelanta hasta 56 días (> 7) en el 3.2 % de los casos,no fiable
+CFNAIMA3,retraso,C,1,0,1,0,1,alfred_previa,185,185,3.24,96.76,0.0,8.0,4.0,11.0,54.75,56.0,no fiable,adelanta hasta 56 días (> 7) en el 3.2 % de los casos,no fiable
 CFSI,retraso,C,1,0,1,0,1,alfred_previa,811,811,0.37,97.16,2.47,3.0,1.0,3.0,1.9,2.0,fiable con margen,adelanta en el 0.4 % de los casos (hasta 2 días),fiable con margen
-CHICAGO_BBK,retraso,C,2,0,2,0,2,alfred_previa,132,132,29.55,69.7,0.76,27.0,-34.45,33.0,59.60000000000001,96.0,no fiable,adelanta en el 29.6 % de los casos (> 5 %),no fiable
-CLAIMS_CONTINUADAS,retraso,C,1,0,1,0,1,alfred_previa,891,891,1.23,98.77,0.0,1.0,1.0,1.0,44.5,48.0,no fiable,adelanta hasta 48 días (> 7) en el 1.2 % de los casos,no fiable
-CLEVELAND_EXPINF,retraso,C,2,0,2,0,2,alfred_previa,118,118,6.78,93.22,0.0,18.0,-11.199999999999996,20.14999999999999,71.0,71.0,no fiable,adelanta en el 6.8 % de los casos (> 5 %),no fiable
-COMERCIO_EXTERIOR,retraso,C,3,0,3,1,3,alfred_previa,753,753,2.39,97.61,0.0,25.0,10.0,29.0,18.0,18.0,no fiable,adelanta hasta 18 días (> 7) en el 2.4 % de los casos,no fiable
-CPIAUCSL,retraso,C,35,25,10,3,10,alfred_previa,2474,2474,0.04,99.92,0.04,17.0,8.0,21.0,17.0,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.0 % de los casos,no fiable
-CPILFESL,retraso,C,2,0,2,1,2,alfred_previa,365,365,0.0,100.0,0.0,16.0,10.0,21.0,0.0,0.0,fiable con margen,conservadora: retrasa 16 días en mediana,fiable con margen
-DALLAS_TMOS,retraso,C,1,0,1,0,1,alfred_previa,128,128,5.47,93.75,0.78,4.0,-14.949999999999989,7.0,29.4,30.0,no fiable,adelanta en el 5.5 % de los casos (> 5 %),no fiable
-ECI,retraso,C,1,0,1,0,1,alfred_previa,52,52,1.92,98.08,0.0,32.0,24.500000000000004,34.449999999999996,9.0,9.0,no fiable,adelanta hasta 9 días (> 7) en el 1.9 % de los casos,no fiable
-EMPIRE,retraso,C,1,0,1,0,1,alfred_previa,150,150,0.0,100.0,0.0,16.0,14.0,17.0,0.0,0.0,fiable con margen,conservadora: retrasa 16 días en mediana,fiable con margen
-EUROSTAT_PARO,retraso,C,8,7,1,0,1,alfred_previa,1,1,0.0,100.0,0.0,11.0,11.0,11.0,0.0,0.0,fiable con margen,conservadora: retrasa 11 días en mediana (muestra pequeña: 1 comparaciones),fiable con margen
+CHICAGO_BBK,retraso,C,2,0,2,0,2,alfred_previa,136,136,30.15,69.12,0.74,27.0,-34.25,33.0,59.0,96.0,no fiable,adelanta en el 30.1 % de los casos (> 5 %),no fiable
+CLAIMS_CONTINUADAS,retraso,C,1,0,1,0,1,alfred_previa,896,896,1.23,98.77,0.0,1.0,1.0,1.0,44.5,48.0,no fiable,adelanta hasta 48 días (> 7) en el 1.2 % de los casos,no fiable
+CLEVELAND_EXPINF,retraso,C,2,0,2,0,2,alfred_previa,122,122,6.56,93.44,0.0,18.0,-10.0,20.0,71.0,71.0,no fiable,adelanta en el 6.6 % de los casos (> 5 %),no fiable
+COMERCIO_EXTERIOR,retraso,C,3,0,3,1,3,alfred_previa,756,756,2.38,97.62,0.0,25.0,10.0,29.0,18.0,18.0,no fiable,adelanta hasta 18 días (> 7) en el 2.4 % de los casos,no fiable
+CPIAUCSL,retraso,C,35,25,10,3,9,alfred_previa,2484,2484,0.04,99.92,0.04,17.0,8.0,21.0,17.0,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.0 % de los casos,no fiable
+CPILFESL,retraso,C,2,0,2,1,1,alfred_previa,358,358,0.0,100.0,0.0,16.0,10.0,21.0,0.0,0.0,fiable con margen,conservadora: retrasa 16 días en mediana,fiable con margen
+DALLAS_TMOS,retraso,C,1,0,1,0,1,alfred_previa,129,129,5.43,93.8,0.78,4.0,-13.799999999999992,7.0,29.4,30.0,no fiable,adelanta en el 5.4 % de los casos (> 5 %),no fiable
+ECI,retraso,C,1,0,1,0,1,alfred_previa,53,53,1.89,98.11,0.0,32.0,25.0,34.4,9.0,9.0,no fiable,adelanta hasta 9 días (> 7) en el 1.9 % de los casos,no fiable
+EMPIRE,retraso,C,1,0,1,0,1,alfred_previa,152,152,0.0,100.0,0.0,16.0,14.0,17.0,0.0,0.0,fiable con margen,conservadora: retrasa 16 días en mediana,fiable con margen
+EUROSTAT_PARO,retraso,C,8,7,1,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 EUROSTAT_PARO_UK,retraso,C,1,1,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
-EUROSTAT_PIB,retraso,C,5,5,1,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
+EUROSTAT_PIB,retraso,C,5,4,1,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 EUROSTAT_PIB_PAISES,retraso,C,4,4,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 FEDFUNDS,retraso,C,1,0,0,1,1,alfred_medida,358,0,45.81,,,0.0,,,13.0,13.0,no fiable,adelanta en el 45.8 % de los casos (> 5 %),sin riesgo desde 2000
 FED_DSR,retraso,C,1,0,1,1,1,alfred_previa,108,108,0.0,100.0,0.0,100.0,69.35,110.64999999999999,0.0,0.0,fiable con margen,conservadora: retrasa 100 días en mediana,sin riesgo desde 2000
-FED_G19,retraso,C,2,0,2,2,2,alfred_previa,716,716,0.28,99.72,0.0,24.0,22.0,27.0,6.0,6.0,fiable con margen,adelanta en el 0.3 % de los casos (hasta 6 días),sin riesgo desde 2000
-FED_H41,retraso,C,1,0,1,0,1,alfred_previa,796,796,0.5,99.5,0.0,3.0,3.0,4.0,3.8499999999999996,4.0,fiable con margen,adelanta en el 0.5 % de los casos (hasta 4 días),fiable con margen
-FED_H6,retraso,C,2,0,2,1,2,alfred_previa,718,718,0.14,99.86,0.0,17.0,5.0,24.0,21.0,21.0,no fiable,adelanta hasta 21 días (> 7) en el 0.1 % de los casos,no fiable
-FED_H8_MENSUAL,retraso,C,3,0,3,3,3,alfred_previa,1074,1074,0.0,100.0,0.0,18.0,15.0,22.0,0.0,0.0,fiable con margen,conservadora: retrasa 18 días en mediana,sin riesgo desde 2000
-FED_H8_SEMANAL,retraso,C,3,0,3,2,3,alfred_previa,3852,3852,0.1,98.81,1.09,3.0,3.0,3.0,4.0,4.0,fiable con margen,adelanta en el 0.1 % de los casos (hasta 4 días),fiable con margen
+FED_G19,retraso,C,2,0,2,2,2,alfred_previa,718,718,0.28,99.72,0.0,24.0,22.0,27.0,6.0,6.0,fiable con margen,adelanta en el 0.3 % de los casos (hasta 6 días),sin riesgo desde 2000
+FED_H41,retraso,C,1,0,1,0,1,alfred_previa,801,801,0.5,99.5,0.0,3.0,3.0,4.0,3.8499999999999996,4.0,fiable con margen,adelanta en el 0.5 % de los casos (hasta 4 días),fiable con margen
+FED_H6,retraso,C,2,0,2,1,2,alfred_previa,720,720,0.14,99.86,0.0,17.0,5.0,24.0,21.0,21.0,no fiable,adelanta hasta 21 días (> 7) en el 0.1 % de los casos,no fiable
+FED_H8_MENSUAL,retraso,C,3,0,3,3,3,alfred_previa,1077,1077,0.0,100.0,0.0,18.0,15.0,22.0,0.0,0.0,fiable con margen,conservadora: retrasa 18 días en mediana,sin riesgo desde 2000
+FED_H8_SEMANAL,retraso,C,3,0,3,2,3,alfred_previa,3867,3867,0.1,98.81,1.09,3.0,3.0,3.0,4.0,4.0,fiable con margen,adelanta en el 0.1 % de los casos (hasta 4 días),fiable con margen
 FED_MOROSIDAD,retraso,C,4,0,4,0,4,alfred_previa,244,244,0.0,100.0,0.0,42.0,37.0,45.0,0.0,0.0,fiable con margen,conservadora: retrasa 42 días en mediana,fiable con margen
 FED_Z1,retraso,C,4,0,4,1,4,alfred_previa,292,292,1.71,98.29,0.0,22.0,10.0,26.0,12.799999999999999,14.0,no fiable,adelanta hasta 14 días (> 7) en el 1.7 % de los casos,no fiable
-FF_MENSUAL,retraso,C,17,17,0,0,1,ediciones,1,1,0.0,100.0,0.0,19.0,19.0,19.0,0.0,0.0,fiable con margen,conservadora: retrasa 19 días en mediana (muestra pequeña: 1 comparaciones),fiable con margen
-FHFA_HPI,retraso,C,1,0,1,0,1,alfred_previa,172,172,1.16,98.84,0.0,6.0,1.0,10.0,28.85,29.0,no fiable,adelanta hasta 29 días (> 7) en el 1.2 % de los casos,no fiable
+FF_MENSUAL,retraso,C,17,17,0,0,1,ediciones,2,2,0.0,100.0,0.0,18.5,18.05,18.95,0.0,0.0,fiable con margen,conservadora: retrasa 18.5 días en mediana (muestra pequeña: 2 comparaciones),fiable con margen
+FHFA_HPI,retraso,C,1,0,1,0,1,alfred_previa,173,173,1.16,98.84,0.0,6.0,1.0,10.0,28.85,29.0,no fiable,adelanta hasta 29 días (> 7) en el 1.2 % de los casos,no fiable
 FHFA_HPI_TRIMESTRAL,retraso,C,1,0,1,0,1,alfred_previa,64,64,0.0,100.0,0.0,5.0,1.1500000000000004,9.0,0.0,0.0,fiable,no adelanta nunca y el retraso mediano es pequeño,fiable
-GDPC1,retraso,C,13,0,13,13,13,alfred_previa,2630,2630,10.38,89.16,0.46,3.0,-17.0,14.0,27.0,52.0,no fiable,adelanta en el 10.4 % de los casos (> 5 %),sin riesgo desde 2000
-GDP_GROWTH_QOQ,retraso,C,1,0,1,0,1,alfred_previa,48,48,6.25,93.75,0.0,3.0,-11.999999999999998,6.0,49.5,52.0,no fiable,adelanta en el 6.2 % de los casos (> 5 %),no fiable
-GDP_RECESSION_HAMILTON,retraso,C,2,0,2,0,2,alfred_previa,84,84,0.0,100.0,0.0,63.0,39.0,66.0,0.0,0.0,fiable con margen,conservadora: retrasa 63 días en mediana,fiable con margen
+GDPC1,retraso,C,13,0,13,13,13,alfred_previa,2643,2643,10.33,89.22,0.45,3.0,-17.0,14.0,27.0,52.0,no fiable,adelanta en el 10.3 % de los casos (> 5 %),sin riesgo desde 2000
+GDP_GROWTH_QOQ,retraso,C,1,0,1,0,1,alfred_previa,49,49,6.12,93.88,0.0,3.0,-10.999999999999993,6.0,49.5,52.0,no fiable,adelanta en el 6.1 % de los casos (> 5 %),no fiable
+GDP_RECESSION_HAMILTON,retraso,C,2,0,2,0,2,alfred_previa,86,86,0.0,100.0,0.0,63.0,39.0,66.0,0.0,0.0,fiable con margen,conservadora: retrasa 63 días en mediana,fiable con margen
 GH_US10Y_MONTHLY,retraso,C,1,1,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 GS1,retraso,C,1,0,0,1,1,alfred_medida,358,0,45.81,,,0.0,,,13.0,13.0,no fiable,adelanta en el 45.8 % de los casos (> 5 %),sin riesgo desde 2000
 GS10,retraso,C,1,0,0,1,1,alfred_medida,358,0,45.81,,,0.0,,,13.0,13.0,no fiable,adelanta en el 45.8 % de los casos (> 5 %),sin riesgo desde 2000
 GS5,retraso,C,1,0,0,1,1,alfred_medida,358,0,45.81,,,0.0,,,13.0,13.0,no fiable,adelanta en el 45.8 % de los casos (> 5 %),sin riesgo desde 2000
 GW_ANUAL,retraso,C,17,17,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
-HOUST,retraso,C,2,0,2,2,2,alfred_previa,1119,1119,1.88,98.12,0.0,14.0,10.0,16.0,69.0,69.0,no fiable,adelanta hasta 69 días (> 7) en el 1.9 % de los casos,sin riesgo desde 2000
-ICSA,retraso,C,1,0,1,0,1,alfred_previa,906,906,0.88,3.2,95.92,0.0,0.0,0.0,46.55,49.0,no fiable,adelanta hasta 49 días (> 7) en el 0.9 % de los casos,no fiable
-INDPRO,retraso,C,4,0,4,2,4,alfred_previa,2065,2065,0.48,99.18,0.34,16.0,4.0,18.0,32.0,32.0,no fiable,adelanta hasta 32 días (> 7) en el 0.5 % de los casos,no fiable
-IPC_DERIVADOS,retraso,C,3,0,3,0,3,alfred_previa,455,455,0.88,99.12,0.0,19.0,10.0,22.0,17.0,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.9 % de los casos,no fiable
+HOUST,retraso,C,2,0,2,2,2,alfred_previa,1123,1123,1.87,98.13,0.0,14.0,10.0,16.0,69.0,69.0,no fiable,adelanta hasta 69 días (> 7) en el 1.9 % de los casos,sin riesgo desde 2000
+ICSA,retraso,C,1,0,1,0,1,alfred_previa,911,911,0.88,3.18,95.94,0.0,0.0,0.0,46.55,49.0,no fiable,adelanta hasta 49 días (> 7) en el 0.9 % de los casos,no fiable
+INDPRO,retraso,C,4,0,4,2,4,alfred_previa,2073,2073,0.48,99.18,0.34,16.0,4.0,18.0,32.0,32.0,no fiable,adelanta hasta 32 días (> 7) en el 0.5 % de los casos,no fiable
+IPC_DERIVADOS,retraso,C,3,0,3,0,3,alfred_previa,461,461,0.87,99.13,0.0,19.0,10.0,22.0,17.0,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.9 % de los casos,no fiable
 IRLTLT01USM156N,retraso,C,1,0,0,0,1,alfred_medida,160,0,15.0,,,18.0,,,247.0,247.0,no fiable,adelanta en el 15.0 % de los casos (> 5 %),no fiable
-JOLTS,retraso,C,4,0,4,0,4,alfred_previa,776,776,0.52,99.48,0.0,23.0,16.0,32.0,8.0,8.0,no fiable,adelanta hasta 8 días (> 7) en el 0.5 % de los casos,no fiable
-KCFSI,retraso,C,1,0,1,0,1,alfred_previa,191,191,2.09,97.91,0.0,22.0,19.0,24.0,10.0,10.0,no fiable,adelanta hasta 10 días (> 7) en el 2.1 % de los casos,no fiable
-KC_LMCI,retraso,C,2,0,2,0,2,alfred_previa,284,284,3.52,96.48,0.0,21.0,14.0,25.0,73.0,73.0,no fiable,adelanta hasta 73 días (> 7) en el 3.5 % de los casos,no fiable
+JOLTS,retraso,C,4,0,4,0,4,alfred_previa,780,780,0.51,99.49,0.0,23.0,16.0,32.0,8.0,8.0,no fiable,adelanta hasta 8 días (> 7) en el 0.5 % de los casos,no fiable
+KCFSI,retraso,C,1,0,1,0,1,alfred_previa,192,192,2.08,97.92,0.0,22.5,19.0,24.899999999999977,10.0,10.0,no fiable,adelanta hasta 10 días (> 7) en el 2.1 % de los casos,no fiable
+KC_LMCI,retraso,C,2,0,2,0,2,alfred_previa,286,286,3.5,96.5,0.0,21.0,14.0,25.0,73.0,73.0,no fiable,adelanta hasta 73 días (> 7) en el 3.5 % de los casos,no fiable
 LIBOR_3M_QUARTERLY,retraso,C,1,0,0,0,1,alfred_medida,3,0,100.0,,,-180.0,,,272.0,272.0,no fiable,adelanta en el 100.0 % de los casos (> 5 %) (muestra pequeña: 3 comparaciones),no fiable
-MANEMP,retraso,C,1,0,1,1,1,alfred_previa,779,779,0.26,99.74,0.0,26.0,22.0,30.0,18.8,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.3 % de los casos,sin riesgo desde 2000
+MANEMP,retraso,C,1,0,1,1,1,alfred_previa,780,780,0.26,99.74,0.0,26.0,22.0,30.0,18.8,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.3 % de los casos,sin riesgo desde 2000
 MOODYS_AAA,retraso,C,1,0,0,1,1,alfred_medida,358,0,52.51,,,-1.0,,,141.0,141.0,no fiable,adelanta en el 52.5 % de los casos (> 5 %),sin riesgo desde 2000
 MOODYS_BAA,retraso,C,1,0,0,1,1,alfred_medida,358,0,52.51,,,-1.0,,,141.0,141.0,no fiable,adelanta en el 52.5 % de los casos (> 5 %),sin riesgo desde 2000
-NBER_RECESSION_MONTHLY,retraso,C,1,0,1,0,1,alfred_previa,185,185,2.7,97.3,0.0,728.0,149.20000000000005,729.0,123.8,130.0,no fiable,adelanta hasta 130 días (> 7) en el 2.7 % de los casos,no fiable
-NFCI,retraso,C,1,0,1,0,1,alfred_previa,802,802,0.62,0.87,98.5,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.6 % de los casos,no fiable
-NFCI_CREDIT,retraso,C,1,0,1,0,1,alfred_previa,744,744,0.67,0.81,98.52,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.7 % de los casos,no fiable
-NFCI_LEVERAGE,retraso,C,1,0,1,0,1,alfred_previa,744,744,0.94,0.81,98.25,0.0,0.0,0.0,12.599999999999994,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.9 % de los casos,no fiable
-NFCI_RISK,retraso,C,1,0,1,0,1,alfred_previa,744,744,0.67,0.81,98.52,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.7 % de los casos,no fiable
-NNUSBIS,retraso,C,1,0,1,0,1,alfred_previa,150,150,1.33,98.67,0.0,13.0,8.45,17.0,15.0,15.0,no fiable,adelanta hasta 15 días (> 7) en el 1.3 % de los casos,no fiable
-OCDE_CLI,retraso,C,1,0,1,0,1,alfred_previa,99,99,4.04,95.96,0.0,46.0,12.600000000000001,52.099999999999994,11.85,12.0,no fiable,adelanta hasta 12 días (> 7) en el 4.0 % de los casos,no fiable
+NBER_RECESSION_MONTHLY,retraso,C,1,0,1,0,1,alfred_previa,186,186,2.69,97.31,0.0,728.0,150.75,729.0,123.8,130.0,no fiable,adelanta hasta 130 días (> 7) en el 2.7 % de los casos,no fiable
+NFCI,retraso,C,1,0,1,0,1,alfred_previa,808,808,0.62,0.87,98.51,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.6 % de los casos,no fiable
+NFCI_CREDIT,retraso,C,1,0,1,0,1,alfred_previa,750,750,0.67,0.8,98.53,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.7 % de los casos,no fiable
+NFCI_LEVERAGE,retraso,C,1,0,1,0,1,alfred_previa,750,750,0.93,0.8,98.27,0.0,0.0,0.0,12.599999999999994,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.9 % de los casos,no fiable
+NFCI_RISK,retraso,C,1,0,1,0,1,alfred_previa,750,750,0.67,0.8,98.53,0.0,0.0,0.0,13.399999999999999,15.0,no fiable,adelanta hasta 15 días (> 7) en el 0.7 % de los casos,no fiable
+NNUSBIS,retraso,C,1,0,1,0,1,alfred_previa,152,152,1.97,98.03,0.0,13.0,8.0,17.0,20.4,21.0,no fiable,adelanta hasta 21 días (> 7) en el 2.0 % de los casos,no fiable
+OCDE_CLI,retraso,C,1,0,1,0,1,alfred_previa,101,101,3.96,96.04,0.0,46.0,13.0,52.0,11.85,12.0,no fiable,adelanta hasta 12 días (> 7) en el 4.0 % de los casos,no fiable
 OFR_FSI,retraso,C,5,5,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
-PAYEMS,retraso,C,1,0,1,1,1,alfred_previa,857,857,0.23,99.77,0.0,26.0,21.0,30.0,18.8,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.2 % de los casos,sin riesgo desde 2000
-PHILLY_COINCIDENTES,retraso,C,1,0,1,0,1,alfred_previa,191,191,5.24,94.24,0.52,37.0,-0.5,41.0,17.749999999999993,20.0,no fiable,adelanta en el 5.2 % de los casos (> 5 %),no fiable
-PMI_PROXY_PHILLY,retraso,C,3,0,3,0,3,alfred_previa,411,411,0.73,99.27,0.0,13.0,10.0,17.0,17.0,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.7 % de los casos,no fiable
-PPI_ALL_COMMODITIES,retraso,C,4,0,4,1,4,alfred_previa,797,797,1.63,98.24,0.13,18.0,11.0,22.0,44.0,44.0,no fiable,adelanta hasta 44 días (> 7) en el 1.6 % de los casos,no fiable
-PPI_FUELS,retraso,C,1,0,1,0,1,alfred_previa,138,138,2.17,97.83,0.0,18.0,12.850000000000001,22.0,42.0,44.0,no fiable,adelanta hasta 44 días (> 7) en el 2.2 % de los casos,no fiable
-PPI_METALS,retraso,C,1,0,1,0,1,alfred_previa,138,138,2.9,97.1,0.0,18.0,11.850000000000001,22.0,40.99999999999999,44.0,no fiable,adelanta hasta 44 días (> 7) en el 2.9 % de los casos,no fiable
-PRECIOS_IMPORTACION,retraso,C,2,0,2,0,2,alfred_previa,394,394,2.03,97.97,0.0,18.0,13.0,22.0,32.0,32.0,no fiable,adelanta hasta 32 días (> 7) en el 2.0 % de los casos,no fiable
-PRODUCTIVIDAD_COSTES,retraso,C,2,0,2,2,2,alfred_previa,466,466,3.0,97.0,0.0,27.0,16.0,36.0,38.0,38.0,no fiable,adelanta hasta 38 días (> 7) en el 3.0 % de los casos,sin riesgo desde 2000
-RECESSION_PROB_SMOOTHED,retraso,C,1,0,1,0,1,alfred_previa,170,170,41.76,56.47,1.76,27.0,-1.549999999999999,32.0,8.0,29.0,no fiable,adelanta en el 41.8 % de los casos (> 5 %),no fiable
-RNUSBIS,retraso,C,1,0,1,0,1,alfred_previa,150,150,1.33,98.67,0.0,13.0,8.45,17.0,15.0,15.0,no fiable,adelanta hasta 15 días (> 7) en el 1.3 % de los casos,no fiable
-SAHM_RULE_CURRENT,retraso,C,1,0,1,0,1,alfred_previa,85,85,2.35,97.65,0.0,25.0,21.0,29.0,19.8,20.0,no fiable,adelanta hasta 20 días (> 7) en el 2.4 % de los casos,no fiable
-SAHM_RULE_REALTIME,retraso,C,1,0,1,0,1,alfred_previa,84,84,1.19,98.81,0.0,25.0,21.0,29.0,20.0,20.0,no fiable,adelanta hasta 20 días (> 7) en el 1.2 % de los casos,no fiable
+PAYEMS,retraso,C,1,0,1,1,1,alfred_previa,858,858,0.23,99.77,0.0,26.0,21.0,30.0,18.8,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.2 % de los casos,sin riesgo desde 2000
+PHILLY_COINCIDENTES,retraso,C,1,0,1,0,1,alfred_previa,192,192,5.21,94.27,0.52,37.0,-0.4499999999999993,41.0,17.749999999999993,20.0,no fiable,adelanta en el 5.2 % de los casos (> 5 %),no fiable
+PMI_PROXY_PHILLY,retraso,C,3,0,3,0,3,alfred_previa,414,414,0.72,99.28,0.0,13.0,10.0,17.0,17.0,17.0,no fiable,adelanta hasta 17 días (> 7) en el 0.7 % de los casos,no fiable
+PPI_ALL_COMMODITIES,retraso,C,4,0,4,1,4,alfred_previa,805,805,1.61,98.26,0.12,18.0,11.0,22.0,44.0,44.0,no fiable,adelanta hasta 44 días (> 7) en el 1.6 % de los casos,no fiable
+PPI_FUELS,retraso,C,1,0,1,0,1,alfred_previa,140,140,2.14,97.86,0.0,18.0,12.95,22.0,42.0,44.0,no fiable,adelanta hasta 44 días (> 7) en el 2.1 % de los casos,no fiable
+PPI_METALS,retraso,C,1,0,1,0,1,alfred_previa,140,140,2.86,97.14,0.0,18.0,11.95,22.0,40.99999999999999,44.0,no fiable,adelanta hasta 44 días (> 7) en el 2.9 % de los casos,no fiable
+PRECIOS_IMPORTACION,retraso,C,2,0,2,0,2,alfred_previa,398,398,2.01,97.99,0.0,18.0,13.0,22.0,32.0,32.0,no fiable,adelanta hasta 32 días (> 7) en el 2.0 % de los casos,no fiable
+PRODUCTIVIDAD_COSTES,retraso,C,2,0,2,2,2,alfred_previa,468,468,2.99,97.01,0.0,27.0,16.0,36.0,38.0,38.0,no fiable,adelanta hasta 38 días (> 7) en el 3.0 % de los casos,sin riesgo desde 2000
+RECESSION_PROB_SMOOTHED,retraso,C,1,0,1,0,1,alfred_previa,171,171,41.52,56.73,1.75,27.0,-1.5,32.0,8.0,29.0,no fiable,adelanta en el 41.5 % de los casos (> 5 %),no fiable
+RNUSBIS,retraso,C,1,0,1,0,1,alfred_previa,152,152,1.97,98.03,0.0,13.0,8.0,17.0,20.4,21.0,no fiable,adelanta hasta 21 días (> 7) en el 2.0 % de los casos,no fiable
+SAHM_RULE_CURRENT,retraso,C,1,0,1,0,1,alfred_previa,86,86,2.33,97.67,0.0,25.0,21.0,29.0,19.8,20.0,no fiable,adelanta hasta 20 días (> 7) en el 2.3 % de los casos,no fiable
+SAHM_RULE_REALTIME,retraso,C,1,0,1,0,1,alfred_previa,85,85,1.18,98.82,0.0,25.0,21.0,29.0,20.0,20.0,no fiable,adelanta hasta 20 días (> 7) en el 1.2 % de los casos,no fiable
 SHILLER_DE,retraso,C,2,2,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 SHILLER_FICHERO,retraso,C,4,4,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 SP500_MONTHLY_DEEP_SRC,retraso,C,1,1,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
-STLFSI4,retraso,C,1,0,1,0,1,alfred_previa,204,204,0.0,29.9,70.1,0.0,0.0,1.0,0.0,0.0,fiable,no adelanta nunca y el retraso mediano es pequeño,fiable
+STLFSI4,retraso,C,1,0,1,0,1,alfred_previa,210,210,0.0,31.43,68.57,0.0,0.0,1.0,0.0,0.0,fiable,no adelanta nunca y el retraso mediano es pequeño,fiable
 TB3MS,retraso,C,1,0,0,1,1,alfred_medida,358,0,45.81,,,0.0,,,13.0,13.0,no fiable,adelanta en el 45.8 % de los casos (> 5 %),sin riesgo desde 2000
 TBILL3M_MINUS_FEDFUNDS,retraso,C,1,0,0,0,1,alfred_medida,148,0,10.81,,,0.0,,,7.0,7.0,no fiable,adelanta en el 10.8 % de los casos (> 5 %),no fiable
 TESORO_DEUDA,retraso,C,1,0,1,1,1,alfred_previa,119,119,1.68,98.32,0.0,25.0,1.0,36.0,71.7,75.0,no fiable,adelanta hasta 75 días (> 7) en el 1.7 % de los casos,sin riesgo desde 2000
-TESORO_MTS,retraso,C,1,0,1,0,1,alfred_previa,132,132,2.27,97.73,0.0,20.0,10.0,22.0,11.9,12.0,no fiable,adelanta hasta 12 días (> 7) en el 2.3 % de los casos,no fiable
+TESORO_MTS,retraso,C,1,0,1,0,1,alfred_previa,134,134,2.24,97.76,0.0,20.0,10.0,22.0,11.9,12.0,no fiable,adelanta hasta 12 días (> 7) en el 2.2 % de los casos,no fiable
 TRANSACCIONES_INTERNACIONALES,retraso,C,1,0,1,0,1,alfred_previa,49,49,2.04,97.96,0.0,11.0,7.0,15.0,13.0,13.0,no fiable,adelanta hasta 13 días (> 7) en el 2.0 % de los casos,no fiable
 TWEXAFEGSMTH,retraso,C,1,0,0,0,1,alfred_medida,92,0,0.0,,,28.0,,,0.0,0.0,fiable con margen,conservadora: retrasa 28 días en mediana,fiable con margen
 TWEXMMTH,retraso,C,1,0,0,0,1,alfred_medida,69,0,0.0,,,54.0,,,0.0,0.0,fiable con margen,conservadora: retrasa 54 días en mediana,fiable con margen
-UMCSENT,retraso,C,8,6,2,2,2,alfred_previa,667,667,4.35,88.16,7.5,4.0,0.0,10.0,16.79999999999995,26.0,no fiable,adelanta hasta 26 días (> 7) en el 4.3 % de los casos,no fiable
-UNRATE,retraso,C,15,0,15,10,15,alfred_previa,7255,7255,0.33,99.67,0.0,26.0,22.0,30.0,19.0,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.3 % de los casos,no fiable
+UMCSENT,retraso,C,8,6,2,2,2,alfred_previa,669,669,4.33,88.19,7.47,4.0,0.0,10.0,16.79999999999995,26.0,no fiable,adelanta hasta 26 días (> 7) en el 4.3 % de los casos,no fiable
+UNRATE,retraso,C,15,0,15,10,15,alfred_previa,7270,7270,0.33,99.67,0.0,26.0,22.0,30.0,19.0,19.0,no fiable,adelanta hasta 19 días (> 7) en el 0.3 % de los casos,no fiable
 WB_ANUAL,retraso,C,594,594,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible
 WTI_SPOT_MONTHLY,retraso,C,1,0,0,0,1,alfred_medida,120,0,26.67,,,5.0,,,26.0,26.0,no fiable,adelanta en el 26.7 % de los casos (> 5 %),no fiable
 boc_bonos,publicador,C,7,7,0,0,0,,0,0,,,,,,,,,no medible,sin fecha real con la que comparar,no medible

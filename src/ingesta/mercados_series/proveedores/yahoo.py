@@ -39,8 +39,9 @@ descargados bien hoy no se piden otra vez. Metadatos por ticker (sin precios) en
 Posproceso del nivel ampliado (``posproceso``, solo lectura de lo descargado): cobertura por índice
 de origen y por mercado (tickers con datos, inicio mediano, sesiones), fallidos clasificados desde el
 registro (vacío, deslistado, otro) y sin cotización reciente, e incidencias de ``calidad``; escribe
-``tablas/yahoo_ampliado_cobertura.csv`` y la ficha ``yahoo`` (núcleo + ampliado, con el estado
-«descarga en curso: N de M» mientras no se haya intentado toda la lista).
+``tablas/yahoo_ampliado_cobertura.csv`` (o ``yahoo_<etiqueta>_cobertura.csv`` en otro lote, p. ej. el
+``3b1``) y la ficha ``yahoo`` (``guardar_ficha``: núcleo + ampliado + lotes de ``LOTES_FICHA``, con el
+estado «descarga en curso: N de M» mientras no se haya intentado toda la lista).
 """
 from __future__ import annotations
 
@@ -104,7 +105,7 @@ MAPA_EXCHANGE = {
     "NMS": "XNAS", "NGM": "XNAS", "NCM": "XNAS", "NAS": "XNAS", "NIM": "XNAS",
     "NYQ": "XNYS", "ASE": "XNYS", "SNP": "XNYS", "WCB": "XNYS", "DJI": "XNYS",
     "PCX": "ARCX", "BTS": "ARCX",
-    "CBO": "CBOE_IDX", "CXI": "CBOE_IDX",
+    "CBO": "CBOE_IDX", "CXI": "CBOE_IDX", "CGI": "CBOE_IDX",   # CGI: índices de rendimientos del Tesoro (^TNX...), 2026-11
     "CME": "CME", "CMX": "CME", "NYM": "CME", "CBT": "CME",
     "CCY": "FX_YAHOO",
     "LSE": "XLON", "FGI": "XLON", "GER": "XETR", "ETR": "XETR", "PAR": "XPAR", "AMS": "XAMS",
@@ -336,6 +337,34 @@ def leer_registro(etiqueta: str) -> pd.DataFrame:
 REVISIONES_TOLERADAS = ("volume", "dividendo")
 
 
+def respetar_mercado_guardado(tabla: pd.DataFrame, guardado: pd.DataFrame,
+                              declarados: dict[str, str] | None = None) -> tuple[pd.DataFrame, str | None]:
+    """Conserva el ``mercado`` guardado si la descarga nueva solo cambia de bolsa con el MISMO cierre.
+
+    Paso 3b (2026-11-20): Yahoo dejó de dar ``exchangeName`` en algunos tickers y el respaldo por huso
+    asigna otra bolsa (HLT y GM, de NYSE, salían XNAS). Si el ticker no está declarado en
+    ``universo.yaml`` (lo declarado manda), lo guardado tiene un único mercado, el nuevo es otro y
+    ``disponible_utc`` de las sesiones nuevas es idéntico con los dos (mismo cierre, también con DST),
+    la descarga toma el mercado guardado: el TimeGate no cambia y la vela guardada no se reescribe.
+    Devuelve ``(tabla, aviso o None)``.
+    """
+    if not len(tabla) or not len(guardado):
+        return tabla, None
+    tk = str(tabla["ticker"].iloc[0])
+    if tk in (declarados if declarados is not None else mercados_declarados()):
+        return tabla, None
+    viejo, nuevo = guardado["mercado"].dropna().unique(), tabla["mercado"].dropna().unique()
+    if len(viejo) != 1 or len(nuevo) != 1 or viejo[0] == nuevo[0]:
+        return tabla, None
+    sesiones = tabla["sesion"]
+    if not visibilidad.disponible_cierre_serie(sesiones, str(viejo[0])).equals(
+            visibilidad.disponible_cierre_serie(sesiones, str(nuevo[0]))):
+        return tabla, None
+    out = tabla.copy()
+    out["mercado"] = viejo[0]
+    return out, f"mercado {nuevo[0]} de la descarga sustituido por el guardado {viejo[0]} (mismo cierre)"
+
+
 def descargar_lote(tickers: list[str] | tuple[str, ...], *, etiqueta: str = "nucleo", reanudar: bool = True,
                    escribir: bool = True, ritmo: float = RITMO) -> pd.DataFrame:
     """Descarga ``tickers`` uno a uno (<= ``ritmo`` por segundo) y los guarda en ``precios/yahoo``.
@@ -359,6 +388,11 @@ def descargar_lote(tickers: list[str] | tuple[str, ...], *, etiqueta: str = "nuc
         fila: dict[str, Any] = {"ticker": tk, "descargado": datetime.now(timezone.utc).isoformat()}
         try:
             tabla, info = descargar(tk)
+            if almacen.ruta_precios(PROVEEDOR, tk).exists():
+                tabla, aviso = respetar_mercado_guardado(tabla, almacen.leer_precios(tk, PROVEEDOR))
+                if aviso:
+                    info.setdefault("avisos", []).append(aviso)
+                    info["mercado"] = str(tabla["mercado"].iloc[0])   # el registro dice lo que se guarda
             if escribir:
                 almacen.escribir_precios(tabla, PROVEEDOR, revisiones_toleradas=REVISIONES_TOLERADAS)
             fila.update(info, estado="ok", error=None)
@@ -521,13 +555,20 @@ def estado_descarga(n_intentados: int, n_lista: int) -> str:
     return f"descarga en curso: {n_intentados} de {n_lista}"
 
 
+def fichero_cobertura(etiqueta: str) -> str:
+    """Nombre de la tabla de cobertura del lote: ``yahoo_ampliado_cobertura.csv`` para ``ampliado`` y
+    ``yahoo_<etiqueta>_cobertura.csv`` para los demás (el 3b-1 no pisa la del nivel ampliado)."""
+    return FICHERO_COBERTURA_AMPLIADO if etiqueta == "ampliado" else f"yahoo_{etiqueta}_cobertura.csv"
+
+
 def posproceso(etiqueta: str = "ampliado", fichero: Path | None = None, *, con_calidad: bool = True,
-               escribir: bool = True) -> dict[str, Any]:
+               escribir: bool = True, destino: str | None = None) -> dict[str, Any]:
     """Cobertura, fallidos y calidad de lo YA descargado del lote ``etiqueta`` (solo lectura).
 
-    Escribe ``tablas/yahoo_ampliado_cobertura.csv`` (metadatos, sin precios) y devuelve el resumen
-    para la ficha. Se puede ejecutar con la descarga en curso: el estado lo dice.
+    Escribe ``tablas/<destino>`` (por defecto ``fichero_cobertura(etiqueta)``: metadatos, sin precios) y
+    devuelve el resumen para la ficha. Se puede ejecutar con la descarga en curso: el estado lo dice.
     """
+    destino = destino or fichero_cobertura(etiqueta)
     lista = _tickers_de_fichero(fichero)
     reg = leer_registro(etiqueta)
     ultimo = reg.drop_duplicates("ticker", keep="last") if len(reg) else pd.DataFrame(columns=["ticker", "estado"])
@@ -546,13 +587,13 @@ def posproceso(etiqueta: str = "ampliado", fichero: Path | None = None, *, con_c
                                  "inicio_mediana": r.inicio_mediana}
                        for r in tabla[tabla["grupo"] == "indice"].itertuples()},
         "incidencias_calidad": {t: int(tot[f"inc_{t}"]) for t in calidad.TIPOS} if cal is not None else None,
-        "tabla": f"results/ingesta/mercados_series/tablas/{FICHERO_COBERTURA_AMPLIADO}",
+        "tabla": f"results/ingesta/mercados_series/tablas/{destino}",
         "medido_utc": pd.Timestamp.now(tz="UTC").isoformat(timespec="seconds"),
     }
     if escribir:
-        destino = resultados_dir(TEMA) / "tablas" / FICHERO_COBERTURA_AMPLIADO
-        destino.parent.mkdir(parents=True, exist_ok=True)
-        tabla.to_csv(destino, index=False, encoding="utf-8")
+        ruta = resultados_dir(TEMA) / "tablas" / destino
+        ruta.parent.mkdir(parents=True, exist_ok=True)
+        tabla.to_csv(ruta, index=False, encoding="utf-8")
     return resumen
 
 
@@ -581,9 +622,11 @@ def medir_cobertura(etiqueta: str = "nucleo") -> dict[str, Any]:
             "errores": reg.loc[reg["estado"] != "ok", ["ticker", "error"]].to_dict("records")}
 
 
-def guardar_ficha_yahoo(etiqueta: str = "nucleo", ampliado: dict[str, Any] | None = None) -> Path:
-    """Ficha ``yahoo`` con robots y términos declarados, la cobertura medida del núcleo y, si se da,
-    el resumen del nivel ampliado (``posproceso``)."""
+def guardar_ficha_yahoo(etiqueta: str = "nucleo", ampliado: dict[str, Any] | None = None,
+                        lotes: dict[str, dict[str, Any]] | None = None) -> Path:
+    """Ficha ``yahoo`` con robots y términos declarados, la cobertura medida del núcleo y, si se dan,
+    el resumen del nivel ampliado (``posproceso``) y el de otros lotes (``lotes``: etiqueta → resumen de
+    ``posproceso``, p. ej. el refresco ``3b1`` del S&P 500, en ``mediciones.lotes``)."""
     from ingesta.comun.esquema import FichaFuente
     from ingesta.comun.fichas import guardar_ficha
     from ingesta.comun.http import robots_permite
@@ -603,6 +646,8 @@ def guardar_ficha_yahoo(etiqueta: str = "nucleo", ampliado: dict[str, Any] | Non
     med["avisos_inicio"] = {r.ticker: r.avisos for r in ok.itertuples() if isinstance(r.avisos, list) and r.avisos}
     if ampliado is not None:
         med["ampliado"] = ampliado
+    if lotes:
+        med["lotes"] = lotes
     estado_ampliado = ampliado["estado"] if ampliado else "sin posproceso"
     ficha = FichaFuente(
         fuente="yahoo",
@@ -642,9 +687,30 @@ def guardar_ficha_yahoo(etiqueta: str = "nucleo", ampliado: dict[str, Any] | Non
             f"Nivel AMPLIADO (S&P 500 histórico y constituyentes actuales de 10 índices): {estado_ampliado}; "
             "cobertura por índice y mercado en tablas/yahoo_ampliado_cobertura.csv (orden posproceso); "
             "un ticker del S&P 500 histórico reutilizado por otra empresa devuelve la empresa ACTUAL",
+            *(f"Lote {k}: {v['estado']}, {v['n_ok']} con datos; cobertura en {v['tabla']}"
+              for k, v in (lotes or {}).items()),
         ],
     )
     return guardar_ficha(ficha)
+
+
+# Lotes que la ficha resume además del núcleo y del ampliado: etiqueta → lista de tickers en el corpus.
+LOTES_FICHA = {"3b1": "logs/tickers_sp500_3b1.csv", "3b1_altas": "logs/tickers_sp500_3b1_altas.csv"}
+
+
+def guardar_ficha(etiqueta: str = "nucleo", *, ampliado: dict[str, Any] | None = None,
+                  lotes: dict[str, dict[str, Any]] | None = None) -> Path:
+    """Ficha ``yahoo`` completa: núcleo, nivel ampliado y los lotes de ``LOTES_FICHA`` con registro.
+
+    Lo que no se da se mide sin calidad y sin escribir tablas (``posproceso(..., escribir=False)``).
+    """
+    if ampliado is None and len(leer_registro("ampliado")):
+        ampliado = posproceso(con_calidad=False, escribir=False)
+    lotes = dict(lotes or {})
+    for lote, lista in LOTES_FICHA.items():
+        if lote not in lotes and len(leer_registro(lote)) and resolver_fichero(lista).exists():
+            lotes[lote] = posproceso(lote, lista, con_calidad=False, escribir=False)
+    return guardar_ficha_yahoo(etiqueta, ampliado=ampliado, lotes=lotes or None)
 
 
 def resolver_fichero(ruta: Path | str | None) -> Path:
@@ -682,18 +748,18 @@ def main(argv: list[str] | None = None) -> None:
     if a.orden == "posproceso":
         res = posproceso(etiqueta, a.fichero)
         print(res["estado"], {k: res[k] for k in ("n_ok", "sin_cotizacion_reciente", "incidencias_calidad")})
-        print(guardar_ficha_yahoo("nucleo", ampliado=res))
+        print(guardar_ficha(lotes={etiqueta: res} if etiqueta != "ampliado" else None,
+                            ampliado=res if etiqueta == "ampliado" else None))
         return
     if a.orden == "ficha":
-        amp = posproceso(con_calidad=False, escribir=False) if len(leer_registro("ampliado")) else None
-        print(guardar_ficha_yahoo(etiqueta, ampliado=amp))
+        print(guardar_ficha(etiqueta))
         return
     tickers = list(NUCLEO) if a.orden == "nucleo" else _tickers_de_fichero(a.fichero)
     reg = descargar_lote(tickers, etiqueta=etiqueta, reanudar=not a.sin_reanudar)
     print(reg["estado"].value_counts().to_string())
     print(guardar_metadatos(etiqueta))
     if a.orden == "nucleo":
-        print(guardar_ficha_yahoo(etiqueta))
+        print(guardar_ficha(etiqueta))
 
 
 if __name__ == "__main__":
@@ -701,6 +767,7 @@ if __name__ == "__main__":
 
 
 __all__ = ["NUCLEO", "ETF_PROPUESTA", "MAPA_EXCHANGE", "ProveedorYahoo", "mercado_de", "descargar_vista", "a_contrato", "descargar", "descargar_lote",
-           "leer_registro", "guardar_metadatos", "medir_cobertura", "guardar_ficha_yahoo",
+           "leer_registro", "guardar_metadatos", "medir_cobertura", "guardar_ficha_yahoo", "guardar_ficha",
+           "fichero_cobertura",
            "ticker_yahoo_constituyente", "indices_de_tickers", "clasificar_error", "calidad_por_ticker",
            "cobertura_ampliado", "estado_descarga", "posproceso", "resolver_fichero"]

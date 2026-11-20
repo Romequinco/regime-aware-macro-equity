@@ -39,8 +39,22 @@ y la escribe con ``almacen.escribir_series``: base que solo crece, salvo el ``va
 revisables con vintage ``unico`` (``revisables``) y, con ``permitir_perdidas``, correcciones propias.
 Las series guardadas que ya no se construyen (huérfanas) son un ``ErrorContrato`` salvo
 ``purgar=True``. ``desde_cero=True`` (cambio de reglas o fuentes, bloque 3) copia antes la base
-guardada a ``RESPALDO`` y la sustituye entera. ``cobertura`` resume la base por serie (solo
+guardada a ``RESPALDO`` (la primera vez) y la sustituye entera. Cada escritura deja antes la base vigente
+en ``<stem>_previa.parquet`` y la previa anterior en ``<stem>_previa_2.parquet`` (rotan: las dos últimas). ``cobertura`` resume la base por serie (solo
 metadatos). CLI: ``python -m ingesta.mercados_series construir-base [--sin-red] [--desde-cero]``.
+
+Solo-añadir (paso 3b, ``conservar_revisiones``): las oficiales sin historia de revisiones
+(``CARGADORES_SOLO_ANADIR``: BCE, Eurostat, BIS, FMI, Banco Mundial, bancos centrales y curvas) traen solo los
+valores de hoy, así que lo guardado es lo único que queda de lo que se sabía antes. Antes de escribir se
+compara con la base guardada: una fila guardada que ya no viene se conserva con ``NOTA_VALOR_ANTERIOR``;
+una fila nueva que revisa un periodo guardado se ve desde su primera observación (``max(regla, primera
+decisión tras la construcción)``, ``NOTA_REVISION_OBSERVADA``), salvo una fecha propia posterior de la
+fuente (HICP definitivo del BCE); una versión nueva con el mismo valor que la última guardada nunca queda
+antes que ella (``NOTA_MISMO_VALOR``); una clave que vuelve con otro valor (vintage ``unico``, revisión en el
+sitio) conserva el guardado. Así la vista as-of de cada fecha es la de entonces y la base no pierde filas.
+Se aplica siempre: también desde cero, con ``permitir_perdidas`` y en los ``errores_propios`` declarados
+(en esos, además, una fila guardada puede retrasar su fecha: corrección de un fechado propio). Desglose por serie en ``tablas/solo_anadir_ultima.csv``.
+OCDE y RTDSM traen todas sus ediciones o vintages (como ALFRED) y no entran.
 This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.
 """
 from __future__ import annotations
@@ -60,9 +74,12 @@ from ingesta.comun.rutas import resultados_dir
 from ingesta.mercados_series import almacen
 from ingesta.mercados_series import catalogo as cat_mod
 from ingesta.mercados_series.contrato import (
+    CLAVE_SERIES,
     COLUMNAS_SERIES,
+    HUSO_DECISION,
     ErrorContrato,
     fecha_publicacion_derivada,
+    primera_decision_vec,
     vacio_series,
     validar_series,
 )
@@ -74,6 +91,18 @@ CARGADORES = ("fase1", "philly_rtdsm", "curvas", "bancos_centrales", "oecd", "wo
 # tablas ya descargadas en el corpus; las descargas van por la CLI (``descargar-<fuente>``).
 CARGADORES_OFICIALES = ("bce", "eurostat", "bis", "imf", "worldbank", "oecd", "bancos_centrales", "curvas",
                         "philly_rtdsm")
+# Paso 3b: oficiales SIN historia de revisiones (solo-añadir, ``conservar_revisiones``). Cada descarga trae
+# solo los valores de hoy (el BCE, con ``includeHistory``, una versión por observación; el FMI, solo las
+# ediciones vigentes del WEO, medido: una en la base; el resto, vintage ``unico``): lo guardado es lo único
+# que queda de lo que se sabía antes. Fuera: ``oecd`` (todas las ediciones de ``DF_STES_REVISIONS``, medido:
+# 35-331 por serie) y ``philly_rtdsm`` (matrices con todos los vintages del RTDSM), que traen su historia de
+# vintages, como ALFRED.
+CARGADORES_SOLO_ANADIR = ("bce", "eurostat", "bis", "imf", "worldbank", "bancos_centrales", "curvas")
+NOTA_VALOR_ANTERIOR = "valor anterior a una revisión observada el"
+NOTA_REVISION_OBSERVADA = ("revisión de un valor ya guardado (fuente sin historia de revisiones): visible desde "
+                           "su primera observación, el")
+NOTA_MISMO_VALOR = ("versión nueva con el mismo valor que la última guardada (fuente sin historia de revisiones): "
+                    "visible desde la guardada, el")
 _BLOQUE4 = {"bis": "bis", "imf": "imf_weo", "worldbank": "worldbank"}
 # Orden de catalogo.PRIORIDAD_ORIGENES (sin 'derivadas', que no es un cargador: se recalculan tras unir).
 PRIORIDAD = {c: i for i, c in enumerate(reversed([o for o in cat_mod.PRIORIDAD_ORIGENES if o in CARGADORES]))}
@@ -86,13 +115,20 @@ TRAMO_PIB = "tramo PIB real (GDP, vintages de ALFRED)"
 NOTA_RETIRADA_EMPALME = ("sin valor en el primer vintage de ALFRED: el periodo solo existía como PNB del RTDSM y "
                          "se retira en el corte para no mezclar PNB y PIB en un mismo vintage")
 RESPALDO = "respaldo_bloque2.parquet"   # copia de la base guardada antes de una reconstrucción desde cero
-SUFIJO_PREVIA = "_previa.parquet"     # si RESPALDO ya existe: copia (rotatoria) de la base vigente
+# Copias rotatorias de la base vigente antes de CADA escritura (paso 3b): la última y la anterior.
+SUFIJO_PREVIA = "_previa.parquet"
+SUFIJO_PREVIA_2 = "_previa_2.parquet"
+FICHERO_SOLO_ANADIR = "solo_anadir_ultima.csv"   # en results/ingesta/mercados_series/tablas/
+CUENTAS_SOLO_ANADIR = ("conservadas", "ya_conservadas", "fechadas_observacion", "mismo_valor", "fecha_propia",
+                       "guardada_gana", "fecha_corregida")
 TOLERANCIA_DERIVADA = 1e-9
 AVISO_FRED = ("This product uses the FRED® API but is not endorsed or certified by the Federal Reserve "
               "Bank of St. Louis.")
 
 __all__ = [
-    "CARGADORES", "CARGADORES_OFICIALES", "EMPALME_PIB_USA", "empalmar_pib_real_usa", "tabla_oficial", "PRIORIDAD", "RESPALDO", "ResumenBase", "tablas_fuentes", "unir", "fechas_solo_respaldo",
+    "CARGADORES", "CARGADORES_OFICIALES", "CARGADORES_SOLO_ANADIR", "NOTA_VALOR_ANTERIOR",
+    "NOTA_REVISION_OBSERVADA", "NOTA_MISMO_VALOR", "conservar_revisiones", "escribir_solo_anadir",
+    "SUFIJO_PREVIA", "SUFIJO_PREVIA_2", "EMPALME_PIB_USA", "empalmar_pib_real_usa", "tabla_oficial", "PRIORIDAD", "RESPALDO", "ResumenBase", "tablas_fuentes", "unir", "fechas_solo_respaldo",
     "derivar_diferencias",
     "catalogo_efectivo", "construir_base", "cobertura", "escribir_cobertura", "resumen_base",
     "anotar_anomalias", "NOTA_PICO", "NOTA_FIN_DE_SEMANA", "NOTA_RACHA",
@@ -140,7 +176,9 @@ class ResumenBase:
     alfred: dict[str, Any] = field(default_factory=dict)
     desde_cero: bool = False
     copia_previa: str | None = None
+    respaldo_desde_cero: str | None = None
     bytes_disco: int | None = None
+    solo_anadir: dict[str, Any] = field(default_factory=dict)
 
     def como_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -174,7 +212,13 @@ def tablas_fuentes(*, sin_red: bool = False, cargadores: Iterable[str] = CARGADO
     for nombre in pedidos:
         t0 = time.monotonic()
         if nombre == "fase1":
-            out[nombre] = fase1.tabla_fase1(raiz_fase1, cat)
+            # Paso 3b: las yf: de data/raw se extienden con el almacén de precios (solape comprobado).
+            ext: dict[str, dict] = {}
+            out[nombre] = fase1.tabla_fase1(raiz_fase1, cat, extender_precios=True, informe=ext)
+            si = sorted(k for k, v in ext.items() if v.get("nuevas"))
+            no = {k: v["motivo"] for k, v in sorted(ext.items()) if not v.get("extendida")}
+            log(f"  fase1 extendida con el almacén de precios: {len(si)} series, "
+                f"{sum(ext[k]['nuevas'] for k in si)} filas; sin extender: {no}")
         elif nombre == "fred":
             out[nombre] = fred.tabla_fred_vivo(sin_red=sin_red, cliente=cliente_fred, cat=cat, registro=log)
         elif nombre in CARGADORES_OFICIALES:
@@ -519,6 +563,208 @@ def anotar_anomalias(base: pd.DataFrame, catalogo: dict[str, dict]) -> tuple[pd.
     return out, anom
 
 
+def _anadir_nota(nota: pd.Series, texto: str | pd.Series) -> pd.Series:
+    """``nota`` con ``texto`` al final (separado por ``'; '``); una nota nula pasa a ser ``texto``."""
+    t = texto if isinstance(texto, pd.Series) else pd.Series(texto, index=nota.index, dtype=object)
+    return t.where(nota.isna(), nota.astype(str) + "; " + t)
+
+
+def _iguales_valor(a: pd.Series, b: pd.Series) -> np.ndarray:
+    """Igualdad de ``valor`` elemento a elemento (dos nulos son iguales)."""
+    x, y = a.to_numpy(float), b.to_numpy(float)
+    return (x == y) | (np.isnan(x) & np.isnan(y))
+
+
+def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: Iterable[str],
+                         observado: Any) -> tuple[pd.DataFrame, dict[str, Any], pd.DataFrame]:
+    """Solo-añadir en las ``series`` de fuentes sin historia de revisiones (``CARGADORES_SOLO_ANADIR``).
+
+    Compara la tabla construida con lo guardado (``guardado``: filas de la base guardada) serie a serie:
+
+    1. Fila guardada cuya clave ``(serie, fecha_referencia, vintage)`` ya no viene: se conserva tal cual
+       (es lo que se conocía entonces) con ``NOTA_VALOR_ANTERIOR`` y el día de ``observado`` (en Nueva
+       York) al final de la nota (una sola vez).
+    2. Fila nueva que revisa un periodo guardado (misma ``serie`` y ``fecha_referencia``, otra clave y
+       otro valor que el último guardado): ``fecha_publicacion = max(la suya, primera decisión tras
+       observado)``, ``disponible_utc`` nulo (como ``catalogo.aplicar_excepciones``) y
+       ``NOTA_REVISION_OBSERVADA`` con la fecha de la regla. Excepción: una fecha propia de la fuente
+       (``vintage_exacto`` con ``disponible_utc``) posterior a la última guardada del periodo se respeta.
+    2b. Fila nueva de un periodo guardado con el MISMO valor que el último guardado (la fuente retira una
+       versión y vuelve a dar el valor con otra vintage, fechada con la regla): nunca antes que esa fila,
+       ``fecha_publicacion = max(la suya, la de la última guardada)``, ``disponible_utc`` nulo y
+       ``NOTA_MISMO_VALOR``. Sin esto, la vista as-of anterior a la revisión vería ya el valor revisado
+       (LFSI de 2025-07: 6,3 del 2025-09-10 y 6,4 del 2026-11-19; el BCE retira la versión del 10-30 y da
+       6,4 con vintage 2026-12-03 y la regla del 2025-09-10). En todos los casos 2 y 2b la fila nueva
+       queda en o después de la menor ``fecha_publicacion`` guardada con su valor; con la misma fecha,
+       gana la vintage mayor (``timegate.as_of_series``), que tiene el mismo valor.
+    3. Periodos nuevos: con su regla, sin cambios.
+    4. Clave que viene con otro valor (vintage ``unico``: la fuente revisa en el sitio) o fila ya marcada
+       por esta función: gana la guardada (sin la revisión en la base, nada se ve antes de existir).
+
+    Devuelve ``(tabla, info, previsto)``: ``info`` con los recuentos (sin valores) y ``previsto``, las
+    filas guardadas de las series cuya nota cambia con la nota que llevarán (``construir_base`` hace con
+    ellas la comprobación de ``almacen.escribir_series`` antes de reescribirlas). Idempotente.
+    """
+    obs = pd.Timestamp(observado)
+    obs = obs.tz_localize("UTC") if obs.tzinfo is None else obs.tz_convert("UTC")
+    decision = primera_decision_vec(pd.Series([obs], dtype="datetime64[ns, UTC]")).iloc[0]
+    dia = obs.tz_convert(HUSO_DECISION).date().isoformat()
+    ids = sorted(set(series) & set(guardado["serie"]) & set(tabla["serie"]))
+    info: dict[str, Any] = {"observado": dia, "primera_decision": _iso(decision), "series": len(ids),
+                            **{k: 0 for k in CUENTAS_SOLO_ANADIR if k != "fecha_corregida"}, "por_serie": {}}
+    vacio = guardado.iloc[:0]
+    if not ids:
+        return tabla, info, vacio
+    clave = list(CLAVE_SERIES)
+    en = tabla["serie"].isin(ids)
+    nuevo = tabla[en].reset_index(drop=True)
+    g = guardado[guardado["serie"].isin(ids)].reset_index(drop=True)[list(COLUMNAS_SERIES)]
+    pos_g = nuevo[clave].merge(g[clave].assign(_g=np.arange(len(g))), on=clave, how="left")["_g"]
+    comun = pos_g.notna().to_numpy()
+    gi = pos_g[comun].astype(int).to_numpy()
+    nota_g = g["nota"].fillna("").astype(str)
+    marcada = (nota_g.str.contains(NOTA_VALOR_ANTERIOR, regex=False)
+               | nota_g.str.contains(NOTA_REVISION_OBSERVADA, regex=False)
+               | nota_g.str.contains(NOTA_MISMO_VALOR, regex=False)).to_numpy()
+    distinto = ~_iguales_valor(nuevo.loc[comun, "valor"], g["valor"].iloc[gi])
+    gana = distinto | marcada[gi]
+    usar_g = gi[gana]                                      # clave común: la fila guardada
+    quitar_n = np.flatnonzero(comun)[gana]
+    # Revisiones con clave nueva de un periodo ya guardado.
+    sola = ~comun
+    # La última guardada de cada periodo es la que ve hoy la vista as-of (mayor fecha y, con empate, vintage).
+    ultima = (g.sort_values(["serie", "fecha_referencia", "fecha_publicacion", "vintage"], kind="mergesort")
+              .drop_duplicates(["serie", "fecha_referencia"], keep="last")
+              [["serie", "fecha_referencia", "valor", "fecha_publicacion"]]
+              .rename(columns={"valor": "_v", "fecha_publicacion": "_p"}))
+    ref = nuevo.loc[sola, ["serie", "fecha_referencia"]].merge(ultima, on=["serie", "fecha_referencia"], how="left")
+    ref.index = nuevo.index[sola]
+    revisa = ref["_p"].notna() & ~pd.Series(_iguales_valor(nuevo.loc[sola, "valor"], ref["_v"]), index=ref.index)
+    propia = ((nuevo.loc[sola, "metodo_publicacion"] == "vintage_exacto") & nuevo.loc[sola, "disponible_utc"].notna()
+              & (nuevo.loc[sola, "fecha_publicacion"] > ref["_p"]))
+    respeta = revisa & propia
+    regla = nuevo.loc[sola, "fecha_publicacion"]
+    fechar = revisa & ~propia & (regla < decision)
+    idx = fechar[fechar].index
+    if len(idx):
+        texto = NOTA_REVISION_OBSERVADA + f" {dia} (la regla daba " + regla[idx].dt.strftime("%Y-%m-%d") + ")"
+        nuevo.loc[idx, "nota"] = _anadir_nota(nuevo.loc[idx, "nota"], texto)
+        nuevo.loc[idx, "fecha_publicacion"] = decision
+        nuevo.loc[idx, "disponible_utc"] = pd.NaT
+    # Mismo valor que la última guardada con una fecha anterior a ella: desde la guardada (caso 2b).
+    mismo = ref["_p"].notna() & ~revisa & (regla < ref["_p"])
+    idx_m = mismo[mismo].index
+    if len(idx_m):
+        texto = (NOTA_MISMO_VALOR + " " + ref.loc[idx_m, "_p"].dt.strftime("%Y-%m-%d") + " (la regla daba "
+                 + regla[idx_m].dt.strftime("%Y-%m-%d") + ")")
+        nuevo.loc[idx_m, "nota"] = _anadir_nota(nuevo.loc[idx_m, "nota"], texto)
+        nuevo.loc[idx_m, "fecha_publicacion"] = ref.loc[idx_m, "_p"]
+        nuevo.loc[idx_m, "disponible_utc"] = pd.NaT
+    # Filas guardadas que ya no vienen: se conservan con su nota (una vez).
+    viene = g[clave].merge(nuevo[clave].assign(_n=True), on=clave, how="left")["_n"].notna().to_numpy()
+    cons = g[~viene].copy()
+    ya = cons["nota"].fillna("").astype(str).str.contains(NOTA_VALOR_ANTERIOR, regex=False)
+    nuevas_cons = cons.index[~ya]
+    cons.loc[nuevas_cons, "nota"] = _anadir_nota(cons.loc[nuevas_cons, "nota"], f"{NOTA_VALOR_ANTERIOR} {dia}")
+    partes = [tabla[~en], nuevo.drop(index=quitar_n), g.iloc[usar_g], cons]
+    out = pd.concat([p for p in partes if len(p)], ignore_index=True)[list(COLUMNAS_SERIES)]
+    # Lo guardado de las series con notas nuevas, con la nota que llevará (comprobación antes de escribir).
+    previsto = g[g["serie"].isin(set(cons.loc[nuevas_cons, "serie"]))].copy()
+    previsto.loc[nuevas_cons, "nota"] = cons.loc[nuevas_cons, "nota"]     # cons conserva el índice de g
+    cuentas = {
+        "conservadas": cons.loc[nuevas_cons, "serie"], "ya_conservadas": cons.loc[ya[ya].index, "serie"],
+        "fechadas_observacion": nuevo.loc[idx, "serie"], "mismo_valor": nuevo.loc[idx_m, "serie"],
+        "fecha_propia": nuevo.loc[respeta[respeta].index, "serie"],
+        "guardada_gana": g["serie"].iloc[gi[distinto]],
+    }
+    por_serie: dict[str, dict[str, int]] = {}
+    for k, s in cuentas.items():
+        info[k] = int(len(s))
+        for sid, n in s.value_counts().items():
+            por_serie.setdefault(str(sid), {})[k] = int(n)
+    info["por_serie"] = dict(sorted(por_serie.items()))
+    return out, info, previsto
+
+
+def _comprobar_solo_crece(previsto: pd.DataFrame, nuevo: pd.DataFrame, revisables: Iterable[str]) -> None:
+    """La comprobación de ``almacen.escribir_series`` contra ``previsto`` (lo guardado con sus notas nuevas).
+
+    Las series de ``previsto`` se reescriben enteras (``purgar``) porque su nota cambia una vez; antes se
+    comprueba aquí que ninguna fila guardada se pierde ni cambia salvo esa nota. ``ErrorContrato`` si no.
+    """
+    rev = set(revisables)
+    fijas = previsto[~previsto["serie"].isin(rev)]
+    problemas = almacen._perdidas_series(fijas, nuevo) if len(fijas) else []
+    revisadas = previsto[previsto["serie"].isin(rev)]
+    if len(revisadas):
+        sin_valor = tuple(c for c in almacen.VIGILADAS_SERIES if c != "valor")
+        problemas += [f"revisables: {p}" for p in almacen._cambios(revisadas, nuevo, list(CLAVE_SERIES), sin_valor)]
+    if problemas:
+        raise ErrorContrato("series", problemas)
+
+
+def _comprobar_correccion(guardado: pd.DataFrame, nuevo: pd.DataFrame) -> dict[str, int]:
+    """Corrección de un error propio de fechado declarado: ``guardado`` contra ``nuevo`` (mismas series).
+
+    Ninguna clave guardada se pierde, ningún ``valor``, ``unidad``, ``divisa`` ni ``fuente`` cambia y la
+    ``fecha_publicacion`` nueva nunca es anterior a la guardada (más tarde no filtra nada). Pueden cambiar la
+    fecha (a más tarde), ``disponible_utc``, el método y la nota. Devuelve cuántas filas guardadas cambian
+    por serie; ``ErrorContrato`` si no se cumple.
+    """
+    clave = list(CLAVE_SERIES)
+    fijas = tuple(c for c in almacen.VIGILADAS_SERIES
+                  if c not in ("fecha_publicacion", "disponible_utc", "metodo_publicacion", "nota"))
+    problemas = almacen._cambios(guardado, nuevo, clave, fijas)
+    cruce = guardado.merge(nuevo, on=clave, how="inner", suffixes=("", "_n"))
+    antes = cruce["fecha_publicacion_n"] < cruce["fecha_publicacion"]
+    if antes.any():
+        ej = cruce.loc[antes, clave].head(5).astype(str).agg(", ".join, axis=1).tolist()
+        problemas.append(f"{int(antes.sum())} filas guardadas adelantarían su fecha_publicacion (p. ej. {ej}): una "
+                         f"corrección de fechado solo puede retrasar")
+    if problemas:
+        raise ErrorContrato("series", [f"errores propios: {p}" for p in problemas])
+    cambia = np.zeros(len(cruce), dtype=bool)
+    for col in ("fecha_publicacion", "disponible_utc", "metodo_publicacion", "nota"):
+        cambia |= ~almacen._iguales(cruce[col], cruce[f"{col}_n"]).to_numpy()
+    return {str(k): int(v) for k, v in cruce.loc[cambia, "serie"].value_counts().sort_index().items()}
+
+
+def _copia_temporal(ruta: Path | None) -> Path | None:
+    """Copia de la base vigente junto a ella (``<stem>_previa.tmp``) antes de escribir; None si no hay base."""
+    if ruta is None or not Path(ruta).exists():
+        return None
+    tmp = Path(ruta).with_name(f"{Path(ruta).stem}_previa.tmp")
+    shutil.copy2(ruta, tmp)
+    return tmp
+
+
+def _rotar_previas(ruta: Path, temporal: Path) -> Path:
+    """Tras una escritura correcta: ``_previa`` pasa a ``_previa_2`` y la copia temporal a ``_previa``."""
+    previa = ruta.with_name(f"{ruta.stem}{SUFIJO_PREVIA}")
+    if previa.exists():
+        previa.replace(ruta.with_name(f"{ruta.stem}{SUFIJO_PREVIA_2}"))
+    temporal.replace(previa)
+    return previa
+
+
+def escribir_solo_anadir(info: Mapping[str, Any], ruta: Path | None = None) -> Path:
+    """``tablas/solo_anadir_ultima.csv``: el desglose ``solo_anadir`` de la última construcción, por serie.
+
+    Una fila por serie con algún recuento (``CUENTAS_SOLO_ANADIR``) y el día de la observación; solo
+    recuentos, sin valores. Sin series afectadas, solo la cabecera.
+    """
+    if ruta is None:
+        carpeta = resultados_dir(TEMA) / "tablas"
+        carpeta.mkdir(parents=True, exist_ok=True)
+        ruta = carpeta / FICHERO_SOLO_ANADIR
+    por_serie = dict(info.get("por_serie") or {})
+    filas = [{"serie": sid, "observado": info.get("observado"), **{k: int(c.get(k, 0)) for k in CUENTAS_SOLO_ANADIR}}
+             for sid, c in sorted(por_serie.items())]
+    pd.DataFrame(filas, columns=["serie", "observado", *CUENTAS_SOLO_ANADIR]).to_csv(ruta, index=False,
+                                                                                     encoding="utf-8")
+    return Path(ruta)
+
+
 def catalogo_efectivo(catalogo: dict[str, dict]) -> dict[str, dict]:
     """Catálogo para validar la base: ``pendiente_alfred`` con ``vintage_exacto`` cuenta como cargable.
 
@@ -535,8 +781,8 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
                    tablas: Mapping[str, pd.DataFrame] | None = None, raiz_fase1: Path | None = None,
                    raiz_crudo_academicos: Path | None = None, cliente_fred: Any = None,
                    excepciones: pd.DataFrame | None = None, cliente_alfred: Any = None,
-                   desde_cero: bool = False, respaldo: str = RESPALDO,
-                   registro: Callable[[str], None] | None = None) -> tuple[ResumenBase, pd.DataFrame]:
+                   desde_cero: bool = False, respaldo: str = RESPALDO, observado: Any = None,
+                   errores_propios: Iterable[str] = (), registro: Callable[[str], None] | None = None) -> tuple[ResumenBase, pd.DataFrame]:
     """Une ALFRED + FRED vivo + académicos + fase1, resuelve conflictos, valida y (si ``escribir``) guarda.
 
     ``tablas``: tablas ya cargadas por cargador (tests; sin ellas, ``tablas_fuentes``).
@@ -547,14 +793,27 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
     guardadas que ya no se construyen: ``ErrorContrato`` salvo ``purgar=True`` (se quitan y se
     enumeran en ``resumen.purgadas``). ``excepciones``: tabla de ``catalogo.cargar_excepciones``
     (por defecto, el CSV de config). ``desde_cero`` (reconstrucción tras cambiar reglas o fuentes):
-    antes de escribir copia la base guardada a ``<carpeta>/<respaldo>`` (si esa copia ya existe, se
-    conserva y la base vigente va a ``<stem>_previa.parquet``, que rota) y la sustituye entera, sin
-    comprobar pérdidas ni huérfanas; se niega (``ErrorContrato``) si alguna serie de ALFRED no tiene
-    descarga completa archivada, salvo ``permitir_perdidas``.
+    la primera vez copia la base guardada a ``<carpeta>/<respaldo>`` (si ya existe, se conserva) y la
+    sustituye entera, sin comprobar pérdidas ni huérfanas; se niega (``ErrorContrato``) si alguna serie de
+    ALFRED no tiene descarga completa archivada, salvo ``permitir_perdidas``. Copia previa: en CADA escritura
+    la base vigente pasa a ``<stem>_previa.parquet`` y la previa anterior a ``<stem>_previa_2.parquet`` (como
+    mucho las dos últimas; la rotación solo se hace si la escritura sale bien; ``resumen.copia_previa``).
+    Solo-añadir (``conservar_revisiones``): en las series de ``CARGADORES_SOLO_ANADIR`` ya guardadas, las
+    filas que ya no vienen se conservan y las revisiones se fechan desde ``observado`` (instante en que se
+    observa la descarga; por defecto, el inicio de la construcción, lo más conservador a mano). Las series
+    con filas conservadas nuevas se reescriben enteras tras comprobar que no pierden ni cambian nada salvo
+    esa nota. Se aplica también con ``desde_cero`` (contra la base guardada, antes de sustituirla) y con
+    ``permitir_perdidas``: sin ella, una reconstrucción perdería las filas conservadas y devolvería las
+    revisiones a la fecha de la regla. Recuentos en ``resumen.solo_anadir`` (``escribir_solo_anadir``).
+    ``errores_propios``: ids con un error propio de fechado declarado: pasan por el solo-añadir como las demás
+    y, después, sus filas guardadas pueden cambiar de ``fecha_publicacion`` solo a más tarde, de
+    ``disponible_utc``, de método o de nota, nunca de clave ni de valor (``_comprobar_correccion``);
+    ``permitir_perdidas`` queda para corregir errores propios que no caben ahí.
     Devuelve ``(resumen, tabla validada)``. ``ErrorContrato`` si la unión no cumple el contrato o el
     catálogo, o si la escritura perdería o cambiaría filas guardadas.
     """
     t0 = time.monotonic()
+    t_obs = pd.Timestamp.now(tz="UTC")
     log = registro or (lambda _m: None)
     cat = catalogo if catalogo is not None else cat_mod.cargar_catalogo()
     informe_alfred: dict[str, dict] = {}
@@ -598,30 +857,77 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
         raise ErrorContrato("series", [f"{len(sin_archivo)} series de ALFRED sin descarga completa archivada: "
                                        f"{sin_archivo[:10]}; desde cero las quitaría de la base. Descárgalas "
                                        f"(descargar-alfred) o fuerza con permitir_perdidas (--reemplazar)"])
-    copia_previa = None
-    if desde_cero and escribir and ruta_guardada is not None and ruta_guardada.exists():
-        copia = ruta_guardada.with_name(respaldo)
-        if copia.exists():
-            # El respaldo fijo (bloque 2) se conserva; la base vigente va a una copia que rota.
-            copia = ruta_guardada.with_name(f"{ruta_guardada.stem}{SUFIJO_PREVIA}")
-            log(f"respaldo {respaldo} ya existente, se conserva; la base vigente se copia a {copia}")
-        else:
-            log(f"respaldo de la base guardada: {copia}")
-        shutil.copy2(ruta_guardada, copia)
-        copia_previa = str(copia)
-    if huerfanas and escribir and not purgar and copia_previa is None:
+    reemplazo = bool(desde_cero and escribir and ruta_guardada is not None and ruta_guardada.exists())
+    if huerfanas and escribir and not purgar and not reemplazo:
         raise ErrorContrato("series", [f"{len(huerfanas)} series guardadas ya no se construyen (huérfanas): "
                                        f"{huerfanas[:10]}; get_serie las seguiría sirviendo. Revisa el catálogo "
                                        f"o quítalas con purgar=True (--purgar)"])
+    # Solo-añadir (fuentes sin historia de revisiones): lo guardado que ya no viene se conserva y las
+    # revisiones se fechan desde su observación. También desde cero y con permitir_perdidas (lo guardado es lo
+    # único que queda de lo que se sabía antes), también en los errores_propios declarados.
+    errores = set(errores_propios)
+    solo_ids = sorted(sid for sid in servidas if elegido.get(sid) in CARGADORES_SOLO_ANADIR and sid in guardadas)
+    solo_anadir: dict[str, Any] = {}
+    previsto = vacio_series()
+    if solo_ids:
+        previo = almacen.leer_series(solo_ids, ruta=ruta_guardada, validar=False)
+        tabla, solo_anadir, previsto = conservar_revisiones(tabla, previo, solo_ids,
+                                                            observado if observado is not None else t_obs)
+        tabla = validar_series(tabla)
+        cat_mod.validar_contra_catalogo(tabla[tabla["serie"].isin(solo_ids)], efectivo)
+        log(f"solo-añadir ({len(solo_ids)} series): {solo_anadir['conservadas']} filas guardadas conservadas "
+            f"como valor anterior, {solo_anadir['fechadas_observacion']} revisiones fechadas con su observación, "
+            f"{solo_anadir['mismo_valor']} versiones con el mismo valor fechadas desde la guardada, "
+            f"{solo_anadir['fecha_propia']} con fecha propia de la fuente, {solo_anadir['guardada_gana']} claves "
+            f"con otro valor (gana la guardada)")
     revisables = sorted(sid for sid in servidas if cat.get(sid, {}).get("revisable")
                         and (tabla.loc[tabla["serie"] == sid, "vintage"] == "unico").all())
     escrita = None
+    copia_previa = respaldo_nuevo = None
     if escribir:
+        # Series con filas conservadas nuevas: su nota guardada cambia una vez, así que se comprueba aquí que
+        # nada se pierde (lo mismo que escribir_series) y se reescriben enteras. Errores propios declarados:
+        # claves y valores fijos; la fecha solo puede ir a más tarde (_comprobar_correccion).
+        corregidas = sorted(errores & servidas & guardadas)
+        if corregidas:
+            guardado_err = almacen.leer_series(corregidas, ruta=ruta_guardada, validar=False)
+            # Con las notas que el solo-añadir pone a lo conservado (lo único que cambia en esas filas).
+            previsto_err = previsto[previsto["serie"].isin(corregidas)]
+            if len(previsto_err):
+                clave = list(CLAVE_SERIES)
+                notas = guardado_err[clave].merge(previsto_err[[*clave, "nota"]], on=clave, how="left")["nota"]
+                guardado_err = guardado_err.assign(nota=notas.where(notas.notna(), guardado_err["nota"]).to_numpy())
+            n_corr = _comprobar_correccion(guardado_err, tabla[tabla["serie"].isin(corregidas)])
+            por_serie = {k: dict(v) for k, v in (solo_anadir.get("por_serie") or {}).items()}
+            for sid in corregidas:
+                por_serie.setdefault(sid, {})["fecha_corregida"] = n_corr.get(sid, 0)
+            solo_anadir = {**solo_anadir, "errores_propios": corregidas,
+                           "fecha_corregida": sum(n_corr.values()), "por_serie": dict(sorted(por_serie.items()))}
+            log(f"errores propios declarados ({len(corregidas)} series): {sum(n_corr.values())} filas guardadas cambian de "
+                f"fecha (solo a más tarde), método o nota; claves y valores sin cambios")
+        reescritas = sorted(set(previsto["serie"]) | set(corregidas))
+        if len(previsto):
+            _comprobar_solo_crece(previsto[~previsto["serie"].isin(corregidas)],
+                                  tabla[tabla["serie"].isin(reescritas)], revisables)
+        if reemplazo and not ruta_guardada.with_name(respaldo).exists():
+            # Respaldo fijo de una reconstrucción desde cero (bloque 2): solo la primera vez.
+            respaldo_nuevo = ruta_guardada.with_name(respaldo)
+            shutil.copy2(ruta_guardada, respaldo_nuevo)
+            log(f"respaldo de la base guardada: {respaldo_nuevo}")
+        temporal = _copia_temporal(ruta_guardada)
         # Desde cero: se quitan todas las series guardadas y se escribe la tabla nueva entera.
-        quitar = sorted(guardadas) if copia_previa else (huerfanas if purgar else ())
-        escrita = almacen.escribir_series(tabla, destino, permitir_perdidas=permitir_perdidas or bool(copia_previa),
-                                          revisables=revisables, purgar=quitar)
-        log(f"base escrita en {escrita}" + (f"; purgadas {huerfanas}" if purgar and huerfanas else ""))
+        quitar = sorted(guardadas) if reemplazo else sorted({*(huerfanas if purgar else ()), *reescritas})
+        try:
+            escrita = almacen.escribir_series(tabla, destino, permitir_perdidas=permitir_perdidas or reemplazo,
+                                              revisables=revisables, purgar=quitar)
+        except BaseException:
+            if temporal is not None:
+                temporal.unlink(missing_ok=True)
+            raise
+        if temporal is not None:
+            copia_previa = str(_rotar_previas(ruta_guardada, temporal))
+            log(f"copia previa de la base: {copia_previa} (la anterior, en *{SUFIJO_PREVIA_2})")
+        log(f"base escrita en {escrita}" + (f"; purgadas {huerfanas}" if (purgar or reemplazo) and huerfanas else ""))
     cargables = [sid for sid, e in efectivo.items() if e["estado"] in cat_mod.ESTADOS_CARGABLES]
     por_serie = {sid: cat[sid] for sid in servidas if sid in cat}
     resumen = ResumenBase(
@@ -635,7 +941,7 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
         conflictos=conflictos, derivadas=derivadas,
         sin_datos=sorted(set(cargables) - servidas),
         excepciones_aplicadas=n_exc, huerfanas=huerfanas,
-        purgadas=huerfanas if (escribir and (purgar or copia_previa)) else [],
+        purgadas=huerfanas if (escribir and (purgar or reemplazo)) else [],
         revisables=len(revisables),
         anomalias={k: int(v) for k, v in anomalias["tipo"].value_counts().sort_index().items()},
         detalle_anomalias=[{"serie": r.serie, "fecha_referencia": _iso(r.fecha_referencia), "tipo": r.tipo}
@@ -643,8 +949,9 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
         por_estado=dict(sorted(Counter(e["estado"] for e in por_serie.values()).items())),
         por_metodo=dict(sorted(Counter(e["metodo"] for e in por_serie.values()).items())),
         por_fuente=dict(sorted(Counter(e["fuente"] for e in por_serie.values()).items())),
-        respaldo=respaldo_fechas, alfred=_resumen_alfred(informe_alfred), desde_cero=copia_previa is not None,
-        copia_previa=copia_previa, bytes_disco=Path(escrita).stat().st_size if escrita is not None else None,
+        respaldo=respaldo_fechas, alfred=_resumen_alfred(informe_alfred), desde_cero=reemplazo,
+        copia_previa=copia_previa, respaldo_desde_cero=str(respaldo_nuevo) if respaldo_nuevo else None, bytes_disco=Path(escrita).stat().st_size if escrita is not None else None,
+        solo_anadir=solo_anadir,
     )
     return resumen, tabla
 

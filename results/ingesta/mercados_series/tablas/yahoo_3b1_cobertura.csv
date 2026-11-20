@@ -1,0 +1,7 @@
+grupo,clave,n_lista,n_intentados,n_ok,n_vacio,n_deslistado,n_otro_error,n_sin_cotizacion_reciente,inicio_min,inicio_mediana,inicio_antes_2000,sesiones_mediana,sesiones_total,inc_salto,inc_volumen_cero,inc_cierre_repetido,inc_dividendo_alto,tickers_con_salto
+total,total,761,761,758,0,0,3,9,1962-01-02,1995-09-26,444,7839.0,5840380,1594,47569,353385,59,203
+indice,sp500,761,761,758,0,0,3,9,1962-01-02,1995-09-26,444,7839.0,5840380,1594,47569,353385,59,203
+mercado,ARCX,33,33,33,0,0,0,0,2004-01-30,2023-09-14,0,799.0,59507,0,844,1420,0,0
+mercado,NAV_US,1,1,1,0,0,0,1,2001-01-02,2001-01-02,0,4198.0,4198,31,0,2236,0,1
+mercado,XNAS,226,226,226,0,0,0,5,1962-01-02,1999-02-25,117,6976.5,1530760,198,3253,75252,14,79
+mercado,XNYS,498,498,498,0,0,0,3,1962-01-02,1993-03-10,327,8483.0,4245915,1365,43472,274477,45,123

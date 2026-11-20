@@ -14,11 +14,11 @@
   "coste": "0 €",
   "licencia_y_terminos": "reutilización libre citando la fuente (ECB Data Portal, condiciones de uso del BCE)",
   "cobertura_inicio": "2004-09-06",
-  "cobertura_fin": "2026-10-12",
+  "cobertura_fin": "2026-11-18",
   "frecuencia": "diaria (hábiles del publicador)",
   "retraso_publicacion": "dato de D publicado a las 12:00 Europe/Berlin del hábil TARGET siguiente → decisión D+1; medido en la tabla: mediana 1 días naturales, máximo 6",
   "formato": "csv SDMX",
-  "volumen_estimado": "12.16 MB de crudos descargados (1 fichero(s))",
+  "volumen_estimado": "12.22 MB de crudos descargados (1 fichero(s))",
   "limites": "1 petición/s por host; robots.txt permite la descarga",
   "estado_sonda": "ok",
   "mediciones": {
@@ -26,17 +26,17 @@
       {
         "clave": "yc_svensson.csv",
         "estado": 200,
-        "bytes": 12163756,
-        "descargado_utc": "2026-10-13T11:49:15.412744+00:00",
+        "bytes": 12218777,
+        "descargado_utc": "2026-11-19T13:18:41.402953+00:00",
         "error": null,
-        "last_modified": "Tue, 13 Oct 2026 10:00:00 GMT"
+        "last_modified": "Thu, 19 Nov 2026 11:00:00 GMT"
       }
     ],
     "series": {
       "ecb:YC.AAA.10Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -44,8 +44,8 @@
       },
       "ecb:YC.AAA.15Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -53,8 +53,8 @@
       },
       "ecb:YC.AAA.1Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -62,8 +62,8 @@
       },
       "ecb:YC.AAA.20Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -71,8 +71,8 @@
       },
       "ecb:YC.AAA.2Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -80,8 +80,8 @@
       },
       "ecb:YC.AAA.30Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -89,8 +89,8 @@
       },
       "ecb:YC.AAA.3M": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -98,8 +98,8 @@
       },
       "ecb:YC.AAA.3Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -107,8 +107,8 @@
       },
       "ecb:YC.AAA.5Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -116,8 +116,8 @@
       },
       "ecb:YC.AAA.6M": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -125,8 +125,8 @@
       },
       "ecb:YC.AAA.7Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -134,8 +134,8 @@
       },
       "ecb:YC.ALL.10Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -143,8 +143,8 @@
       },
       "ecb:YC.ALL.15Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -152,8 +152,8 @@
       },
       "ecb:YC.ALL.1Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -161,8 +161,8 @@
       },
       "ecb:YC.ALL.20Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -170,8 +170,8 @@
       },
       "ecb:YC.ALL.2Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -179,8 +179,8 @@
       },
       "ecb:YC.ALL.30Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -188,8 +188,8 @@
       },
       "ecb:YC.ALL.3M": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -197,8 +197,8 @@
       },
       "ecb:YC.ALL.3Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -206,8 +206,8 @@
       },
       "ecb:YC.ALL.5Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -215,8 +215,8 @@
       },
       "ecb:YC.ALL.6M": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -224,8 +224,8 @@
       },
       "ecb:YC.ALL.7Y": {
         "inicio": "2004-09-06",
-        "fin": "2026-10-12",
-        "n_obs": 5650,
+        "fin": "2026-11-18",
+        "n_obs": 5677,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 6,
@@ -236,16 +236,14 @@
     "retraso_dias_max": 6,
     "sondas": {
       "bundesbank": {
-        "estado": 200,
-        "bytes": 1305,
-        "tipo": "application/vnd.bbk.data+csv;version=1.0.0;charset=UTF-8",
-        "last_modified": null
+        "estado": null,
+        "error": "HTTPError: 400 Client Error: Bad Request for url: https://api.statistiken.bundesbank.de/.enodia/challenge?redirect=%2Frest%2Fdata%2FBBSIS%2FD.I.ZST.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A%3Fformat%3Dcsv%26lang%3"
       },
       "rba": {
         "estado": 200,
-        "bytes": 201240,
+        "bytes": 202265,
         "tipo": "application/octet-stream",
-        "last_modified": "Fri, 09 Oct 2026 02:46:21 GMT"
+        "last_modified": "Fri, 13 Nov 2026 02:44:00 GMT"
       }
     }
   },
@@ -256,5 +254,5 @@
     "Hora: Last-Modified de la API 12:00 Europe/Berlin con el dato del hábil anterior (medido el 2026-10-13)",
     "Bundesbank y RBA: una petición cada una para documentar el acceso (ver mediciones.sondas); no se cargan (Alemania queda cubierta por la curva del BCE; Australia fuera del universo de países)"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

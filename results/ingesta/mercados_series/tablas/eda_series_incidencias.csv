@@ -143,7 +143,7 @@ boe:NOM.2Y,boe_curvas,diaria,salto,1992-09-14,,-9.0,desviaciones (MAD),,,revisar
 boe:NOM.2Y,boe_curvas,diaria,salto,1992-09-15,,8.1,desviaciones (MAD),,,revisar a mano
 boe:NOM.2Y,boe_curvas,diaria,salto,1992-09-17,,-26.7,desviaciones (MAD),,,revisar a mano
 boe:NOM.2Y,boe_curvas,diaria,salto,1992-10-16,,-11.2,desviaciones (MAD),,,revisar a mano
-boe:NOM.30Y,boe_curvas,diaria,salto,2020-03-20,,-9.9,desviaciones (MAD),,,revisar a mano
+boe:NOM.30Y,boe_curvas,diaria,salto,2020-03-20,,-9.8,desviaciones (MAD),,,revisar a mano
 boe:NOM.30Y,boe_curvas,diaria,salto,2022-09-28,,-13.8,desviaciones (MAD),,,revisar a mano
 boe:NOM.3Y,boe_curvas,diaria,ruptura_nivel,1986-09-19,,8.5,desviaciones (MAD),,,revisar a mano
 boe:NOM.3Y,boe_curvas,diaria,ruptura_nivel,1986-09-23,,8.1,desviaciones (MAD),,,revisar a mano
@@ -258,8 +258,8 @@ boe:NOM.6M,boe_curvas,diaria,salto,1998-06-04,,9.3,desviaciones (MAD),,,revisar 
 boe:NOM.6M,boe_curvas,diaria,salto,1999-09-08,,10.2,desviaciones (MAD),,,revisar a mano
 boe:NOM.6M,boe_curvas,diaria,salto,2008-11-07,,-12.8,desviaciones (MAD),,,revisar a mano
 boe:NOM.6M,boe_curvas,diaria,salto,2013-03-28,,-8.6,desviaciones (MAD),,,revisar a mano
-boe:NOM.6M,boe_curvas,diaria,salto,2016-07-22,,-9.2,desviaciones (MAD),,,revisar a mano
-boe:NOM.6M,boe_curvas,diaria,salto,2022-01-20,,15.8,desviaciones (MAD),,,revisar a mano
+boe:NOM.6M,boe_curvas,diaria,salto,2016-07-22,,-9.1,desviaciones (MAD),,,revisar a mano
+boe:NOM.6M,boe_curvas,diaria,salto,2022-01-20,,15.7,desviaciones (MAD),,,revisar a mano
 boe:NOM.6M,boe_curvas,diaria,salto,2022-09-26,,9.3,desviaciones (MAD),,,revisar a mano
 boe:NOM.6M,boe_curvas,diaria,salto,2023-01-20,,15.3,desviaciones (MAD),,,revisar a mano
 boe:NOM.6M,boe_curvas,diaria,salto,2023-08-01,,8.6,desviaciones (MAD),,,revisar a mano
@@ -455,6 +455,7 @@ deriv:DCPF3M-DFF,calculo_propio,diaria,hueco_largo,2026-05-14,2026-05-20,5.0,per
 deriv:DCPF3M-DFF,calculo_propio,diaria,hueco_largo,2026-07-09,2026-07-15,5.0,periodos,,,marcar
 deriv:DCPF3M-DFF,calculo_propio,diaria,hueco_largo,2026-07-30,2026-08-04,4.0,periodos,,,marcar
 deriv:DCPF3M-DFF,calculo_propio,diaria,hueco_largo,2026-09-14,2026-09-18,5.0,periodos,,,marcar
+deriv:DCPF3M-DFF,calculo_propio,diaria,hueco_largo,2026-10-07,2026-10-12,4.0,periodos,,,marcar
 deriv:DCPF3M-DFF,calculo_propio,diaria,salto,1997-03-31,,-9.6,desviaciones (MAD),,,revisar a mano
 deriv:DCPF3M-DFF,calculo_propio,diaria,salto,1997-06-30,,-9.0,desviaciones (MAD),,,revisar a mano
 deriv:DCPF3M-DFF,calculo_propio,diaria,salto,1998-06-30,,-9.8,desviaciones (MAD),,,revisar a mano
@@ -759,29 +760,28 @@ deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1939-10-04,,-49.8,desviaciones 
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1939-10-18,,-16.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1940-05-13,,21.9,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1940-05-14,,25.0,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1940-06-13,,-15.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1940-06-20,,-19.0,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1940-11-07,,16.8,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1940-12-10,,-24.6,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1943-04-09,,19.6,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1943-04-09,,19.7,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1943-05-11,,-21.5,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1946-03-26,,-22.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1946-09-03,,55.3,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1946-10-02,,-34.8,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1948-02-04,,20.7,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1948-03-08,,-18.3,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1948-11-03,,29.4,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1948-11-03,,29.5,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1948-11-05,,16.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1948-12-08,,-17.2,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1950-06-26,,32.5,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1950-07-26,,-17.4,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1950-07-26,,-17.5,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1953-03-12,,-18.9,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1955-09-26,,54.8,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1955-10-25,,-30.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1957-10-23,,19.1,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1957-11-22,,-17.9,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1957-11-22,,-18.0,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1961-04-17,,15.8,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1961-04-18,,16.5,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1961-04-18,,16.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1961-05-17,,-17.5,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1962-05-28,,31.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1962-05-29,,15.8,desviaciones (MAD),,,revisar a mano
@@ -792,14 +792,14 @@ deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1970-05-27,,18.5,desviaciones (
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1978-11-01,,18.4,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1982-08-17,,16.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1986-09-11,,22.1,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1986-10-10,,-24.5,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1986-10-10,,-24.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1987-10-19,,104.3,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1987-11-17,,-83.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1987-11-19,,-17.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1987-11-24,,-24.3,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1988-01-08,,19.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1988-02-08,,-22.0,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1989-10-13,,44.5,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1989-10-13,,44.6,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1989-11-13,,-32.2,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1991-11-15,,20.2,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1991-12-17,,-16.7,desviaciones (MAD),,,revisar a mano
@@ -807,7 +807,7 @@ deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1997-10-27,,33.2,desviaciones (
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1997-11-25,,-26.3,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,1998-08-31,,19.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2000-05-16,,-16.2,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2007-02-27,,22.3,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2007-02-27,,22.4,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2011-08-08,,18.2,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2016-06-24,,20.0,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2016-07-26,,-16.7,desviaciones (MAD),,,revisar a mano
@@ -827,10 +827,11 @@ deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2020-06-11,,17.6,desviaciones (
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2020-07-13,,-17.4,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2024-12-18,,17.3,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-04-03,,16.3,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-04-04,,19.0,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-04-04,,19.1,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-04-09,,41.5,desviaciones (MAD),,,revisar a mano
 deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-05-06,,-17.4,desviaciones (MAD),,,revisar a mano
-deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-05-09,,-43.5,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2025-05-09,,-43.6,desviaciones (MAD),,,revisar a mano
+deriv:VOLREAL21_GSPC,calculo_propio,diaria,salto,2026-11-05,,20.4,desviaciones (MAD),,,revisar a mano
 ecb:DFR,bce,diaria,hueco_largo,1999-01-05,1999-01-21,13.0,periodos,,tipo administrado: puede venir solo en las fechas de cambio,sin acción
 ecb:DFR,bce,diaria,hueco_largo,1999-01-25,1999-04-08,54.0,periodos,,tipo administrado: puede venir solo en las fechas de cambio,sin acción
 ecb:DFR,bce,diaria,hueco_largo,1999-04-12,1999-11-04,149.0,periodos,,tipo administrado: puede venir solo en las fechas de cambio,sin acción
@@ -1014,6 +1015,7 @@ ecb:ESTR,bce,diaria,ruptura_nivel,2024-06-12,,-110.6,desviaciones (MAD),,,revisa
 ecb:ESTR,bce,diaria,ruptura_nivel,2024-10-04,,-168.0,desviaciones (MAD),,,revisar a mano
 ecb:ESTR,bce,diaria,ruptura_nivel,2025-06-27,,-39.2,desviaciones (MAD),,,revisar a mano
 ecb:ESTR,bce,diaria,ruptura_nivel,2026-06-08,,113.8,desviaciones (MAD),,,revisar a mano
+ecb:ESTR,bce,diaria,ruptura_nivel,2026-08-27,,86.3,desviaciones (MAD),,,revisar a mano
 ecb:ESTR,bce,diaria,salto,2019-11-20,,10.5,desviaciones (MAD),,,revisar a mano
 ecb:ESTR,bce,diaria,salto,2019-11-21,,-10.5,desviaciones (MAD),,,revisar a mano
 ecb:ESTR,bce,diaria,salto,2020-04-30,,8.1,desviaciones (MAD),,,revisar a mano
@@ -1098,12 +1100,13 @@ ecb:EXR.D.BRL.EUR,bce,diaria,salto,2000-02-11,,15.8,desviaciones (MAD),,,revisar
 ecb:EXR.D.BRL.EUR,bce,diaria,salto,2000-02-14,,-15.4,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.BRL.EUR,bce,diaria,salto,2008-10-08,,10.7,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.BRL.EUR,bce,diaria,salto,2017-05-19,,8.0,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.BRL.EUR,bce,diaria,salto,2026-10-26,,12.5,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CAD.EUR,bce,diaria,ruptura_nivel,2006-11-22,,8.8,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CHF.EUR,bce,diaria,ruptura_nivel,2015-01-15,,-8.5,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.CHF.EUR,bce,diaria,salto,2001-09-21,,-8.8,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.CHF.EUR,bce,diaria,salto,2001-09-21,,-8.7,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CHF.EUR,bce,diaria,salto,2011-08-12,,10.0,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CHF.EUR,bce,diaria,salto,2011-09-06,,20.2,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.CHF.EUR,bce,diaria,salto,2015-01-15,,-73.4,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.CHF.EUR,bce,diaria,salto,2015-01-15,,-73.2,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CHF.EUR,bce,diaria,salto,2015-01-26,,9.4,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CYP.EUR,bce,diaria,ruptura_nivel,2001-01-16,,15.3,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.CYP.EUR,bce,diaria,ruptura_nivel,2001-06-06,,-10.4,desviaciones (MAD),,,revisar a mano
@@ -1160,13 +1163,13 @@ ecb:EXR.D.HRK.EUR,bce,diaria,salto,2011-07-12,,8.3,desviaciones (MAD),,,revisar 
 ecb:EXR.D.HRK.EUR,bce,diaria,salto,2017-12-29,,-11.9,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.HUF.EUR,bce,diaria,salto,2001-07-06,,9.4,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.HUF.EUR,bce,diaria,salto,2003-01-17,,13.6,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.HUF.EUR,bce,diaria,salto,2003-06-04,,10.7,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.HUF.EUR,bce,diaria,salto,2003-06-04,,10.8,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.HUF.EUR,bce,diaria,salto,2003-12-02,,9.7,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.HUF.EUR,bce,diaria,salto,2010-06-04,,8.2,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.IDR.EUR,bce,diaria,ruptura_nivel,2025-03-17,,9.1,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.IDR.EUR,bce,diaria,salto,1999-01-13,,8.5,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.IDR.EUR,bce,diaria,salto,2001-07-23,,-8.8,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.IDR.EUR,bce,diaria,salto,2020-03-06,,8.4,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.IDR.EUR,bce,diaria,salto,2020-03-06,,8.5,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.IDR.EUR,bce,diaria,salto,2020-03-23,,9.1,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.ILS.EUR,bce,diaria,salto,2020-03-19,,-9.2,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.ISK.EUR,bce,diaria,hueco_largo,2008-12-04,2018-01-31,2390.0,periodos,,,marcar
@@ -1214,7 +1217,7 @@ ecb:EXR.D.PHP.EUR,bce,diaria,salto,2015-01-23,,-8.2,desviaciones (MAD),,,revisar
 ecb:EXR.D.PLN.EUR,bce,diaria,salto,1999-01-13,,8.8,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,ruptura_nivel,2000-12-15,,9.3,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,ruptura_nivel,2019-01-23,,8.3,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.RON.EUR,bce,diaria,ruptura_nivel,2026-05-21,,16.9,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.RON.EUR,bce,diaria,ruptura_nivel,2026-05-21,,17.0,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,salto,1999-03-17,,18.9,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,salto,1999-03-19,,-16.6,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,salto,2004-12-03,,-8.2,desviaciones (MAD),,,revisar a mano
@@ -1226,9 +1229,9 @@ ecb:EXR.D.RON.EUR,bce,diaria,salto,2005-02-16,,17.3,desviaciones (MAD),,,revisar
 ecb:EXR.D.RON.EUR,bce,diaria,salto,2005-02-17,,-9.1,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,salto,2005-02-18,,-11.1,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,salto,2005-08-12,,12.5,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.RON.EUR,bce,diaria,salto,2012-08-06,,-8.8,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.RON.EUR,bce,diaria,salto,2012-08-06,,-8.9,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RON.EUR,bce,diaria,salto,2025-05-06,,13.2,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.RON.EUR,bce,diaria,salto,2026-04-30,,9.9,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.RON.EUR,bce,diaria,salto,2026-04-30,,10.0,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RUB.EUR,bce,diaria,salto,1999-03-24,,8.6,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RUB.EUR,bce,diaria,salto,1999-03-29,,-8.2,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.RUB.EUR,bce,diaria,salto,2014-12-16,,17.5,desviaciones (MAD),,,revisar a mano
@@ -1280,13 +1283,13 @@ ecb:EXR.D.TRY.EUR,bce,diaria,salto,2021-11-23,,14.3,desviaciones (MAD),,,revisar
 ecb:EXR.D.TRY.EUR,bce,diaria,salto,2021-12-17,,11.0,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.TRY.EUR,bce,diaria,salto,2021-12-21,,-40.7,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.TRY.EUR,bce,diaria,salto,2021-12-23,,-14.0,desviaciones (MAD),,,revisar a mano
-ecb:EXR.D.TRY.EUR,bce,diaria,salto,2023-06-07,,12.7,desviaciones (MAD),,,revisar a mano
+ecb:EXR.D.TRY.EUR,bce,diaria,salto,2023-06-07,,12.8,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.TWD.EUR,bce,diaria,salto,2015-01-23,,-8.7,desviaciones (MAD),,,revisar a mano
 ecb:EXR.D.ZAR.EUR,bce,diaria,salto,2001-12-21,,-8.5,desviaciones (MAD),,,revisar a mano
 ecb:HICP.M.U2.N.XEF000.4D0.ANR,bce,mensual,ruptura_nivel,2023-11-01,,-8.6,desviaciones (MAD),,,revisar a mano
 ecb:MNA.Q.Y.I10.W2.S1.S1.B.B1GQ._Z._Z._Z.EUR.LR.GY,bce,trimestral,salto,2020-04-01,,-11.6,desviaciones (MAD),,,revisar a mano
 ecb:MNA.Q.Y.I10.W2.S1.S1.B.B1GQ._Z._Z._Z.EUR.LR.GY,bce,trimestral,salto,2020-07-01,,9.8,desviaciones (MAD),,,revisar a mano
-ecb:MNA.Q.Y.I10.W2.S1.S1.B.B1GQ._Z._Z._Z.EUR.LR.GY,bce,trimestral,salto,2021-04-01,,13.8,desviaciones (MAD),,,revisar a mano
+ecb:MNA.Q.Y.I10.W2.S1.S1.B.B1GQ._Z._Z._Z.EUR.LR.GY,bce,trimestral,salto,2021-04-01,,13.9,desviaciones (MAD),,,revisar a mano
 ecb:MNA.Q.Y.I10.W2.S1.S1.B.B1GQ._Z._Z._Z.EUR.LR.GY,bce,trimestral,salto,2021-07-01,,-9.3,desviaciones (MAD),,,revisar a mano
 ecb:MRO,bce,diaria,hueco_largo,1999-01-05,1999-01-21,13.0,periodos,,tipo administrado: puede venir solo en las fechas de cambio,sin acción
 ecb:MRO,bce,diaria,hueco_largo,1999-01-25,1999-04-08,54.0,periodos,,tipo administrado: puede venir solo en las fechas de cambio,sin acción
@@ -1343,7 +1346,7 @@ ecb:YC.AAA.2Y,bce_curvas,diaria,salto,2010-05-28,,-10.7,desviaciones (MAD),,,rev
 ecb:YC.AAA.30Y,bce_curvas,diaria,salto,2008-12-04,,-9.2,desviaciones (MAD),,,revisar a mano
 ecb:YC.AAA.3M,bce_curvas,diaria,ruptura_nivel,2005-11-08,,8.7,desviaciones (MAD),,,revisar a mano
 ecb:YC.AAA.3M,bce_curvas,diaria,ruptura_nivel,2008-06-26,,8.4,desviaciones (MAD),,,revisar a mano
-ecb:YC.AAA.3M,bce_curvas,diaria,salto,2004-11-09,,10.2,desviaciones (MAD),,,revisar a mano
+ecb:YC.AAA.3M,bce_curvas,diaria,salto,2004-11-09,,10.1,desviaciones (MAD),,,revisar a mano
 ecb:YC.AAA.3M,bce_curvas,diaria,salto,2008-09-30,,-8.8,desviaciones (MAD),,,revisar a mano
 ecb:YC.AAA.3M,bce_curvas,diaria,salto,2008-10-07,,-30.6,desviaciones (MAD),,,revisar a mano
 ecb:YC.AAA.3M,bce_curvas,diaria,salto,2008-10-17,,-16.1,desviaciones (MAD),,,revisar a mano
@@ -1370,14 +1373,14 @@ ecb:YC.ALL.10Y,bce_curvas,diaria,salto,2020-03-13,,10.4,desviaciones (MAD),,,rev
 ecb:YC.ALL.15Y,bce_curvas,diaria,salto,2020-03-13,,8.9,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2011-08-08,,-8.6,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2012-11-26,,-8.4,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2018-05-29,,17.1,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2018-05-29,,17.0,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2018-05-30,,-8.4,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2020-03-13,,9.1,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2023-03-13,,-11.9,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2023-03-15,,-10.4,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.1Y,bce_curvas,diaria,salto,2026-04-08,,-9.8,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.20Y,bce_curvas,diaria,salto,2010-10-15,,-8.2,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.2Y,bce_curvas,diaria,salto,2018-05-29,,13.0,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.2Y,bce_curvas,diaria,salto,2018-05-29,,12.9,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.30Y,bce_curvas,diaria,salto,2009-01-23,,8.6,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.30Y,bce_curvas,diaria,salto,2010-10-15,,-14.9,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.30Y,bce_curvas,diaria,salto,2015-01-23,,-9.0,desviaciones (MAD),,,revisar a mano
@@ -1399,13 +1402,13 @@ ecb:YC.ALL.3M,bce_curvas,diaria,salto,2011-11-30,,-11.9,desviaciones (MAD),,,rev
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2012-05-22,,10.9,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2012-05-23,,-11.5,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2012-11-26,,-10.3,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.3M,bce_curvas,diaria,salto,2016-12-16,,-11.4,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.3M,bce_curvas,diaria,salto,2016-12-16,,-11.5,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2018-05-29,,15.5,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2018-05-30,,-12.3,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2019-09-13,,8.8,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.3M,bce_curvas,diaria,salto,2020-03-13,,10.8,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.3M,bce_curvas,diaria,salto,2020-03-13,,10.7,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3M,bce_curvas,diaria,salto,2020-04-15,,9.4,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.3M,bce_curvas,diaria,salto,2025-12-10,,-10.3,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.3M,bce_curvas,diaria,salto,2025-12-10,,-10.2,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.3Y,bce_curvas,diaria,salto,2018-05-29,,9.8,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.5Y,bce_curvas,diaria,salto,2020-03-13,,8.7,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.6M,bce_curvas,diaria,ruptura_nivel,2026-03-16,,8.6,desviaciones (MAD),,,revisar a mano
@@ -1418,8 +1421,8 @@ ecb:YC.ALL.6M,bce_curvas,diaria,salto,2012-11-26,,-10.4,desviaciones (MAD),,,rev
 ecb:YC.ALL.6M,bce_curvas,diaria,salto,2014-01-02,,-8.2,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.6M,bce_curvas,diaria,salto,2018-05-29,,19.1,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.6M,bce_curvas,diaria,salto,2018-05-30,,-12.4,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.6M,bce_curvas,diaria,salto,2020-03-13,,11.4,desviaciones (MAD),,,revisar a mano
-ecb:YC.ALL.6M,bce_curvas,diaria,salto,2020-03-26,,-8.3,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.6M,bce_curvas,diaria,salto,2020-03-13,,11.5,desviaciones (MAD),,,revisar a mano
+ecb:YC.ALL.6M,bce_curvas,diaria,salto,2020-03-26,,-8.4,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.6M,bce_curvas,diaria,salto,2022-06-10,,13.8,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.6M,bce_curvas,diaria,salto,2023-03-13,,-11.4,desviaciones (MAD),,,revisar a mano
 ecb:YC.ALL.6M,bce_curvas,diaria,salto,2023-03-15,,-8.3,desviaciones (MAD),,,revisar a mano
@@ -1718,18 +1721,15 @@ ff:MOMD.Mom,ken_french,diaria,salto,1980-03-28,,9.4,desviaciones (MAD),,,revisar
 ff:MOMD.Mom,ken_french,diaria,salto,1987-10-20,,8.7,desviaciones (MAD),,,revisar a mano
 ff:MOMD.Mom,ken_french,diaria,salto,1987-10-22,,-8.2,desviaciones (MAD),,,revisar a mano
 ff:MOMD.Mom,ken_french,diaria,salto,1987-10-27,,8.5,desviaciones (MAD),,,revisar a mano
-fred:A191RL1Q225SBEA,fred_alfred,trimestral,salto,2020-07-01,,18.1,desviaciones (MAD),,,revisar a mano
-fred:A191RL1Q225SBEA,fred_alfred,trimestral,salto,2020-10-01,,-8.7,desviaciones (MAD),,,revisar a mano
+fred:A191RL1Q225SBEA,fred_alfred,trimestral,salto,2020-07-01,,17.7,desviaciones (MAD),,,revisar a mano
+fred:A191RL1Q225SBEA,fred_alfred,trimestral,salto,2020-10-01,,-8.5,desviaciones (MAD),,,revisar a mano
 fred:A261RX1Q020SBEA,fred_alfred,trimestral,salto,2020-04-01,,-13.4,desviaciones (MAD),,,revisar a mano
 fred:AAA,fred_alfred,mensual,ruptura_nivel,2019-05-01,,-8.1,desviaciones (MAD),,,revisar a mano
 fred:AAA,fred_alfred,mensual,salto,2008-12-01,,-9.2,desviaciones (MAD),,,revisar a mano
 fred:AHETPI,fred_alfred,mensual,salto,2020-04-01,,16.0,desviaciones (MAD),,,revisar a mano
 fred:AMTMNO,fred_alfred,mensual,ruptura_nivel,2008-10-01,,-8.1,desviaciones (MAD),,,revisar a mano
-fred:AMTMNO,fred_alfred,mensual,salto,2020-04-01,,-8.0,desviaciones (MAD),,,revisar a mano
-fred:ANFCI,fred_alfred,semanal,salto,2007-08-10,,8.2,desviaciones (MAD),,,revisar a mano
-fred:ANFCI,fred_alfred,semanal,salto,2007-08-17,,8.4,desviaciones (MAD),,,revisar a mano
-fred:ANFCI,fred_alfred,semanal,salto,2020-03-13,,8.9,desviaciones (MAD),,,revisar a mano
-fred:ANFCI,fred_alfred,semanal,salto,2020-03-20,,8.1,desviaciones (MAD),,,revisar a mano
+fred:ANFCI,fred_alfred,semanal,salto,2007-08-17,,8.1,desviaciones (MAD),,,revisar a mano
+fred:ANFCI,fred_alfred,semanal,salto,2020-03-13,,8.8,desviaciones (MAD),,,revisar a mano
 fred:AWHMAN,fred_alfred,mensual,salto,1945-08-01,,-16.4,desviaciones (MAD),,,revisar a mano
 fred:AWHMAN,fred_alfred,mensual,salto,1979-04-01,,-8.8,desviaciones (MAD),,,revisar a mano
 fred:AWHMAN,fred_alfred,mensual,salto,1982-01-01,,-13.1,desviaciones (MAD),,,revisar a mano
@@ -1758,7 +1758,7 @@ fred:BAMLH0A3HYC,fred_alfred,diaria,salto,2025-04-03,,12.5,desviaciones (MAD),,,
 fred:BAMLH0A3HYC,fred_alfred,diaria,salto,2025-04-04,,10.9,desviaciones (MAD),,,revisar a mano
 fred:BBKMGDP,fred_alfred,mensual,salto,2020-05-01,,14.4,desviaciones (MAD),,,revisar a mano
 fred:BBKMGDP,fred_alfred,mensual,salto,2020-06-01,,9.1,desviaciones (MAD),,,revisar a mano
-fred:BBKMLEIX,fred_alfred,mensual,salto,2020-05-01,,11.2,desviaciones (MAD),,,revisar a mano
+fred:BBKMLEIX,fred_alfred,mensual,salto,2020-05-01,,11.6,desviaciones (MAD),,,revisar a mano
 fred:BCNSDODNS,fred_alfred,trimestral,cambio_unidad,2026-01-09,,3.0,log10 del factor,1000.0,"vintage 2026-01-09, 301 fechas comunes; potencia de 10 confirmada: multiplicar los vintages anteriores por factor",reescalar vintages anteriores
 fred:BOGMBASE,fred_alfred,mensual,cambio_unidad,2024-09-24,,-3.0,log10 del factor,0.001,"vintage 2024-09-24, 787 fechas comunes; potencia de 10 confirmada: multiplicar los vintages anteriores por factor",reescalar vintages anteriores
 fred:BOGMBASE,fred_alfred,mensual,ruptura_nivel,2008-11-01,,16.8,desviaciones (MAD),,,revisar a mano
@@ -1784,26 +1784,26 @@ fred:CE16OV,fred_alfred,mensual,salto,2020-05-01,,10.2,desviaciones (MAD),,,revi
 fred:CE16OV,fred_alfred,mensual,salto,2020-06-01,,12.9,desviaciones (MAD),,,revisar a mano
 fred:CE16OV,fred_alfred,mensual,salto,2020-08-01,,8.1,desviaciones (MAD),,,revisar a mano
 fred:CES0500000003,fred_alfred,mensual,salto,2020-04-01,,19.8,desviaciones (MAD),,,revisar a mano
-fred:CFNAI,fred_alfred,mensual,salto,2020-04-01,,-19.3,desviaciones (MAD),,,revisar a mano
-fred:CFNAI,fred_alfred,mensual,salto,2020-05-01,,30.0,desviaciones (MAD),,,revisar a mano
-fred:CFNAIMA3,fred_alfred,mensual,salto,2020-04-01,,-34.9,desviaciones (MAD),,,revisar a mano
+fred:CFNAI,fred_alfred,mensual,salto,2020-04-01,,-19.4,desviaciones (MAD),,,revisar a mano
+fred:CFNAI,fred_alfred,mensual,salto,2020-05-01,,30.3,desviaciones (MAD),,,revisar a mano
+fred:CFNAIMA3,fred_alfred,mensual,salto,2020-04-01,,-34.6,desviaciones (MAD),,,revisar a mano
 fred:CFNAIMA3,fred_alfred,mensual,salto,2020-05-01,,8.8,desviaciones (MAD),,,revisar a mano
-fred:CFNAIMA3,fred_alfred,mensual,salto,2020-06-01,,18.6,desviaciones (MAD),,,revisar a mano
-fred:CFNAIMA3,fred_alfred,mensual,salto,2020-07-01,,32.6,desviaciones (MAD),,,revisar a mano
+fred:CFNAIMA3,fred_alfred,mensual,salto,2020-06-01,,18.4,desviaciones (MAD),,,revisar a mano
+fred:CFNAIMA3,fred_alfred,mensual,salto,2020-07-01,,32.3,desviaciones (MAD),,,revisar a mano
 fred:CFSI,fred_alfred,diaria,ruptura_nivel,2011-08-14,,10.3,desviaciones (MAD),,,revisar a mano
 fred:CFSI,fred_alfred,diaria,ruptura_nivel,2015-08-23,,9.2,desviaciones (MAD),,,revisar a mano
 fred:CIVPART,fred_alfred,mensual,salto,2020-04-01,,-16.9,desviaciones (MAD),,,revisar a mano
 fred:CLF16OV,fred_alfred,mensual,ruptura_nivel,1999-11-01,,8.5,desviaciones (MAD),,,revisar a mano
-fred:CLF16OV,fred_alfred,mensual,salto,2020-04-01,,-17.4,desviaciones (MAD),,,revisar a mano
+fred:CLF16OV,fred_alfred,mensual,salto,2020-04-01,,-17.5,desviaciones (MAD),,,revisar a mano
 fred:CMDEBT,fred_alfred,trimestral,cambio_unidad,2026-01-09,,3.0,log10 del factor,1000.0,"vintage 2026-01-09, 301 fechas comunes; potencia de 10 confirmada: multiplicar los vintages anteriores por factor",reescalar vintages anteriores
 fred:CMRMTSPL,fred_alfred,mensual,salto,2020-04-01,,-15.5,desviaciones (MAD),,,revisar a mano
-fred:CMRMTSPL,fred_alfred,mensual,salto,2020-05-01,,9.7,desviaciones (MAD),,,revisar a mano
+fred:CMRMTSPL,fred_alfred,mensual,salto,2020-05-01,,9.8,desviaciones (MAD),,,revisar a mano
 fred:CMRMTSPL,fred_alfred,mensual,salto,2020-06-01,,8.9,desviaciones (MAD),,,revisar a mano
 fred:CONSUMER,fred_alfred,mensual,ruptura_nivel,2003-12-01,,10.3,desviaciones (MAD),,,revisar a mano
 fred:CONSUMER,fred_alfred,mensual,ruptura_nivel,2010-03-01,,10.2,desviaciones (MAD),,,revisar a mano
 fred:CONSUMER,fred_alfred,mensual,salto,2010-03-01,,9.8,desviaciones (MAD),,,revisar a mano
 fred:CONSUMER,fred_alfred,mensual,salto,2010-04-01,,36.0,desviaciones (MAD),,,revisar a mano
-fred:CONSUMER,fred_alfred,mensual,salto,2025-01-01,,-8.5,desviaciones (MAD),,,revisar a mano
+fred:CONSUMER,fred_alfred,mensual,salto,2025-01-01,,-8.6,desviaciones (MAD),,,revisar a mano
 fred:CP,fred_alfred,trimestral,ruptura_nivel,2020-10-01,,8.4,desviaciones (MAD),,,revisar a mano
 fred:CPFF,fred_alfred,diaria,hueco_largo,2008-11-03,2008-11-12,8.0,periodos,,,marcar
 fred:CPFF,fred_alfred,diaria,hueco_largo,2008-12-05,2008-12-22,12.0,periodos,,,marcar
@@ -1847,6 +1847,7 @@ fred:CPFF,fred_alfred,diaria,hueco_largo,2026-05-14,2026-05-20,5.0,periodos,,,ma
 fred:CPFF,fred_alfred,diaria,hueco_largo,2026-07-09,2026-07-15,5.0,periodos,,,marcar
 fred:CPFF,fred_alfred,diaria,hueco_largo,2026-07-30,2026-08-04,4.0,periodos,,,marcar
 fred:CPFF,fred_alfred,diaria,hueco_largo,2026-09-14,2026-09-18,5.0,periodos,,,marcar
+fred:CPFF,fred_alfred,diaria,hueco_largo,2026-10-07,2026-10-12,4.0,periodos,,,marcar
 fred:CPFF,fred_alfred,diaria,salto,1997-03-31,,-9.6,desviaciones (MAD),,,revisar a mano
 fred:CPFF,fred_alfred,diaria,salto,1997-06-30,,-9.0,desviaciones (MAD),,,revisar a mano
 fred:CPFF,fred_alfred,diaria,salto,1998-06-30,,-9.8,desviaciones (MAD),,,revisar a mano
@@ -1929,6 +1930,7 @@ fred:DCPF3M,fred_alfred,diaria,hueco_largo,2026-05-14,2026-05-20,5.0,periodos,,,
 fred:DCPF3M,fred_alfred,diaria,hueco_largo,2026-07-09,2026-07-15,5.0,periodos,,,marcar
 fred:DCPF3M,fred_alfred,diaria,hueco_largo,2026-07-30,2026-08-04,4.0,periodos,,,marcar
 fred:DCPF3M,fred_alfred,diaria,hueco_largo,2026-09-14,2026-09-18,5.0,periodos,,,marcar
+fred:DCPF3M,fred_alfred,diaria,hueco_largo,2026-10-07,2026-10-12,4.0,periodos,,,marcar
 fred:DCPF3M,fred_alfred,diaria,ruptura_nivel,2002-10-22,,-13.8,desviaciones (MAD),,,revisar a mano
 fred:DCPF3M,fred_alfred,diaria,ruptura_nivel,2008-01-04,,-9.2,desviaciones (MAD),,,revisar a mano
 fred:DCPF3M,fred_alfred,diaria,ruptura_nivel,2015-12-04,,9.0,desviaciones (MAD),,,revisar a mano
@@ -2071,13 +2073,13 @@ fred:DED3,fred_alfred,diaria,salto,2015-12-11,,10.1,desviaciones (MAD),,,revisar
 fred:DEXJPUS,fred_alfred,diaria,hueco_largo,1971-08-16,1971-08-30,11.0,periodos,,,marcar
 fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1971-09-21,,-10.2,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1973-02-20,,-28.5,desviaciones (MAD),,,revisar a mano
-fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1973-10-19,,12.1,desviaciones (MAD),,,revisar a mano
+fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1973-10-19,,12.2,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1986-01-28,,-8.3,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1986-01-31,,-9.0,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,ruptura_nivel,1988-06-22,,10.1,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,salto,1971-08-31,,-11.4,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,salto,1973-02-13,,-21.5,desviaciones (MAD),,,revisar a mano
-fred:DEXJPUS,fred_alfred,diaria,salto,1974-01-07,,14.1,desviaciones (MAD),,,revisar a mano
+fred:DEXJPUS,fred_alfred,diaria,salto,1974-01-07,,14.2,desviaciones (MAD),,,revisar a mano
 fred:DEXJPUS,fred_alfred,diaria,salto,1978-04-03,,-11.7,desviaciones (MAD),,,revisar a mano
 fred:DEXSZUS,fred_alfred,diaria,hueco_largo,1971-08-16,1971-08-20,5.0,periodos,,,marcar
 fred:DEXSZUS,fred_alfred,diaria,ruptura_nivel,1971-05-18,,-9.6,desviaciones (MAD),,,revisar a mano
@@ -2091,16 +2093,16 @@ fred:DEXSZUS,fred_alfred,diaria,salto,2015-01-16,,-9.4,desviaciones (MAD),,,revi
 fred:DEXUSAL,fred_alfred,diaria,hueco_largo,1971-08-16,1971-08-20,5.0,periodos,,,marcar
 fred:DEXUSAL,fred_alfred,diaria,hueco_largo,1972-06-23,1972-06-28,4.0,periodos,,,marcar
 fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1972-12-05,,16.0,desviaciones (MAD),,,revisar a mano
-fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1973-03-07,,26.4,desviaciones (MAD),,,revisar a mano
-fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1973-08-20,,11.5,desviaciones (MAD),,,revisar a mano
+fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1973-03-07,,26.3,desviaciones (MAD),,,revisar a mano
+fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1973-08-20,,11.4,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1974-09-06,,-30.2,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1976-12-13,,-18.5,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,ruptura_nivel,1983-02-22,,-9.3,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,salto,1972-12-26,,16.3,desviaciones (MAD),,,revisar a mano
-fred:DEXUSAL,fred_alfred,diaria,salto,1973-02-14,,26.4,desviaciones (MAD),,,revisar a mano
+fred:DEXUSAL,fred_alfred,diaria,salto,1973-02-14,,26.3,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,salto,1973-09-10,,12.0,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,salto,1974-09-25,,-31.3,desviaciones (MAD),,,revisar a mano
-fred:DEXUSAL,fred_alfred,diaria,salto,1976-11-29,,-47.3,desviaciones (MAD),,,revisar a mano
+fred:DEXUSAL,fred_alfred,diaria,salto,1976-11-29,,-47.2,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,salto,1983-03-08,,-25.9,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,salto,1985-02-19,,-14.3,desviaciones (MAD),,,revisar a mano
 fred:DEXUSAL,fred_alfred,diaria,salto,1985-02-21,,8.2,desviaciones (MAD),,,revisar a mano
@@ -2531,11 +2533,11 @@ fred:FEDFUNDS,fred_alfred,mensual,salto,1980-05-01,,-10.9,desviaciones (MAD),,ti
 fred:FEDTARMD,fred_alfred,anual,cambio_unidad,2020-06-10,,-1.2,log10 del factor,,"vintage 2020-06-10, 1 fechas comunes",revisar a mano
 fred:FINSLC1,fred_alfred,trimestral,salto,2020-04-01,,-10.2,desviaciones (MAD),,,revisar a mano
 fred:FRBKCLMCILA,fred_alfred,mensual,salto,2020-04-01,,-15.8,desviaciones (MAD),,,revisar a mano
-fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-03-01,,-14.6,desviaciones (MAD),,,revisar a mano
-fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-04-01,,-56.9,desviaciones (MAD),,,revisar a mano
-fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-05-01,,18.6,desviaciones (MAD),,,revisar a mano
-fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-06-01,,20.3,desviaciones (MAD),,,revisar a mano
-fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-07-01,,48.9,desviaciones (MAD),,,revisar a mano
+fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-03-01,,-14.7,desviaciones (MAD),,,revisar a mano
+fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-04-01,,-57.6,desviaciones (MAD),,,revisar a mano
+fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-05-01,,18.7,desviaciones (MAD),,,revisar a mano
+fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-06-01,,20.5,desviaciones (MAD),,,revisar a mano
+fred:FRBKCLMCIM,fred_alfred,mensual,salto,2020-07-01,,49.4,desviaciones (MAD),,,revisar a mano
 fred:GCEC1,fred_alfred,trimestral,ruptura_nivel,1951-07-01,,8.2,desviaciones (MAD),,,revisar a mano
 fred:GDP,fred_alfred,trimestral,salto,2020-04-01,,-10.7,desviaciones (MAD),,,revisar a mano
 fred:GDPC1,fred_alfred,trimestral,salto,2020-04-01,,-13.4,desviaciones (MAD),,,revisar a mano
@@ -2544,9 +2546,9 @@ fred:GDPNOW,fred_alfred,trimestral,cambio_unidad,2022-03-01,,-1.19,log10 del fac
 fred:GDPNOW,fred_alfred,trimestral,cambio_unidad,2022-03-08,,1.11,log10 del factor,,"vintage 2022-03-08, 1 fechas comunes",revisar a mano
 fred:GDPNOW,fred_alfred,trimestral,cambio_unidad,2022-06-15,,-2.72,log10 del factor,,"vintage 2022-06-15, 1 fechas comunes",revisar a mano
 fred:GDPNOW,fred_alfred,trimestral,cambio_unidad,2022-06-16,,1.21,log10 del factor,,"vintage 2022-06-16, 1 fechas comunes",revisar a mano
-fred:GDPNOW,fred_alfred,trimestral,salto,2020-04-01,,-12.9,desviaciones (MAD),,,revisar a mano
-fred:GDPNOW,fred_alfred,trimestral,salto,2020-07-01,,28.6,desviaciones (MAD),,,revisar a mano
-fred:GDPNOW,fred_alfred,trimestral,salto,2020-10-01,,-12.4,desviaciones (MAD),,,revisar a mano
+fred:GDPNOW,fred_alfred,trimestral,salto,2020-04-01,,-13.5,desviaciones (MAD),,,revisar a mano
+fred:GDPNOW,fred_alfred,trimestral,salto,2020-07-01,,29.8,desviaciones (MAD),,,revisar a mano
+fred:GDPNOW,fred_alfred,trimestral,salto,2020-10-01,,-12.5,desviaciones (MAD),,,revisar a mano
 fred:GVZCLS,fred_alfred,diaria,festivo,2021-04-02,,,,,,marcar
 fred:GVZCLS,fred_alfred,diaria,festivo,2021-12-24,,,,,,marcar
 fred:GVZCLS,fred_alfred,diaria,salto,2009-03-17,,-9.7,desviaciones (MAD),,,revisar a mano
@@ -2562,18 +2564,18 @@ fred:IPMAN,fred_alfred,mensual,salto,2020-04-01,,-15.7,desviaciones (MAD),,,revi
 fred:IQ,fred_alfred,mensual,ruptura_nivel,1988-03-01,,10.8,desviaciones (MAD),,,revisar a mano
 fred:IR,fred_alfred,mensual,ruptura_nivel,2011-01-01,,13.1,desviaciones (MAD),,,revisar a mano
 fred:IR,fred_alfred,mensual,ruptura_nivel,2014-11-01,,-8.9,desviaciones (MAD),,,revisar a mano
-fred:ISRATIO,fred_alfred,mensual,salto,2020-04-01,,13.3,desviaciones (MAD),,,revisar a mano
-fred:ISRATIO,fred_alfred,mensual,salto,2020-05-01,,-10.1,desviaciones (MAD),,,revisar a mano
-fred:ISRATIO,fred_alfred,mensual,salto,2020-06-01,,-8.7,desviaciones (MAD),,,revisar a mano
-fred:JHGDPBRINDX,fred_alfred,trimestral,salto,1969-10-01,,13.3,desviaciones (MAD),,,revisar a mano
+fred:ISRATIO,fred_alfred,mensual,salto,2020-04-01,,13.4,desviaciones (MAD),,,revisar a mano
+fred:ISRATIO,fred_alfred,mensual,salto,2020-05-01,,-10.3,desviaciones (MAD),,,revisar a mano
+fred:ISRATIO,fred_alfred,mensual,salto,2020-06-01,,-8.9,desviaciones (MAD),,,revisar a mano
+fred:JHGDPBRINDX,fred_alfred,trimestral,salto,1969-10-01,,13.4,desviaciones (MAD),,,revisar a mano
 fred:JHGDPBRINDX,fred_alfred,trimestral,salto,1971-04-01,,-13.8,desviaciones (MAD),,,revisar a mano
 fred:JHGDPBRINDX,fred_alfred,trimestral,salto,1973-10-01,,10.1,desviaciones (MAD),,,revisar a mano
 fred:JHGDPBRINDX,fred_alfred,trimestral,salto,1975-04-01,,-11.1,desviaciones (MAD),,,revisar a mano
 fred:JHGDPBRINDX,fred_alfred,trimestral,salto,1975-07-01,,-8.3,desviaciones (MAD),,,revisar a mano
-fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2001-07-01,,11.0,desviaciones (MAD),,,revisar a mano
+fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2001-07-01,,11.1,desviaciones (MAD),,,revisar a mano
 fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2001-10-01,,-9.3,desviaciones (MAD),,,revisar a mano
-fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2020-01-01,,12.5,desviaciones (MAD),,,revisar a mano
-fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2020-07-01,,-19.4,desviaciones (MAD),,,revisar a mano
+fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2020-01-01,,12.6,desviaciones (MAD),,,revisar a mano
+fred:JHGDPBRINDX,fred_alfred,trimestral,salto,2020-07-01,,-19.5,desviaciones (MAD),,,revisar a mano
 fred:JTSHIR,fred_alfred,mensual,salto,2020-05-01,,18.0,desviaciones (MAD),,,revisar a mano
 fred:JTSJOL,fred_alfred,mensual,ruptura_nivel,2021-04-01,,8.3,desviaciones (MAD),,,revisar a mano
 fred:JTSLDL,fred_alfred,mensual,salto,2020-03-01,,20.1,desviaciones (MAD),,,revisar a mano
@@ -2588,8 +2590,7 @@ fred:M13002US35620M156NNBR,fred_alfred,mensual,ruptura_nivel,1920-03-01,,9.1,des
 fred:M13002US35620M156NNBR,fred_alfred,mensual,salto,1857-09-01,,11.5,desviaciones (MAD),,,revisar a mano
 fred:M13002US35620M156NNBR,fred_alfred,mensual,salto,1857-10-01,,9.1,desviaciones (MAD),,,revisar a mano
 fred:M13002US35620M156NNBR,fred_alfred,mensual,salto,1857-11-01,,-20.3,desviaciones (MAD),,,revisar a mano
-fred:M2SL,fred_alfred,mensual,salto,2020-04-01,,10.4,desviaciones (MAD),,,revisar a mano
-fred:M2SL,fred_alfred,mensual,salto,2020-05-01,,8.2,desviaciones (MAD),,,revisar a mano
+fred:M2SL,fred_alfred,mensual,salto,2020-04-01,,9.8,desviaciones (MAD),,,revisar a mano
 fred:MANEMP,fred_alfred,mensual,ruptura_nivel,1974-12-01,,-9.2,desviaciones (MAD),,,revisar a mano
 fred:MANEMP,fred_alfred,mensual,salto,1945-09-01,,-12.0,desviaciones (MAD),,,revisar a mano
 fred:MANEMP,fred_alfred,mensual,salto,2020-04-01,,-32.3,desviaciones (MAD),,,revisar a mano
@@ -2600,21 +2601,20 @@ fred:NASDAQ100,fred_alfred,diaria,festivo,2001-01-01,,,,,,marcar
 fred:NASDAQ100,fred_alfred,diaria,festivo,2019-04-19,,,,,,marcar
 fred:NASDAQ100,fred_alfred,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 fred:NASDAQ100,fred_alfred,diaria,salto,1987-10-19,,-14.5,desviaciones (MAD),,,revisar a mano
-fred:NASDAQ100,fred_alfred,diaria,salto,1987-10-21,,8.6,desviaciones (MAD),,,revisar a mano
+fred:NASDAQ100,fred_alfred,diaria,salto,1987-10-21,,8.5,desviaciones (MAD),,,revisar a mano
 fred:NASDAQ100,fred_alfred,diaria,salto,1987-10-26,,-11.1,desviaciones (MAD),,,revisar a mano
 fred:NASDAQ100,fred_alfred,diaria,salto,1987-10-29,,8.1,desviaciones (MAD),,,revisar a mano
 fred:NASDAQ100,fred_alfred,diaria,salto,2020-03-12,,-8.7,desviaciones (MAD),,,revisar a mano
 fred:NASDAQ100,fred_alfred,diaria,salto,2020-03-13,,8.4,desviaciones (MAD),,,revisar a mano
 fred:NASDAQ100,fred_alfred,diaria,salto,2020-03-16,,-11.5,desviaciones (MAD),,,revisar a mano
 fred:NASDAQ100,fred_alfred,diaria,salto,2025-04-09,,9.9,desviaciones (MAD),,,revisar a mano
-fred:NETEXC,fred_alfred,trimestral,salto,2025-04-01,,10.4,desviaciones (MAD),,,revisar a mano
-fred:NFCI,fred_alfred,semanal,salto,2020-03-06,,8.4,desviaciones (MAD),,,revisar a mano
-fred:NFCI,fred_alfred,semanal,salto,2020-03-13,,8.7,desviaciones (MAD),,,revisar a mano
-fred:NFCICREDIT,fred_alfred,semanal,ruptura_nivel,1994-11-18,,11.7,desviaciones (MAD),,,revisar a mano
-fred:NFCICREDIT,fred_alfred,semanal,ruptura_nivel,2005-03-25,,8.8,desviaciones (MAD),,,revisar a mano
-fred:NFCICREDIT,fred_alfred,semanal,ruptura_nivel,2016-12-16,,-8.6,desviaciones (MAD),,,revisar a mano
-fred:NFCILEVERAGE,fred_alfred,semanal,ruptura_nivel,2010-03-12,,-10.1,desviaciones (MAD),,,revisar a mano
-fred:NFCIRISK,fred_alfred,semanal,ruptura_nivel,1991-08-23,,-9.2,desviaciones (MAD),,,revisar a mano
+fred:NFCI,fred_alfred,semanal,salto,2020-03-06,,8.6,desviaciones (MAD),,,revisar a mano
+fred:NFCI,fred_alfred,semanal,salto,2020-03-13,,8.8,desviaciones (MAD),,,revisar a mano
+fred:NFCICREDIT,fred_alfred,semanal,ruptura_nivel,1994-12-02,,12.6,desviaciones (MAD),,,revisar a mano
+fred:NFCICREDIT,fred_alfred,semanal,ruptura_nivel,2005-04-01,,8.8,desviaciones (MAD),,,revisar a mano
+fred:NFCICREDIT,fred_alfred,semanal,ruptura_nivel,2016-12-09,,-8.6,desviaciones (MAD),,,revisar a mano
+fred:NFCILEVERAGE,fred_alfred,semanal,ruptura_nivel,2010-03-12,,-10.0,desviaciones (MAD),,,revisar a mano
+fred:NFCIRISK,fred_alfred,semanal,ruptura_nivel,1991-08-23,,-9.1,desviaciones (MAD),,,revisar a mano
 fred:OBFR,fred_alfred,diaria,ruptura_nivel,2016-11-29,,16.9,desviaciones (MAD),,tipo administrado: el escalón es normal,sin acción
 fred:OBFR,fred_alfred,diaria,ruptura_nivel,2017-02-27,,16.9,desviaciones (MAD),,tipo administrado: el escalón es normal,sin acción
 fred:OBFR,fred_alfred,diaria,ruptura_nivel,2017-05-30,,16.9,desviaciones (MAD),,tipo administrado: el escalón es normal,sin acción
@@ -2663,6 +2663,7 @@ fred:OBFR,fred_alfred,diaria,salto,2025-09-18,,-16.9,desviaciones (MAD),,tipo ad
 fred:OBFR,fred_alfred,diaria,salto,2025-10-30,,-16.9,desviaciones (MAD),,tipo administrado: el escalón es normal,sin acción
 fred:OBFR,fred_alfred,diaria,salto,2025-12-11,,-16.9,desviaciones (MAD),,tipo administrado: el escalón es normal,sin acción
 fred:OBFR,fred_alfred,diaria,salto,2026-09-17,,16.9,desviaciones (MAD),,tipo administrado: el escalón es normal,sin acción
+fred:OPHNFB,fred_alfred,trimestral,ruptura_nivel,1954-10-01,,8.0,desviaciones (MAD),,,revisar a mano
 fred:OPHNFB,fred_alfred,trimestral,ruptura_nivel,2009-07-01,,8.6,desviaciones (MAD),,,revisar a mano
 fred:OVXCLS,fred_alfred,diaria,festivo,2021-04-02,,,,,,marcar
 fred:OVXCLS,fred_alfred,diaria,festivo,2021-12-24,,,,,,marcar
@@ -2684,12 +2685,12 @@ fred:PCEC96,fred_alfred,mensual,salto,2020-04-01,,-22.2,desviaciones (MAD),,,rev
 fred:PCEC96,fred_alfred,mensual,salto,2020-05-01,,14.8,desviaciones (MAD),,,revisar a mano
 fred:PCEC96,fred_alfred,mensual,salto,2020-06-01,,9.7,desviaciones (MAD),,,revisar a mano
 fred:PCECC96,fred_alfred,trimestral,salto,2020-04-01,,-16.8,desviaciones (MAD),,,revisar a mano
-fred:PCECC96,fred_alfred,trimestral,salto,2020-07-01,,13.2,desviaciones (MAD),,,revisar a mano
+fred:PCECC96,fred_alfred,trimestral,salto,2020-07-01,,13.3,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,1992-12-01,,9.4,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,1993-12-01,,9.3,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,2004-12-01,,9.1,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,2005-01-01,,-9.9,desviaciones (MAD),,,revisar a mano
-fred:PI,fred_alfred,mensual,salto,2013-01-01,,-14.8,desviaciones (MAD),,,revisar a mano
+fred:PI,fred_alfred,mensual,salto,2013-01-01,,-14.7,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,2020-04-01,,25.1,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,2020-05-01,,-9.3,desviaciones (MAD),,,revisar a mano
 fred:PI,fred_alfred,mensual,salto,2021-01-01,,18.2,desviaciones (MAD),,,revisar a mano
@@ -2710,70 +2711,75 @@ fred:PSAVERT,fred_alfred,mensual,salto,2021-03-01,,17.0,desviaciones (MAD),,,rev
 fred:PSAVERT,fred_alfred,mensual,salto,2021-04-01,,-17.4,desviaciones (MAD),,,revisar a mano
 fred:REALLN,fred_alfred,mensual,ruptura_nivel,2008-11-01,,9.1,desviaciones (MAD),,,revisar a mano
 fred:RECPROUSM156N,fred_alfred,mensual,cambio_unidad,2023-02-10,,3.13,log10 del factor,,"vintage 2023-02-10, 2 fechas comunes",revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,1969-09-01,,8.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,1982-11-01,,-8.1,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,2008-04-01,,12.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,2009-06-01,,-22.5,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,1969-09-01,,10.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,1982-12-01,,-9.4,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,2008-04-01,,11.1,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,2009-06-01,,-24.3,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,ruptura_nivel,2015-03-01,,8.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1968-01-01,,8.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1968-02-01,,-8.2,desviaciones (MAD),,,revisar a mano
 fred:RECPROUSM156N,fred_alfred,mensual,salto,1969-11-01,,42.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-01-01,,11.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-02-01,,-15.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-08-01,,21.0,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-09-01,,22.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-10-01,,8.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-11-01,,-62.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-12-01,,-35.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1973-12-01,,44.2,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-06-01,,12.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-07-01,,11.1,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-08-01,,33.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-10-01,,11.9,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1975-03-01,,-11.2,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1975-04-01,,-128.4,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1975-05-01,,-18.7,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1978-01-01,,90.4,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1978-02-01,,-88.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1979-04-01,,28.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1979-05-01,,-28.1,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-02-01,,22.6,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-03-01,,23.6,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-07-01,,-21.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-08-01,,-11.6,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1981-08-01,,8.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-01-01,,11.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-02-01,,-14.4,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-08-01,,18.3,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-09-01,,19.4,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-10-01,,8.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-11-01,,-55.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1970-12-01,,-35.1,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1973-12-01,,47.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-06-01,,14.7,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-07-01,,12.7,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-08-01,,34.0,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1974-10-01,,15.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1975-03-01,,-11.1,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1975-04-01,,-132.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1975-05-01,,-17.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1977-12-01,,9.1,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1978-01-01,,82.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1978-02-01,,-72.5,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1979-04-01,,32.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1979-05-01,,-31.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-02-01,,30.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-03-01,,34.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-07-01,,-24.3,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1980-08-01,,-12.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1981-08-01,,9.7,desviaciones (MAD),,,revisar a mano
 fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-02-01,,-25.6,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-03-01,,15.7,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-11-01,,-16.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-12-01,,-13.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1983-01-01,,-8.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-07-01,,14.6,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-08-01,,15.2,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-09-01,,43.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-10-01,,59.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-11-01,,13.1,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-02-01,,-22.7,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-03-01,,-59.2,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-04-01,,-81.0,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-05-01,,-9.7,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-01-01,,9.4,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-10-01,,-8.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-12-01,,-9.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2005-08-01,,11.5,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2005-09-01,,58.3,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2005-10-01,,-72.8,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2009-07-01,,-54.9,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2020-03-01,,538.6,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2020-05-01,,-586.2,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2021-10-01,,-8.1,desviaciones (MAD),,,revisar a mano
-fred:RECPROUSM156N,fred_alfred,mensual,salto,2024-02-01,,-10.3,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-03-01,,16.0,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-11-01,,-19.4,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1982-12-01,,-13.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1983-01-01,,-8.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-07-01,,13.1,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-08-01,,14.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-09-01,,43.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-10-01,,54.7,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1990-11-01,,13.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-02-01,,-26.3,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-03-01,,-49.7,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,1991-04-01,,-72.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-01-01,,11.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-02-01,,8.1,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-10-01,,-8.9,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2001-12-01,,-9.0,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2005-08-01,,8.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2005-09-01,,64.6,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2005-10-01,,-78.2,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2009-06-01,,-8.5,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2009-07-01,,-57.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2019-11-01,,-9.0,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2020-03-01,,560.8,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2020-05-01,,-441.7,desviaciones (MAD),,,revisar a mano
+fred:RECPROUSM156N,fred_alfred,mensual,salto,2024-02-01,,-10.5,desviaciones (MAD),,,revisar a mano
 fred:REVOLSL,fred_alfred,mensual,cambio_unidad,2025-02-07,,3.0,log10 del factor,1000.0,"vintage 2025-02-07, 683 fechas comunes; potencia de 10 confirmada: multiplicar los vintages anteriores por factor",reescalar vintages anteriores
 fred:REVOLSL,fred_alfred,mensual,ruptura_nivel,1976-11-01,,9.8,desviaciones (MAD),,,revisar a mano
 fred:REVOLSL,fred_alfred,mensual,ruptura_nivel,2020-05-01,,-11.8,desviaciones (MAD),,,revisar a mano
 fred:REVOLSL,fred_alfred,mensual,salto,1971-01-01,,29.5,desviaciones (MAD),,,revisar a mano
 fred:REVOLSL,fred_alfred,mensual,salto,1977-01-01,,34.1,desviaciones (MAD),,,revisar a mano
 fred:RRSFS,fred_alfred,mensual,salto,2020-03-01,,-10.7,desviaciones (MAD),,,revisar a mano
-fred:RRSFS,fred_alfred,mensual,salto,2020-04-01,,-19.4,desviaciones (MAD),,,revisar a mano
-fred:RRSFS,fred_alfred,mensual,salto,2020-05-01,,24.3,desviaciones (MAD),,,revisar a mano
-fred:RRSFS,fred_alfred,mensual,salto,2020-06-01,,10.2,desviaciones (MAD),,,revisar a mano
-fred:RRSFS,fred_alfred,mensual,salto,2021-03-01,,8.7,desviaciones (MAD),,,revisar a mano
+fred:RRSFS,fred_alfred,mensual,salto,2020-04-01,,-18.4,desviaciones (MAD),,,revisar a mano
+fred:RRSFS,fred_alfred,mensual,salto,2020-05-01,,22.8,desviaciones (MAD),,,revisar a mano
+fred:RRSFS,fred_alfred,mensual,salto,2020-06-01,,9.8,desviaciones (MAD),,,revisar a mano
+fred:RRSFS,fred_alfred,mensual,salto,2021-03-01,,8.8,desviaciones (MAD),,,revisar a mano
 fred:RSAFS,fred_alfred,mensual,salto,2020-03-01,,-10.1,desviaciones (MAD),,,revisar a mano
 fred:RSAFS,fred_alfred,mensual,salto,2020-04-01,,-17.8,desviaciones (MAD),,,revisar a mano
 fred:RSAFS,fred_alfred,mensual,salto,2020-05-01,,18.8,desviaciones (MAD),,,revisar a mano
@@ -2847,7 +2853,7 @@ fred:SOFR,fred_alfred,diaria,salto,2025-09-18,,-10.8,desviaciones (MAD),,,revisa
 fred:SOFR,fred_alfred,diaria,salto,2025-10-30,,-10.3,desviaciones (MAD),,,revisar a mano
 fred:SOFR,fred_alfred,diaria,salto,2025-10-31,,8.1,desviaciones (MAD),,,revisar a mano
 fred:SOFR,fred_alfred,diaria,salto,2025-12-11,,-10.8,desviaciones (MAD),,,revisar a mano
-fred:SOFR,fred_alfred,diaria,salto,2026-09-17,,10.3,desviaciones (MAD),,,revisar a mano
+fred:SOFR,fred_alfred,diaria,salto,2026-09-17,,15.5,desviaciones (MAD),,,revisar a mano
 fred:T10Y2Y,fred_alfred,diaria,ruptura_nivel,1990-08-02,,8.6,desviaciones (MAD),,,revisar a mano
 fred:T10Y2Y,fred_alfred,diaria,ruptura_nivel,2001-01-12,,8.6,desviaciones (MAD),,,revisar a mano
 fred:T10Y2Y,fred_alfred,diaria,ruptura_nivel,2001-09-10,,10.5,desviaciones (MAD),,,revisar a mano
@@ -3110,7 +3116,7 @@ fred:TOTBKCR,fred_alfred,semanal,salto,2020-03-25,,10.3,desviaciones (MAD),,,rev
 fred:TOTLL,fred_alfred,semanal,salto,2001-09-12,,15.7,desviaciones (MAD),,,revisar a mano
 fred:TOTLL,fred_alfred,semanal,salto,2001-09-19,,-11.2,desviaciones (MAD),,,revisar a mano
 fred:TOTLL,fred_alfred,semanal,salto,2007-03-14,,-8.0,desviaciones (MAD),,,revisar a mano
-fred:TOTLL,fred_alfred,semanal,salto,2008-10-01,,15.4,desviaciones (MAD),,,revisar a mano
+fred:TOTLL,fred_alfred,semanal,salto,2008-10-01,,15.5,desviaciones (MAD),,,revisar a mano
 fred:TOTLL,fred_alfred,semanal,salto,2010-03-31,,34.6,desviaciones (MAD),,,revisar a mano
 fred:TOTLL,fred_alfred,semanal,salto,2020-03-18,,11.8,desviaciones (MAD),,,revisar a mano
 fred:TOTLL,fred_alfred,semanal,salto,2020-03-25,,9.8,desviaciones (MAD),,,revisar a mano
@@ -3135,9 +3141,9 @@ fred:UNRATE,fred_alfred,mensual,ruptura_nivel,1980-03-01,,9.6,desviaciones (MAD)
 fred:UNRATE,fred_alfred,mensual,salto,2020-04-01,,46.8,desviaciones (MAD),,,revisar a mano
 fred:UNRATE,fred_alfred,mensual,salto,2020-06-01,,-9.1,desviaciones (MAD),,,revisar a mano
 fred:USALOLITOAASTSAM,fred_alfred,mensual,salto,2020-04-01,,-15.9,desviaciones (MAD),,,revisar a mano
-fred:USCONS,fred_alfred,mensual,salto,2020-04-01,,-22.2,desviaciones (MAD),,,revisar a mano
+fred:USCONS,fred_alfred,mensual,salto,2020-04-01,,-22.1,desviaciones (MAD),,,revisar a mano
 fred:USCONS,fred_alfred,mensual,salto,2020-05-01,,10.4,desviaciones (MAD),,,revisar a mano
-fred:USPHCI,fred_alfred,mensual,salto,2020-04-01,,-55.6,desviaciones (MAD),,,revisar a mano
+fred:USPHCI,fred_alfred,mensual,salto,2020-04-01,,-56.8,desviaciones (MAD),,,revisar a mano
 fred:USPHCI,fred_alfred,mensual,salto,2020-05-01,,8.2,desviaciones (MAD),,,revisar a mano
 fred:USPRIV,fred_alfred,mensual,salto,2020-04-01,,-69.0,desviaciones (MAD),,,revisar a mano
 fred:USPRIV,fred_alfred,mensual,salto,2020-05-01,,8.3,desviaciones (MAD),,,revisar a mano
@@ -3178,11 +3184,12 @@ fred:VIXCLS,fred_alfred,diaria,festivo,2026-07-03,,,,,,marcar
 fred:VIXCLS,fred_alfred,diaria,festivo,2026-09-07,,,,,,marcar
 fred:VIXCLS,fred_alfred,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 fred:VIXCLS,fred_alfred,diaria,salto,1991-11-15,,8.0,desviaciones (MAD),,,revisar a mano
-fred:VIXCLS,fred_alfred,diaria,salto,2007-02-27,,9.6,desviaciones (MAD),,,revisar a mano
+fred:VIXCLS,fred_alfred,diaria,salto,2007-02-27,,9.5,desviaciones (MAD),,,revisar a mano
 fred:VIXCLS,fred_alfred,diaria,salto,2018-02-05,,13.2,desviaciones (MAD),,,revisar a mano
 fred:VIXCLS,fred_alfred,diaria,salto,2021-01-27,,9.0,desviaciones (MAD),,,revisar a mano
 fred:VIXCLS,fred_alfred,diaria,salto,2024-08-05,,9.6,desviaciones (MAD),,,revisar a mano
 fred:VIXCLS,fred_alfred,diaria,salto,2024-12-18,,9.4,desviaciones (MAD),,,revisar a mano
+fred:VIXCLS,fred_alfred,diaria,salto,2026-11-05,,8.8,desviaciones (MAD),,,revisar a mano
 fred:VXDCLS,fred_alfred,diaria,festivo,2021-04-02,,,,,,marcar
 fred:VXDCLS,fred_alfred,diaria,festivo,2021-12-24,,,,,,marcar
 fred:VXDCLS,fred_alfred,diaria,fin_de_semana,2021-07-25,,,,,,marcar
@@ -3212,9 +3219,10 @@ fred:VXEEMCLS,fred_alfred,diaria,salto,2022-03-29,,-10.3,desviaciones (MAD),,,re
 fred:VXEWZCLS,fred_alfred,diaria,salto,2014-10-27,,-16.4,desviaciones (MAD),,,revisar a mano
 fred:VXEWZCLS,fred_alfred,diaria,salto,2017-05-18,,8.7,desviaciones (MAD),,,revisar a mano
 fred:VXEWZCLS,fred_alfred,diaria,salto,2022-04-11,,-9.2,desviaciones (MAD),,,revisar a mano
-fred:VXEWZCLS,fred_alfred,diaria,salto,2025-04-04,,8.7,desviaciones (MAD),,,revisar a mano
+fred:VXEWZCLS,fred_alfred,diaria,salto,2025-04-04,,8.6,desviaciones (MAD),,,revisar a mano
 fred:VXEWZCLS,fred_alfred,diaria,salto,2026-05-13,,9.0,desviaciones (MAD),,,revisar a mano
-fred:VXEWZCLS,fred_alfred,diaria,salto,2026-10-05,,-8.2,desviaciones (MAD),,,revisar a mano
+fred:VXEWZCLS,fred_alfred,diaria,salto,2026-10-05,,-8.1,desviaciones (MAD),,,revisar a mano
+fred:VXEWZCLS,fred_alfred,diaria,salto,2026-10-26,,-10.5,desviaciones (MAD),,,revisar a mano
 fred:VXNCLS,fred_alfred,diaria,festivo,2021-04-02,,,,,,marcar
 fred:VXNCLS,fred_alfred,diaria,festivo,2021-12-24,,,,,,marcar
 fred:VXNCLS,fred_alfred,diaria,fin_de_semana,2003-08-24,,,,,,marcar
@@ -3258,10 +3266,10 @@ fred:WPU0561,fred_alfred,mensual,salto,1974-01-01,,8.2,desviaciones (MAD),,,revi
 fred:WPU0561,fred_alfred,mensual,salto,1986-02-01,,-9.6,desviaciones (MAD),,,revisar a mano
 fred:WPU0561,fred_alfred,mensual,salto,1986-03-01,,-13.3,desviaciones (MAD),,,revisar a mano
 fred:WPU0561,fred_alfred,mensual,salto,2020-04-01,,-9.2,desviaciones (MAD),,,revisar a mano
-fred:WTISPLC,fred_alfred,mensual,ruptura_nivel,1948-02-01,,12.3,desviaciones (MAD),,,revisar a mano
+fred:WTISPLC,fred_alfred,mensual,ruptura_nivel,1948-02-01,,12.2,desviaciones (MAD),,,revisar a mano
 fred:WTISPLC,fred_alfred,mensual,ruptura_nivel,1973-11-01,,29.5,desviaciones (MAD),,,revisar a mano
 fred:WTISPLC,fred_alfred,mensual,salto,1948-01-01,,8.3,desviaciones (MAD),,,revisar a mano
-fred:WTISPLC,fred_alfred,mensual,salto,1974-01-01,,32.9,desviaciones (MAD),,,revisar a mano
+fred:WTISPLC,fred_alfred,mensual,salto,1974-01-01,,32.8,desviaciones (MAD),,,revisar a mano
 fred:WTISPLC,fred_alfred,mensual,salto,1986-02-01,,-8.3,desviaciones (MAD),,,revisar a mano
 gw:M.AAA,goyal_welch,mensual,ruptura_nivel,2019-05-01,,-8.1,desviaciones (MAD),,,revisar a mano
 gw:M.AAA,goyal_welch,mensual,salto,2008-12-01,,-9.2,desviaciones (MAD),,,revisar a mano
@@ -4319,6 +4327,7 @@ ofr:FSI_FUNDING,ofr_fsi,diaria,salto,2022-01-03,,24.9,desviaciones (MAD),,,revis
 ofr:FSI_FUNDING,ofr_fsi,diaria,salto,2022-03-04,,10.9,desviaciones (MAD),,,revisar a mano
 ofr:FSI_FUNDING,ofr_fsi,diaria,salto,2022-07-05,,-8.3,desviaciones (MAD),,,revisar a mano
 ofr:FSI_FUNDING,ofr_fsi,diaria,salto,2024-09-19,,-8.0,desviaciones (MAD),,,revisar a mano
+ofr:FSI_FUNDING,ofr_fsi,diaria,salto,2026-10-30,,8.3,desviaciones (MAD),,,revisar a mano
 ofr:FSI_US,ofr_fsi,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 ofr:FSI_US,ofr_fsi,diaria,salto,2001-09-17,,14.7,desviaciones (MAD),,,revisar a mano
 ofr:FSI_US,ofr_fsi,diaria,salto,2007-02-27,,9.9,desviaciones (MAD),,,revisar a mano
@@ -5009,8 +5018,8 @@ yf:DX-Y.NYB,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,mar
 yf:DX-Y.NYB,yfinance,diaria,ruptura_nivel,1973-02-16,,-14.2,desviaciones (MAD),,,revisar a mano
 yf:DX-Y.NYB,yfinance,diaria,ruptura_nivel,1975-07-10,,9.0,desviaciones (MAD),,,revisar a mano
 yf:DX-Y.NYB,yfinance,diaria,salto,1973-02-13,,-13.2,desviaciones (MAD),,,revisar a mano
-yf:DX-Y.NYB,yfinance,diaria,salto,1974-01-07,,8.1,desviaciones (MAD),,,revisar a mano
-yf:DX-Y.NYB,yfinance,diaria,salto,1978-11-01,,11.3,desviaciones (MAD),,,revisar a mano
+yf:DX-Y.NYB,yfinance,diaria,salto,1974-01-07,,8.2,desviaciones (MAD),,,revisar a mano
+yf:DX-Y.NYB,yfinance,diaria,salto,1978-11-01,,11.4,desviaciones (MAD),,,revisar a mano
 yf:GC=F,yfinance,diaria,ruptura_nivel,2016-02-01,,8.7,desviaciones (MAD),,,revisar a mano
 yf:GC=F,yfinance,diaria,salto,2013-04-15,,-10.8,desviaciones (MAD),,,revisar a mano
 yf:GC=F,yfinance,diaria,salto,2026-01-30,,-9.5,desviaciones (MAD),,,revisar a mano
@@ -5101,8 +5110,8 @@ yf:^IXIC,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 yf:^IXIC,yfinance,diaria,ruptura_nivel,1987-10-08,,-8.1,desviaciones (MAD),,,revisar a mano
 yf:^IXIC,yfinance,diaria,ruptura_nivel,1991-12-23,,8.4,desviaciones (MAD),,,revisar a mano
 yf:^IXIC,yfinance,diaria,ruptura_nivel,1992-01-03,,9.4,desviaciones (MAD),,,revisar a mano
-yf:^IXIC,yfinance,diaria,salto,1980-03-27,,-8.1,desviaciones (MAD),,,revisar a mano
-yf:^IXIC,yfinance,diaria,salto,1987-10-19,,-15.2,desviaciones (MAD),,,revisar a mano
+yf:^IXIC,yfinance,diaria,salto,1980-03-27,,-8.0,desviaciones (MAD),,,revisar a mano
+yf:^IXIC,yfinance,diaria,salto,1987-10-19,,-15.1,desviaciones (MAD),,,revisar a mano
 yf:^IXIC,yfinance,diaria,salto,1987-10-20,,-11.9,desviaciones (MAD),,,revisar a mano
 yf:^IXIC,yfinance,diaria,salto,1987-10-21,,8.7,desviaciones (MAD),,,revisar a mano
 yf:^IXIC,yfinance,diaria,salto,1987-10-26,,-11.9,desviaciones (MAD),,,revisar a mano
@@ -5111,13 +5120,13 @@ yf:^IXIC,yfinance,diaria,salto,2020-03-12,,-9.0,desviaciones (MAD),,,revisar a m
 yf:^IXIC,yfinance,diaria,salto,2020-03-16,,-11.7,desviaciones (MAD),,,revisar a mano
 yf:^IXIC,yfinance,diaria,salto,2025-04-09,,13.0,desviaciones (MAD),,,revisar a mano
 yf:^MOVE,yfinance,diaria,hueco_largo,2013-03-18,2013-03-22,5.0,periodos,,,marcar
-yf:^MOVE,yfinance,diaria,salto,2014-10-15,,10.4,desviaciones (MAD),,,revisar a mano
-yf:^MOVE,yfinance,diaria,salto,2020-03-06,,11.0,desviaciones (MAD),,,revisar a mano
-yf:^MOVE,yfinance,diaria,salto,2020-03-09,,15.0,desviaciones (MAD),,,revisar a mano
-yf:^MOVE,yfinance,diaria,salto,2020-03-10,,-15.4,desviaciones (MAD),,,revisar a mano
-yf:^MOVE,yfinance,diaria,salto,2020-03-12,,9.7,desviaciones (MAD),,,revisar a mano
-yf:^MOVE,yfinance,diaria,salto,2020-03-24,,-9.3,desviaciones (MAD),,,revisar a mano
-yf:^MOVE,yfinance,diaria,salto,2020-03-25,,-9.2,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2014-10-15,,10.3,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2020-03-06,,10.9,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2020-03-09,,14.8,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2020-03-10,,-15.2,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2020-03-12,,9.6,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2020-03-24,,-9.2,desviaciones (MAD),,,revisar a mano
+yf:^MOVE,yfinance,diaria,salto,2020-03-25,,-9.1,desviaciones (MAD),,,revisar a mano
 yf:^NYA,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 yf:^NYA,yfinance,diaria,ruptura_nivel,1987-10-20,,-9.3,desviaciones (MAD),,,revisar a mano
 yf:^NYA,yfinance,diaria,ruptura_nivel,2008-10-07,,-8.1,desviaciones (MAD),,,revisar a mano
@@ -5191,7 +5200,7 @@ yf:^SP400,yfinance,diaria,salto,2020-03-18,,-8.9,desviaciones (MAD),,,revisar a 
 yf:^SP400,yfinance,diaria,salto,2020-03-24,,8.1,desviaciones (MAD),,,revisar a mano
 yf:^SP400,yfinance,diaria,salto,2025-04-09,,9.8,desviaciones (MAD),,,revisar a mano
 yf:^SP500TR,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
-yf:^SP500TR,yfinance,diaria,salto,1989-10-13,,-8.6,desviaciones (MAD),,,revisar a mano
+yf:^SP500TR,yfinance,diaria,salto,1989-10-13,,-8.5,desviaciones (MAD),,,revisar a mano
 yf:^SP500TR,yfinance,diaria,salto,2020-03-09,,-9.3,desviaciones (MAD),,,revisar a mano
 yf:^SP500TR,yfinance,diaria,salto,2020-03-12,,-11.4,desviaciones (MAD),,,revisar a mano
 yf:^SP500TR,yfinance,diaria,salto,2020-03-13,,10.0,desviaciones (MAD),,,revisar a mano
@@ -5203,7 +5212,7 @@ yf:^SP600,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marca
 yf:^SP600,yfinance,diaria,salto,2020-03-12,,-9.4,desviaciones (MAD),,,revisar a mano
 yf:^SP600,yfinance,diaria,salto,2020-03-16,,-10.5,desviaciones (MAD),,,revisar a mano
 yf:^SP600,yfinance,diaria,salto,2020-03-18,,-8.1,desviaciones (MAD),,,revisar a mano
-yf:^SP600,yfinance,diaria,salto,2025-04-09,,8.6,desviaciones (MAD),,,revisar a mano
+yf:^SP600,yfinance,diaria,salto,2025-04-09,,8.7,desviaciones (MAD),,,revisar a mano
 yf:^SPGSCI,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 yf:^SPGSCI,yfinance,diaria,salto,1991-01-17,,-15.6,desviaciones (MAD),,,revisar a mano
 yf:^SPGSCI,yfinance,diaria,salto,2020-03-09,,-11.3,desviaciones (MAD),,,revisar a mano
@@ -5213,25 +5222,27 @@ yf:^TNX,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 yf:^TNX,yfinance,diaria,salto,1987-10-20,,-10.1,desviaciones (MAD),,,revisar a mano
 yf:^TYX,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 yf:^TYX,yfinance,diaria,salto,1987-10-20,,-11.4,desviaciones (MAD),,,revisar a mano
-yf:^VIX3M,yfinance,diaria,salto,2007-02-27,,10.0,desviaciones (MAD),,,revisar a mano
+yf:^VIX3M,yfinance,diaria,salto,2007-02-27,,10.1,desviaciones (MAD),,,revisar a mano
 yf:^VIX3M,yfinance,diaria,salto,2010-05-07,,9.8,desviaciones (MAD),,,revisar a mano
 yf:^VIX3M,yfinance,diaria,salto,2018-02-05,,14.9,desviaciones (MAD),,,revisar a mano
 yf:^VIX3M,yfinance,diaria,salto,2020-03-16,,8.1,desviaciones (MAD),,,revisar a mano
 yf:^VIX3M,yfinance,diaria,salto,2020-06-11,,8.0,desviaciones (MAD),,,revisar a mano
 yf:^VIX3M,yfinance,diaria,salto,2021-01-27,,8.5,desviaciones (MAD),,,revisar a mano
-yf:^VIX3M,yfinance,diaria,salto,2024-08-05,,10.9,desviaciones (MAD),,,revisar a mano
+yf:^VIX3M,yfinance,diaria,salto,2024-08-05,,11.0,desviaciones (MAD),,,revisar a mano
 yf:^VIX3M,yfinance,diaria,salto,2024-12-18,,8.0,desviaciones (MAD),,,revisar a mano
-yf:^VIX3M,yfinance,diaria,salto,2025-04-04,,8.7,desviaciones (MAD),,,revisar a mano
-yf:^VIX3M,yfinance,diaria,salto,2025-04-09,,-9.5,desviaciones (MAD),,,revisar a mano
+yf:^VIX3M,yfinance,diaria,salto,2025-04-04,,8.8,desviaciones (MAD),,,revisar a mano
+yf:^VIX3M,yfinance,diaria,salto,2025-04-09,,-9.6,desviaciones (MAD),,,revisar a mano
+yf:^VIX3M,yfinance,diaria,salto,2026-11-05,,9.2,desviaciones (MAD),,,revisar a mano
 yf:^VIX6M,yfinance,diaria,salto,2016-06-24,,8.1,desviaciones (MAD),,,revisar a mano
-yf:^VIX6M,yfinance,diaria,salto,2018-02-05,,14.5,desviaciones (MAD),,,revisar a mano
+yf:^VIX6M,yfinance,diaria,salto,2018-02-05,,14.6,desviaciones (MAD),,,revisar a mano
 yf:^VIX6M,yfinance,diaria,salto,2020-03-12,,8.2,desviaciones (MAD),,,revisar a mano
 yf:^VIX6M,yfinance,diaria,salto,2020-03-16,,11.2,desviaciones (MAD),,,revisar a mano
 yf:^VIX6M,yfinance,diaria,salto,2020-06-11,,8.8,desviaciones (MAD),,,revisar a mano
 yf:^VIX6M,yfinance,diaria,salto,2021-01-27,,8.6,desviaciones (MAD),,,revisar a mano
-yf:^VIX6M,yfinance,diaria,salto,2024-08-05,,11.8,desviaciones (MAD),,,revisar a mano
-yf:^VIX6M,yfinance,diaria,salto,2025-04-04,,9.3,desviaciones (MAD),,,revisar a mano
-yf:^VIX6M,yfinance,diaria,salto,2025-04-09,,-11.1,desviaciones (MAD),,,revisar a mano
+yf:^VIX6M,yfinance,diaria,salto,2024-08-05,,11.9,desviaciones (MAD),,,revisar a mano
+yf:^VIX6M,yfinance,diaria,salto,2025-04-04,,9.4,desviaciones (MAD),,,revisar a mano
+yf:^VIX6M,yfinance,diaria,salto,2025-04-09,,-11.2,desviaciones (MAD),,,revisar a mano
+yf:^VIX6M,yfinance,diaria,salto,2026-11-05,,8.7,desviaciones (MAD),,,revisar a mano
 yf:^VIX9D,yfinance,diaria,salto,2017-05-17,,8.2,desviaciones (MAD),,,revisar a mano
 yf:^VIX9D,yfinance,diaria,salto,2018-02-05,,11.5,desviaciones (MAD),,,revisar a mano
 yf:^VIX9D,yfinance,diaria,salto,2024-12-18,,8.6,desviaciones (MAD),,,revisar a mano
@@ -5239,6 +5250,7 @@ yf:^VVIX,yfinance,diaria,salto,2007-02-27,,11.6,desviaciones (MAD),,,revisar a m
 yf:^VVIX,yfinance,diaria,salto,2017-05-17,,9.6,desviaciones (MAD),,,revisar a mano
 yf:^VVIX,yfinance,diaria,salto,2018-02-05,,8.4,desviaciones (MAD),,,revisar a mano
 yf:^VVIX,yfinance,diaria,salto,2021-01-27,,8.0,desviaciones (MAD),,,revisar a mano
+yf:^VVIX,yfinance,diaria,salto,2026-11-05,,8.5,desviaciones (MAD),,,revisar a mano
 yf:^W5000,yfinance,diaria,hueco_largo,2001-09-11,2001-09-14,4.0,periodos,,,marcar
 yf:^W5000,yfinance,diaria,hueco_largo,2026-03-04,2026-03-10,5.0,periodos,,,marcar
 yf:^W5000,yfinance,diaria,salto,1997-10-27,,-8.9,desviaciones (MAD),,,revisar a mano

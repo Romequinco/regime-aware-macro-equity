@@ -15,142 +15,130 @@
   "coste": "0 €",
   "licencia_y_terminos": "Términos de Yahoo: uso personal, no comercial; prohibida la redistribución. robots.txt de query1/query2.finance.yahoo.com (la API de gráficos que usa yfinance, no pública ni documentada) con 'User-agent: * / Disallow: /' (medido: {'https://query2.finance.yahoo.com/v8/finance/chart/AAPL': False, 'https://finance.yahoo.com/quote/AAPL/history/': True}). Riesgo DECLARADO: solo local, sin redistribuir; alternativa de pago para la descarga final (EODHD).",
   "cobertura_inicio": "1927-12-30",
-  "cobertura_fin": "2026-10-13",
+  "cobertura_fin": "2026-11-19",
   "frecuencia": "diaria (sesiones del mercado de cotización)",
   "retraso_publicacion": "cierre local + 30 min (visibilidad por mercado): Europa y Asia y EE. UU. (16:00) el mismo día de decisión; VIX (16:15), futuros CME, FX y fondos (NAV) en D+1; medido en mediciones.retraso_fecha_publicacion_dias_por_mercado",
   "formato": "parquet (as-traded, un fichero por ticker)",
-  "volumen_estimado": "92 tickers del núcleo; ampliado: 1388 con datos de 1842 (completa (1842 de 1842))",
+  "volumen_estimado": "90 tickers del núcleo; ampliado: 1388 con datos de 1842 (completa (1842 de 1842))",
   "limites": "sin límite publicado; <= 0.5 tickers/s, timeout 90 s, 3 reintentos",
-  "estado_sonda": "ok",
+  "estado_sonda": "parcial",
   "mediciones": {
-    "tickers_ok": 92,
-    "tickers_error": 0,
+    "tickers_ok": 90,
+    "tickers_error": 2,
     "por_mercado": {
       "ARCX": {
         "n": 39,
         "inicio_min": "1993-01-29",
         "inicio_mediana": "2003-04-14",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-19"
       },
       "BVMF": {
         "n": 1,
         "inicio_min": "1993-04-27",
         "inicio_mediana": "1993-04-27",
-        "fin_max": "2026-10-09"
+        "fin_max": "2026-11-18"
       },
       "CBOE_IDX": {
         "n": 1,
         "inicio_min": "1990-01-02",
         "inicio_mediana": "1990-01-02",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "CME": {
         "n": 5,
         "inicio_min": "2000-08-23",
         "inicio_mediana": "2000-08-30",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "FX_YAHOO": {
         "n": 4,
         "inicio_min": "1996-10-30",
         "inicio_mediana": "2002-09-12",
-        "fin_max": "2026-10-09"
+        "fin_max": "2026-11-18"
       },
       "NAV_US": {
         "n": 1,
         "inicio_min": "1986-12-11",
         "inicio_mediana": "1986-12-11",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "STOXX_IDX": {
         "n": 1,
         "inicio_min": "2007-03-30",
         "inicio_mediana": "2007-03-30",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "XAMS": {
         "n": 1,
         "inicio_min": "1998-07-20",
         "inicio_mediana": "1998-07-20",
-        "fin_max": "2026-10-09"
+        "fin_max": "2026-11-18"
       },
       "XETR": {
         "n": 2,
         "inicio_min": "1987-12-30",
         "inicio_mediana": "1993-02-17",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "XHKG": {
         "n": 2,
         "inicio_min": "1986-12-31",
         "inicio_mediana": "1995-09-23",
-        "fin_max": "2026-10-13"
+        "fin_max": "2026-11-19"
       },
       "XKRX": {
         "n": 1,
         "inicio_min": "1996-12-11",
         "inicio_mediana": "1996-12-11",
-        "fin_max": "2026-10-13"
+        "fin_max": "2026-11-19"
       },
       "XLON": {
         "n": 3,
         "inicio_min": "1984-01-03",
         "inicio_mediana": "1988-10-25",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "XMAD": {
         "n": 3,
         "inicio_min": "1993-07-12",
         "inicio_mediana": "2000-01-03",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "XNAS": {
         "n": 13,
         "inicio_min": "1980-12-12",
         "inicio_mediana": "2002-07-30",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "XNSE": {
         "n": 1,
         "inicio_min": "2007-09-17",
         "inicio_mediana": "2007-09-17",
-        "fin_max": "2026-10-13"
+        "fin_max": "2026-11-19"
       },
       "XNYS": {
         "n": 5,
         "inicio_min": "1927-12-30",
         "inicio_mediana": "1962-01-02",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "XPAR": {
         "n": 2,
         "inicio_min": "1990-03-01",
         "inicio_mediana": "1995-01-31",
-        "fin_max": "2026-10-12"
-      },
-      "XSHG": {
-        "n": 1,
-        "inicio_min": "1997-07-02",
-        "inicio_mediana": "1997-07-02",
-        "fin_max": "2026-10-13"
-      },
-      "XSWX": {
-        "n": 1,
-        "inicio_min": "1990-01-03",
-        "inicio_mediana": "1990-01-03",
-        "fin_max": "2026-10-09"
+        "fin_max": "2026-11-18"
       },
       "XTAI": {
         "n": 2,
         "inicio_min": "1997-07-02",
         "inicio_mediana": "1998-10-03",
-        "fin_max": "2026-10-13"
+        "fin_max": "2026-11-19"
       },
       "XTKS": {
         "n": 3,
         "inicio_min": "1965-01-05",
         "inicio_mediana": "1999-05-06",
-        "fin_max": "2026-10-13"
+        "fin_max": "2026-11-19"
       }
     },
     "por_clase": {
@@ -158,112 +146,115 @@
         "n": 4,
         "inicio_min": "1996-10-30",
         "inicio_mediana": "2002-09-12",
-        "fin_max": "2026-10-09"
+        "fin_max": "2026-11-18"
       },
       "EQUITY": {
-        "n": 20,
+        "n": 19,
         "inicio_min": "1962-01-02",
-        "inicio_mediana": "1998-05-30",
-        "fin_max": "2026-10-13"
+        "inicio_mediana": "1998-07-20",
+        "fin_max": "2026-11-19"
       },
       "ETF": {
         "n": 46,
         "inicio_min": "1993-01-29",
         "inicio_mediana": "2002-12-06",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-19"
       },
       "FUTURE": {
         "n": 5,
         "inicio_min": "2000-08-23",
         "inicio_mediana": "2000-08-30",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       },
       "INDEX": {
-        "n": 16,
+        "n": 15,
         "inicio_min": "1927-12-30",
-        "inicio_mediana": "1990-01-31",
-        "fin_max": "2026-10-13"
+        "inicio_mediana": "1990-01-02",
+        "fin_max": "2026-11-19"
       },
       "MUTUALFUND": {
         "n": 1,
         "inicio_min": "1986-12-11",
         "inicio_mediana": "1986-12-11",
-        "fin_max": "2026-10-12"
+        "fin_max": "2026-11-18"
       }
     },
     "retraso_fecha_publicacion_dias_por_mercado": {
       "ARCX": {
-        "0": 8483
+        "0": 8510
       },
       "BVMF": {
-        "0": 3290,
-        "1": 4998
+        "0": 3302,
+        "1": 5012
       },
       "CBOE_IDX": {
-        "1": 9264
+        "1": 9291
       },
       "CME": {
-        "1": 6581
+        "1": 6608
       },
       "FX_YAHOO": {
-        "1": 5931
+        "1": 5959
       },
       "NAV_US": {
-        "1": 10034
+        "1": 10061
       },
       "STOXX_IDX": {
-        "0": 4897
+        "0": 4924
       },
       "XAMS": {
-        "0": 7264
+        "0": 7292
       },
       "XETR": {
-        "0": 9808
+        "0": 9835
       },
       "XHKG": {
-        "0": 9818
+        "0": 9844
       },
       "XKRX": {
-        "0": 7342
+        "0": 7369
       },
       "XLON": {
-        "0": 10806
+        "0": 10833
       },
       "XMAD": {
-        "0": 8427
+        "0": 8454
       },
       "XNAS": {
-        "0": 6941
+        "0": 6968
       },
       "XNSE": {
-        "0": 4679
+        "0": 4704
       },
       "XNYS": {
-        "0": 24812
+        "0": 24839
       },
       "XPAR": {
-        "0": 9300
-      },
-      "XSHG": {
-        "0": 7091
-      },
-      "XSWX": {
-        "0": 9404
+        "0": 9327
       },
       "XTAI": {
-        "0": 7175
+        "0": 7200
       },
       "XTKS": {
-        "0": 15184
+        "0": 15210
       }
     },
-    "inicio_antes_2000": 43,
-    "errores": [],
+    "inicio_antes_2000": 41,
+    "errores": [
+      {
+        "ticker": "000001.SS",
+        "error": "ErrorContrato: contrato de precios: 000001.SS: 1 filas guardadas cambiarían de 'open' (p. ej. ['000001.SS, 2026-10-13']); 000001.SS: 1 filas guardadas cambiarían de 'low' (p. ej. ['000001.SS, 2026-10-13']); 000001.SS: 1 filas guardadas cambiarían de 'close' (p. ej. ['000001.SS, 2026-10-13']); la base de precios solo crece: una vela guardada no se corrige con una descarga posterior (permitir_correcciones=True solo para errores propios)"
+      },
+      {
+        "ticker": "NESN.SW",
+        "error": "ErrorContrato: contrato de precios: NESN.SW: 1 filas guardadas cambiarían de 'open' (p. ej. ['NESN.SW, 2026-09-07']); NESN.SW: 1 filas guardadas cambiarían de 'low' (p. ej. ['NESN.SW, 2026-09-07']); la base de precios solo crece: una vela guardada no se corrige con una descarga posterior (permitir_correcciones=True solo para errores propios)"
+      }
+    ],
     "robots_permite": {
       "https://query2.finance.yahoo.com/v8/finance/chart/AAPL": false,
       "https://finance.yahoo.com/quote/AAPL/history/": true
     },
-    "segundos_medios_por_ticker": 1.68,
+    "segundos_medios_por_ticker": 4.48,
     "avisos_inicio": {},
     "ampliado": {
       "estado": "completa (1842 de 1842)",
@@ -795,14 +786,63 @@
           "inicio_mediana": "1995-10-13"
         }
       },
-      "incidencias_calidad": {
-        "salto": 2069,
-        "volumen_cero": 210748,
-        "cierre_repetido": 568653,
-        "dividendo_alto": 183
-      },
+      "incidencias_calidad": null,
       "tabla": "results/ingesta/mercados_series/tablas/yahoo_ampliado_cobertura.csv",
-      "medido_utc": "2026-10-14T08:43:21+00:00"
+      "medido_utc": "2026-11-20T09:38:04+00:00"
+    },
+    "lotes": {
+      "3b1": {
+        "estado": "completa (761 de 761)",
+        "n_lista": 761,
+        "n_intentados": 761,
+        "n_ok": 758,
+        "fallidos": {
+          "GP": "otro",
+          "LU": "otro",
+          "PARA": "otro"
+        },
+        "sin_cotizacion_reciente": 9,
+        "por_indice": {
+          "sp500": {
+            "lista": 761,
+            "intentados": 761,
+            "ok": 758,
+            "inicio_mediana": "1995-09-26"
+          }
+        },
+        "incidencias_calidad": {
+          "salto": 1594,
+          "volumen_cero": 47569,
+          "cierre_repetido": 353385,
+          "dividendo_alto": 59
+        },
+        "tabla": "results/ingesta/mercados_series/tablas/yahoo_3b1_cobertura.csv",
+        "medido_utc": "2026-11-20T09:38:03+00:00"
+      },
+      "3b1_altas": {
+        "estado": "completa (6 de 6)",
+        "n_lista": 6,
+        "n_intentados": 6,
+        "n_ok": 6,
+        "fallidos": {},
+        "sin_cotizacion_reciente": 0,
+        "por_indice": {
+          "sin_indice": {
+            "lista": 6,
+            "intentados": 6,
+            "ok": 6,
+            "inicio_mediana": "2016-11-14"
+          }
+        },
+        "incidencias_calidad": {
+          "salto": 4,
+          "volumen_cero": 1,
+          "cierre_repetido": 94,
+          "dividendo_alto": 0
+        },
+        "tabla": "results/ingesta/mercados_series/tablas/yahoo_3b1_altas_cobertura.csv",
+        "medido_utc": "2026-11-20T09:38:03+00:00"
+      }
     }
   },
   "notas": [
@@ -812,7 +852,9 @@
     "Yahoo empieza hacia 1993-2000 en muchos índices y acciones no estadounidenses: ver inicio por mercado",
     "Supervivencia: Yahoo solo sirve tickers vivos (o reutilizados); deslistados fuera (WRDS pendiente)",
     "Dividendos de valores en GBp que Yahoo da en GBP se pasan a peniques; consolidaciones (VOD.L) y dividendos en acciones de Taiwán (splits fraccionarios) se anotan",
-    "Nivel AMPLIADO (S&P 500 histórico y constituyentes actuales de 10 índices): completa (1842 de 1842); cobertura por índice y mercado en tablas/yahoo_ampliado_cobertura.csv (orden posproceso); un ticker del S&P 500 histórico reutilizado por otra empresa devuelve la empresa ACTUAL"
+    "Nivel AMPLIADO (S&P 500 histórico y constituyentes actuales de 10 índices): completa (1842 de 1842); cobertura por índice y mercado en tablas/yahoo_ampliado_cobertura.csv (orden posproceso); un ticker del S&P 500 histórico reutilizado por otra empresa devuelve la empresa ACTUAL",
+    "Lote 3b1: completa (761 de 761), 758 con datos; cobertura en results/ingesta/mercados_series/tablas/yahoo_3b1_cobertura.csv",
+    "Lote 3b1_altas: completa (6 de 6), 6 con datos; cobertura en results/ingesta/mercados_series/tablas/yahoo_3b1_altas_cobertura.csv"
   ],
-  "fecha_sonda": "2026-10-14"
+  "fecha_sonda": "2026-11-20"
 }

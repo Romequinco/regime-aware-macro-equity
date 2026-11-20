@@ -122,5 +122,5 @@
     "No se comprueban los .CHECKSUM de Binance; se guarda el sha256 propio de cada ZIP",
     "Retraso: los meses anteriores a la apertura de Binance Vision (2021) se subieron después (Last-Modified de hasta años): la mediana desde 2023 es la representativa"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }
