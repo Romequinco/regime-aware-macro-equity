@@ -11,7 +11,6 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import re
-import shutil
 import subprocess
 import time
 import unicodedata
@@ -163,7 +162,7 @@ def _extension(content, formato):
         return 'html'
     if 'json' in str(formato).lower():
         return 'json'
-    if str(formato).lower() in ('xlsx', 'xls', 'csv'):
+    if str(formato).lower() in ('xlsx', 'xls', 'csv', 'xml'):
         return str(formato).lower()
     return 'zip' if content.startswith(b'PK') else 'bin'
 
@@ -274,6 +273,7 @@ def preparar_corpus(sonda, bucket, prefijo='', destino=None, ejecucion_id=None):
         if not re.fullmatch(r'[0-9a-f]{64}', str(doc.get('sha256', ''))):
             raise ValueError('El documento debe identificar el SHA-256 real de su original')
     rows, artifacts, originals, texts = [], {}, set(), set()
+    exported_originals = {}
 
     def key(relative):
         return f'{prefijo}/{relative}' if prefijo else relative
@@ -293,16 +293,22 @@ def preparar_corpus(sonda, bucket, prefijo='', destino=None, ejecucion_id=None):
         original_key = ''
         extension = str(doc.get('formato') or '')
         if raw_exists:
-            content = cached.read_bytes()
-            if sha256(content).hexdigest() != digest:
-                raise ValueError(f'Hash del original no coincide: {digest}')
-            extension = _extension(content, doc.get('formato'))
-            original_key = f'{category}/{_slug(doc["fuente"])}/{digest}.{extension}'
-            path = root / original_key
-            path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(cached, path)
-            track(original_key)
-            originals.add(original_key)
+            source = _slug(doc['fuente'])
+            original_entry = (category, source, digest, extension.lower())
+            if original_entry not in exported_originals:
+                content = cached.read_bytes()
+                if sha256(content).hexdigest() != digest:
+                    raise ValueError(f'Hash del original no coincide: {digest}')
+                extension = _extension(content, doc.get('formato'))
+                original_key = f'{category}/{source}/{digest}.{extension}'
+                path = root / original_key
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(content)
+                track(original_key)
+                originals.add(original_key)
+                exported_originals[original_entry] = (original_key, extension)
+            else:
+                original_key, extension = exported_originals[original_entry]
         text = doc.get('texto') or ''
         text_hash = sha256(text.encode('utf-8')).hexdigest() if text.strip() else ''
         text_key = f'procesados/txt/{identity}_{text_hash[:20]}.txt' if text_hash else ''
