@@ -188,8 +188,12 @@ al descargar (y el volumen multiplicado). El extractor los pasa a as-traded con 
 mismo día), descarta las velas incompletas (`contrato.descartar_velas_incompletas`) y valida: la vela debe
 ser visible después del cierre de su mercado + 30 min. La divisa original se guarda; la conversión a USD se
 hace al leer con el FX de referencia del BCE visible en la fecha (en series mensuales o trimestrales, el del
-fin del periodo). Cobertura del BCE: desde 1999-01-04 y unas 30 divisas (sin TWD); fuera de ella, `NaN` y
-un aviso (pendiente: FX secundario de la Fed, H.10).
+fin del periodo). Cobertura del BCE: desde 1999-01-04 y unas 30 divisas (el TWD solo hasta el 2020-10-30). Saneado
+P03 (2026-11-21): donde el BCE no publica, el FX secundario de la Fed H.10 en FRED (`fred:DEXTAUS` para el TWD y
+`fred:DEXCHUS` para el CNY, en unidades por USD y con su `fecha_publicacion`), y un tope de antigüedad (5 días
+hábiles el BCE, 10 la Fed, que publica cada semana): con un fixing más viejo la conversión sale `NaN` con aviso,
+nunca con un fixing caducado. Fuera de esa cobertura, `NaN` y un aviso. Subunidades: `GBp`/`GBX`, `ZAc`, `ILA` y
+`USX` (centavos de dólar de los futuros agrícolas, P04).
 
 Calendario `us_federal`: festivos federales más los cierres extraordinarios de `publicaciones.yaml`
 (lutos nacionales, Nochebuenas por orden ejecutiva, huracanes); conservador. Las fichas de fuente que cita
@@ -197,8 +201,19 @@ Calendario `us_federal`: festivos federales más los cierres extraordinarios de 
 
 Módulos: [`contrato`](contrato.py) (columnas, validadores), [`visibilidad`](visibilidad.py) (cierres y
 publicaciones), [`timegate`](timegate.py) (`as_of_series`, `ajustar_a_fecha`), [`divisas`](divisas.py),
-[`almacen`](almacen.py) (parquet), [`tools`](tools.py) (`get_serie`, `get_precios`) y
+[`almacen`](almacen.py) (parquet), [`tools`](tools.py) (`get_serie`, `get_precios`),
+[`saneado_precios`](saneado_precios.py) (reglas del saneado de los precios curados) y
 [`sinteticos`](sinteticos.py) (datos sin red).
+
+**Saneado de los precios (2026-11-21, agente A).** Lo aplica `curar-precios` (`curada_precios`, con las reglas y el
+TimeGate en el docstring de `saneado_precios`): fuera de la curada los 112 tickers reutilizados del S&P 500 (P02) y
+los que tienen algún hueco de calendario de más de 5 sesiones (P28); los huecos de hasta 5 sesiones se rellenan con
+la última vela (aviso `relleno_ffill`); los saltos de más del 50 % sin split se clasifican en pico aislado
+(corregido con el cierre anterior), cambio de nivel con razón de split limpio (factor en `split`) o movimiento real
+(se mantiene), con registro sin valores en `tablas/precios_curados_saltos.csv` (P11); ^W5000 pasa al cierre y el
+calendario de la NYSE (P21). El almacén tolera revisiones OHLC aisladas de Yahoo (hasta 3 sesiones por ticker: se
+conserva lo guardado y se apunta, P06). La lista curada se marca con `python -m
+ingesta.mercados_series.saneado_precios marcar-lista` (solo las entradas de precios que cambian).
 
 ## Catálogo de series (bloque 2)
 
@@ -537,6 +552,12 @@ licencia de MIAX); alternativa: Tiingo (exige cuenta propia; sin probar). Comand
 ingesta.mercados_series.supervivencia medir`. Es una medición: no añade series, publicadores ni mercados ni escribe en
 el almacén.
 
+**Regla fija (saneado P05, 2026-11-21):** en cada fecha solo entran los miembros point-in-time con precio curado
+visible, con un aviso con los que faltan (`supervivencia.miembros_con_precio`); la cartera principal se hace con
+índices y ETF y las acciones solo como prueba aparte, con el sesgo medido con los precios curados por año
+(`python -m ingesta.mercados_series.supervivencia sesgo-curada` → `tablas/sp500_sesgo_supervivencia.csv`: cobertura
+por año y cartera equiponderada de los miembros con precio frente al ^GSPC y al SPY, solo % y recuentos).
+
 ## Cartera: libre de riesgo, baselines y costes (bloque 8)
 
 [`cartera`](cartera/): todo punto en el tiempo (cada valor usa solo lo visible en su fecha).
@@ -546,14 +567,17 @@ el almacén.
   series, publicadores ni mercados propios; Euribor 3M no está catalogado).
 - **Baselines** ([`cartera.baselines`](cartera/baselines.py)): buy & hold SPY, 60/40 SPY/AGG (VBMFX antes de 2003-09),
   1/N sobre los ETF invertibles vivos en cada fecha, RSP, momentum sectorial 12-1 top 3 (SPDR) y 60/40 europeo (anexo:
-  CSPX.L/EUNA.DE desde 2017-11). Se ejecuta al cierre de la fecha de control y la señal solo ve `sesion < fecha`
-  (`baselines.vista_senal`; test `test_t1_a_baselines_senal`).
+  CSPX.L/EUNA.DE desde el 2017-11-30, sin empalme). Ejecución (saneado P08): se decide tras el cierre de la fecha de
+  control y se opera a la apertura de la sesión siguiente de cada instrumento (sin apertura, a su cierre, con aviso;
+  nunca al cierre de `t`; `baselines.precio_ejecucion`); el cierre de `t + 1` como sensibilidad. La convención
+  antigua (al cierre de `t` con señal `sesion < t`, `ejecucion="cierre_t"`) queda solo para comparar.
 - **Costes** ([`cartera.costes`](cartera/costes.py)): DEGIRO con 10.000 € (IBKR como sensibilidad); coste = comisión +
   0,25 % de FX + spread base por clase × multiplicador de crisis (CHL normalizado, entre 1 y 10)
   (`tablas/costes_modelo.csv`). Comisiones de la tarifa pública sin verificar.
 
-Informe: `python -m ingesta.mercados_series.cartera.informe`; ficha `cartera_baselines_costes`. Los precios
-se leen con `almacen.leer_precios` (validados por contrato: los 92 tickers del núcleo, ARCX y NAV_US incluidos).
+Informe: `python -m ingesta.mercados_series.cartera.informe`; ficha `cartera_baselines_costes`. Desde el saneado
+P18 los precios son los curados hasta el corte G2 (`almacen.leer_precios(curada=True)`) y el FX y el USD por EUR,
+los de la base curada de series.
 
 ## Fuentes y estado (cierre, bloque 9)
 

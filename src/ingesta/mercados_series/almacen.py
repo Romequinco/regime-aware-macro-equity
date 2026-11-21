@@ -509,9 +509,13 @@ def ruta_revisiones_precios(proveedor: str, ruta: Path | None = None) -> Path:
     return corpus_dir(TEMA) / "logs" / f"revisiones_precios_{proveedor}.csv"
 
 
+COLUMNAS_OHLC = ("open", "high", "low", "close")
+
+
 def escribir_precios(df: pd.DataFrame, proveedor: str, ruta: Path | None = None, *,
                      permitir_correcciones: bool = False,
-                     revisiones_toleradas: Iterable[str] = ()) -> list[Path]:
+                     revisiones_toleradas: Iterable[str] = (),
+                     max_revisiones_ohlc: int = 0) -> list[Path]:
     """Valida ``df`` (uno o varios tickers) y lo fusiona con lo guardado, un fichero por ticker.
 
     Base que solo crece: las sesiones nuevas se añaden y las ya guardadas se conservan tal cual
@@ -527,6 +531,13 @@ def escribir_precios(df: pd.DataFrame, proveedor: str, ruta: Path | None = None,
     no rechaza el ticker; la vela guardada se conserva tal cual (no hay fuga hacia atrás), las
     sesiones nuevas se añaden y cada discrepancia se apunta en ``ruta_revisiones_precios`` (ticker,
     sesión, columna, valor guardado y nuevo, detección). Un cambio en otra columna sigue siendo error.
+    ``max_revisiones_ohlc`` (saneado P06; ``0`` = no se tolera ninguna): revisiones AISLADAS de
+    ``open/high/low/close`` (Yahoo retoca una vela antigua: los suizos del 2026-09-07, 000001.SS, JD.L...).
+    Si cambian como mucho ``max_revisiones_ohlc`` sesiones guardadas de un ticker (y nada más de
+    ``VIGILADAS_PRECIOS`` fuera de lo tolerado), se trata igual que ``revisiones_toleradas``: se conserva la
+    vela guardada, se apunta cada discrepancia en el registro y se añaden las sesiones nuevas. Con más
+    sesiones cambiadas (un ticker reutilizado o una revisión de toda la historia: GP, LU, PARA) sigue
+    siendo ``ErrorContrato``.
     ``ruta`` sustituye a la carpeta ``precios/<proveedor>`` (tests). Escritura atómica por
     fichero. Devuelve las rutas.
     """
@@ -547,8 +558,20 @@ def escribir_precios(df: pd.DataFrame, proveedor: str, ruta: Path | None = None,
         guardado = leer_precios(tk, proveedor, ruta=carpeta)
         propio = nuevo[nuevo["ticker"] == tk]
         if not permitir_correcciones and len(guardado):
-            problemas = _cambios(guardado, propio, clave, estrictas, faltan_es_problema=False,
+            ohlc = tuple(c for c in COLUMNAS_OHLC if c in estrictas) if max_revisiones_ohlc > 0 else ()
+            sin_ohlc = tuple(c for c in estrictas if c not in ohlc)
+            problemas = _cambios(guardado, propio, clave, sin_ohlc, faltan_es_problema=False,
                                  rtol=TOLERANCIA_PRECIOS)
+            if ohlc and not problemas:
+                rev_ohlc = _revisiones_precios(guardado, propio, ohlc)
+                n_ses = int(rev_ohlc["sesion"].nunique())
+                if n_ses > max_revisiones_ohlc:
+                    problemas = _cambios(guardado, propio, clave, ohlc, faltan_es_problema=False,
+                                         rtol=TOLERANCIA_PRECIOS) + [
+                        f"{n_ses} sesiones guardadas con OHLC revisado (más de {max_revisiones_ohlc}: no es "
+                        f"una revisión aislada)"]
+                elif n_ses:
+                    revisiones.append(rev_ohlc)
             if not problemas and toleradas:
                 revisiones.append(_revisiones_precios(guardado, propio, toleradas))
             if problemas:

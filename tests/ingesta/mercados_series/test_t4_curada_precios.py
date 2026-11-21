@@ -266,7 +266,14 @@ def test_precios_curados_reales(tmp_path):
         c = curada_precios.leer_precios_curados(tk, pv, raiz=tmp_path / "precios_curados")
         o = almacen.leer_precios(tk, pv).set_index("sesion")
         assert c["fecha_publicacion"].max() <= CORTE
-        assert (c["close"].to_numpy() == o.loc[c["sesion"], "close"].to_numpy()).all()
+        # Saneado (P28 y P11): las sesiones añadidas son rellenos de huecos y las de cierre cambiado, picos
+        # corregidos; el resto del cierre, intacto.
+        avisos_tk = r["avisos"][r["avisos"]["ticker"] == tk].set_index("tipo")
+        propias = c[c["sesion"].isin(o.index)]
+        assert len(c) - len(propias) == (avisos_tk.loc["relleno_ffill", "n"] if "relleno_ffill" in avisos_tk.index
+                                         else 0)
+        distinto = propias["close"].to_numpy() != o.loc[propias["sesion"], "close"].to_numpy()
+        assert distinto.sum() == (r["resumen"].set_index("ticker").loc[tk, "picos_corregidos"])
     res = r["resumen"].set_index("ticker")
     assert res.loc["SGRO.L", "velas_quitadas"] > 0 and res.loc["^GSPC", "aperturas_anuladas"] > 0
     # Tablas reales del paso 4, si ya se generaron
@@ -280,4 +287,4 @@ def test_precios_curados_reales(tmp_path):
         assert pd.to_datetime(resumen["hasta"]).max() <= CORTE
         avisos = pd.read_csv(tablas / "precios_curados_avisos.csv")
         assert list(avisos.columns) == list(curada_precios.COLUMNAS_AVISOS)
-        assert set(avisos["accion"]) <= {"quitada", "nulo", "solo aviso"}
+        assert set(avisos["accion"]) <= {"quitada", "nulo", "solo aviso", "relleno", "corregido", "split registrado"}

@@ -620,12 +620,11 @@ def _es_tipo_de_cambio(serie: str) -> bool:
 
 
 def _base_fx(divisas_necesarias: Sequence[str], curada: bool = False) -> pd.DataFrame:
-    """Series del BCE que hacen falta para convertir ``divisas_necesarias`` (leídas del almacén;
-    de la base curada con ``curada``)."""
-    isos = {divisas.normalizar_subunidad(1.0, d)[1] for d in divisas_necesarias} - {"USD"}
-    if not isos:
+    """Series de FX que hacen falta para convertir ``divisas_necesarias`` (BCE y la secundaria de la Fed H.10,
+    ``divisas.series_fx``; leídas del almacén, de la base curada con ``curada``)."""
+    ids = divisas.series_fx(divisas_necesarias)
+    if not ids:
         return vacio_series()
-    ids = {divisas.SERIE_USD_EUR} | {divisas.SERIE_FX.format(divisa=d) for d in isos if d != "EUR"}
     return almacen.leer_series(sorted(ids), curada=curada)
 
 
