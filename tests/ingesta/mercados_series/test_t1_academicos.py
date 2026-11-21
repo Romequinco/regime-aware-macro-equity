@@ -267,11 +267,12 @@ def test_t1_regla_fichero_french_45_dias():
 
 
 def test_t1_cota_inferior_de_edicion_vista_sin_el_periodo():
-    """Vintage 'unico' (OFR): una edición vista el 12-oct sin septiembre -> septiembre no antes del 12-oct."""
-    e = _entrada(lag="1D", frecuencia="mensual", fuente="ofr_fsi")
+    """Vintage 'unico' (fuentes sin vintage por edición; la OFR lo era hasta el saneado P15): una edición vista el
+    12-oct sin septiembre -> septiembre no antes del 12-oct."""
+    e = _entrada(lag="1D", frecuencia="mensual", fuente="jst_macrohistory")
     vieja = _serie(["2026-07-01", "2026-08-01", "2026-09-01"])        # septiembre provisional (día 1)
     nueva = _serie(["2026-07-01", "2026-08-01", "2026-09-01", "2026-10-01"])
-    info = ac._Info("ofr:X", "ofr_fsi", "fsi.csv", "X")
+    info = ac._Info("ofr:X", "jst_macrohistory", "fsi.csv", "X")
     t = ac.tabla_serie("ofr:X", e, [(_ed("2026-09-02 17:51", "2026-10-12 16:05"), vieja),
                                         (_ed("2026-10-14 15:00"), nueva)], info)
     pub = t.set_index("fecha_referencia")["fecha_publicacion"]
@@ -286,7 +287,7 @@ def test_t1_cota_no_adelanta_la_regla():
     """Vintage 'unico': la copia de data/raw vista el 20-jul sin junio no cambia la regla (más tardía)."""
     vieja = _serie(pd.bdate_range("2026-05-01", "2026-05-29"))
     nueva = _serie(pd.bdate_range("2026-05-01", "2026-08-31"))
-    t = ac.tabla_serie("ofr:X", _entrada(fuente="ofr_fsi"), [(_ed("2026-07-20 19:37", origen="fase1"), vieja),
+    t = ac.tabla_serie("ofr:X", _entrada(fuente="jst_macrohistory"), [(_ed("2026-07-20 19:37", origen="fase1"), vieja),
                                             (_ed("2026-09-25 21:55"), nueva)])
     pub = t.set_index("fecha_referencia")["fecha_publicacion"]
     assert pub["2026-06-15"] == pd.Timestamp("2026-08-14") and pub["2026-05-29"] == pd.Timestamp("2026-07-15")
@@ -637,7 +638,7 @@ def test_t1_archivar_ediciones_y_leer_solo_del_archivo(tmp_path):
     with pytest.raises(ValueError, match="no se sobrescribe"):
         ac._copiar(tmp_path / "x", arch / "2026-07" / "fase1_FF_FACTORS_3_MONTHLY.parquet", "0" * 64, {})
     with pytest.raises(ValueError, match="vintage por edición"):
-        ac.archivar_ediciones(["ofr_fsi"], catalogo=cat, raiz_crudo=raiz)
+        ac.archivar_ediciones(["jst_macrohistory"], catalogo=cat, raiz_crudo=raiz)
 
 
 def test_t1_data_raw_misma_edicion_por_cabecera_crsp(tmp_path):
@@ -682,7 +683,9 @@ def test_t1_tabla_academicos_crudos_locales():
     t = ac.tabla_academicos()
     assert set(t["fuente"]) == set(ac.FUENTES_CATALOGO)
     cape = t[t["serie"] == "shiller:CAPE"]
-    assert not cape["fecha_referencia"].duplicated().any()
+    # Un mes por edición (bug 1871.1 de la Fase 1); con las ediciones de la Wayback (saneado P15) un mes revisado
+    # tiene varias filas, una por edición.
+    assert not cape.duplicated(["fecha_referencia", "vintage"]).any()
     assert (t["fecha_publicacion"] >= t["fecha_referencia"]).all()
     edicion = t["fuente"].isin(ac.FUENTES_VINTAGE)
     assert t.loc[edicion, "vintage"].str.fullmatch(r"\d{4}-\d{2}").all()

@@ -70,7 +70,7 @@ def test_plan_valida_y_es_borrador(plan):
      "pendiente_calendario"),
     (lambda p: p["reglas_conservadoras"]["mercado_diario"]["reglas"]["ecb_fx"]["actual"].update(hora="17:00"),
      "publicaciones.yaml"),
-    (lambda p: p["tramo_no_fiable"]["series"]["fred:ICSA"].update(dias_extra=1), "dias_extra"),
+    (lambda p: p["tramo_no_fiable"]["series"]["fred:CFNAI"].update(dias_extra=1), "dias_extra"),
     (lambda p: p["incidencias_eda"]["tipos"]["salto"].update(accion="borrar"), "accion"),
     (lambda p: p["homogeneizacion"]["frecuencias"].update(remuestrear=True), "remuestrear"),
     (lambda p: p["reglas_conservadoras"]["academicas"]["reglas"]["FF_MENSUAL"].update(
@@ -168,7 +168,8 @@ def test_asignacion_coincide_con_la_lista(plan, lista, tablas):
                 antes = e["tramo_conservador_antes_de"]
                 assert (pd.isna(a["corte"]) if antes == "toda" else a["corte"] == pd.Timestamp(antes)), sid
             else:
-                assert a["regla"] in ("EUROSTAT_HICP", "EUROSTAT_ESI", "LIBOR_3M_QUARTERLY"), sid
+                assert a["regla"] in ("EUROSTAT_HICP", "EUROSTAT_ESI", "LIBOR_3M_QUARTERLY", "DOL_ICSA",
+                                          "DOL_CONTINUADAS"), sid   # saneado P12: calendario del DOL
 
 
 # --- Las reglas conservadoras nunca adelantan -----------------------------------------------------------------
@@ -375,9 +376,11 @@ def test_proyecciones_se_separan():
 def test_proyecciones_esperadas_cuadran(plan, tablas, lista):
     inv, _ = tablas
     p = inv[inv["es_proyeccion"].astype(bool)]
+    # Saneado P16: el WEO sale de la curada (decision fuera); las demás proyecciones siguen en la tabla aparte.
+    p = p[p["id"].map(lambda s: lista.get(s, {}).get("decision")) == "proyecciones"]
     esperadas = plan["proyecciones"]["esperadas"]
     assert len(p) == esperadas["total"] == sum(e["decision"] == "proyecciones" for e in lista.values())
-    assert p["fuente"].value_counts().to_dict() == {k: v for k, v in esperadas.items() if k != "total"}
+    assert p["fuente"].value_counts().to_dict() == {k: v for k, v in esperadas.items() if k != "total" and v}
 
 
 # --- Homogeneización, escalas por vintage e incidencias -----------------------------------------------------------

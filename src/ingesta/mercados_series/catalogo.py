@@ -81,6 +81,8 @@ CARGADOR_POR_FUENTE = {
 # Fuentes con archivo de ediciones propio (fuentes.academicos): la copia de data/raw es su edición previa.
 FUENTES_EDICION = ("ken_french", "shiller", "goyal_welch", "ofr_fsi")
 NOTA_PREVIA_ALFRED = "anterior a ALFRED: valor del primer vintage"
+# Saneado P31: la base curada la añade a esas filas (el valor del primer vintage ya está revisado).
+NOTA_FUGA_PREVIA = "posible fuga de revisiones: valor del primer vintage de ALFRED, ya revisado (anterior a ALFRED)"
 # Estados que entran en la base de series (con datos de data/raw o de los extractores).
 ESTADOS_CARGABLES = ("activa", "retirada", "capada", "duplicada")
 FRECUENCIAS = ("diaria", "semanal", "mensual", "trimestral", "anual")
@@ -123,7 +125,7 @@ COLUMNAS_EXCEPCIONES_DETALLE = (*COLUMNAS_EXCEPCIONES, "fecha_regla", "origen")
 __all__ = [
     "RUTA_CATALOGO", "RUTA_LAGS", "RUTA_EXCEPCIONES", "NOTA_REVISABLE", "NOTA_REVISABLE_EDICION",
     "NOTA_PRIMERA_EDICION",
-    "NOTAS_REVISABLE", "NOTA_RECONSTRUIDA", "NOTA_EXCEPCION", "NOTA_PREVIA_ALFRED", "ESTADOS", "ESTADOS_CARGABLES",
+    "NOTAS_REVISABLE", "NOTA_RECONSTRUIDA", "NOTA_EXCEPCION", "NOTA_PREVIA_ALFRED", "NOTA_FUGA_PREVIA", "ESTADOS", "ESTADOS_CARGABLES",
     "FRECUENCIAS", "GRUPOS", "AGENTES", "PROYECCIONES", "FUENTES_VIVAS", "FUENTES_EDICION", "PRIORIDAD_ORIGENES",
     "origenes", "metodos_admitidos", "expandir_patrones", "CARGADOR_POR_FUENTE", "nota_previa_alfred", "entrada_previa", "vista_regla_previa",
     "FINES_PERIODO", "PREFIJOS", "cargar_lags", "fin_de_periodo", "fecha_publicacion_lag",

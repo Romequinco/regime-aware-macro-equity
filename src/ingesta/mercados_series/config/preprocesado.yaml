@@ -131,6 +131,15 @@ reglas_conservadoras:
           rba (medido en la sonda: la tabla F2, rba:FCMYGBAG10D, iba 6 días naturales por detrás; F1, 1 día)'
         motivo: 'la F2 se actualiza con hasta 6 días de retraso: 7 días naturales y primer hábil (la misma regla para
           las dos tablas del publicador)'
+      RBA_F1:
+        regla_de_lags: rba_diario
+        series: ['rba:FIRMMCRTD']
+        actual: {publicador: rba_diario, dia: siguiente_habil, hora: "12:00", huso: Australia/Sydney, habiles: semana}
+        conservadora: {publicador: rba_diario, lag: "1D", habiles: semana}
+        fuente: 'saneado P12 (2026-11-21): ficha rba (medido en la sonda: la tabla F1, rba:FIRMMCRTD, iba 1 día por detrás;
+          la de 7 días es la de la F2, rba:FCMYGBAG10D); el tipo oficial del RBA se publica con la decisión del consejo'
+        motivo: 'la F1 ya no hereda los 7 días de la F2: su regla actual + un hábil de margen, como boc_valet y boe_yc'
+
 
   banco_mundial:
     descripcion: 'Anuales del WDI (594 series en la base; 24 en el alcance estricto de D9). Regla: la siguiente
@@ -361,6 +370,25 @@ reglas_conservadoras:
           tardía en FRED, hasta 272 días)'
         motivo: 'con 3 comparaciones (< inventario.MIN_COMPARACIONES) no se mide: pasa de «no fiable» a no medible. El
           adelanto de 272 días es el alta de la serie en FRED, no un retraso de publicación: un mes más de la OCDE'
+      DOL_ICSA:
+        regla_de_lags: ICSA
+        series: ['fred:ICSA']
+        actual: {lag: "5D", fin_periodo: fecha}
+        conservadora: {lag: "7D", fin_periodo: fecha}
+        fuente: 'saneado P12 (2026-11-21): publicaciones.yaml (dol_claims: Unemployment Insurance Weekly Claims, jueves a
+          las 08:30 NY con las peticiones iniciales de la semana que acaba el sábado anterior; https://www.dol.gov/ui/data.pdf)'
+        motivo: 'antes, tramo no fiable hasta 2009-05-28 con 61 días: el «adelanto» medido era el primer vintage de ALFRED
+          (2009-05-28), no la publicación real del DOL. Con su calendario: el jueves (sábado + 5) y 2 días de margen
+          (festivo en jueves: el DOL publica el miércoles o el viernes)'
+      DOL_CONTINUADAS:
+        regla_de_lags: CLAIMS_CONTINUADAS
+        series: ['fred:CCSA']
+        actual: {lag: "13D", fin_periodo: fecha}
+        conservadora: {lag: "15D", fin_periodo: fecha}
+        fuente: 'saneado P12: publicaciones.yaml (dol_claims: las continuadas salen el mismo jueves con la semana previa,
+          sábado + 12)'
+        motivo: 'antes, tramo no fiable hasta 2009-09-10 con 68 días (el primer vintage de ALFRED); con el calendario del
+          DOL: la regla actual + 2 días de margen'
       NBER_NY_COMMERCIAL_PAPER:
         actual: {lag: "1D", fin_periodo: mes}
         conservadora: {lag: "1M1D", fin_periodo: mes}
@@ -502,9 +530,6 @@ tramo_no_fiable:
     fred:BOPTIMP: {regla: COMERCIO_EXTERIOR, veredicto: no fiable, corte: '2010-04-13',
                    adelanto_dias: 18.0, medida: alfred_previa, n: 198, dias_extra: 25,
                    conservadora: {lag: "2M26D", fin_periodo: mes}}
-    fred:CCSA: {regla: CLAIMS_CONTINUADAS, veredicto: no fiable, corte: '2009-09-10',
-                adelanto_dias: 48.0, medida: alfred_previa, n: 891, dias_extra: 55,
-                conservadora: {lag: "68D", fin_periodo: fecha}}
     fred:CES0500000003: {regla: UNRATE, veredicto: no fiable, corte: '2011-03-04',
                          adelanto_dias: 19.0, medida: alfred_previa, n: 187, dias_extra: 26,
                          conservadora: {lag: "1M27D", fin_periodo: mes}}
@@ -577,9 +602,6 @@ tramo_no_fiable:
     fred:HPIPONM226S: {regla: FHFA_HPI, veredicto: no fiable, corte: '2012-05-23',
                        adelanto_dias: 29.0, medida: alfred_previa, n: 172, dias_extra: 36,
                        conservadora: {lag: "2M37D", fin_periodo: mes}}
-    fred:ICSA: {regla: ICSA, veredicto: no fiable, corte: '2009-05-28',
-                adelanto_dias: 49.0, medida: alfred_previa, n: 906, dias_extra: 56,
-                conservadora: {lag: "61D", fin_periodo: fecha}}
     fred:IEABC: {regla: TRANSACCIONES_INTERNACIONALES, veredicto: no fiable, corte: '2014-06-18',
                  adelanto_dias: 13.0, medida: alfred_previa, n: 49, dias_extra: 20,
                  conservadora: {lag: "3M21D", fin_periodo: trimestre}}
@@ -830,8 +852,9 @@ proyecciones:
     sep: 'fred:FEDTARMD, fred:PCECTPIMD y fred:UNRATEMD (SEP del FOMC, vintage_exacto de ALFRED); horizonte = año de
       fecha_referencia - año del vintage; edicion = vintage (fecha de la reunión)'
     funcion: 'preprocesado.separar_proyecciones (reparte filas; no cambia ninguna)'
-  # 3b-2: + 66 del WEO (11 conceptos de los agregados 001, 163 y 200 × 6 horizontes); antes 240 + 3 = 243
-  esperadas: {imf_weo: 306, fred_alfred: 3, total: 309}
+  # 3b-2: + 66 del WEO (11 conceptos de los agregados 001, 163 y 200 × 6 horizontes); antes 240 + 3 = 243.
+  # Saneado P16 (2026-11-21): el WEO sale de la curada (sin ediciones antes de 2025-04): solo quedan las 3 del SEP.
+  esperadas: {imf_weo: 0, fred_alfred: 3, total: 3}
   notas:
     - 'Las fechas de las proyecciones no cambian: son exactas (vintage del WEO o de ALFRED)'
 
@@ -854,8 +877,9 @@ homogeneizacion:
        y divisas.py convierte a USD al leer (USD base, decisión de la sonda)'}
   escalas:   # tanto por uno → porcentaje (solo series que se quedan; las de alias no se escalan)
     - {unidad: 'tanto por uno anual', factor: 100, unidad_nueva: '% anual',
-       series: [gw:M.lty],
-       motivo: 'tipos de Goyal-Welch frente a AAA, BAA, GS10 y TB3MS de FRED en % anual'}
+       series: [gw:M.lty, gw:M.tbl],
+       motivo: 'tipos de Goyal-Welch frente a AAA, BAA, GS10 y TB3MS de FRED en % anual (gw:M.tbl, historia previa de
+         fred:TB3MS desde el saneado P24)'}
     - {unidad: 'tanto por uno mensual', factor: 100, unidad_nueva: '% mensual',
        series: [gw:M.CRSP_SPvw, gw:M.CRSP_SPvwx, gw:M.Rfree, gw:M.corpr, gw:M.infl, gw:M.ltr],
        motivo: 'rentabilidades de Goyal-Welch frente a las de Ken French en %'}
@@ -863,7 +887,7 @@ homogeneizacion:
        series: [deriv:VOLREAL21_GSPC],
        motivo: 'volatilidad realizada frente al VIX y demás volatilidades implícitas en %'}
   sin_escalar:
-    - {unidades: ['tanto por uno', 'tanto por uno al cuadrado (mensual)'], series: ['gw:M.csp', 'gw:M.ntis', 'gw:M.svar'],
+    - {unidades: ['tanto por uno', 'tanto por uno al cuadrado (mensual)'], series: ['gw:M.ntis', 'gw:M.svar'],
        motivo: 'ratios y varianza sin equivalente en %: se dejan como están'}
   frecuencias:
     remuestrear: false

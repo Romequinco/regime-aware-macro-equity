@@ -450,6 +450,44 @@ def extender_con_almacen(sid: str, entrada: dict[str, Any], filas: pd.DataFrame,
     return nuevas[list(COLUMNAS_SERIES)], info
 
 
+# Saneado P21 (2026-11-21): series yf: cuyo solape con el almacén no coincide (GC=F: el futuro continuo de Yahoo cambia
+# con cada vencimiento; ^W5000: otras sesiones) y que por eso se paraban el 2026-07-17. Se rehacen enteras desde el
+# almacén de precios (como los índices del 3b-1): el cierre as-traded de cada sesión guardada, con su fecha.
+REHACER_DESDE_ALMACEN = ("yf:GC=F", "yf:^W5000")
+NOTA_REHECHA = "serie rehecha desde el almacén de precios (cierre as-traded de Yahoo; saneado P21)"
+
+
+def rehacer_con_almacen(sid: str, entrada: dict[str, Any], filas: pd.DataFrame,
+                        carpeta: Path | None = None) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """La serie ``yf:`` entera desde el almacén de precios: una fila por sesión con cierre (``REHACER_DESDE_ALMACEN``).
+
+    Las sesiones de ``filas`` (``data/raw``) anteriores a la primera del almacén se conservan tal cual. Fecha:
+    ``disponible_utc`` = el más tardío entre el del almacén y la regla del catálogo (cierre de su ``mercado`` +
+    margen); ``fecha_publicacion`` = primera decisión tras él. Devuelve ``(filas, info)``; sin almacén, ``filas`` sin
+    tocar.
+    """
+    from ingesta.mercados_series import almacen
+
+    info: dict[str, Any] = {"extendida": False, "rehecha": False, "motivo": None, "nuevas": 0, "fin": None}
+    tk = sid.split(":", 1)[1]
+    p = almacen.leer_precios(tk, PROVEEDOR_PRECIOS, ruta=carpeta)
+    p = p[p["close"].notna()].sort_values("sesion").reset_index(drop=True)
+    if p.empty:
+        info["motivo"] = "sin el ticker en el almacén de precios"
+        return filas, info
+    disp_regla = visibilidad.disponible_cierre_serie(p["sesion"], entrada["mercado"])
+    alm = p["disponible_utc"].astype(UTC)
+    disp = alm.where(alm >= disp_regla, disp_regla).astype(UTC)
+    serie = pd.Series(p["close"].to_numpy(float), index=pd.DatetimeIndex(p["sesion"]))
+    nuevas = _filas(sid, entrada, serie, primera_decision_vec(disp).astype(FECHA), disp)
+    nuevas["nota"] = [NOTA_REHECHA if not isinstance(n, str) else f"{n}; {NOTA_REHECHA}" for n in nuevas["nota"]]
+    previas = filas[filas["fecha_referencia"] < p["sesion"].min()]
+    out = pd.concat([previas, nuevas], ignore_index=True)[list(COLUMNAS_SERIES)]
+    info.update(extendida=True, rehecha=True, nuevas=int(len(nuevas)), previas_data_raw=int(len(previas)),
+                fin=p["sesion"].max().date().isoformat())
+    return out, info
+
+
 def vol_realizada(sid: str, entrada: dict[str, Any], componente: pd.DataFrame,
                   desde: pd.Timestamp) -> pd.DataFrame:
     """Volatilidad realizada (``VOL_REALIZADA``) de las fechas de ``componente`` posteriores a ``desde``.
@@ -499,6 +537,11 @@ def _cargar(raiz: Path | None, catalogo: dict[str, dict] | None,
         info.incluida = True
         if extender_precios is not False and sid.startswith("yf:") and e["metodo"] == "cierre_mercado":
             carpeta = None if extender_precios is True else Path(extender_precios)
+            if sid in REHACER_DESDE_ALMACEN:
+                rehecha, info.extension = rehacer_con_almacen(sid, e, tablas[sid], carpeta)
+                if len(rehecha):
+                    tablas[sid] = rehecha
+                continue
             extra, info.extension = extender_con_almacen(sid, e, tablas[sid], carpeta)
             if len(extra):
                 tablas[sid] = pd.concat([tablas[sid], extra], ignore_index=True)
