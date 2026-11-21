@@ -306,7 +306,7 @@ Escribe en el corpus, fuera del repo:
 |---|---|
 | `series/base_curada.parquet` | Mismo contrato que la base. Solo las series que se quedan (también las de `historia_previa`), con las fechas curadas, las escalas corregidas, nada publicado después del corte y las derivadas recalculadas con los componentes curados |
 | `series/alias.parquet` | Alias → canónico, motivo y correlación (sin valores) |
-| `series/proyecciones.parquet` | Las 243 proyecciones (WEO y SEP) en su tabla aparte |
+| `series/proyecciones.parquet` | Las proyecciones en su tabla aparte: 309 (WEO y SEP) al cerrar el paso 4; 3 del SEP tras el saneado (P16 saca el WEO) |
 | `series/registro_cambios.parquet` | Antes y después de cada fecha o escala cambiada |
 | `precios_curados/<proveedor>/` | Los tickers que se quedan, hasta el corte y con las propuestas del EDA aplicadas (las velas de relleno fuera de calendario se quitan y las aperturas de relleno pasan a nulo). Los avisos van en `tablas/precios_curados_avisos.csv` |
 
@@ -321,6 +321,28 @@ En el repo solo van resúmenes de metadatos (`tablas/curada_*.csv`) y el noteboo
 | Verificación | V1 (TimeGate), V2 (coherencia) | Las verificaciones de `salidas_paso4` de `preprocesado.yaml` |
 | Corrección | P1, P2, P3 | Una sola ronda |
 | Notebook | N1 (lo construye), N2 (pulido visual) | `04_preprocesado` |
+
+## Saneado (2026-11-21)
+
+Auditoría de solo lectura y saneado con las opciones que eligió el usuario en el HTML: detalle, cifras y estado de
+cada pendiente (P01–P35) en [`AUDITORIA_SANEADO.md`](AUDITORIA_SANEADO.md#resultado-del-saneado-2026-11-21).
+
+**Después del saneado:**
+- **Base de trabajo:** 11.193.883 filas de 1.523 series.
+- **Base curada:** 10.627.785 filas de 514 series. Salen 48: las 28 del WEO y 20 paradas. Entran 27 que eran alias,
+  ahora como historia previa, y 2 nuevas.
+- **Alias y proyecciones:** 59 alias; 3 proyecciones, todas del SEP.
+- **Precios curados:** 1.489 tickers. Salen 112 reutilizados y 15 con huecos de más de 5 sesiones.
+- **Verificaciones:** las 13 + 13 siguen en 0, y hay 5 nuevas de precios, también en 0.
+- **Corte:** sigue en 2026-11-13, en un solo sitio (`config/corte.yaml`).
+- **Refresco:** `refrescar --corte`. Las tools leen la base curada por defecto.
+
+**Cifras de este documento que el saneado corrige:**
+- **Nulos de `fred_alfred`:** no son «casi todos festivos». Solo 6 de los 26.200 nulos lo eran.
+- **Alias con historia anterior a 2000:** 26, no 25.
+- **Proyecciones:** 309, no 243.
+- **Tickers sospechosos:** 37.
+- **Historia recortada:** la cifra buena es 18, la de los avisos (P26); la de `descargas_3b_estado.csv` es 16.
 
 ## Rescatado de la sonda (para los pasos siguientes y la memoria del TFM)
 
@@ -349,5 +371,6 @@ Lo que dejaban los notebooks antiguos y no recoge el README (originales en la et
 | 2 | Hecho (2026-11-17): módulos `inventario` y `redundancia` (órdenes del mismo nombre), 10 tablas de metadatos en `results/.../tablas/`, notebook `02_inventario` (230 KB). Crítico: 8 hallazgos, corregidos en una ronda. Pendiente de tus decisiones D2 (grupos «a decidir»), D6, D8, D9 y D10 | este |
 | 3 | Hecho (2026-11-19): módulos `seleccion`, `eda` y `preprocesado` (órdenes del mismo nombre), `config/lista_curada.yaml`, `config/preprocesado.yaml` (borrador sin aplicar), 15 tablas y notebook `03_seleccion_eda` (0,84 MB, 11 figuras).<br>- Series: quedan 516, alias 105, fuera 570, proyecciones 243.<br>- Tickers: quedan 1.462 (26 con aviso de sospecha).<br>- Simulación: 1,07 M filas se retrasan y 0 se adelantan.<br>- 3b: 268 descargas.<br>Proceso: 3 constructores, 2 verificadores (16 hallazgos, corregidos en una ronda) y 2 agentes del notebook.<br>Pendiente de tus decisiones:<br>- Ken French (`pendiente_calendario`);<br>- fecha de creación de OFR FSI, Goyal-Welch y BIS (buscar fuera);<br>- Q1;<br>- canónicos dudosos;<br>- fronteras | este |
 | 3b | **3b-1 HECHO (2026-11-19/20; alcance H1)**:<br>- **Series:** FRED vivo, ALFRED (161), BCE, curvas, BoC/BoJ/RBA, Ken French (edición 2026-10), Shiller, GW, OFR y 23 índices `yf:` desde el almacén de precios (^GSPC, ^VIX…, rendimientos del Tesoro).<br>- **Precios:** 834 del S&P 500 y del núcleo al día, 6 altas del S&P (BE, P, VYLR, TWLO, OKTA, SKYD) y Coinbase.<br>- **OAS de ICE:** `archivar-oas`; la primera captura recupera 29 días.<br>- **Base:** 10.598.317 filas, sin perder ninguna. Las fuentes sin historia de revisiones solo crecen (132 valores anteriores del BCE conservados y 130 revisiones fechadas desde su observación). Copia previa rotatoria y `tablas/solo_anadir_ultima.csv`.<br>- **Estado** (`tablas/descargas_3b_estado.csv`): 28 hechos, 3 resueltos, 61 limitaciones declaradas y 187 aplazadas al 3b-2.<br>- **Limitaciones principales:** Bundesbank (anti-bots); 112 tickers del S&P reutilizados; KVUE y los truncados; la composición del S&P posterior al 2026-08-18 (fja05680 sin cambios); ^BCOM, ^W5000 y GC=F.<br>- **Cobertura histórica del S&P 500:** 67,8 % de los días-tramo (`tablas/sp500_cobertura_3b1.csv`).<br>- **Corte G2 (2026-11-13):** se aplica en el paso 4.<br>**Pendiente: 3b-2** (UCITS, acciones no estadounidenses, macro internacional, series nuevas, ediciones del WEO) | este |
-| 4 | **HECHO (2026-11-20; cifras actualizadas tras el 3b-2).**<br>**Base curada** (`curada.py`, orden `curar`):<br>- 10.189.709 filas de 533 series, corte 2026-11-13.<br>- 1.426.536 filas retrasadas por las capas del plan y 0 adelantadas.<br>- Escalas por vintage (6 series) y unidades homogeneizadas (27).<br>- Derivadas recalculadas.<br>- 109 alias y 309 proyecciones en tablas aparte.<br>- Registro de cambios y manifiesto firmado; publicación atómica.<br>**Precios curados** (`curada_precios.py`, `curar-precios`):<br>- 1.616 tickers.<br>- 29.611 velas de relleno quitadas.<br>- 430.050 aperturas de relleno anuladas (las que tienen volumen, con aviso propio).<br>- VBMFX y ^SKEW, sin apertura.<br>**Tools:** `get_serie`/`get_precios(base='curada')`, `get_proyeccion`, alias con aviso y aviso de datos atrasados.<br>**Verificaciones:** 13 + 13 en 0, revisadas por dos verificadores y corregidas en una ronda.<br>**Notebook:** `04_preprocesado`.<br>**Pendientes menores:** USD de las series en CNY sin fixing visible; la historia anterior a 2000 de 25 alias solo está en la base de trabajo | este |
+| 4 | **HECHO (2026-11-20; cifras actualizadas tras el 3b-2).**<br>**Base curada** (`curada.py`, orden `curar`):<br>- 10.189.709 filas de 533 series, corte 2026-11-13.<br>- 1.426.536 filas retrasadas por las capas del plan y 0 adelantadas.<br>- Escalas por vintage (6 series) y unidades homogeneizadas (27).<br>- Derivadas recalculadas.<br>- 109 alias y 309 proyecciones en tablas aparte.<br>- Registro de cambios y manifiesto firmado; publicación atómica.<br>**Precios curados** (`curada_precios.py`, `curar-precios`):<br>- 1.616 tickers.<br>- 29.611 velas de relleno quitadas.<br>- 430.050 aperturas de relleno anuladas (las que tienen volumen, con aviso propio).<br>- VBMFX y ^SKEW, sin apertura.<br>**Tools:** `get_serie`/`get_precios(base='curada')`, `get_proyeccion`, alias con aviso y aviso de datos atrasados.<br>**Verificaciones:** 13 + 13 en 0, revisadas por dos verificadores y corregidas en una ronda.<br>**Notebook:** `04_preprocesado`.<br>**Pendientes menores:** USD de las series en CNY sin fixing visible; la historia anterior a 2000 de 26 alias solo estaba en la base de trabajo (resuelto en el saneado, P24) | este |
 | 5 | **Notebook `05_resultado` hecho (2026-11-20)**: la foto final del dataset (533 series de 23 fuentes, 1.616 tickers, corte 2026-11-13, 26 verificaciones en 0, 124 limitaciones declaradas). **Pendiente:** el catálogo formal para los agentes, destilar este plan en el README, integrar main (3 commits del Tema 2) y la PR | este |
+| saneado | **Hecho (2026-11-21)**: auditoría (35 pendientes) y saneado elegido por el usuario; ver [`AUDITORIA_SANEADO.md`](AUDITORIA_SANEADO.md). Notebooks `03`–`05` sin regenerar todavía (cifras previas al saneado) | rama `fase2/t1-saneado` |

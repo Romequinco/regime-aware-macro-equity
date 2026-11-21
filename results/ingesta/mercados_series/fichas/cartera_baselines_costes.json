@@ -33,7 +33,7 @@
           "max_drawdown": -0.5518944026470529,
           "rebalanceos": 1,
           "coste_total_usd": 0.0,
-          "segundos": 5.2,
+          "segundos": 4.2,
           "avisos": [],
           "notas": [],
           "ejecucion": "apertura_t1"
@@ -47,7 +47,7 @@
           "max_drawdown": -0.33741989841713327,
           "rebalanceos": 35,
           "coste_total_usd": 0.0,
-          "segundos": 13.1,
+          "segundos": 11.0,
           "avisos": [
             "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1993-01-29): se ejecuta a su cierre",
             "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1993-12-31): se ejecuta a su cierre",
@@ -69,7 +69,7 @@
           "max_drawdown": -0.42070641954305465,
           "rebalanceos": 406,
           "coste_total_usd": 0.0,
-          "segundos": 151.3,
+          "segundos": 132.8,
           "avisos": [
             "1/N 46 ETF: sin apertura en la sesión de ejecución de ['USMV'] (orden del 2011-10-31): se ejecuta a su cierre",
             "1/N 46 ETF: sin apertura en la sesión de ejecución de ['MTUM'] (orden del 2013-04-30): se ejecuta a su cierre",
@@ -88,7 +88,7 @@
           "max_drawdown": -0.599228131727789,
           "rebalanceos": 1,
           "coste_total_usd": 0.0,
-          "segundos": 3.3,
+          "segundos": 3.0,
           "avisos": [],
           "notas": [],
           "ejecucion": "apertura_t1"
@@ -102,7 +102,7 @@
           "max_drawdown": -0.46537418327763724,
           "rebalanceos": 323,
           "coste_total_usd": 0.0,
-          "segundos": 40.2,
+          "segundos": 35.0,
           "avisos": [],
           "notas": [],
           "ejecucion": "apertura_t1"
@@ -116,7 +116,7 @@
           "max_drawdown": -0.25224612003311153,
           "rebalanceos": 10,
           "coste_total_usd": 0.0,
-          "segundos": 3.9,
+          "segundos": 3.5,
           "avisos": [
             "1 filas en EUR posteriores al último fixing visible en 2017-11-30 (2017-11-29): se usa ese fixing",
             "1 filas en EUR posteriores al último fixing visible en 2017-12-29 (2017-12-28): se usa ese fixing",
@@ -136,7 +136,7 @@
           "max_drawdown": -0.5518944026470531,
           "rebalanceos": 1,
           "coste_total_usd": 0.0,
-          "segundos": 4.8,
+          "segundos": 4.2,
           "avisos": [],
           "notas": [],
           "ejecucion": "cierre_t1"
@@ -150,7 +150,7 @@
           "max_drawdown": -0.3397663911674158,
           "rebalanceos": 35,
           "coste_total_usd": 0.0,
-          "segundos": 12.9,
+          "segundos": 11.0,
           "avisos": [],
           "notas": [
             "empalme AGG: VBMFX → AGG (se usa el primero vivo en cada control)"
@@ -166,7 +166,7 @@
           "max_drawdown": -0.41822796810833507,
           "rebalanceos": 406,
           "coste_total_usd": 0.0,
-          "segundos": 147.9,
+          "segundos": 133.4,
           "avisos": [],
           "notas": [],
           "ejecucion": "cierre_t1"
@@ -180,7 +180,7 @@
           "max_drawdown": -0.5992281317277891,
           "rebalanceos": 1,
           "coste_total_usd": 0.0,
-          "segundos": 3.1,
+          "segundos": 3.0,
           "avisos": [],
           "notas": [],
           "ejecucion": "cierre_t1"
@@ -194,7 +194,7 @@
           "max_drawdown": -0.4693900562844229,
           "rebalanceos": 323,
           "coste_total_usd": 0.0,
-          "segundos": 37.1,
+          "segundos": 34.9,
           "avisos": [],
           "notas": [],
           "ejecucion": "cierre_t1"
@@ -208,7 +208,7 @@
           "max_drawdown": -0.25214482563033536,
           "rebalanceos": 10,
           "coste_total_usd": 0.0,
-          "segundos": 3.7,
+          "segundos": 3.5,
           "avisos": [
             "1 filas en EUR posteriores al último fixing visible en 2017-11-30 (2017-11-29): se usa ese fixing",
             "1 filas en EUR posteriores al último fixing visible en 2017-12-29 (2017-12-28): se usa ese fixing",
@@ -235,7 +235,7 @@
           "max_drawdown": -0.3381278881387041,
           "rebalanceos": 35,
           "coste_total_usd": 633.6007299543143,
-          "segundos": 13.4
+          "segundos": 11.1
         },
         "momentum sectorial 12-1 top 3 [degiro]": {
           "inicio": "1999-12-31",
@@ -246,7 +246,7 @@
           "max_drawdown": -0.47675825491619883,
           "rebalanceos": 323,
           "coste_total_usd": 11741.884196004044,
-          "segundos": 41.3
+          "segundos": 34.9
         },
         "1/N 46 ETF [degiro]": {
           "inicio": "1993-01-29",
@@ -257,7 +257,7 @@
           "max_drawdown": -0.4596723469571413,
           "rebalanceos": 406,
           "coste_total_usd": 30918.085885920504,
-          "segundos": 154.4
+          "segundos": 135.1
         },
         "60/40 UCITS CSPX.L/EUNA.DE [degiro]": {
           "inicio": "2017-11-30",
@@ -268,7 +268,7 @@
           "max_drawdown": -0.25280549789642304,
           "rebalanceos": 10,
           "coste_total_usd": 128.56323666114704,
-          "segundos": 5.8
+          "segundos": 3.4
         },
         "60/40 SPY/AGG [ibkr]": {
           "inicio": "1993-01-29",
@@ -279,7 +279,7 @@
           "max_drawdown": -0.3376168806073123,
           "rebalanceos": 35,
           "coste_total_usd": 174.05674851828525,
-          "segundos": 12.7
+          "segundos": 11.0
         },
         "momentum sectorial 12-1 top 3 [ibkr]": {
           "inicio": "1999-12-31",
@@ -290,7 +290,7 @@
           "max_drawdown": -0.4694566052083604,
           "rebalanceos": 323,
           "coste_total_usd": 4473.332113284978,
-          "segundos": 41.3
+          "segundos": 34.7
         },
         "60/40 UCITS CSPX.L/EUNA.DE [ibkr]": {
           "inicio": "2017-11-30",
@@ -301,7 +301,7 @@
           "max_drawdown": -0.2525822625819948,
           "rebalanceos": 10,
           "coste_total_usd": 82.72506921288414,
-          "segundos": 4.0
+          "segundos": 3.5
         },
         "60/40 SPY/AGG [degiro_sin_multiplicador]": {
           "inicio": "1993-01-29",
@@ -312,7 +312,7 @@
           "max_drawdown": -0.3381250592282756,
           "rebalanceos": 35,
           "coste_total_usd": 606.4940218631936,
-          "segundos": 12.8
+          "segundos": 11.0
         },
         "momentum sectorial 12-1 top 3 [degiro_sin_multiplicador]": {
           "inicio": "1999-12-31",
@@ -323,7 +323,7 @@
           "max_drawdown": -0.47515149556780567,
           "rebalanceos": 323,
           "coste_total_usd": 11119.065262529528,
-          "segundos": 39.9
+          "segundos": 34.6
         }
       },
       "multiplicador_spy": {

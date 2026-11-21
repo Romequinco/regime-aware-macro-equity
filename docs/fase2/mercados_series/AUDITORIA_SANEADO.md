@@ -320,3 +320,82 @@ Por eso ninguna de esas fuentes sale como opción «fuente alternativa».
   - los 110/113 recalculados de C03;
   - los tiempos de ALFRED de F06.
 - Las cifras de L02 dependen del método: 67,78 % en la tabla, 67,88 % para el auditor y 67,45 % para el verificador.
+
+## Resultado del saneado (2026-11-21)
+
+El usuario eligió una opción por pendiente en el HTML (32 de 35, con notas; P16, P25 y P28 sin opción, solo con nota).
+Se aplicó con dos agentes en paralelo, cada uno en su propio worktree y su rama, y una cadena final con el código
+fusionado en `fase2/t1-saneado`:
+- **Agente A (precios):** rama `fase2/t1-san-precios`.
+- **Agente B (series):** rama `fase2/t1-san-series`.
+- **Cadena final:** `construir-base --sin-red` → `preprocesado` → `curar` → `saneado_precios marcar-lista` →
+  `curar-precios` → cartera → `supervivencia sesgo-curada`.
+
+Antes de tocar nada se hizo un respaldo completo en `D:/tfm_corpus/mercados_series/respaldo_saneado_20261121/`.
+
+**Resultado de conjunto:**
+
+| | Antes | Después |
+|---|---|---|
+| Base de trabajo | 10.620.113 filas, 1.521 series | 11.193.883 filas, 1.523 series (la segunda construcción no cambia nada) |
+| Base curada | 10.189.709 filas, 533 series | 10.627.785 filas, 514 series |
+| Alias / proyecciones | 109 / 309 | 59 / 3 (solo SEP) |
+| Precios curados | 1.616 tickers | 1.489 tickers |
+| Posible fuga de revisiones (con las anteriores a ALFRED) | 4,96 % | 4,34 % |
+| Vintage «unico» | 17,07 % | 15,65 % |
+| Tickers que no llegan al corte | 21 | 1 (PARA) |
+| Huecos de calendario en precios | 9.126 sesiones | 0 (6.427 rellenadas; 15 tickers fuera) |
+| Verificaciones | 13 + 13 en 0 | 13 + 13 en 0, más 5 nuevas de precios en 0 |
+
+| Id | Elegida | Estado | Qué se hizo |
+|---|---|---|---|
+| P01 | b | Hecho | `tools.BASE_DEFECTO = 'curada'`: `get_serie`, `get_precios` y `resolver_id` leen la curada si no se dice nada; la de trabajo hay que pedirla |
+| P02 | c | Hecho | Los 112 reutilizados salen de la curada; verificación `reutilizados_fuera` |
+| P03 | c | Hecho | `fred:DEXTAUS` y `fred:DEXCHUS` (H.10, calendario `fed_h10`) en la base y la curada. `divisas.py` las usa donde no publica el BCE, con un tope de antigüedad de 5 días hábiles (BCE) y 10 (Fed). 2330.TW y ^TWII ya salen en USD |
+| P04 | b | Hecho | USX → (USD, 100). ZS=F en USD sin vacíos; ZC=F y ZW=F salen por P28 |
+| P05 | b | Hecho | Regla `supervivencia.miembros_con_precio` y tabla `sp500_sesgo_supervivencia.csv`: cobertura media 67,6 %; la cartera equiponderada de supervivientes rinde unos 5,6 p. p. al año más que la de miembros con precio |
+| P06 | b | Hecho | El almacén tolera hasta 3 velas OHLC revisadas por ticker; 16 tickers redescargados; «no llega al corte» baja de 21 a 1 |
+| P07 | c | Hecho | `config/corte.yaml` + `corte.py`; orden `refrescar --corte` (20 pasos, lista congelada, parada si la re-selección la cambia); `curar`/`curar-precios --corte` |
+| P08 | c | Hecho | Ejecución en la apertura de t+1; si falta, cierre de t+1 con aviso (nunca el de t); cierre de t+1 como sensibilidad. Decisión cerrada en `docs/tfm/arquitectura.md` |
+| P09 | b | Hecho | ESI EA21 canónico (EA20 historia previa); HICP del BCE/Eurostat canónico con el IPC de la OCDE como historia previa |
+| P10 | c + nota | Hecho | Aviso de atraso en todas las frecuencias; 13 series pasan a «retirada»; salen 20 paradas (6 con sustituto, 14 acaban antes de 2016) |
+| P11 | c + nota | Hecho, 4 dudosos | 1.477 saltos revisados: 283 picos rellenados con el día anterior (360 sesiones), 71 splits no registrados apuntados en `split`, 851 movimientos reales que se mantienen. Registro en `precios_curados_saltos.csv` |
+| P12 | b | Hecho | ICSA de 61 a 7 días y peticiones continuadas de 68 a 15 (mediana 2007–2009); `rba:FIRMMCRTD` con su regla F1 (de 7 a 2 días) |
+| P13 | b | Hecho | Eurostat, BIS y RBA con vintage con fecha: se recuperan las 463 correcciones |
+| P14 | b | Hecho | Recordatorio mensual en el README del tema: `refrescar --mensual` |
+| P15 | b | Hecho, a decidir | `fuentes/wayback.py`: 65 capturas de Ken French, 121 de Shiller y 19 de la OFR. Coste: un periodo nuevo se ve en la captura siguiente (ver abajo) |
+| P16 | nota | Hecho | El WEO sale de la curada (28 series y 306 proyecciones); crudo y base de trabajo intactos |
+| P17 | b + nota | Hecho | Fallo del cargador de ALFRED (no de la fuente), arreglado sin redescargar: MEDCPI y TRMMEANCPI recuperan agosto y septiembre y se quedan (108 nulos falsos menos) |
+| P18 | c | Hecho | 6 baselines con los precios curados hasta el corte; la 60/40 europea desde el 2017-11-30, con costes y sin empalme |
+| P19 | b | Hecho | `get_serie` avisa del % de vacíos de la ventana desde el 1 % (37 series al corte) |
+| P20 | b | Hecho | PIB y paro de la zona euro con composición de cada fecha como canónico; aviso de composición fija en 9 series |
+| P21 | b | Hecho | `yf:GC=F` y `yf:^W5000` rehechas desde el almacén de precios; ^W5000 en XNYS; `^BCOM` retirada (DBC no sigue el mismo índice) |
+| P22 | b | Hecho | Bundesbank como historia previa del 10 años AAA del BCE, con aviso |
+| P23 | b + nota | Hecho | Archivo del WDI por la API del Banco Mundial (fuente 57): 142 ediciones para 33 series; ninguna sale |
+| P24 | b | Hecho | Los 26 alias anteriores a 2000 pasan a historia previa (DFF→EFFR, Shiller→GS10…) |
+| P25 | nota | Limitación | No se elimina nada: no había nada irrelevante que quitar (las 618 sesiones de CNY anteriores a 2000 salen vacías en USD con aviso) |
+| P26 | a | Limitación | Se declara; la cifra buena de historia recortada es 18 (avisos), no 16 |
+| P27 | b | Hecho, sin cambios | fja05680 idéntico (última instantánea 2026-08-18) |
+| P28 | nota | Hecho, a revisar | Huecos de hasta 5 sesiones rellenados (6.427 sesiones en 631 tickers); 15 tickers con huecos mayores fuera (ver abajo) |
+| P29 | b + nota | Hecho | Octubre de 2025 rellenado con septiembre en 21 series, con nota y sin adelantar ninguna fecha |
+| P30 | b | Hecho | Fuera las filas vacías en días de mercado cerrado (6) |
+| P31 | b | Hecho | «Posible fuga de revisiones» en las 73.559 filas de FRED anteriores a ALFRED (las 971 de `philly:ROUTPUT` ya no están: la serie salió por P10) |
+| P32 | b | Hecho | `tests/ingesta/mercados_series/conftest.py`: aviso visible si falta el corpus; `T1_EXIGIR_CORPUS=1` hace fallar |
+| P33 | b | Hecho | Cifras y frases al día en este documento, `PLAN_DESCARGA.md` y el README del tema. Los notebooks `03`–`05` aún tienen las cifras de antes |
+| P34 | a | Limitación | Solo Yahoo (F3) |
+| P35 | a | Fase 4 | D10 abierta |
+
+**Quedan tres cosas para el usuario:**
+1. **P15, retraso de las ediciones de la Wayback.** Con vintage = fecha de captura, la Wayback tiene huecos (Ken French
+   no tiene ninguna captura entre 2017-07 y 2020-05). Retraso mediano 2016–2026:
+   - Ken French diario: de 83 a 219 días;
+   - OFR: de 7 a 129 días.
+
+   Al corte, las 5 series de la OFR salen desfasadas. La alternativa es fechar los periodos nuevos con la regla de
+   publicación y el valor de su primera captura, marcado como fuga menor.
+2. **P28, instrumentos que salen por la regla de los 5 días:** EURUSD=X, JPY=X, USDJPY=X, CNY=X, USDCNY=X, ^SKEW,
+   BZ=F, ZC=F, ZN=F y ZW=F. Si alguno debe quedarse, hace falta una excepción.
+3. **P11, cuatro casos registrados como split que pueden ser caídas o subidas reales:** AES 2001-09-26,
+   HIG 2008-12-05, NKTR 2023-02-24 y NWG.L 2009-01-19.
+
+Pendiente también: regenerar los notebooks `03`–`05` con las cifras nuevas.
