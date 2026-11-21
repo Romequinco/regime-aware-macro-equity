@@ -1,14 +1,14 @@
 verificacion,descripcion,comprobadas,filas_fallan,detalle
-no_adelanta,ninguna fecha_publicacion curada anterior a la original (antes de y después del corte),10204276,0,ninguna fila adelanta
-disponible_coherente,disponible_utc nulo o con primera decisión igual a la fecha curada,10204276,0,coherente
-orden_vintages,"en cada serie y fecha_referencia, ordenadas por la fecha original, la curada no baja",10106283,0,orden mantenido
-truncado,"fecha_publicacion >= fecha_referencia, nada posterior al corte G2 y TimeGate en una muestra (lo visible en una fecha no cambia al quitar lo publicado después)",10189834,0,125 consultas TimeGate (25 series × 5 fechas)
-recuentos_lista,series de la base curada = las «queda» de lista_curada.yaml (con historia_previa); sin alias ni proyecciones dentro,533,0,533 series = 533 «queda» (9 de historia_previa)
-recuentos_alias,filas de la tabla de alias = alias de lista_curada.yaml; cada canónico en la base curada,109,0,109 alias; 65 con correlación
-recuentos_proyecciones,series de proyecciones = proyecciones.esperadas de preprocesado.yaml,309,0,"309 series, 1340 filas (9 quitadas por el corte)"
-exactas_sin_cambio,las filas vintage_exacto y cierre_mercado no cambian por las capas 1 y 2,8394796,0,sin cambios en las capas 1 y 2
-posteriores_sin_cambio,las filas publicadas después del corte del tramo (capa 1) o de H.15 (capa 2) no cambian,14624024,0,sin cambios tras el corte del tramo ni tras H.15
-unidades_homogeneizadas,"homogeneizacion de preprocesado.yaml: escalas a su unidad_nueva, unidades equivalentes con su nombre canónico y sin_escalar sin tocar",10189709,0,27 series homogeneizadas (34029 filas escaladas ×100 en 8 series); ninguna unidad no canónica
-derivadas,"derivadas recalculadas con sus componentes curados: fecha = la máxima de los componentes, valor del cálculo y las mismas claves que en la base de trabajo",97993,0,8 derivadas recalculadas; 46722 filas con fecha nueva; valores distintos de la base de trabajo: ninguno; quitadas por ventana incompleta: {'deriv:VOLREAL21_GSPC': 11}
+no_adelanta,ninguna fecha_publicacion curada anterior a la original (antes de y después del corte),10227745,0,ninguna fila adelanta
+disponible_coherente,disponible_utc nulo o con primera decisión igual a la fecha curada,10227745,0,coherente
+orden_vintages,"en cada serie y fecha_referencia, ordenadas por la fecha original, la curada no baja",10141122,0,orden mantenido
+truncado,"fecha_publicacion >= fecha_referencia, nada posterior al corte G2 y TimeGate en una muestra (lo visible en una fecha no cambia al quitar lo publicado después)",10212635,0,125 consultas TimeGate (25 series × 5 fechas)
+recuentos_lista,series de la base curada = las «queda» de lista_curada.yaml (con historia_previa); sin alias ni proyecciones dentro,514,0,514 series = 514 «queda» (35 de historia_previa)
+recuentos_alias,filas de la tabla de alias = alias de lista_curada.yaml; cada canónico en la base curada,59,0,59 alias; 53 con correlación
+recuentos_proyecciones,series de proyecciones = proyecciones.esperadas de preprocesado.yaml,3,0,"3 series, 116 filas (9 quitadas por el corte)"
+exactas_sin_cambio,las filas vintage_exacto y cierre_mercado no cambian por las capas 1 y 2,8380508,0,sin cambios en las capas 1 y 2
+posteriores_sin_cambio,las filas publicadas después del corte del tramo (capa 1) o de H.15 (capa 2) no cambian,14632064,0,sin cambios tras el corte del tramo ni tras H.15
+unidades_homogeneizadas,"homogeneizacion de preprocesado.yaml: escalas a su unidad_nueva, unidades equivalentes con su nombre canónico y sin_escalar sin tocar",10212510,0,29 series homogeneizadas (35289 filas escaladas ×100 en 9 series); ninguna unidad no canónica
+derivadas,"derivadas recalculadas con sus componentes curados: fecha = la máxima de los componentes, valor del cálculo y las mismas claves que en la base de trabajo",86623,0,7 derivadas recalculadas; 38173 filas con fecha nueva; valores distintos de la base de trabajo: ninguno; quitadas por ventana incompleta: {'deriv:VOLREAL21_GSPC': 11}
 simulacion,registro de cambios y simulación del paso 3 (tablas/preprocesado_simulacion.csv): mismos recuentos,188,0,mismos recuentos
-contrato,la base curada pasa contrato.validar_series (sin errores),10189709,0,válida
+contrato,la base curada pasa contrato.validar_series (sin errores),10212510,0,válida

@@ -76,6 +76,29 @@ python -m ingesta.mercados_series construir-base --sin-red [--desde-cero --respa
 python -m ingesta.mercados_series resumen
 ```
 
+**Refresco con una sola orden (saneado P07, 2026-11-21).** El corte vive en `config/corte.yaml` (`corte.py`; la
+variable `T1_CORTE` lo sobrescribe). `refrescar` encadena descargas, base y curado con el corte pedido, deja un log
+por paso en `<corpus>/mercados_series/logs/refrescar/` y una fila por paso en `logs/refrescar_estado.csv`. La lista
+curada queda **congelada** salvo con `--reseleccionar`, y entonces la orden se para si la lista cambia (G6). Es larga
+(horas): mejor lanzarla en segundo plano y sin cambiar de rama mientras corre.
+
+```bash
+python -m ingesta.mercados_series refrescar --corte 2026-12-11 --plan        # enseña los 20 pasos sin hacer nada
+python -m ingesta.mercados_series refrescar --corte 2026-12-11               # descargas + base + curado
+python -m ingesta.mercados_series refrescar --corte 2026-12-11 --desde curar # reanudar desde un paso
+python -m ingesta.mercados_series curar --corte 2026-11-20                   # solo una pieza, con otro corte
+```
+
+Cuando el refresco se da por bueno, se cambia la fecha en `config/corte.yaml` y se hace commit.
+
+**Mantenimiento mensual (saneado P14): recordatorio, a mano, el primer día hábil de cada mes.** Lo que no se
+recupera si nadie lo descarga a tiempo: la ventana de 3 años de las OAS de ICE en FRED, las ediciones mensuales de
+Ken French, Shiller, Goyal-Welch y OFR (cada fuente reescribe su fichero) y el FRED vivo.
+
+```bash
+python -m ingesta.mercados_series refrescar --mensual   # = descargar-fred-vivo + archivar-oas + académicas --archivar
+```
+
 ```python
 from ingesta.mercados_series.tools import get_precios, get_proyeccion, get_serie
 
@@ -89,20 +112,21 @@ p.datos      # sesiones visibles a las 16:30 NY, ajuste reconstruido con lo cono
 Las dos tools devuelven solo lo visible a las 16:30 America/New_York del día pedido: nada con `fecha_publicacion`
 posterior, ni sesiones sin cerrar (cierre local + 30 min), ni splits o dividendos futuros en el ajuste.
 
-**Base de trabajo y base curada (paso 4).** `get_serie` y `get_precios` llevan `base=`. Las dos bases usan el
+**Base de trabajo y base curada (paso 4).** `get_serie`, `get_precios` y `resolver_id` llevan `base=`; **desde el
+saneado (P01, 2026-11-21) el defecto es la curada** (`tools.BASE_DEFECTO`). Las dos bases usan el
 mismo TimeGate y el mismo truncado; solo cambia de dónde se lee (`almacen.ruta_series(curada=...)`,
 `ruta_precios(..., curada=...)`):
 
 | `base` | Lee | Cuándo usarla |
 |---|---|---|
-| `'trabajo'` (por defecto) | `series/base_series.parquet`, `precios/<proveedor>/` | Auditar, depurar y construir. Es lo de siempre: nada de lo existente cambia |
-| `'curada'` | `series/base_curada.parquet`, `precios_curados/<proveedor>/` | **Los agentes y el backtest** |
+| `'curada'` (por defecto, o `None`) | `series/base_curada.parquet`, `precios_curados/<proveedor>/` | **Los agentes y el backtest** |
+| `'trabajo'` (hay que pedirla) | `series/base_series.parquet`, `precios/<proveedor>/` | Auditar, depurar y construir: no lleva las fechas prudentes del curado ni el corte |
 | una tabla en memoria | la tabla tal cual | Tests y recortes (como antes) |
 
 En la base curada:
 - **Alias:** un id que es alias en `series/alias.parquet` (también después de resolver el alias de la Fase 1) sirve
   su canónico con el aviso «alias de X: se sirve el canónico».
-- **Proyecciones** (WEO y SEP): no salen por `get_serie`, que lanza `KeyError` y remite a
+- **Proyecciones** (las 3 del SEP; el WEO salió de la curada en el saneado, P16): no salen por `get_serie`, que lanza `KeyError` y remite a
   `get_proyeccion(id, fecha)`. Esa tool lee `series/proyecciones.parquet` con el mismo TimeGate (la última edición
   visible por año proyectado, con `horizonte` y `edicion`). En la base de trabajo, las proyecciones siguen saliendo
   por `get_serie` como hasta ahora.
@@ -114,7 +138,13 @@ En la base curada:
   fecha. Es el caso de las acciones no estadounidenses, que llegan a octubre hasta el 3b-2, o de un ticker que dejó de
   cotizar. `get_serie` avisa igual en las series diarias y semanales, con un umbral que es el mayor entre 10 días
   hábiles y 3 veces su ritmo de publicación (una diaria que se publica una vez al mes, como los factores diarios de
-  Ken French, no avisa por eso). Las series mensuales, trimestrales y anuales no se miran.
+  Ken French, no avisa por eso). Desde el saneado (P10, 2026-11-21) también las mensuales, trimestrales y anuales:
+  avisan si desde su última fecha de referencia ha pasado más que su retraso mediano + 2 periodos + 10 días (salvo
+  las que se retrasan por diseño, `tools.SIN_AVISO_ATRASO`), y una serie con estado `retirada` lo dice siempre.
+- **Otros avisos del saneado (solo en la curada):** el % de periodos vacíos de la ventana pedida si pasa del 1 %
+  (P19); «historia previa de X» o «su historia anterior está en Y» (`completa_a` de la lista curada: P09, P22, P24);
+  la zona euro con composición fija retropolada (EA20, EA21, XM, EMU, I10...: P20); la `nota` de la lista curada
+  (P21, P22); y los meses no publicados rellenados (octubre de 2025, P29).
 - **FX:** el de `divisa='USD'` sale de la base curada.
 
 **Cripto (Coinbase).** Los tickers llevan el prefijo `cb:` (`cb:BTC-USD`, `cb:ETH-USD`) y se piden con
@@ -122,9 +152,10 @@ En la base curada:
 (mercado `CRYPTO`), en USD. Con el proveedor por defecto (`yahoo`) no hay filas y el aviso lo recuerda.
 
 ```python
-r = get_serie("fred:DGS10", "2020-03-16", base="curada")
-p = get_precios("SPY", "2020-03-16", base="curada")
-w = get_proyeccion("imf:WEO.USA.LUR.PROY.H1", "2020-03-16")   # solo de la base curada
+r = get_serie("fred:DGS10", "2020-03-16")                    # curada (defecto)
+p = get_precios("SPY", "2020-03-16")
+t = get_serie("fred:DGS10", "2020-03-16", base="trabajo")    # la de trabajo, solo para auditar
+w = get_proyeccion("fred:UNRATEMD", "2020-03-16")             # SEP; solo de la base curada
 ```
 
 ## Contrato (bloque 1)
@@ -188,8 +219,12 @@ al descargar (y el volumen multiplicado). El extractor los pasa a as-traded con 
 mismo día), descarta las velas incompletas (`contrato.descartar_velas_incompletas`) y valida: la vela debe
 ser visible después del cierre de su mercado + 30 min. La divisa original se guarda; la conversión a USD se
 hace al leer con el FX de referencia del BCE visible en la fecha (en series mensuales o trimestrales, el del
-fin del periodo). Cobertura del BCE: desde 1999-01-04 y unas 30 divisas (sin TWD); fuera de ella, `NaN` y
-un aviso (pendiente: FX secundario de la Fed, H.10).
+fin del periodo). Cobertura del BCE: desde 1999-01-04 y unas 30 divisas (el TWD solo hasta el 2020-10-30). Saneado
+P03 (2026-11-21): donde el BCE no publica, el FX secundario de la Fed H.10 en FRED (`fred:DEXTAUS` para el TWD y
+`fred:DEXCHUS` para el CNY, en unidades por USD y con su `fecha_publicacion`), y un tope de antigüedad (5 días
+hábiles el BCE, 10 la Fed, que publica cada semana): con un fixing más viejo la conversión sale `NaN` con aviso,
+nunca con un fixing caducado. Fuera de esa cobertura, `NaN` y un aviso. Subunidades: `GBp`/`GBX`, `ZAc`, `ILA` y
+`USX` (centavos de dólar de los futuros agrícolas, P04).
 
 Calendario `us_federal`: festivos federales más los cierres extraordinarios de `publicaciones.yaml`
 (lutos nacionales, Nochebuenas por orden ejecutiva, huracanes); conservador. Las fichas de fuente que cita
@@ -197,8 +232,22 @@ Calendario `us_federal`: festivos federales más los cierres extraordinarios de 
 
 Módulos: [`contrato`](contrato.py) (columnas, validadores), [`visibilidad`](visibilidad.py) (cierres y
 publicaciones), [`timegate`](timegate.py) (`as_of_series`, `ajustar_a_fecha`), [`divisas`](divisas.py),
-[`almacen`](almacen.py) (parquet), [`tools`](tools.py) (`get_serie`, `get_precios`) y
+[`almacen`](almacen.py) (parquet), [`tools`](tools.py) (`get_serie`, `get_precios`),
+[`saneado_precios`](saneado_precios.py) (reglas del saneado de los precios curados) y
 [`sinteticos`](sinteticos.py) (datos sin red).
+
+**Saneado de los precios (2026-11-21, agente A).** Lo aplica `curar-precios` (`curada_precios`, con las reglas y el
+TimeGate en el docstring de `saneado_precios`): fuera de la curada los 112 tickers reutilizados del S&P 500 (P02) y
+los que tienen algún hueco de calendario de más de 5 sesiones (P28; salvo ^SKEW, BZ=F, ZC=F, ZN=F y ZW=F, que se
+quedan por decisión del usuario con aviso `hueco_largo`: `saneado_precios.EXCEPCIONES_HUECO`); los huecos de hasta 5
+sesiones se rellenan con
+la última vela (aviso `relleno_ffill`); los saltos de más del 50 % sin split se clasifican en pico aislado
+(corregido con el cierre anterior), cambio de nivel con razón de split limpio (factor en `split`) o movimiento real
+(se mantiene; los 4 casos revisados a mano por el usuario como reales están en `saneado_precios.SALTOS_REALES`), con
+registro sin valores en `tablas/precios_curados_saltos.csv` (P11); ^W5000 pasa al cierre y el
+calendario de la NYSE (P21). El almacén tolera revisiones OHLC aisladas de Yahoo (hasta 3 sesiones por ticker: se
+conserva lo guardado y se apunta, P06). La lista curada se marca con `python -m
+ingesta.mercados_series.saneado_precios marcar-lista` (solo las entradas de precios que cambian).
 
 ## Catálogo de series (bloque 2)
 
@@ -252,6 +301,25 @@ las excepciones de publicación medidas (abajo) y después se anotan en la `nota
 reconstruidos y las anomalías de la fuente (picos aislados que se revierten, cierres en fin de semana, rachas
 planas: `tablas/anomalias_series.csv`). `python -m ingesta.mercados_series resumen [--csv]` resume la base
 guardada.
+
+**Saneado del 2026-11-21 (series).**
+- **Vintage con fecha (P13):** Eurostat, BIS y RBA ya no llevan vintage `unico`: lo guardado lleva la fecha de su
+  primera descarga (`base.VINTAGE_PRIMERA_DESCARGA`) y cada valor nuevo o corregido, la de su observación
+  (`base.fechar_vintages`); el solo-añadir conserva la versión anterior, como en el BCE.
+- **Banco Mundial (P23):** las series de la lista curada (`fuentes.wdi_archivo.PAISES`) se cargan con las 142
+  ediciones del archivo del WDI (API v2, fuente 57; `python -m ingesta.mercados_series.fuentes.wdi_archivo`), estilo
+  ALFRED: vintage = primer día del mes siguiente a la edición. Esas series salen del solo-añadir.
+- **Ediciones académicas antiguas (P15): descartado** por el usuario (2026-11-21). Fechar las capturas de la Wayback
+  Machine por su fecha de captura retrasaba demasiado los datos (Ken French diario de 83 a 219 días de mediana). Las
+  capturas que se bajaron siguen en el crudo (`meta.origen = wayback`), pero `fuentes.academicos.ediciones` las
+  ignora; la OFR sigue con vintage `unico`.
+- **ALFRED (P17):** `fuentes.alfred._compactar` ya no da por retirado un periodo vigente con el mismo valor en dos
+  vintages seguidos (MEDCPI y TRMMEANCPI de 2026-08 y 2026-09).
+- **Festivos (P30):** fuera las filas vacías de las curvas en días que su calendario da cerrados
+  (`base.quitar_vacios_cerrados`). **GC=F y ^W5000 (P21):** rehechas desde el almacén de precios
+  (`fuentes.fase1.REHACER_DESDE_ALMACEN`). **H.10 (P03):** `fred:DEXTAUS` y `fred:DEXCHUS`.
+- La primera construcción con este código cambia claves guardadas (vintages de ALFRED, académicas, Banco Mundial):
+  `construir-base --sin-red --reemplazar` una vez; el solo-añadir se aplica igual.
 
 **Solo-añadir en las oficiales sin historia de revisiones (paso 3b).** BCE (también sus revisables: `includeHistory`
 da una versión por observación), Eurostat, BIS, FMI (la API solo sirve las ediciones del WEO desde 2025-04; una edición más antigua que llega
@@ -537,6 +605,12 @@ licencia de MIAX); alternativa: Tiingo (exige cuenta propia; sin probar). Comand
 ingesta.mercados_series.supervivencia medir`. Es una medición: no añade series, publicadores ni mercados ni escribe en
 el almacén.
 
+**Regla fija (saneado P05, 2026-11-21):** en cada fecha solo entran los miembros point-in-time con precio curado
+visible, con un aviso con los que faltan (`supervivencia.miembros_con_precio`); la cartera principal se hace con
+índices y ETF y las acciones solo como prueba aparte, con el sesgo medido con los precios curados por año
+(`python -m ingesta.mercados_series.supervivencia sesgo-curada` → `tablas/sp500_sesgo_supervivencia.csv`: cobertura
+por año y cartera equiponderada de los miembros con precio frente al ^GSPC y al SPY, solo % y recuentos).
+
 ## Cartera: libre de riesgo, baselines y costes (bloque 8)
 
 [`cartera`](cartera/): todo punto en el tiempo (cada valor usa solo lo visible en su fecha).
@@ -546,14 +620,17 @@ el almacén.
   series, publicadores ni mercados propios; Euribor 3M no está catalogado).
 - **Baselines** ([`cartera.baselines`](cartera/baselines.py)): buy & hold SPY, 60/40 SPY/AGG (VBMFX antes de 2003-09),
   1/N sobre los ETF invertibles vivos en cada fecha, RSP, momentum sectorial 12-1 top 3 (SPDR) y 60/40 europeo (anexo:
-  CSPX.L/EUNA.DE desde 2017-11). Se ejecuta al cierre de la fecha de control y la señal solo ve `sesion < fecha`
-  (`baselines.vista_senal`; test `test_t1_a_baselines_senal`).
+  CSPX.L/EUNA.DE desde el 2017-11-30, sin empalme). Ejecución (saneado P08): se decide tras el cierre de la fecha de
+  control y se opera a la apertura de la sesión siguiente de cada instrumento (sin apertura, a su cierre, con aviso;
+  nunca al cierre de `t`; `baselines.precio_ejecucion`); el cierre de `t + 1` como sensibilidad. La convención
+  antigua (al cierre de `t` con señal `sesion < t`, `ejecucion="cierre_t"`) queda solo para comparar.
 - **Costes** ([`cartera.costes`](cartera/costes.py)): DEGIRO con 10.000 € (IBKR como sensibilidad); coste = comisión +
   0,25 % de FX + spread base por clase × multiplicador de crisis (CHL normalizado, entre 1 y 10)
   (`tablas/costes_modelo.csv`). Comisiones de la tarifa pública sin verificar.
 
-Informe: `python -m ingesta.mercados_series.cartera.informe`; ficha `cartera_baselines_costes`. Los precios
-se leen con `almacen.leer_precios` (validados por contrato: los 92 tickers del núcleo, ARCX y NAV_US incluidos).
+Informe: `python -m ingesta.mercados_series.cartera.informe`; ficha `cartera_baselines_costes`. Desde el saneado
+P18 los precios son los curados hasta el corte G2 (`almacen.leer_precios(curada=True)`) y el FX y el USD por EUR,
+los de la base curada de series.
 
 ## Fuentes y estado (cierre, bloque 9)
 

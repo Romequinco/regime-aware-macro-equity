@@ -1,0 +1,6 @@
+# Salidas de los scripts de auditoría (recuentos y metadatos): nunca se versionan
+*.json
+*.csv
+*.txt
+*.log
+__pycache__/

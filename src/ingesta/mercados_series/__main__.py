@@ -48,10 +48,13 @@
   Reanudable: lo descargado hoy se sirve de la caché.
 - ``archivar-oas [--sin-red] [--sin-crudo]``: captura fechada de la ventana de FRED de las 8 OAS de ICE
   BofA y unión al acumulado sin perder historia (``archivo_oas``; ejecutar cada mes).
-- ``curar-precios [--sin-escribir] [--tickers A,B]`` (paso 4): ``<corpus>/mercados_series/precios_curados/`` con los
+- ``curar-precios [--sin-escribir] [--tickers A,B] [--corte AAAA-MM-DD]`` (paso 4): ``<corpus>/mercados_series/precios_curados/`` con los
   tickers «queda», hasta el corte G2 y con las velas de relleno quitadas y las aperturas de relleno a nulo
   (``curada_precios``; no toca ``precios/``). Tablas ``precios_curados_{avisos,resumen,verificaciones}.csv``.
-- ``curar [--sin-escribir]`` (paso 4): ``series/base_curada.parquet`` (mismo contrato: las «queda» con las fechas
+- ``refrescar --corte AAAA-MM-DD [--plan] [--sin-descargas] [--reseleccionar] [--desde PASO] | --mensual``: orden
+  única de refresco (``refrescar``, P07 de la auditoría de saneado): descargas, base y curado con el corte pedido, la
+  lista curada congelada por defecto y un estado por paso en ``logs/refrescar_estado.csv``.
+- ``curar [--sin-escribir] [--corte AAAA-MM-DD]`` (paso 4): ``series/base_curada.parquet`` (mismo contrato: las «queda» con las fechas
   curadas, las escalas por vintage, las derivadas recalculadas y el corte G2), ``alias.parquet``,
   ``proyecciones.parquet`` y ``registro_cambios.parquet`` (``curada``; no toca ``base_series.parquet``). Tablas
   ``curada_verificaciones.csv`` y ``curada_resumen.csv``; si alguna verificación falla, no escribe nada.
@@ -332,13 +335,31 @@ def _archivar_oas(a: argparse.Namespace) -> int:
     return archivo_oas.main(["--sin-red"] * a.sin_red + ["--sin-crudo"] * a.sin_crudo)
 
 
+def _fijar_corte(a: argparse.Namespace) -> None:
+    """``--corte``: pasa el corte por ``T1_CORTE`` antes de importar los módulos que lo leen (P07)."""
+    if getattr(a, "corte", None):
+        import os
+
+        from ingesta.mercados_series import corte
+
+        os.environ[corte.VARIABLE] = corte._validar(a.corte).date().isoformat()
+
+
+def _refrescar(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import refrescar
+
+    return refrescar.main(list(a.resto))
+
+
 def _curar(a: argparse.Namespace) -> int:
+    _fijar_corte(a)
     from ingesta.mercados_series import curada
 
     return curada.main(["--sin-escribir"] * a.sin_escribir)
 
 
 def _curar_precios(a: argparse.Namespace) -> int:
+    _fijar_corte(a)
     from ingesta.mercados_series import curada_precios
 
     return curada_precios.main(["--sin-escribir"] * a.sin_escribir + (["--tickers", a.tickers] if a.tickers else []))
@@ -427,13 +448,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                                               "automáticas del EDA (no toca precios/)")
     cp.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
     cp.add_argument("--tickers", default=None, help="solo estos tickers, separados por comas (prueba; no escribe)")
+    cp.add_argument("--corte", default=None, help="corte AAAA-MM-DD (por defecto config/corte.yaml)")
     cp.set_defaults(func=_curar_precios)
     cu = sub.add_parser("curar", help="base curada de series del paso 4 (alias, proyecciones y registro de cambios; "
                                       "no toca base_series.parquet)")
     cu.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
+    cu.add_argument("--corte", default=None, help="corte AAAA-MM-DD (por defecto config/corte.yaml)")
     cu.set_defaults(func=_curar)
+    rf = sub.add_parser("refrescar", help="orden única de refresco hasta un corte (descargas, base y curado; P07)",
+                        add_help=False)
+    rf.add_argument("resto", nargs=argparse.REMAINDER, help="argumentos de ingesta.mercados_series.refrescar")
+    rf.set_defaults(func=_refrescar)
     a, resto = p.parse_known_args(argv)
-    if a.func is _paso3:
+    if a.func in (_paso3, _refrescar):
         # Tal cual van tras la orden (parse_known_args separa las opciones de los posicionales y las desordena).
         crudos = list(sys.argv[1:] if argv is None else argv)
         a.resto = crudos[crudos.index(a.orden) + 1:]

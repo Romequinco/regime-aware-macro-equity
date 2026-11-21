@@ -15,6 +15,14 @@ from ingesta.mercados_series.almacen import escribir_precios, escribir_series
 from ingesta.mercados_series.contrato import validar_series
 from ingesta.mercados_series.tools import get_precios, get_serie
 
+
+@pytest.fixture(autouse=True)
+def _base_de_trabajo_por_defecto(monkeypatch):
+    """Estos tests prueban la base de trabajo: desde el saneado (P01) el defecto de las tools es la curada."""
+    from ingesta.mercados_series import tools as _tools
+
+    monkeypatch.setattr(_tools, "BASE_DEFECTO", "trabajo")
+
 ALIAS = {"PARO": s.SERIE_VINTAGES}
 
 

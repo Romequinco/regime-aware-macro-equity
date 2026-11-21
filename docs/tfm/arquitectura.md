@@ -109,16 +109,20 @@ Salida (`SalidaRegimen`):
   `get_regimen(t)` después del cierre (hora de decisión 16:30 ET del contrato de datos) y la orden se ejecuta en la
   sesión siguiente; **nunca** al mismo cierre de `t`, que sería usar un dato que a esa hora no existía. `get_regimen`
   no cambia: la regla vive en el motor de backtest de la Fase 4, con un test que la garantice.
-  **Pendiente (antes de la Fase 4):**
-  - **Precio de ejecución: preferencia por la apertura de `t + 1`**, la opción más realista para un inversor que deja
-    la orden puesta por la noche. Para ello hace falta:
-    1. Tener precios de apertura en el corpus del Tema 1 para todo el universo. Hoy las series de cartera van al cierre.
-    2. Resolver los instrumentos con otro horario o en otra divisa: con qué apertura y con qué tipo de cambio visible.
-    3. Pasar los *baselines* de `ingesta.mercados_series.cartera` (que hoy ejecutan al cierre con señal `sesion < fecha`)
-       a la misma convención, para comparar en igualdad.
-    4. Medir el coste del salto de apertura.
-  - **Sensibilidad:** repetir el backtest ejecutando al cierre de `t + 1`, que es más conservador y solo necesita
-    cierres. Es equivalente a la convención actual de los *baselines*.
+  **Precio de ejecución (decidido el 2026-11-21, saneado P08 del Tema 1):**
+  - **Apertura de `t + 1`**: en cada instrumento, la primera sesión con fecha posterior a `t`, a su apertura (la orden
+    se deja puesta por la noche). Los precios curados del Tema 1 tienen apertura salvo donde no vale como precio
+    ejecutable (velas planas de relleno anuladas, rellenos de huecos, fondos con valor liquidativo e índices).
+  - **Reserva: si esa sesión no tiene apertura, su cierre (el de `t + 1`), con aviso. Nunca el cierre de `t`.**
+  - Instrumentos de otro horario o divisa: su propia sesión siguiente a `t` y el FX visible en la fecha de valoración
+    (`divisas`, BCE y Fed H.10). Mientras la vela de ejecución de algún instrumento no está publicada, la cartera se
+    valora con la composición anterior.
+  - **Sensibilidad:** repetir el backtest ejecutando al cierre de `t + 1` (más conservador y solo necesita cierres).
+    La diferencia entre las dos mide el coste del salto de apertura.
+  - Implementado en `ingesta.mercados_series.cartera.baselines` (`simular(ejecucion="apertura_t1" | "cierre_t1")`,
+    función reutilizable `precio_ejecucion`, con tests); los *baselines* ya usan esta convención y la antigua (al
+    cierre de `t` con señal `sesion < t`) queda solo para comparar (`ejecucion="cierre_t"`). El motor de la Fase 4
+    debe usar la misma regla.
 - **Lo que fijará la ADR-006:** el detector final, los estados definitivos (si se añade `alerta`; correspondencia de
   trabajo con la máquina de fusión `regimenes.fusion`: calma ≈ *normal*, alerta ≈ *vigilancia*, crisis ≈
   *confirmado*) y la definición exacta de la probabilidad que se publica. El contrato tipado de

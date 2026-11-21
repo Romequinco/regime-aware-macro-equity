@@ -87,7 +87,7 @@ _CLAVES_GRUPO = {"descripcion", "reglas"}
 _CLAVES_GRUPO_OPC = {"notas"}
 _CLAVES_ENTRADA = {"actual", "fuente", "motivo"}
 _CLAVES_ENTRADA_OPC = {"conservadora", "pendiente_calendario", "notas", "regla_de_lags", "fuentes", "alternativas",
-                       "falta"}
+                       "falta", "series"}
 _CLAVES_ACTUAL_PUB = {"publicador", "dia", "hora", "huso", "habiles"}
 _CLAVES_NF_SERIE = {"regla", "veredicto", "corte", "adelanto_dias", "medida", "n", "dias_extra", "conservadora"}
 _PATRON_HORIZONTE = re.compile(r"\.PROY\.H(\d+)$")
@@ -242,8 +242,8 @@ def validar_plan(crudo: Any, origen: str = "preprocesado.yaml", *, lags: dict[st
             if clave in vistas:
                 raise ValueError(f"{de}: la regla ya está en el grupo {vistas[clave]!r}")
             vistas[clave] = grupo
-            if e.get("regla_de_lags") and not e.get("fuentes"):
-                raise ValueError(f"{de}: 'regla_de_lags' necesita 'fuentes' (solo cambia la regla en esas fuentes)")
+            if e.get("regla_de_lags") and not (e.get("fuentes") or e.get("series")):
+                raise ValueError(f"{de}: 'regla_de_lags' necesita 'fuentes' o 'series' (solo cambia la regla en ellas)")
             base_clave = _clave_lags(clave, e)
             _comparar_actual(base_clave, e["actual"], lags, pubs, de)
             for campo in ("fuente", "motivo"):
@@ -534,18 +534,26 @@ def adelantos_por_serie(claves: dict[str, str], tablas: dict[str, pd.DataFrame],
     return pd.DataFrame(filas, columns=["id", "adelanto_dias", "medida", "n"])
 
 
-def _clave_conservadora(plan: dict[str, Any], clave: str | None, fuente: str | None) -> tuple[str, str] | None:
-    """``(grupo, entrada)`` de reglas_conservadoras para una regla y una fuente (las entradas con ``regla_de_lags``
-    y ``fuentes`` mandan sobre la general)."""
+def _clave_conservadora(plan: dict[str, Any], clave: str | None, fuente: str | None,
+                        sid: str | None = None) -> tuple[str, str] | None:
+    """``(grupo, entrada)`` de reglas_conservadoras para una regla, una fuente y una serie (las entradas con
+    ``regla_de_lags`` y ``series`` mandan; después las de ``regla_de_lags`` y ``fuentes``; al final la general).
+    ``series`` (saneado P12): la entrada solo vale para esas series (la F1 del RBA frente a la F2, misma fuente)."""
     general = None
+    por_fuente = None
     for grupo, g in plan["reglas_conservadoras"].items():
         for nombre, e in (g["reglas"] or {}).items():
             if e.get("regla_de_lags"):
-                if e["regla_de_lags"] == clave and fuente in e["fuentes"]:
-                    return grupo, nombre
+                if e["regla_de_lags"] != clave:
+                    continue
+                if e.get("series"):
+                    if sid is not None and sid in e["series"]:
+                        return grupo, nombre
+                elif fuente in (e.get("fuentes") or []) and por_fuente is None:
+                    por_fuente = (grupo, nombre)
             elif nombre == clave:
                 general = (grupo, nombre)
-    return general
+    return por_fuente or general
 
 
 def propuesta_tramo(plan: dict[str, Any], lista: dict[str, dict], tablas: dict[str, pd.DataFrame] | None = None,
@@ -585,7 +593,7 @@ def propuesta_tramo(plan: dict[str, Any], lista: dict[str, dict], tablas: dict[s
     out: dict[str, dict[str, Any]] = {}
     for sid, (ver, corte) in sorted(candidatas.items()):
         clave, fuente = str(inv.loc[sid, "clave_regla"]), inv.loc[sid, "fuente"]
-        destino = _clave_conservadora(plan, clave, fuente)
+        destino = _clave_conservadora(plan, clave, fuente, sid)
         if sid not in ade.index:
             continue
         a = ade.loc[sid]
@@ -660,7 +668,7 @@ def asignar_series(plan: dict[str, Any], lista: dict[str, dict], inventario_seri
                       or (r["clave_regla"] in poca and r["veredicto_desde_2000"] in ("fiable", "fiable con margen")))
         if not no_medible:
             continue
-        destino = _clave_conservadora(plan, r["clave_regla"], r["fuente"])
+        destino = _clave_conservadora(plan, r["clave_regla"], r["fuente"], sid)
         if destino is None:
             filas.append({"id": sid, "seccion": "sin_regla_en_plan", "grupo": None, "regla": r["clave_regla"],
                           "corte": pd.NaT})

@@ -861,7 +861,7 @@ AVISO_REUTILIZADO = "ticker reutilizado: el fichero no es el miembro del S&P"
 #: Clases que no pueden ser un miembro del S&P 500 (acciones ordinarias): el fichero es otro instrumento
 #: con el mismo ticker aunque sus fechas solapen con el tramo (GR: un fondo de 2001 a 2018, no Goodrich).
 CLASES_NO_MIEMBRO = ("etf", "etp", "fondo", "indice", "divisa", "futuro", "volatilidad", "cripto")
-FECHA_CORTE = "2026-11-13"               # G2: fecha de corte del dataset (fin de los tramos abiertos)
+FECHA_CORTE = __import__("ingesta.mercados_series.corte", fromlist=["x"]).corte_vigente().date().isoformat()  # G2 (P07)
 
 
 def ruta_tramos_sp500() -> Path:
