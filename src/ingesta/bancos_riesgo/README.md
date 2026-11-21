@@ -58,8 +58,10 @@ Su referencia inicial es la imagen «Bancos centrales, riesgo sistémico y liter
 las cantidades, las etiquetas OK/MIXTO/BLOQUEADA y los retrasos de esa imagen son objetivos o referencias por
 verificar, no resultados de una recolección ejecutada. El
 [notebook de fuentes](../../../notebooks/fase2/bancos_riesgo/01_sonda.ipynb)
-conserva sus 14 apartados independientes y un inventario de 94 familias de documentos,
-filas de datos y metadatos. Mide cobertura de la muestra, fechas, retrasos, extracción,
+selecciona ocho bloques de adquisición y un noveno de literatura manual a partir
+del inventario compartido de familias de documentos, filas de datos y metadatos.
+La sonda original tenía 14 apartados; la selección activa se define en el notebook.
+Mide cobertura de la muestra, fechas, retrasos, extracción,
 volumen y errores; sus resultados no representan el histórico completo.
 
 El código reutilizable está en `sonda/`, el inventario en `config/sonda_fuentes.json`
@@ -105,11 +107,32 @@ no consulta la red y escribe HTML y Markdown en
 En Windows, si el repositorio está en una ruta profunda, conviene un `INGESTA_CORPUS_DIR` corto: la caché
 (`cache/sonda/objects/<sha256>`) puede superar los 260 caracteres de MAX_PATH.
 
+## Corpus para S3, texto y catálogo
+
+La revisión para el agente de carteras está en
+[revisión de utilidad, catálogo y control temporal](../../../docs/fase2/bancos_riesgo/revision_cartera_s3.md).
+La última sección del notebook prepara originales por tema, TXT UTF-8, JSON,
+fragmentos con referencias y `catalogo/documentos.csv`, con snapshots por ejecución.
+Respeta las carpetas del bucket `tfm-rag-multiagent`: `politica_monetaria`,
+`estabilidad_financiera`, `informes_macro`, `mercados_internacionales`,
+`literatura`, `procesados` y `catalogo`.
+
+La implementación local está en `sonda/corpus.py`. La preparación no consulta la
+red; la sincronización S3 usa AWS CLI y admite simulación, sin borrar objetos.
+`ACCION_S3="ninguna"` es el valor predeterminado del notebook. La reextracción
+de PDF completo se configura por separado del número de muestras.
+
+El catálogo separa fecha de publicación, primera observación y disponibilidad de
+la versión. `filtrar_catalogo(..., modo="acreditado")` exige evidencia de versión;
+`modo="observado"` solo permite usar el texto desde que se observó esa copia.
+Una fecha antigua impresa no acredita la versión descargada hoy. Las páginas
+sin texto se marcan para revisión OCR; no hay OCR automático instalado.
+
 ## Diseño y próximos pasos
 
-Hay una sonda ejecutable, pero la recolección masiva, los contratos de producción,
+Hay una sonda ejecutable y una exportación piloto S3, pero la recolección masiva, los contratos de producción,
 las migraciones SQL y los servicios Cloudflare todavía están pendientes. El diseño
-propone Python por lotes, R2 para objetos, D1 para el catálogo y GitHub Actions como
+heredado propone Python por lotes, R2 para objetos, D1 para el catálogo y GitHub Actions como
 ejecutor inicial. Worker e índice vectorial quedan sujetos a validar el piloto. Es una propuesta de arquitectura,
 no servicios ya contratados; R2 solo almacena objetos y no ejecuta los jobs.
 

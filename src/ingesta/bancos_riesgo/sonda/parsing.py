@@ -3,6 +3,7 @@
 import io
 import json
 import re
+from hashlib import sha256
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -10,6 +11,8 @@ from bs4 import BeautifulSoup
 from pypdf import PdfReader
 
 from .temporal import parse_date
+
+EXTRACTOR_VERSION = 'bancos-texto-v2'
 
 
 def clean(text):
@@ -66,13 +69,23 @@ def publication_html(page, source):
 
 def extract(original, source, family, max_pages=40, qa=False):
     result = {'formato': 'HTML', 'paginas': None, 'texto_completo': True,
-              'fecha_publicacion_raw': None, 'evidencia_publicacion': None}
+              'fecha_publicacion_raw': None, 'evidencia_publicacion': None,
+              'extractor_version': EXTRACTOR_VERSION, 'requiere_revision_ocr': False,
+              'estado_extraccion': 'extraido', 'paginas_texto': []}
     if original.content.startswith(b'%PDF'):
         reader = PdfReader(io.BytesIO(original.content))
         parts = [(p.extract_text() or '') for p in reader.pages[:max_pages]]
-        text = '\n\n'.join(parts)
+        # El salto de página permite volver del TXT al PDF sin perder la numeración.
+        text = '\n\n\f\n\n'.join(parts)
+        empty = [i + 1 for i, part in enumerate(parts) if not clean(part)]
+        truncated = len(parts) < len(reader.pages)
         result.update(formato='PDF', paginas=len(reader.pages),
-                      texto_completo=len(reader.pages) <= max_pages,
+                      paginas_procesadas=len(parts), paginas_sin_texto=empty,
+                      paginas_texto=[{'pagina': i + 1, 'texto': part} for i, part in enumerate(parts)],
+                      texto_completo=not truncated and not empty,
+                      requiere_revision_ocr=bool(empty),
+                      estado_extraccion=('revisar_ocr' if empty else 'parcial_limite_paginas' if truncated
+                                         else 'extraido'),
                       titulo=(reader.metadata.title if reader.metadata else None) or family)
         embargo = re.search(r'Not to be released until\s+(.{0,180}?\d{4})', clean(text), re.I)
         if embargo:
@@ -108,7 +121,11 @@ def extract(original, source, family, max_pages=40, qa=False):
             text = text or copy.get_text('\n', strip=True)
         result['texto_completo'] = not qa  # Extracted Q&A is a section, not the full parent.
     if len(clean(text)) < 80:
-        raise ValueError('Sin texto suficiente: posible OCR, página vacía o protección de acceso')
+        if result['formato'] != 'PDF':
+            raise ValueError('Sin texto suficiente: posible OCR, página vacía o protección de acceso')
+        # Se conserva el PDF y su ficha aunque todavía no sea utilizable como texto.
+        result.update(texto_completo=False, requiere_revision_ocr=True,
+                      estado_extraccion='texto_insuficiente_revisar_ocr')
     if re.search(r'just a moment|access denied|enable javascript and cookies|captcha', result['titulo'], re.I):
         raise ValueError('La respuesta contiene una página de protección, no el documento')
     result['texto'] = text
@@ -163,12 +180,17 @@ def application_date(text):
     return (parse_date(match[1])[0], match[0]) if match else (None, 'Aplicación no indicada/no procede')
 
 
-def chunks(text, version_id, max_words=300):
+def chunks(text, version_id, max_words=300, pages=None):
     """Párrafos y páginas/encabezados conservan orden y vínculo a su versión padre."""
     result = []
-    for paragraph in text.split('\n\n'):
-        words = paragraph.split()
-        for start in range(0, len(words), max_words):
-            result.append({'version_id': version_id, 'orden': len(result),
-                           'texto': ' '.join(words[start:start + max_words])})
+    sections = pages or [{'pagina': None, 'texto': text}]
+    for section in sections:
+        for paragraph in section['texto'].split('\n\n'):
+            words = paragraph.split()
+            for start in range(0, len(words), max_words):
+                content = ' '.join(words[start:start + max_words])
+                identity = f'{version_id}|{EXTRACTOR_VERSION}|{section["pagina"]}|{len(result)}|{content}'
+                result.append({'chunk_id': sha256(identity.encode('utf-8')).hexdigest()[:24],
+                               'version_id': version_id, 'orden': len(result),
+                               'pagina': section['pagina'], 'texto': content})
     return result
