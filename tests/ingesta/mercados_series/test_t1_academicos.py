@@ -683,7 +683,9 @@ def test_t1_tabla_academicos_crudos_locales():
     t = ac.tabla_academicos()
     assert set(t["fuente"]) == set(ac.FUENTES_CATALOGO)
     cape = t[t["serie"] == "shiller:CAPE"]
-    assert not cape["fecha_referencia"].duplicated().any()
+    # Un mes por edición (bug 1871.1 de la Fase 1); con las ediciones de la Wayback (saneado P15) un mes revisado
+    # tiene varias filas, una por edición.
+    assert not cape.duplicated(["fecha_referencia", "vintage"]).any()
     assert (t["fecha_publicacion"] >= t["fecha_referencia"]).all()
     edicion = t["fuente"].isin(ac.FUENTES_VINTAGE)
     assert t.loc[edicion, "vintage"].str.fullmatch(r"\d{4}-\d{2}").all()
