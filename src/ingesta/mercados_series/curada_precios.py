@@ -32,6 +32,16 @@ Lee ``<corpus>/mercados_series/precios/<proveedor>/`` (**nunca lo toca**) y escr
      como el WTI de abril de 2020, va como ``salto_sin_split`` con nota y el contrato admite precios negativos).
      No se aplica; la verificación ``negativo_en_nivel`` lo deja dicho.
    Lo demás («marcar», «revisar a mano») no cambia datos: va como aviso (``solo aviso``).
+4. **Saneado del 2026-11-21** (``saneado_precios``, reglas y TimeGate en su docstring):
+   - P21: el mercado de ``saneado_precios.MERCADO_CORREGIDO`` (^W5000 → XNYS) se pone ANTES de todo lo demás, con
+     el ``disponible_utc`` más tardío de los dos (nunca adelanta); aviso ``mercado_corregido``.
+   - P11: los saltos de más del 50 % sin split se clasifican (pico aislado → vela plana del cierre anterior; cambio
+     de nivel con razón de split limpio → factor en ``split``; real → se mantiene), con la publicación de la sesión
+     que lo confirma. Registro sin valores en ``precios_curados_saltos.csv``; avisos ``salto_pico_corregido``
+     (``corregido``), ``salto_split_registrado`` (``split registrado``) y ``salto_real`` (``solo aviso``).
+   - P28: los huecos de calendario de hasta 5 sesiones se rellenan con la última vela (``relleno_ffill``, acción
+     ``relleno``); un hueco más largo es ``hueco_largo`` y el ticker debe estar «fuera» en la lista.
+   - P02: ningún «queda» con aviso de ticker reutilizado (verificación ``reutilizados_fuera``).
 
 Salidas en ``results/ingesta/mercados_series/tablas/`` (solo metadatos, ninguna columna de precios):
 
@@ -46,11 +56,15 @@ Salidas en ``results/ingesta/mercados_series/tablas/`` (solo metadatos, ninguna 
 - ``precios_curados_resumen.csv`` (``COLUMNAS_RESUMEN``): por ticker, sesiones antes y después, fuera por el corte,
   velas quitadas, aperturas anuladas y hasta dónde llega.
 - ``precios_curados_verificaciones.csv`` (``COLUMNAS_VERIFICACIONES``): ``ok``, ``fallo`` o ``no aplica``.
+- ``precios_curados_saltos.csv`` (``saneado_precios.COLUMNAS_SALTOS``): una fila por salto sin split clasificado
+  (tipo, razón redondeada a 1 decimal, sesiones tocadas y de confirmación; sin precios).
 
 **Verificaciones** (``VERIFICACIONES``), sobre cada fichero antes de publicar nada: fechas de publicación y
-disponibilidad iguales a las originales; solo faltan las velas posteriores al corte y las de relleno; ninguna
+disponibilidad iguales a las originales (salvo las retrasadas por P11 y P21, que solo pueden ir más tarde); solo
+faltan las velas posteriores al corte y las de relleno fuera de calendario, y solo sobran las de relleno de huecos
+(P28, dentro del calendario y marcadas: no chocan con las quitadas, que eran velas fuera de calendario); ninguna
 sesión posterior al corte; ``close`` y el resto de columnas iguales salvo ``open``/``high``/``low``, que solo pasan
-a nulo en las sesiones de relleno; esquema válido (y el parquet escrito se relee igual); recuentos frente a la
+a nulo en las sesiones de relleno, y lo registrado por P11 (cada cambio con su regla); esquema válido (y el parquet escrito se relee igual); recuentos frente a la
 lista curada (1.491 «queda» en el 3b-1 y 1.616 en el 3b-2, también frente a su cabecera); y ``precios/`` sin cambios (tamaño y fecha
 de cada fichero leído). Si alguna falla no se publica nada: la carpeta ``precios_curados`` y las tablas de avisos y
 resumen se quedan como estaban; solo se escribe ``precios_curados_verificaciones.csv`` para ver qué falló.
@@ -72,7 +86,7 @@ import shutil
 import time
 import uuid
 from collections.abc import Callable, Iterable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -82,6 +96,7 @@ import pyarrow.parquet as pq
 
 from ingesta.comun.rutas import corpus_dir, resultados_dir
 from ingesta.mercados_series import almacen, eda, visibilidad
+from ingesta.mercados_series import saneado_precios as sp
 from ingesta.mercados_series.contrato import COLUMNAS_PRECIOS, ErrorContrato, validar_precios
 
 TEMA = "mercados_series"
@@ -91,6 +106,10 @@ CARPETA_CURADOS = almacen.CARPETA_PRECIOS_CURADOS     # "precios_curados", la de
 RUTA_LISTA = Path(__file__).resolve().parent / "config" / "lista_curada.yaml"
 
 QUITADA, NULO, SOLO_AVISO = "quitada", "nulo", "solo aviso"
+RELLENADA, CORREGIDA, SPLIT_REGISTRADO = "relleno", "corregido", "split registrado"     # saneado P28 y P11
+RELLENO_FFILL, HUECO_LARGO, MERCADO_CORREGIDO = "relleno_ffill", "hueco_largo", "mercado_corregido"
+AVISO_SALTO = {sp.PICO: ("salto_pico_corregido", CORREGIDA), sp.SPLIT: ("salto_split_registrado", SPLIT_REGISTRADO),
+               sp.REAL: ("salto_real", SOLO_AVISO)}
 RELLENO = "sesion_fuera_calendario_relleno"
 APERTURA = "apertura_igual_cierre"
 APLICADOS = {RELLENO: QUITADA, APERTURA: NULO}       # tipos del EDA que cambian datos y su acción
@@ -104,7 +123,8 @@ INTACTAS = ("ticker", "mercado", "volume", "dividendo", "split", "divisa", "fuen
 
 COLUMNAS_AVISOS = ("ticker", "proveedor", "tipo", "n", "primera", "ultima", "accion", "propuesta_eda", "nota")
 COLUMNAS_RESUMEN = ("ticker", "proveedor", "sesiones_antes", "fuera_corte", "velas_quitadas", "aperturas_anuladas",
-                    "sesiones_despues", "desde", "hasta", "hasta_original")
+                    "sesiones_despues", "desde", "hasta", "hasta_original", "rellenos_ffill", "picos_corregidos",
+                    "splits_registrados")
 COLUMNAS_VERIFICACIONES = ("verificacion", "estado", "n_fallos", "detalle")
 VERIFICACIONES = {
     "fechas_intactas": "fecha_publicacion y disponible_utc de cada sesión curada iguales a las originales",
@@ -123,6 +143,15 @@ VERIFICACIONES = {
     "ticker_en_dos_proveedores": "ningún ticker con fichero en dos proveedores",
     "origen_intacto": "precios/ sin cambios: mismo tamaño y fecha de cada fichero leído",
     "negativo_en_nivel": "tipo de series: el EDA no lo emite en precios",
+    # Saneado del 2026-11-21 (saneado_precios)
+    "rellenos_ffill_validos": "las sesiones añadidas (P28) rellenan huecos de calendario de hasta 5 sesiones con la "
+                              "última vela: cierre anterior, open/high/low nulos, volumen y dividendo 0, split 1 y "
+                              "publicación de su sesión (nunca antes que la vela anterior)",
+    "saltos_corregidos_validos": "cada cambio de P11 está registrado y sigue su regla: pico = cierre de la vela buena "
+                                 "anterior y open/high/low nulos; split = razón limpia; publicación solo más tarde",
+    "mercado_corregido_sin_adelanto": "el mercado corregido (P21) no adelanta ningún disponible_utc",
+    "reutilizados_fuera": "ningún ticker «queda» con aviso de ticker reutilizado (P02)",
+    "sin_huecos_largos": "ningún ticker «queda» con un hueco de calendario de más de 5 sesiones (P28)",
 }
 _REINTENTOS = 5
 _CABECERA = re.compile(r"^#\s*Precios:\s*([\d.]+)\s*\((.*)\)", re.MULTILINE)
@@ -188,6 +217,8 @@ class Curado:
     anulada: np.ndarray          # sesiones con open/high/low a nulo
     relleno_con_evento: np.ndarray
     fuera_corte: int
+    saneado: sp.Saneado = field(default_factory=sp.Saneado)    # P11 y P28
+    referencia: pd.DataFrame | None = None                     # el original con el mercado de P21 (o el original)
 
 
 def _sin_volumen(p: pd.DataFrame) -> np.ndarray:
@@ -198,13 +229,23 @@ def _con_evento(p: pd.DataFrame) -> np.ndarray:
     return (p["split"].fillna(1.0).to_numpy(dtype=float) != 1.0) | (p["dividendo"].fillna(0.0).to_numpy(dtype=float) > 0)
 
 
+def referencia_ticker(original: pd.DataFrame) -> pd.DataFrame:
+    """El original con el mercado corregido de ``saneado_precios.MERCADO_CORREGIDO`` (P21), o el original."""
+    tk = str(original["ticker"].iloc[0]) if len(original) else ""
+    if tk in sp.MERCADO_CORREGIDO:
+        return sp.corregir_mercado(original, sp.MERCADO_CORREGIDO[tk][0])
+    return original
+
+
 def curar_ticker(original: pd.DataFrame, corte: pd.Timestamp = CORTE_G2,
-                 sesiones_cal: np.ndarray | None = None) -> Curado:
-    """Corte G2 y acciones automáticas del EDA sobre un fichero validado (ordenado por sesión).
+                 sesiones_cal: np.ndarray | None = None, *, sanear: bool = True) -> Curado:
+    """Corte G2, acciones automáticas del EDA y saneado (P21, P11 y P28) sobre un fichero validado (ordenado por
+    sesión). ``sanear=False``: sin P11 ni P28 (el mercado de P21 se corrige siempre).
 
     ``sesiones_cal`` sustituye al calendario del mercado (pruebas; ver ``eda.sesiones_faltantes``).
     """
-    hasta = original[original["fecha_publicacion"] <= corte].reset_index(drop=True)
+    referencia = referencia_ticker(original)
+    hasta = referencia[referencia["fecha_publicacion"] <= corte].reset_index(drop=True)
     mercado = hasta["mercado"].iloc[0] if len(hasta) else None
     _, _, relleno = eda.velas_fuera_calendario(hasta, mercado, sesiones_cal)
     evento = _con_evento(hasta) if len(hasta) else np.zeros(0, bool)
@@ -214,8 +255,12 @@ def curar_ticker(original: pd.DataFrame, corte: pd.Timestamp = CORTE_G2,
     nulos = anulada[~quitada]
     for col in COLUMNAS_OHL:
         cur.loc[nulos, col] = np.nan
+    saneado = sp.Saneado()
+    if sanear and len(cur):
+        cur, saneado = sp.sanear(cur.reset_index(drop=True), mercado, sesiones_cal)
     return Curado(curado=validar_precios(cur), hasta_corte=hasta, quitada=quitada, anulada=anulada,
-                  relleno_con_evento=relleno & evento, fuera_corte=int(len(original) - len(hasta)))
+                  relleno_con_evento=relleno & evento, fuera_corte=int(len(original) - len(hasta)),
+                  saneado=saneado, referencia=referencia)
 
 
 def _distintos(a: pd.Series, b: pd.Series) -> np.ndarray:
@@ -223,27 +268,63 @@ def _distintos(a: pd.Series, b: pd.Series) -> np.ndarray:
     return ~((a == b) | (a.isna() & b.isna())).to_numpy()
 
 
+def _ratios_limpios() -> np.ndarray:
+    r = np.array(sp.RATIOS_LIMPIOS)
+    return np.r_[r, 1.0 / r]
+
+
 def verificar_ticker(original: pd.DataFrame, curado: pd.DataFrame, corte: pd.Timestamp = CORTE_G2,
-                     sesiones_cal: np.ndarray | None = None) -> dict[str, int]:
+                     sesiones_cal: np.ndarray | None = None, saneado: sp.Saneado | None = None) -> dict[str, int]:
     """Fallos de cada verificación por sesión de un ticker, comparando la tabla curada con la ORIGINAL (no con
-    las máscaras de ``curar_ticker``: así un error al montar la tabla se ve)."""
+    las máscaras de ``curar_ticker``: así un error al montar la tabla se ve). ``original``: la referencia de P21
+    (``referencia_ticker``). ``saneado``: lo que P11 y P28 dicen haber cambiado; cada cambio se comprueba con su
+    regla y un cambio no registrado falla en la verificación de siempre."""
+    s = saneado or sp.Saneado()
     f = dict.fromkeys(("fechas_intactas", "quitadas_solo_relleno", "sin_posteriores_corte", "close_intacto",
-                       "resto_intacto", "anulaciones_solo_en_relleno"), 0)
+                       "resto_intacto", "anulaciones_solo_en_relleno", "rellenos_ffill_validos",
+                       "saltos_corregidos_validos"), 0)
     o = original.set_index("sesion")
     c = curado.set_index("sesion")
     nuevas = c.index.difference(o.index)
-    f["fechas_intactas"] += len(nuevas)
+    rellenas = nuevas[nuevas.isin(list(s.rellenas))]
+    f["fechas_intactas"] += len(nuevas) - len(rellenas)
+    if len(rellenas):
+        f["rellenos_ffill_validos"] += _fallos_rellenos(c, rellenas)
     comunes = c.index.intersection(o.index)
     oc, cc = o.loc[comunes], c.loc[comunes]
-    f["fechas_intactas"] += int((_distintos(oc["fecha_publicacion"], cc["fecha_publicacion"])
-                                 | _distintos(oc["disponible_utc"], cc["disponible_utc"])).sum())
+    retrasada = comunes.isin(list(s.retrasadas))
+    corregida = comunes.isin(list(s.corregidas))
+    con_split = comunes.isin(list(s.splits))
+    fechas_dist = (_distintos(oc["fecha_publicacion"], cc["fecha_publicacion"])
+                   | _distintos(oc["disponible_utc"], cc["disponible_utc"]))
+    f["fechas_intactas"] += int((fechas_dist & ~retrasada).sum())
+    antes = ((cc["disponible_utc"] < oc["disponible_utc"]) | (cc["fecha_publicacion"] < oc["fecha_publicacion"])
+             ).to_numpy()
+    f["saltos_corregidos_validos"] += int((retrasada & antes).sum())
     f["sin_posteriores_corte"] = int((c["fecha_publicacion"] > corte).sum())
-    f["close_intacto"] = int(_distintos(oc["close"], cc["close"]).sum())
-    f["resto_intacto"] = int(np.logical_or.reduce([_distintos(oc[k], cc[k]) for k in INTACTAS]).sum())
+    f["close_intacto"] = int((_distintos(oc["close"], cc["close"]) & ~corregida).sum())
+    intactas = [k for k in INTACTAS if k != "split"]
+    f["resto_intacto"] = int((np.logical_or.reduce([_distintos(oc[k], cc[k]) for k in intactas])
+                              | (_distintos(oc["split"], cc["split"]) & ~con_split)).sum())
+    if con_split.any():
+        valor = cc.loc[con_split, "split"].to_numpy(float)
+        limpio = np.isclose(valor[:, None], _ratios_limpios()[None, :], rtol=1e-12).any(axis=1)
+        registrado = np.array([s.splits[pd.Timestamp(x)] for x in comunes[con_split]], dtype=float)
+        sin_split_antes = (oc.loc[con_split, "split"].to_numpy(float) == 1.0)
+        f["saltos_corregidos_validos"] += int((~limpio | (valor != registrado) | ~sin_split_antes).sum())
+    if corregida.any():
+        # Cierre de la vela buena anterior (la última no corregida antes) y open/high/low nulos.
+        cs = c["close"]
+        buena = pd.Series(np.where(c.index.isin(list(s.corregidas)), np.nan, cs.to_numpy(float)),
+                          index=c.index).ffill().shift(1)
+        sel = comunes[corregida]
+        mal = (cs.loc[sel].to_numpy(float) != buena.loc[sel].to_numpy(float)) | ~np.logical_and.reduce(
+            [c.loc[sel, k].isna().to_numpy() for k in COLUMNAS_OHL])
+        f["saltos_corregidos_validos"] += int(mal.sum())
     plano = ((oc["open"] == oc["close"]) & (oc["high"] == oc["low"])).to_numpy()
     cambia = np.logical_or.reduce([_distintos(oc[k], cc[k]) for k in COLUMNAS_OHL])
     a_nulo = np.logical_and.reduce([cc[k].isna().to_numpy() for k in COLUMNAS_OHL])
-    f["anulaciones_solo_en_relleno"] = int((cambia & ~(plano & a_nulo)).sum())
+    f["anulaciones_solo_en_relleno"] = int((cambia & ~(plano & a_nulo) & ~corregida).sum())
     # Las que faltan hasta el corte deben ser relleno: fuera de calendario, mismo cierre que la anterior, sin
     # volumen ni evento.
     hasta = original[original["fecha_publicacion"] <= corte].reset_index(drop=True)
@@ -258,6 +339,26 @@ def verificar_ticker(original: pd.DataFrame, curado: pd.DataFrame, corte: pd.Tim
         ok = fuera & repite & _sin_volumen(hasta) & ~_con_evento(hasta)
         f["quitadas_solo_relleno"] = int((falta & ~ok).sum())
     return f
+
+
+def _fallos_rellenos(c: pd.DataFrame, rellenas: pd.Index) -> int:
+    """Fallos de las velas de relleno de P28 en la tabla curada ``c`` (indexada por sesión)."""
+    pos = c.index.get_indexer(rellenas)
+    if (pos <= 0).any():
+        return int(len(pos))
+    fallos = 0
+    cl = c["close"].to_numpy(float)
+    malas = ((cl[pos] != cl[pos - 1]) | ~np.logical_and.reduce([c[k].isna().to_numpy()[pos] for k in COLUMNAS_OHL])
+             | (c["volume"].to_numpy(float)[pos] != 0) | (c["dividendo"].to_numpy(float)[pos] != 0)
+             | (c["split"].to_numpy(float)[pos] != 1.0))
+    fallos += int(malas.sum())
+    regla = visibilidad.disponible_cierre_serie(pd.Series(rellenas), str(c["mercado"].iloc[0])).to_numpy()
+    disp = c["disponible_utc"].to_numpy()
+    fallos += int(((disp[pos] < regla) | (disp[pos] < disp[pos - 1])).sum())
+    # Rachas de sesiones rellenas seguidas: como mucho sp.MAX_HUECO.
+    racha = np.split(pos, np.flatnonzero(np.diff(pos) != 1) + 1)
+    fallos += sum(len(r) for r in racha if len(r) > sp.MAX_HUECO)
+    return fallos
 
 
 # --- Avisos -----------------------------------------------------------------------------------------
@@ -370,6 +471,25 @@ def avisos_ticker(tk: str, pv: str, r: Curado, entrada: Mapping[str, Any], meta:
     aviso = entrada.get("aviso")
     if aviso:
         filas.append(_fila_aviso(tk, pv, "aviso_lista", r.curado["sesion"], SOLO_AVISO, None, str(aviso)))
+    # Saneado del 2026-11-21 (saneado_precios)
+    san = r.saneado
+    if tk in sp.MERCADO_CORREGIDO:
+        filas.append(_fila_aviso(tk, pv, MERCADO_CORREGIDO, r.curado["sesion"], SOLO_AVISO, None,
+                                 sp.MERCADO_CORREGIDO[tk][1]))
+    if san.rellenas:
+        filas.append(_fila_aviso(tk, pv, RELLENO_FFILL, sorted(san.rellenas), RELLENADA, None,
+                                 f"hueco de calendario de hasta {sp.MAX_HUECO} sesiones: vela plana del cierre "
+                                 "anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"))
+    for desde, hasta_h, n in san.huecos_largos:
+        filas.append(_fila_aviso(tk, pv, HUECO_LARGO, [desde, hasta_h], SOLO_AVISO, None,
+                                 f"hueco de {n} sesiones seguidas sin vela (> {sp.MAX_HUECO}): no se rellena; el "
+                                 "ticker debe salir de la curada (saneado P28)", n=n))
+    for tipo in (sp.PICO, sp.SPLIT, sp.REAL):
+        g = [x for x in san.saltos if x["tipo"] == tipo]
+        if g:
+            nombre, accion = AVISO_SALTO[tipo]
+            filas.append(_fila_aviso(tk, pv, nombre, [x["sesion"] for x in g], accion, eda.PROPUESTAS["salto_sin_split"],
+                                     sp.TIPOS_SALTO[tipo] + " (saneado P11; ver precios_curados_saltos.csv)"))
     return filas
 
 
@@ -462,8 +582,9 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
     nuevo = destino.with_name(f"{destino.name}.nuevo_{uuid.uuid4().hex[:12]}")
     fallos = dict.fromkeys(VERIFICACIONES, 0)
     ejemplos: dict[str, list[str]] = {k: [] for k in VERIFICACIONES}
-    avisos, resumen, escritos = [], [], []
-    total = {"quitadas": 0, "anuladas": 0, "fuera_corte": 0}
+    avisos, resumen, escritos, saltos = [], [], [], []
+    total = {"quitadas": 0, "anuladas": 0, "fuera_corte": 0, "rellenos_ffill": 0, "picos_corregidos": 0,
+             "splits_registrados": 0}
 
     def falla(clave: str, n: int, ejemplo: str) -> None:
         if n:
@@ -484,8 +605,13 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
             except ErrorContrato as e:
                 falla("esquema_valido", 1, f"{tk}: {str(e)[:200]}")
                 continue
-            for clave, n in verificar_ticker(original, r.curado, corte, sesiones_cal).items():
+            for clave, n in verificar_ticker(r.referencia, r.curado, corte, sesiones_cal, r.saneado).items():
                 falla(clave, n, tk)
+            if tk in sp.MERCADO_CORREGIDO:
+                falla("mercado_corregido_sin_adelanto",
+                      int((r.referencia["disponible_utc"] < original["disponible_utc"]).sum()), tk)
+            falla("sin_huecos_largos", int(bool(r.saneado.huecos_largos)), tk)
+            saltos += sp.registro_saltos(tk, pv, r.saneado)
             if escribir:
                 ruta = ruta_precios_curados(pv, tk, nuevo)
                 almacen.escribir_parquet_atomico(r.curado, almacen.ESQUEMA_PRECIOS, ruta)
@@ -502,7 +628,12 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
                             "aperturas_anuladas": int(r.anulada.sum()), "sesiones_despues": len(c),
                             "desde": _iso(c["sesion"].min()) if len(c) else None,
                             "hasta": _iso(c["sesion"].max()) if len(c) else None,
-                            "hasta_original": _iso(original["sesion"].max()) if len(original) else None})
+                            "hasta_original": _iso(original["sesion"].max()) if len(original) else None,
+                            "rellenos_ffill": len(r.saneado.rellenas), "picos_corregidos": len(r.saneado.corregidas),
+                            "splits_registrados": len(r.saneado.splits)})
+            total["rellenos_ffill"] += len(r.saneado.rellenas)
+            total["picos_corregidos"] += len(r.saneado.corregidas)
+            total["splits_registrados"] += len(r.saneado.splits)
             total["quitadas"] += int(r.quitada.sum())
             total["anuladas"] += int(r.anulada.sum())
             total["fuera_corte"] += r.fuera_corte
@@ -516,6 +647,8 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
             falla("cabecera_lista", abs(cabecera - len(queda)), f"cabecera {cabecera}, entradas {len(queda)}")
         falla("queda_sin_fichero", len(sin_fichero), ", ".join(sin_fichero[:5]))
         falla("ficheros_sin_decision", len(sin_decision), ", ".join(sin_decision[:5]))
+        reutilizados = sp.tickers_reutilizados(lista)
+        falla("reutilizados_fuera", len(reutilizados), ", ".join(reutilizados[:5]))
         dobles = [tk for tk in dobles if solo_set is None or tk in solo_set]
         falla("ticker_en_dos_proveedores", len(dobles), ", ".join(dobles[:5]))
         cambiados = [tk for tk, (_, fi) in ficheros.items() if not fi.exists() or _firma(fi) != firmas[tk]]
@@ -544,6 +677,8 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
         av["n"] = av["n"].astype("int64")
         res = pd.DataFrame(resumen, columns=list(COLUMNAS_RESUMEN)).sort_values(
             ["proveedor", "ticker"], kind="mergesort").reset_index(drop=True)
+        sal = pd.DataFrame(saltos, columns=list(sp.COLUMNAS_SALTOS)).sort_values(
+            ["proveedor", "ticker", "sesion"], kind="mergesort").reset_index(drop=True)
         rutas: dict[str, Path] = {}
         if escribir:
             rutas["precios_curados_verificaciones.csv"] = _csv_atomico(ver, tablas / "precios_curados_verificaciones.csv")
@@ -553,13 +688,14 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
                 rutas["precios_curados"] = destino
                 rutas["precios_curados_avisos.csv"] = _csv_atomico(av, tablas / "precios_curados_avisos.csv")
                 rutas["precios_curados_resumen.csv"] = _csv_atomico(res, tablas / "precios_curados_resumen.csv")
+                rutas["precios_curados_saltos.csv"] = _csv_atomico(sal, tablas / "precios_curados_saltos.csv")
     finally:
         if nuevo.exists():
             shutil.rmtree(nuevo, ignore_errors=True)
     por_proveedor = res.groupby("proveedor").size().to_dict() if len(res) else {}
     return {"ok": ok, "tickers": len(escritos), "por_proveedor": por_proveedor, "queda": len(queda),
             **total, "segundos": round(time.time() - t0, 1), "verificaciones": ver, "avisos": av, "resumen": res,
-            "rutas": rutas}
+            "saltos": sal, "rutas": rutas}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -571,7 +707,11 @@ def main(argv: list[str] | None = None) -> int:
     r = curar_precios(solo=solo, escribir=not (a.sin_escribir or solo))
     print(f"tickers curados: {r['tickers']} de {r['queda']} «queda» ({r['por_proveedor']}); fuera por el corte "
           f"{CORTE_G2:%Y-%m-%d}: {r['fuera_corte']} sesiones; velas de relleno quitadas: {r['quitadas']}; "
-          f"aperturas anuladas: {r['anuladas']}; {r['segundos']} s")
+          f"aperturas anuladas: {r['anuladas']}; rellenos de huecos (P28): {r['rellenos_ffill']}; sesiones de picos "
+          f"corregidas (P11): {r['picos_corregidos']}; splits registrados (P11): {r['splits_registrados']}; "
+          f"{r['segundos']} s")
+    if len(r["saltos"]):
+        print("saltos sin split por tipo (P11):", r["saltos"]["tipo"].value_counts().to_dict())
     print(r["verificaciones"][["verificacion", "estado", "n_fallos"]].to_string(index=False))
     for nombre, ruta in r["rutas"].items():
         print(f"{nombre} -> {ruta}")
