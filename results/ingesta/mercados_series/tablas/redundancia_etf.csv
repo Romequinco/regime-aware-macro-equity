@@ -1,0 +1,85 @@
+tipo,id,n_miembros,miembros,buckets,clases,origen,mercados,inicios,corr_min,corr_mediana,base_correlacion,corr_diaria,corr_semanal,solape_min_anios,n_pares_umbral
+grupo,g1,3,EFA; VEA; VXUS,rv_desarrollados_ex_eeuu,etf,universo,ARCX; XNAS,2001-08-27; 2007-07-26; 2011-01-28,0.9788,0.9855,diaria,,,15.8,2
+grupo,g2,2,GLD; IAU,oro,etf,universo,ARCX,2004-11-18; 2005-01-28,0.997,0.997,diaria,,,21.8,1
+grupo,g3,2,MDY; IJH,rv_eeuu,etf,ampliado; universo,ARCX,1995-05-04; 2000-05-26,0.9892,0.9892,diaria,,,26.47,1
+grupo,g4,3,IWD; VTV; JAVA,factor_eeuu,etf,ampliado; universo,ARCX,2000-05-26; 2004-01-30; 2021-10-05,0.97,0.981,diaria,,,5.12,2
+grupo,g5,2,IWF; VUG,factor_eeuu,etf,universo,ARCX,2000-05-26; 2004-01-30,0.9884,0.9884,diaria,,,22.79,1
+grupo,g6,2,SPY; VTI,rv_eeuu,etf,universo,ARCX,1993-01-29; 2001-06-15,0.9906,0.9906,diaria,,,25.42,1
+bucket,cripto,6,ABTC.SW; AETH.SW; BITO; ETHA; ETHE; IBIT,cripto,etf; etp,universo,ARCX; XNAS; XSWX,2019-02-26; 2019-03-05; 2021-10-20; 2024-07-23; 2019-06-14; 2024-01-11,0.5819,0.8008,mejor,,,,2
+bucket,energia,4,CRUD.L; NGAS.L; UNG; USO,energia,etf; etp,universo,ARCX; XLON,2008-01-02; 2008-01-02; 2007-04-18; 2006-04-10,0.1285,0.1754,mejor,,,,0
+bucket,factor_eeuu,9,IWD; IWF; MTUM; QUAL; SIZE; USMV; VLUE; VTV; VUG,factor_eeuu,etf,universo,ARCX; XNYS,2000-05-26; 2000-05-26; 2013-04-18; 2013-07-18; 2013-04-18; 2011-10-20; 2013-04-18; 2004-01-30; 2004-01-30,0.7486,0.864,mejor,,,,2
+bucket,factor_global,5,IWMO.L; IWQU.L; IWSZ.L; IWVL.L; MVOL.L,factor_global,etf,universo,XLON,2014-10-06; 2014-10-06; 2014-10-06; 2014-10-06; 2012-11-30,0.7216,0.8519,mejor,,,,0
+bucket,inmobiliario,4,IUSP.L; IWDP.L; VNQ; VNQI,inmobiliario,etf,universo,ARCX; XLON; XNAS,2009-01-02; 2009-01-02; 2004-09-29; 2010-11-01,0.4357,0.6625,mejor,,,,0
+bucket,liquidez_usd,3,BIL; IB01.L; SHV,liquidez_usd,etf,universo,ARCX; XLON; XNAS,2007-05-30; 2019-02-20; 2007-01-11,0.3116,0.7048,mejor,,,,0
+bucket,materias_primas,4,DBA; DBC; ICOM.L; PDBC,materias_primas,etf,universo,ARCX; XLON; XNAS,2007-01-05; 2006-02-06; 2017-07-18; 2014-11-07,0.4192,0.7293,mejor,,,,0
+bucket,metales_industriales,2,COPA.L; CPER,metales_industriales,etf; etp,universo,ARCX; XLON,2008-01-02; 2011-11-15,0.8883,0.8883,mejor,,,,0
+bucket,metales_preciosos,2,SLV; SSLN.L,metales_preciosos,etf; etp,universo,ARCX; XLON,2006-04-28; 2011-04-08,0.8039,0.8039,mejor,,,,0
+bucket,oro,3,GLD; IAU; IGLN.L,oro,etf; etp,universo,ARCX; XLON,2004-11-18; 2005-01-28; 2011-04-08,0.9649,0.965,mejor,,,,1
+bucket,rf_agregado_eeuu,3,AGG; BND; IUAA.L,rf_agregado_eeuu,etf,universo,ARCX; XLON; XNAS,2003-09-29; 2007-04-10; 2017-04-13,0.871,0.9329,mejor,,,,0
+bucket,rf_credito_hy,3,HYG; IHYU.L; JNK,rf_credito_hy,etf,universo,ARCX; XLON,2007-04-11; 2011-09-13; 2007-12-04,0.8281,0.925,mejor,,,,0
+bucket,rf_credito_ig,5,FLOT; LQD; LQDE.L; VCIT; VCSH,rf_credito_ig,etf,universo,ARCX; XLON; XNAS; XNYS,2011-06-17; 2002-07-30; 2008-01-02; 2009-11-23; 2009-11-23,0.2687,0.7889,mejor,,,,0
+bucket,rf_emergentes,3,EMB; EMLC; IEMB.L,rf_emergentes,etf,universo,ARCX; XLON; XNAS,2007-12-19; 2010-07-23; 2008-02-15,0.6705,0.734,mejor,,,,0
+bucket,rf_global,3,BNDX; BWX; EUNA.DE,rf_global,etf,universo,ARCX; XETR; XNAS,2013-06-04; 2007-10-11; 2017-11-21,0.5602,0.6942,mejor,,,,0
+bucket,rf_gobierno_eeuu,9,EDV; GOVT; IBTM.L; IBTS.L; IDTL.L; IEF; IEI; SHY; TLT,rf_gobierno_eeuu,etf,universo,ARCX; XLON; XNAS,2008-01-29; 2012-02-24; 2008-01-02; 2008-01-02; 2015-01-21; 2002-07-30; 2007-01-11; 2002-07-30; 2002-07-30,0.013,0.6626,mejor,,,,0
+bucket,rf_ligada_inflacion,3,ITPS.L; SCHP; TIP,rf_ligada_inflacion,etf,universo,ARCX; XLON,2008-01-02; 2010-08-05; 2003-12-05,0.3121,0.4104,mejor,,,,0
+bucket,rv_asia_pacifico,4,CPXJ.L; EWA; EWH; VPL,rv_asia_pacifico,etf,universo,ARCX; XLON,2010-09-28; 1996-03-18; 1996-03-18; 2005-03-10,0.5739,0.7888,mejor,,,,0
+bucket,rv_china,4,FXC.L; FXI; MCHI; XCS6.DE,rv_china,etf,universo,ARCX; XETR; XLON; XNAS,2009-01-02; 2004-10-08; 2011-03-31; 2011-10-04,0.8908,0.9137,mejor,,,,0
+bucket,rv_desarrollados_ex_eeuu,3,EFA; VEA; VXUS,rv_desarrollados_ex_eeuu,etf,universo,ARCX; XNAS,2001-08-27; 2007-07-26; 2011-01-28,0.9788,0.9855,mejor,,,,2
+bucket,rv_eeuu,12,CNDX.L; CSPX.L; DIA; IJH; IJR; IWM; QQQ; RSP; SPY; VTI; XDEW.DE; ZPRR.DE,rv_eeuu,etf,universo,ARCX; XETR; XLON; XNAS,2010-09-15; 2010-09-15; 1998-01-20; 2000-05-26; 2000-05-26; 2000-05-26; 1999-03-10; 2003-05-01; 1993-01-29; 2001-06-15; 2014-08-15; 2014-11-10,0.6223,0.8453,mejor,,,,1
+bucket,rv_emergentes,11,EEM; EIMI.L; EWT; EWW; EWY; EWZ; EZA; IBZL.L; INDA; NDIA.L; VWO,rv_emergentes,etf,universo,ARCX; XLON; XNAS,2003-04-14; 2014-05-30; 2000-06-23; 1996-03-18; 2000-05-12; 2000-07-14; 2003-02-07; 2009-01-02; 2012-02-03; 2018-05-29; 2005-03-10,0.3653,0.6546,mejor,,,,0
+bucket,rv_europa,4,EUNK.DE; EWP; EZU; VGK,rv_europa,etf,universo,ARCX; XETR; XNYS,2009-10-20; 1996-03-18; 2000-07-31; 2005-03-10,0.695,0.8635,mejor,,,,0
+bucket,rv_global,4,ACWI; SWDA.L; VT; VWRA.L,rv_global,etf,universo,ARCX; XLON; XNAS,2008-03-28; 2009-09-25; 2008-06-26; 2019-07-23,0.4979,0.8213,mejor,,,,0
+bucket,rv_japon,2,EWJ; SJPA.L,rv_japon,etf,universo,ARCX; XLON,1996-03-18; 2009-09-25,0.2526,0.2526,mejor,,,,0
+bucket,rv_pais_g7,5,EWC; EWG; EWI; EWQ; EWU,rv_pais_g7,etf,universo,ARCX,1996-03-18; 1996-03-18; 1996-03-18; 1996-03-18; 1996-03-18,0.6384,0.7723,mejor,,,,0
+bucket,sector_eeuu,21,SXLB.L; SXLC.L; SXLE.L; SXLF.L; SXLI.L; SXLK.L; SXLP.L; SXLU.L; SXLV.L; SXLY.L; XLB; XLC; XLE; XLF; XLI; XLK; XLP; XLRE; XLU; XLV; XLY,sector_eeuu,etf,universo,ARCX; XLON,2015-07-07; 2018-08-15; 2015-07-07; 2015-07-07; 2015-07-07; 2015-07-07; 2015-07-07; 2015-07-07; 2015-07-07; 2015-07-07; 1998-12-22; 2018-06-19; 1998-12-22; 1998-12-22; 1998-12-22; 1998-12-22; 1998-12-22; 2015-10-08; 1998-12-22; 1998-12-22; 1998-12-22,0.2736,0.5864,mejor,,,,0
+ucits,ACWI~SWDA.L,2,ACWI; SWDA.L,rv_global,etf,universo,XLON; XNAS,2008-03-28; 2009-09-25,0.4979,0.4979,semanal,0.3742,0.4979,,0
+ucits,AGG~IUAA.L,2,AGG; IUAA.L,rf_agregado_eeuu,etf,universo,ARCX; XLON,2003-09-29; 2017-04-13,0.9329,0.9329,semanal,0.7114,0.9329,,0
+ucits,BITO~ABTC.SW,2,BITO; ABTC.SW,cripto,etf; etp,universo,ARCX; XSWX,2021-10-20; 2019-02-26,0.9228,0.9228,semanal,0.6564,0.9228,,0
+ucits,BNDX~EUNA.DE,2,BNDX; EUNA.DE,rf_global,etf,universo,XETR; XNAS,2013-06-04; 2017-11-21,0.8978,0.8978,semanal,0.7025,0.8978,,0
+ucits,CPER~COPA.L,2,CPER; COPA.L,metales_industriales,etf; etp,universo,ARCX; XLON,2011-11-15; 2008-01-02,0.8883,0.8883,semanal,0.4717,0.8883,,0
+ucits,EEM~EIMI.L,2,EEM; EIMI.L,rv_emergentes,etf,universo,ARCX; XLON,2003-04-14; 2014-05-30,0.9597,0.9597,semanal,0.8054,0.9597,,0
+ucits,EMB~IEMB.L,2,EMB; IEMB.L,rf_emergentes,etf,universo,XLON; XNAS,2007-12-19; 2008-02-15,0.8904,0.8904,semanal,0.589,0.8904,,0
+ucits,ETHA~AETH.SW,2,ETHA; AETH.SW,cripto,etf; etp,universo,XNAS; XSWX,2024-07-23; 2019-03-05,0.9234,0.9234,semanal,0.7047,0.9234,,0
+ucits,ETHE~AETH.SW,2,ETHE; AETH.SW,cripto,etf; etp,universo,ARCX; XSWX,2019-06-14; 2019-03-05,0.7204,0.7204,semanal,0.5361,0.7204,,0
+ucits,EWJ~SJPA.L,2,EWJ; SJPA.L,rv_japon,etf,universo,ARCX; XLON,1996-03-18; 2009-09-25,0.2526,0.2526,diaria,0.2526,0.1759,,0
+ucits,EWZ~IBZL.L,2,EWZ; IBZL.L,rv_emergentes,etf,universo,ARCX; XLON,2000-07-14; 2009-01-02,0.9035,0.9035,semanal,0.6936,0.9035,,0
+ucits,FXI~FXC.L,2,FXI; FXC.L,rv_china,etf,universo,ARCX; XLON,2004-10-08; 2009-01-02,0.9131,0.9131,semanal,0.805,0.9131,,0
+ucits,GLD~IGLN.L,2,GLD; IGLN.L,oro,etf; etp,universo,ARCX; XLON,2004-11-18; 2011-04-08,0.965,0.965,semanal,0.8089,0.965,,0
+ucits,HYG~IHYU.L,2,HYG; IHYU.L,rf_credito_hy,etf,universo,ARCX; XLON,2007-04-11; 2011-09-13,0.925,0.925,semanal,0.6759,0.925,,0
+ucits,IBIT~ABTC.SW,2,IBIT; ABTC.SW,cripto,etf; etp,universo,XNAS; XSWX,2024-01-11; 2019-02-26,0.9125,0.9125,semanal,0.6666,0.9125,,0
+ucits,IEF~IBTM.L,2,IEF; IBTM.L,rf_gobierno_eeuu,etf,universo,XLON; XNAS,2002-07-30; 2008-01-02,0.4038,0.4038,diaria,0.4038,0.2535,,0
+ucits,INDA~NDIA.L,2,INDA; NDIA.L,rv_emergentes,etf,universo,XLON; XNAS,2012-02-03; 2018-05-29,0.9621,0.9621,semanal,0.8532,0.9621,,0
+ucits,IWM~ZPRR.DE,2,IWM; ZPRR.DE,rv_eeuu,etf,universo,ARCX; XETR,2000-05-26; 2014-11-10,0.8801,0.8801,semanal,0.6155,0.8801,,0
+ucits,LQD~LQDE.L,2,LQD; LQDE.L,rf_credito_ig,etf,universo,ARCX; XLON,2002-07-30; 2008-01-02,0.8965,0.8965,semanal,0.5809,0.8965,,0
+ucits,MCHI~XCS6.DE,2,MCHI; XCS6.DE,rv_china,etf,universo,XETR; XNAS,2011-03-31; 2011-10-04,0.9143,0.9143,semanal,0.8267,0.9143,,0
+ucits,MTUM~IWMO.L,2,MTUM; IWMO.L,factor_eeuu; factor_global,etf,universo,ARCX; XLON,2013-04-18; 2014-10-06,0.8967,0.8967,semanal,0.6132,0.8967,,0
+ucits,PDBC~ICOM.L,2,PDBC; ICOM.L,materias_primas,etf,universo,XLON; XNAS,2014-11-07; 2017-07-18,0.8909,0.8909,semanal,0.7373,0.8909,,0
+ucits,QQQ~CNDX.L,2,QQQ; CNDX.L,rv_eeuu,etf,universo,XLON; XNAS,1999-03-10; 2010-09-15,0.9234,0.9234,semanal,0.6088,0.9234,,0
+ucits,QUAL~IWQU.L,2,QUAL; IWQU.L,factor_eeuu; factor_global,etf,universo,ARCX; XLON,2013-07-18; 2014-10-06,0.9023,0.9023,semanal,0.6059,0.9023,,0
+ucits,RSP~XDEW.DE,2,RSP; XDEW.DE,rv_eeuu,etf,universo,ARCX; XETR,2003-05-01; 2014-08-15,0.8284,0.8284,semanal,0.5731,0.8284,,0
+ucits,SHV~IB01.L,2,SHV; IB01.L,liquidez_usd,etf,universo,XLON; XNAS,2007-01-11; 2019-02-20,0.7826,0.7826,semanal,0.1481,0.7826,,0
+ucits,SHY~IBTS.L,2,SHY; IBTS.L,rf_gobierno_eeuu,etf,universo,XLON; XNAS,2002-07-30; 2008-01-02,0.013,0.013,diaria,0.013,-0.0334,,0
+ucits,SIZE~IWSZ.L,2,SIZE; IWSZ.L,factor_eeuu; factor_global,etf,universo,XLON; XNYS,2013-04-18; 2014-10-06,0.8807,0.8807,semanal,0.6247,0.8807,,0
+ucits,SLV~SSLN.L,2,SLV; SSLN.L,metales_preciosos,etf; etp,universo,ARCX; XLON,2006-04-28; 2011-04-08,0.8039,0.8039,semanal,0.446,0.8039,,0
+ucits,SPY~CSPX.L,2,SPY; CSPX.L,rv_eeuu,etf,universo,ARCX; XLON,1993-01-29; 2010-09-15,0.9097,0.9097,semanal,0.5522,0.9097,,0
+ucits,TIP~ITPS.L,2,TIP; ITPS.L,rf_ligada_inflacion,etf,universo,ARCX; XLON,2003-12-05; 2008-01-02,0.3121,0.3121,diaria,0.3121,0.1157,,0
+ucits,TLT~IDTL.L,2,TLT; IDTL.L,rf_gobierno_eeuu,etf,universo,XLON; XNAS,2002-07-30; 2015-01-21,0.9536,0.9536,semanal,0.7305,0.9536,,0
+ucits,UNG~NGAS.L,2,UNG; NGAS.L,energia,etf; etp,universo,ARCX; XLON,2007-04-18; 2008-01-02,0.8029,0.8029,semanal,0.5206,0.8029,,0
+ucits,USMV~MVOL.L,2,USMV; MVOL.L,factor_eeuu; factor_global,etf,universo,ARCX; XLON,2011-10-20; 2012-11-30,0.8727,0.8727,semanal,0.5896,0.8727,,0
+ucits,USO~CRUD.L,2,USO; CRUD.L,energia,etf; etp,universo,ARCX; XLON,2006-04-10; 2008-01-02,0.937,0.937,semanal,0.7562,0.937,,0
+ucits,VGK~EUNK.DE,2,VGK; EUNK.DE,rv_europa,etf,universo,ARCX; XETR,2005-03-10; 2009-10-20,0.8389,0.8389,semanal,0.6554,0.8389,,0
+ucits,VLUE~IWVL.L,2,VLUE; IWVL.L,factor_eeuu; factor_global,etf,universo,XLON; XNYS,2013-04-18; 2014-10-06,0.8738,0.8738,semanal,0.6434,0.8738,,0
+ucits,VNQ~IUSP.L,2,VNQ; IUSP.L,inmobiliario,etf,universo,ARCX; XLON,2004-09-29; 2009-01-02,0.6376,0.6376,semanal,0.3315,0.6376,,0
+ucits,VNQI~IWDP.L,2,VNQI; IWDP.L,inmobiliario,etf,universo,XLON; XNAS,2010-11-01; 2009-01-02,0.5669,0.5669,semanal,0.4187,0.5669,,0
+ucits,VPL~CPXJ.L,2,VPL; CPXJ.L,rv_asia_pacifico,etf,universo,ARCX; XLON,2005-03-10; 2010-09-28,0.8208,0.8208,semanal,0.6692,0.8208,,0
+ucits,VT~VWRA.L,2,VT; VWRA.L,rv_global,etf,universo,ARCX; XLON,2008-06-26; 2019-07-23,0.9314,0.9314,semanal,0.6645,0.9314,,0
+ucits,XLB~SXLB.L,2,XLB; SXLB.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9371,0.9371,semanal,0.6883,0.9371,,0
+ucits,XLC~SXLC.L,2,XLC; SXLC.L,sector_eeuu,etf,universo,ARCX; XLON,2018-06-19; 2018-08-15,0.9205,0.9205,semanal,0.6166,0.9205,,0
+ucits,XLE~SXLE.L,2,XLE; SXLE.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9476,0.9476,semanal,0.7389,0.9476,,0
+ucits,XLF~SXLF.L,2,XLF; SXLF.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9381,0.9381,semanal,0.7145,0.9381,,0
+ucits,XLI~SXLI.L,2,XLI; SXLI.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9398,0.9398,semanal,0.6739,0.9398,,0
+ucits,XLK~SXLK.L,2,XLK; SXLK.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9178,0.9178,semanal,0.6193,0.9178,,0
+ucits,XLP~SXLP.L,2,XLP; SXLP.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9022,0.9022,semanal,0.6258,0.9022,,0
+ucits,XLU~SXLU.L,2,XLU; SXLU.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9152,0.9152,semanal,0.6584,0.9152,,0
+ucits,XLV~SXLV.L,2,XLV; SXLV.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.9259,0.9259,semanal,0.6157,0.9259,,0
+ucits,XLY~SXLY.L,2,XLY; SXLY.L,sector_eeuu,etf,universo,ARCX; XLON,1998-12-22; 2015-07-07,0.936,0.936,semanal,0.6408,0.936,,0

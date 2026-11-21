@@ -13,63 +13,63 @@
   "coste": "0 €",
   "licencia_y_terminos": "BIS: reutilización libre citando la fuente (términos de uso de bis.org)",
   "cobertura_inicio": "1945-01-01",
-  "cobertura_fin": "2026-09-01",
+  "cobertura_fin": "2026-10-01",
   "frecuencia": "mensual (CBPOL, EER) y trimestral (brecha de crédito, DSR)",
-  "retraso_publicacion": "sin vintages ni hora: lag fijo conservador desde el fin del periodo WS_CBPOL 7D, WS_CREDIT_GAP 6M, WS_DSR 6M, WS_EER 1M; retraso observado mínimo medido 13 días",
+  "retraso_publicacion": "sin vintages ni hora: lag fijo conservador desde el fin del periodo WS_CBPOL 7D, WS_CREDIT_GAP 6M, WS_DSR 6M, WS_EER 1M; retraso observado mínimo medido 20 días",
   "formato": "csv (SDMX)",
-  "volumen_estimado": "12244 observaciones en 35 series",
+  "volumen_estimado": "12268 observaciones en 35 series",
   "limites": "sin clave; 1 petición/s por cortesía; una petición por flujo",
   "estado_sonda": "ok",
   "mediciones": {
     "cobertura_inicio": "1945-01-01",
-    "cobertura_fin": "2026-09-01",
+    "cobertura_fin": "2026-10-01",
     "series": 35,
-    "observaciones": 12244,
-    "retraso_observado_dias_min": 13,
-    "retraso_observado_dias_mediana": 196.0,
+    "observaciones": 12268,
+    "retraso_observado_dias_min": 20,
+    "retraso_observado_dias_mediana": 234.0,
     "lag_aplicado_dias_mediana": 31.0,
     "por_flujo": {
       "WS_CBPOL": {
         "series": 9,
         "inicio": "1945-01-01",
-        "fin": "2026-09-01",
-        "retraso_observado_dias_min": 13,
+        "fin": "2026-10-01",
+        "retraso_observado_dias_min": 20,
         "lag_aplicado": "7D"
       },
       "WS_CREDIT_GAP": {
         "series": 9,
         "inicio": "1957-10-01",
         "fin": "2026-01-01",
-        "retraso_observado_dias_min": 196,
+        "retraso_observado_dias_min": 234,
         "lag_aplicado": "6M"
       },
       "WS_DSR": {
         "series": 8,
         "inicio": "1999-01-01",
         "fin": "2026-01-01",
-        "retraso_observado_dias_min": 196,
+        "retraso_observado_dias_min": 234,
         "lag_aplicado": "6M"
       },
       "WS_EER": {
         "series": 9,
         "inicio": "1994-01-01",
-        "fin": "2026-08-01",
-        "retraso_observado_dias_min": 43,
+        "fin": "2026-10-01",
+        "retraso_observado_dias_min": 20,
         "lag_aplicado": "1M"
       }
     },
     "errores": {},
     "bytes": {
-      "WS_CBPOL": 103470,
+      "WS_CBPOL": 103574,
       "WS_CREDIT_GAP": 46946,
       "WS_DSR": 17254,
-      "WS_EER": 82952
+      "WS_EER": 83366
     },
     "segundos": {
-      "WS_CBPOL": 0.8,
-      "WS_CREDIT_GAP": 0.95,
-      "WS_DSR": 0.97,
-      "WS_EER": 1.24
+      "WS_CBPOL": 0.77,
+      "WS_CREDIT_GAP": 1.02,
+      "WS_DSR": 1.61,
+      "WS_EER": 0.91
     }
   },
   "notas": [
@@ -77,5 +77,5 @@
     "zona euro = XM; China sin DSR en el BIS si la descarga no la trae (ver por_flujo)",
     "ids bis:<flujo>.<clave SDMX>; fecha_referencia = inicio del periodo"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }

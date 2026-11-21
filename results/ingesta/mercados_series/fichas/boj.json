@@ -13,9 +13,9 @@
   "coste": "0 €",
   "licencia_y_terminos": "Banco de Japón: uso libre citando la fuente",
   "cobertura_inicio": "1998-01-05",
-  "cobertura_fin": "2026-10-08",
+  "cobertura_fin": "2026-11-17",
   "frecuencia": "diaria",
-  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: FM01.STRDCLUCON 5. Regla conservadora: hábil siguiente a las 12:00 locales",
+  "retraso_publicacion": "medido en la sonda: días naturales del último dato a la fecha de la sonda: FM01.STRDCLUCON 2. Regla conservadora: hábil siguiente a las 12:00 locales",
   "formato": "json",
   "volumen_estimado": "0.22 MB (1 series)",
   "limites": "sin clave; 1 petición/s; reintento único ante error",
@@ -24,20 +24,27 @@
     "series": {
       "boj:FM01.STRDCLUCON": {
         "inicio": "1998-01-05",
-        "fin": "2026-10-08",
-        "n_obs": 7050,
-        "filas_contrato": 7050,
-        "bytes": 221664,
-        "dias_naturales_ultimo_dato_a_sonda": 5,
+        "fin": "2026-11-17",
+        "n_obs": 7076,
+        "filas_contrato": 7076,
+        "bytes": 222250,
+        "dias_naturales_ultimo_dato_a_sonda": 2,
         "fecha_publicacion_mediana_menos_fecha_dias": 1.0
       }
     },
-    "descarga": {}
+    "descarga": {
+      "boj:FM01.STRDCLUCON": {
+        "estado": "ok",
+        "bytes": 222250,
+        "segundos": 4.63,
+        "ruta": "D:\\tfm_corpus\\mercados_series\\crudo\\boj\\boj_FM01.STRDCLUCON.json"
+      }
+    }
   },
   "notas": [
     "vintage 'unico': series de mercado/política monetaria sin revisiones",
     "huecos de la fuente (festivos, '.') descartados: no se inventan filas",
     "IPC de Japón: no lo publica el BoJ (MIC/e-Stat); se usa oecd:CP.JPN"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

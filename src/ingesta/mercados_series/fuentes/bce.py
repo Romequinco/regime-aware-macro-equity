@@ -26,8 +26,10 @@ Series (``SERIES_BCE`` + todos los tipos de cambio de referencia):
   Berlín. Medido (2026-10-13): en estos flujos ``includeHistory`` devuelve UNA versión por
   observación (la vigente, con su ``VALID_FROM``), no la historia de revisiones. Por eso cada
   observación cuya regla de publicación (``previa``: clave de lags.yaml con sus tramos, ``catalogo.fecha_publicacion_clave``)
-  cae antes de su primera versión guardada se fecha con la regla (``lag_fijo``) y la nota
-  ``NOTA_PREVIA`` (valor revisado: posible fuga de revisiones); el resto, con su ``VALID_FROM``.
+  cae antes del primer vintage de la serie (anterior al historial guardado: carga en bloque) fecha su primera
+  versión con la regla (``lag_fijo``) y la nota ``NOTA_PREVIA`` (valor revisado: posible fuga de revisiones);
+  el resto, con su ``VALID_FROM`` (una observación posterior no existía antes de su versión, aunque la regla
+  caiga antes; paso 3b).
 
 ``medir_include_history``: qué devuelve ``includeHistory`` sin ``startPeriod`` (versiones por
 observación, acciones, fechas de la primera y última versión) → ficha ``bce``.
@@ -317,7 +319,12 @@ def tabla_versiones(sid: str, hist: pd.DataFrame, espec: dict[str, Any]) -> pd.D
     Una fila por versión ``Replace`` con valor (la última de cada día en Berlín si hay varias);
     ``disponible_utc`` = ``VALID_FROM``. ``Delete`` y versiones sin valor se descartan. Las
     observaciones cuya regla (``espec['previa']``, lags.yaml) cae antes del primer vintage de la
-    serie fechan su PRIMERA versión con la regla (``lag_fijo`` + ``NOTA_PREVIA``).
+    SERIE (``pub.min()``: anteriores al historial guardado, carga en bloque) fechan su PRIMERA versión
+    con la regla (``lag_fijo`` + ``NOTA_PREVIA``). Las posteriores no existían antes de su versión: se
+    fechan con su ``VALID_FROM`` aunque la regla caiga antes (paso 3b: ``ecb:MNA...GY`` de 2026-07-01, una
+    sola versión del 2026-11-13, salía con la regla EUROSTAT_PIB del 2026-11-05, visible antes de existir).
+    Si la regla cae después del ``VALID_FROM`` manda el ``VALID_FROM`` (evidencia observada: el HICP
+    definitivo, cargado días antes de lo que da la regla).
     """
     if hist.empty or "VALID_FROM" not in hist:
         return vacio_series()
@@ -334,18 +341,16 @@ def tabla_versiones(sid: str, hist: pd.DataFrame, espec: dict[str, Any]) -> pd.D
     nota = pd.Series(None, index=df.index, dtype=object)
     if espec.get("previa"):
         regla = catalogo.fecha_publicacion_clave(df["ref"], espec["previa"])
-        # Por observación: la regla cae antes que su primera versión guardada (carga en bloque o revisión
-        # posterior): la primera versión se fecha con la regla (nunca después de lo que ya se veía).
+        # Solo las observaciones cuya regla cae antes del primer vintage de la serie (anteriores al historial
+        # guardado: carga en bloque) fechan su primera versión con la regla. Una observación posterior no
+        # existía antes de su primera versión: su VALID_FROM (paso 3b).
         primera = ~df.duplicated("ref", keep="first")
-        previa = primera & (regla < pub)
+        previa = primera & (regla < pub.min())
         if espec.get("solo_desde_primer_vintage"):
             # Serie creada después (HICP ECOICOP v2, agregado I10 de composición fija): su retropolación
-            # no existía antes de su primera versión; nunca visible antes de ella. Solo es retropolación lo
-            # que la regla daba por publicado antes de crear la serie; una observación posterior cuya
-            # primera versión guardada ya es una revisión lleva NOTA_PREVIA (posible fuga de revisiones).
-            retro = previa & (regla < pub.min())
+            # no existía antes de su primera versión; nunca visible antes de ella.
             regla = regla.where(regla >= pub.min(), pub.min())
-            nota[retro] = NOTA_POSTERIOR_BCE
+            nota[previa] = NOTA_POSTERIOR_BCE
         pub = pub.where(~previa, regla)
         disp = disp.where(~previa, pd.NaT)
         metodo[previa] = "lag_fijo"

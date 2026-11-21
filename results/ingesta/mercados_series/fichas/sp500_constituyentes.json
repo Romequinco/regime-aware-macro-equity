@@ -15,30 +15,31 @@
   "cobertura_inicio": "1996-01-02",
   "cobertura_fin": "2026-08-18",
   "frecuencia": "por evento (cambios del índice)",
-  "retraso_publicacion": "fecha_publicacion = fecha efectiva del cambio (S&P lo anuncia antes: conservador, sin fuga: solo se pierde la información del anuncio); medido: el último cambio del fichero es de hace 56 días",
+  "retraso_publicacion": "fecha_publicacion = fecha efectiva del cambio (S&P lo anuncia antes: conservador, sin fuga: solo se pierde la información del anuncio); medido: el último cambio del fichero es de hace 94 días",
   "formato": "csv → parquet",
   "volumen_estimado": "5.5 MB de CSV; 1262 tramos",
   "limites": "raw.githubusercontent.com, 1 petición/s; actualización manual del autor (irregular)",
   "estado_sonda": "ok",
   "mediciones": {
     "bytes": 5530907,
-    "crudo": "20261013_sp500_historico.csv",
+    "crudo": "20261120_sp500_historico.csv",
     "n_instantaneas": 2720,
     "n_tramos": 1262,
     "n_tickers": 1209,
     "tickers_varios_tramos": 52,
+    "tramos_ticker_posterior": 28,
     "miembros_min": 487,
     "miembros_max": 507,
     "miembros_ultimo": 503,
     "inicio": "1996-01-02",
     "fin": "2026-08-18",
-    "dias_desde_ultimo_cambio": 56,
-    "tramos_ticker_posterior": 28,
+    "dias_desde_ultimo_cambio": 94,
     "tramos_q_cotejados_con_fichero_original": {
       "tramos": 28,
       "con_ticker_de_epoca": 0,
       "formato_en_original": "mismo ticker Q con mes de exclusión (p. ej. AAMRQ-201312, ENRNQ-200411)"
-    }
+    },
+    "sin_cambios_desde_crudo_anterior": "20261013_sp500_historico.csv (mismo contenido: tramos idénticos)"
   },
   "notas": [
     "Cargador: ingesta.mercados_series.fuentes.constituyentes (descargar_sp500, miembros_en)",
@@ -48,5 +49,5 @@
     "Fechas de anuncio: sin fuente pública histórica y reutilizable (las notas de S&P DJI no se pueden archivar en bloque); la fecha efectiva es conservadora y sin fuga: deuda cerrada",
     "Sin datos de precios de los miembros: solo pertenencia (supervivencia de la sección cruzada medida aquí)"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }

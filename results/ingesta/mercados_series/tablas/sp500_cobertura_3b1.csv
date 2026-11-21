@@ -1,0 +1,13 @@
+metrica,valor
+tramos,1262
+tramos_con_fichero,803
+tramos_con_fichero_que_solapa,671
+tramos_con_fichero_sin_solape,132
+tramos_sin_fichero,459
+tramos_ticker_reutilizado,115
+tickers_reutilizados,112
+tramos_abiertos,503
+tramos_abiertos_con_fichero_que_solapa,503
+dias_tramo,5618021
+dias_tramo_cubiertos,3807894
+pct_dias_tramo_cubiertos,67.78

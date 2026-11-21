@@ -14,68 +14,120 @@
   "cobertura_inicio": "1960-01-01",
   "cobertura_fin": "2025-01-01",
   "frecuencia": "anual",
-  "retraso_publicacion": "sin vintages: lag fijo 12M desde el fin del año (fin de t+1); medido: último año publicado por indicador en 'ultimo_anio' (retraso observado mínimo 286 días desde el fin de ese año)",
+  "retraso_publicacion": "sin vintages: lag fijo 12M desde el fin del año (fin de t+1); medido: último año publicado por indicador en 'ultimo_anio' (retraso observado mínimo 324 días desde el fin de ese año)",
   "formato": "json",
-  "volumen_estimado": "27090 filas en 594 series",
+  "volumen_estimado": "27546 filas en 603 series",
   "limites": "sin clave; per_page hasta 20000 (una página por indicador)",
   "estado_sonda": "ok",
   "mediciones": {
     "cobertura_inicio": "1960-01-01",
     "cobertura_fin": "2025-01-01",
-    "series": 594,
-    "observaciones": 27090,
-    "retraso_observado_dias_min": 286,
-    "retraso_observado_dias_mediana": 286.0,
+    "series": 603,
+    "observaciones": 27546,
+    "retraso_observado_dias_min": 324,
+    "retraso_observado_dias_mediana": 324.0,
     "lag_aplicado_dias_mediana": 365.0,
     "errores": {},
     "ultimo_anio": {
       "NY.GDP.MKTP.KD.ZG": {
         "ultimo_anio": 2025,
-        "paises_ultimo_anio": 186,
-        "paises_penultimo_anio": 200
+        "paises_ultimo_anio": 189,
+        "paises_penultimo_anio": 203
       },
       "FP.CPI.TOTL.ZG": {
         "ultimo_anio": 2025,
-        "paises_ultimo_anio": 169,
-        "paises_penultimo_anio": 176
+        "paises_ultimo_anio": 172,
+        "paises_penultimo_anio": 179
       },
       "SL.UEM.TOTL.ZS": {
         "ultimo_anio": 2025,
-        "paises_ultimo_anio": 182,
-        "paises_penultimo_anio": 182
+        "paises_ultimo_anio": 185,
+        "paises_penultimo_anio": 185
+      }
+    },
+    "agregados": {
+      "WLD": {
+        "FP.CPI.TOTL.ZG": {
+          "inicio": 1981,
+          "ultimo_anio": 2025
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "inicio": 1961,
+          "ultimo_anio": 2025
+        },
+        "SL.UEM.TOTL.ZS": {
+          "inicio": 1991,
+          "ultimo_anio": 2025
+        }
+      },
+      "LMY": {
+        "FP.CPI.TOTL.ZG": {
+          "inicio": 1981,
+          "ultimo_anio": 2025
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "inicio": 1961,
+          "ultimo_anio": 2025
+        },
+        "SL.UEM.TOTL.ZS": {
+          "inicio": 1991,
+          "ultimo_anio": 2025
+        }
+      },
+      "EMU": {
+        "FP.CPI.TOTL.ZG": {
+          "inicio": 1960,
+          "ultimo_anio": 2025
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "inicio": 1961,
+          "ultimo_anio": 2025
+        },
+        "SL.UEM.TOTL.ZS": {
+          "inicio": 1991,
+          "ultimo_anio": 2025
+        }
       }
     },
     "informe": {
       "paises": {
         "n_paises": 217,
-        "n_agregados": 79
+        "n_agregados": 79,
+        "agregados_admitidos": [
+          "EMU",
+          "LMY",
+          "WLD"
+        ]
       },
       "NY.GDP.MKTP.KD.ZG": {
         "error": null,
         "bytes": 3820100,
-        "segundos": 1.37,
+        "segundos": 1.16,
         "total": 17556,
-        "lastupdated": "2026-10-08"
+        "lastupdated": "2026-11-11",
+        "n_anios": 66
       },
       "FP.CPI.TOTL.ZG": {
         "error": null,
         "bytes": 4012597,
-        "segundos": 1.04,
+        "segundos": 0.87,
         "total": 17556,
-        "lastupdated": "2026-10-08"
+        "lastupdated": "2026-11-11",
+        "n_anios": 66
       },
       "SL.UEM.TOTL.ZS": {
         "error": null,
         "bytes": 4426832,
-        "segundos": 1.25,
+        "segundos": 0.79,
         "total": 17556,
-        "lastupdated": "2026-10-08"
+        "lastupdated": "2026-11-11",
+        "n_anios": 66
       }
     }
   },
   "notas": [
-    "solo países: agregados (region.id 'NA') descartados",
+    "solo países y los agregados de D3 (WLD, LMY, EMU); el resto de agregados se descarta (region.id 'NA')",
     "paro: estimación modelizada de la OIT, muy revisada; inflación y PIB revisados en cada actualización del WDI (lastupdated en informe)"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-20"
 }

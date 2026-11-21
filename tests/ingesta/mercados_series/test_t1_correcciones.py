@@ -23,7 +23,8 @@ from ingesta.mercados_series import __main__ as cli
 from ingesta.mercados_series.contrato import ErrorContrato, validar_series
 from ingesta.mercados_series.fuentes import fase1, fred
 
-NOTEBOOK = ROOT / "notebooks" / "fase2" / "mercados_series" / "02_base_fase1.ipynb"
+# Notebooks del tema: ninguno publica valores de series en sus salidas (solo metadatos).
+NOTEBOOKS = sorted((ROOT / "notebooks" / "fase2" / "mercados_series").glob("[0-9][0-9]_*.ipynb"))
 
 
 # Bloque 3: las revisables de ALFRED (vintage_exacto) en su forma del bloque 2 (regla previa, lag_fijo):
@@ -415,19 +416,22 @@ def test_t1_nota_revisable_segun_fuente(cat):
         assert "ALFRED en el bloque 3" not in c.nota_revisable(cat[sid])
 
 
-# --- Notebook sin valores de series ---------------------------------------------------------------
-@pytest.mark.skipif(not NOTEBOOK.exists(), reason="sin el notebook 02")
-def test_t1_notebook_02_sin_valores_en_salidas():
-    nb = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+# --- Notebooks sin valores de series --------------------------------------------------------------
+@pytest.mark.skipif(not NOTEBOOKS, reason="sin notebooks del tema")
+@pytest.mark.parametrize("notebook", NOTEBOOKS, ids=lambda p: p.stem)
+def test_t1_notebooks_sin_valores_en_salidas(notebook):
+    nb = json.loads(notebook.read_text(encoding="utf-8"))
     for i, celda in enumerate(nb["cells"]):
         for salida in celda.get("outputs", []):
             datos = salida.get("data", {})
             html = "".join(datos.get("text/html", []))
-            assert "<th>valor</th>" not in html, f"celda {i}: tabla con columna 'valor'"
+            # Solo la cabecera de columnas: una fila «valor» (p. ej. la tabla del contrato) no es un valor.
+            cabeceras = re.findall(r"<thead>.*?</thead>", html, flags=re.S)
+            assert not any("<th>valor</th>" in h for h in cabeceras), f"celda {i}: tabla con columna 'valor'"
             # Tablas impresas (repr de DataFrame): la cabecera es la primera línea.
             texto = "".join(datos.get("text/plain", []))
             cabecera = texto.splitlines()[0].split() if texto.strip() else []
             assert "valor" not in cabecera, f"celda {i}: tabla con columna 'valor'"
             for linea in "".join(salida.get("text", [])).splitlines():   # print(DataFrame)
                 assert linea.split()[:1] != ["serie"] or "valor" not in linea.split(), f"celda {i}: {linea!r}"
-    assert NOTEBOOK.stat().st_size < 2_000_000
+    assert notebook.stat().st_size < 2_000_000

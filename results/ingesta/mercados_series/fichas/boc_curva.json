@@ -14,7 +14,7 @@
   "coste": "0 €",
   "licencia_y_terminos": "términos del Banco de Canadá (https://www.bankofcanada.ca/terms/): uso no comercial citando",
   "cobertura_inicio": "2001-01-02",
-  "cobertura_fin": "2026-10-08",
+  "cobertura_fin": "2026-11-17",
   "frecuencia": "diaria (hábiles del publicador)",
   "retraso_publicacion": "dato de D publicado el hábil canadiense siguiente; se fija a las 18:00 Toronto (conservador) → decisión D+2; medido en la tabla: mediana 2 días naturales, máximo 6",
   "formato": "csv (Valet)",
@@ -26,8 +26,8 @@
       {
         "clave": "bond_yields_benchmark.csv",
         "estado": 200,
-        "bytes": 408591,
-        "descargado_utc": "2026-10-13T11:49:29.492659+00:00",
+        "bytes": 410299,
+        "descargado_utc": "2026-11-19T13:18:50.808223+00:00",
         "error": null,
         "last_modified": null
       }
@@ -35,8 +35,8 @@
     "series": {
       "boc:BOND.10Y": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6444,
+        "fin": "2026-11-17",
+        "n_obs": 6470,
         "n_huecos": 0,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -44,8 +44,8 @@
       },
       "boc:BOND.2Y": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6443,
+        "fin": "2026-11-17",
+        "n_obs": 6469,
         "n_huecos": 1,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -53,8 +53,8 @@
       },
       "boc:BOND.3Y": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6443,
+        "fin": "2026-11-17",
+        "n_obs": 6469,
         "n_huecos": 1,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -62,8 +62,8 @@
       },
       "boc:BOND.5Y": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6443,
+        "fin": "2026-11-17",
+        "n_obs": 6469,
         "n_huecos": 1,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -71,8 +71,8 @@
       },
       "boc:BOND.7Y": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6443,
+        "fin": "2026-11-17",
+        "n_obs": 6469,
         "n_huecos": 1,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -80,8 +80,8 @@
       },
       "boc:BOND.LONG": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6443,
+        "fin": "2026-11-17",
+        "n_obs": 6469,
         "n_huecos": 1,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -89,8 +89,8 @@
       },
       "boc:BOND.RRB": {
         "inicio": "2001-01-02",
-        "fin": "2026-10-08",
-        "n_obs": 6443,
+        "fin": "2026-11-17",
+        "n_obs": 6469,
         "n_huecos": 1,
         "retraso_dias_mediana": 2.0,
         "retraso_dias_max": 6,
@@ -107,5 +107,5 @@
     "Hora no verificada: el 2026-10-13 a las 07:44 Toronto el último dato era el del 8 (viernes 9 aún sin publicar tras el festivo del 12): se fija a las 18:00 Toronto del hábil siguiente (conservador)",
     "Solo curva: los tipos oficiales del Banco de Canadá los carga otro bloque"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

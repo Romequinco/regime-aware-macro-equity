@@ -97,8 +97,8 @@ def test_t1_bce_v2_e_i10_solo_desde_su_primera_version():
 
 def test_t1_bce_v2_revision_posterior_a_la_creacion_lleva_nota_previa():
     """Regresión (revisión): en una serie creada después (``solo_desde_primer_vintage``), una observación
-    POSTERIOR a la creación cuya primera versión guardada ya es una revisión llevaba la nota de
-    retropolación; debe llevar ``NOTA_PREVIA`` (posible fuga de revisiones)."""
+    POSTERIOR a la creación llevaba la nota de retropolación. Desde el 3b-1 se ve desde su primera versión
+    guardada (``VALID_FROM``), nunca antes: ni retropolación ni ``NOTA_PREVIA``."""
     clave = "HICP.M.U2.N.000000.4D0.ANR"
     hist = bce.parsear_csv("\n".join([
         CAB_HIST,
@@ -108,9 +108,11 @@ def test_t1_bce_v2_revision_posterior_a_la_creacion_lleva_nota_previa():
     t = validar_series(bce.tabla_versiones("ecb:" + clave, hist, bce.SERIES_BCE["ecb:" + clave])).set_index(
         "fecha_referencia")
     assert t.loc["2025-12-01", "nota"] == bce.NOTA_POSTERIOR_BCE          # anterior a la creación
-    assert t.loc["2026-03-01", "nota"] == bce.NOTA_PREVIA                 # posterior: revisión, no retropolación
-    assert t.loc["2026-03-01", "metodo_publicacion"] == "lag_fijo"
-    assert t.loc["2026-03-01", "fecha_publicacion"] < pd.Timestamp("2026-07-10")
+    # Paso 3b-1 (V1 #3): una observación POSTERIOR al inicio del historial sin versión anterior guardada ya no
+    # se fecha con la regla (la adelantaba a su existencia en el BCE): se ve desde su primera versión.
+    assert pd.isna(t.loc["2026-03-01", "nota"])
+    assert t.loc["2026-03-01", "metodo_publicacion"] == "vintage_exacto"
+    assert t.loc["2026-03-01", "fecha_publicacion"] >= pd.Timestamp("2026-07-10")
 
 
 # --- Yahoo: el mercado declarado en el universo manda --------------------------------------------------

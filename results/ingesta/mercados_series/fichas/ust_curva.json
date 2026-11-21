@@ -14,11 +14,11 @@
   "coste": "0 €",
   "licencia_y_terminos": "dominio público (Gobierno de EE. UU.)",
   "cobertura_inicio": "1990-01-02",
-  "cobertura_fin": "2026-10-09",
+  "cobertura_fin": "2026-11-18",
   "frecuencia": "diaria (hábiles del publicador)",
   "retraso_publicacion": "dato de D publicado el mismo D por la tarde (publicador treasury_curva, 18:00 NY) → decisión D+1; medido en la tabla: mediana 1 días naturales, máximo 1",
   "formato": "csv (uno por año)",
-  "volumen_estimado": "0.60 MB de crudos descargados (37 fichero(s))",
+  "volumen_estimado": "0.61 MB de crudos descargados (37 fichero(s))",
   "limites": "1 petición/s por host; robots.txt permite la descarga",
   "estado_sonda": "ok",
   "mediciones": {
@@ -27,7 +27,7 @@
         "clave": "ust_1990.csv",
         "estado": 200,
         "bytes": 14069,
-        "descargado_utc": "2026-10-13T11:47:20.766256+00:00",
+        "descargado_utc": "2026-11-19T13:06:13.354730+00:00",
         "error": null,
         "last_modified": null
       },
@@ -35,7 +35,7 @@
         "clave": "ust_1991.csv",
         "estado": 200,
         "bytes": 14069,
-        "descargado_utc": "2026-10-13T11:47:40.949139+00:00",
+        "descargado_utc": "2026-11-19T13:06:32.683240+00:00",
         "error": null,
         "last_modified": null
       },
@@ -43,7 +43,7 @@
         "clave": "ust_1992.csv",
         "estado": 200,
         "bytes": 14125,
-        "descargado_utc": "2026-10-13T11:47:59.230170+00:00",
+        "descargado_utc": "2026-11-19T13:06:53.084002+00:00",
         "error": null,
         "last_modified": null
       },
@@ -51,7 +51,7 @@
         "clave": "ust_1993.csv",
         "estado": 200,
         "bytes": 14575,
-        "descargado_utc": "2026-10-13T11:48:18.501059+00:00",
+        "descargado_utc": "2026-11-19T13:07:12.341558+00:00",
         "error": null,
         "last_modified": null
       },
@@ -59,7 +59,7 @@
         "clave": "ust_1994.csv",
         "estado": 200,
         "bytes": 15266,
-        "descargado_utc": "2026-10-13T11:48:37.819164+00:00",
+        "descargado_utc": "2026-11-19T13:07:30.631041+00:00",
         "error": null,
         "last_modified": null
       },
@@ -67,7 +67,7 @@
         "clave": "ust_1995.csv",
         "estado": 200,
         "bytes": 15327,
-        "descargado_utc": "2026-10-13T11:48:57.091124+00:00",
+        "descargado_utc": "2026-11-19T13:07:49.740601+00:00",
         "error": null,
         "last_modified": null
       },
@@ -75,7 +75,7 @@
         "clave": "ust_1996.csv",
         "estado": 200,
         "bytes": 15449,
-        "descargado_utc": "2026-10-13T11:49:16.213449+00:00",
+        "descargado_utc": "2026-11-19T13:08:08.917812+00:00",
         "error": null,
         "last_modified": null
       },
@@ -83,7 +83,7 @@
         "clave": "ust_1997.csv",
         "estado": 200,
         "bytes": 15327,
-        "descargado_utc": "2026-10-13T11:49:35.547770+00:00",
+        "descargado_utc": "2026-11-19T13:08:29.209480+00:00",
         "error": null,
         "last_modified": null
       },
@@ -91,7 +91,7 @@
         "clave": "ust_1998.csv",
         "estado": 200,
         "bytes": 15327,
-        "descargado_utc": "2026-10-13T11:49:55.662960+00:00",
+        "descargado_utc": "2026-11-19T13:08:48.238842+00:00",
         "error": null,
         "last_modified": null
       },
@@ -99,7 +99,7 @@
         "clave": "ust_1999.csv",
         "estado": 200,
         "bytes": 15388,
-        "descargado_utc": "2026-10-13T11:50:16.966416+00:00",
+        "descargado_utc": "2026-11-19T13:09:07.267349+00:00",
         "error": null,
         "last_modified": null
       },
@@ -107,7 +107,7 @@
         "clave": "ust_2000.csv",
         "estado": 200,
         "bytes": 15388,
-        "descargado_utc": "2026-10-13T11:50:38.263173+00:00",
+        "descargado_utc": "2026-11-19T13:09:24.384524+00:00",
         "error": null,
         "last_modified": null
       },
@@ -115,7 +115,7 @@
         "clave": "ust_2001.csv",
         "estado": 200,
         "bytes": 15872,
-        "descargado_utc": "2026-10-13T11:50:58.660839+00:00",
+        "descargado_utc": "2026-11-19T13:09:44.827876+00:00",
         "error": null,
         "last_modified": null
       },
@@ -123,7 +123,7 @@
         "clave": "ust_2002.csv",
         "estado": 200,
         "bytes": 15712,
-        "descargado_utc": "2026-10-13T11:51:17.044546+00:00",
+        "descargado_utc": "2026-11-19T13:10:06.053335+00:00",
         "error": null,
         "last_modified": null
       },
@@ -131,7 +131,7 @@
         "clave": "ust_2003.csv",
         "estado": 200,
         "bytes": 15326,
-        "descargado_utc": "2026-10-13T11:51:36.304952+00:00",
+        "descargado_utc": "2026-11-19T13:10:26.146893+00:00",
         "error": null,
         "last_modified": null
       },
@@ -139,7 +139,7 @@
         "clave": "ust_2004.csv",
         "estado": 200,
         "bytes": 15326,
-        "descargado_utc": "2026-10-13T11:51:53.717392+00:00",
+        "descargado_utc": "2026-11-19T13:10:45.228381+00:00",
         "error": null,
         "last_modified": null
       },
@@ -147,7 +147,7 @@
         "clave": "ust_2005.csv",
         "estado": 200,
         "bytes": 15326,
-        "descargado_utc": "2026-10-13T11:52:12.907667+00:00",
+        "descargado_utc": "2026-11-19T13:11:05.352484+00:00",
         "error": null,
         "last_modified": null
       },
@@ -155,7 +155,7 @@
         "clave": "ust_2006.csv",
         "estado": 200,
         "bytes": 16480,
-        "descargado_utc": "2026-10-13T11:52:31.188601+00:00",
+        "descargado_utc": "2026-11-19T13:11:23.418611+00:00",
         "error": null,
         "last_modified": null
       },
@@ -163,7 +163,7 @@
         "clave": "ust_2007.csv",
         "estado": 200,
         "bytes": 16650,
-        "descargado_utc": "2026-10-13T11:52:51.592684+00:00",
+        "descargado_utc": "2026-11-19T13:11:41.491483+00:00",
         "error": null,
         "last_modified": null
       },
@@ -171,7 +171,7 @@
         "clave": "ust_2008.csv",
         "estado": 200,
         "bytes": 16638,
-        "descargado_utc": "2026-10-13T11:53:09.984128+00:00",
+        "descargado_utc": "2026-11-19T13:12:01.604943+00:00",
         "error": null,
         "last_modified": null
       },
@@ -179,7 +179,7 @@
         "clave": "ust_2009.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:53:31.182360+00:00",
+        "descargado_utc": "2026-11-19T13:12:20.860340+00:00",
         "error": null,
         "last_modified": null
       },
@@ -187,7 +187,7 @@
         "clave": "ust_2010.csv",
         "estado": 200,
         "bytes": 16672,
-        "descargado_utc": "2026-10-13T11:53:52.773797+00:00",
+        "descargado_utc": "2026-11-19T13:12:39.974059+00:00",
         "error": null,
         "last_modified": null
       },
@@ -195,7 +195,7 @@
         "clave": "ust_2011.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:54:11.914638+00:00",
+        "descargado_utc": "2026-11-19T13:13:00.049411+00:00",
         "error": null,
         "last_modified": null
       },
@@ -203,7 +203,7 @@
         "clave": "ust_2012.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:54:31.104424+00:00",
+        "descargado_utc": "2026-11-19T13:13:19.331765+00:00",
         "error": null,
         "last_modified": null
       },
@@ -211,7 +211,7 @@
         "clave": "ust_2013.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:55:27.994488+00:00",
+        "descargado_utc": "2026-11-19T13:13:36.480893+00:00",
         "error": null,
         "last_modified": null
       },
@@ -219,7 +219,7 @@
         "clave": "ust_2014.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:55:48.152179+00:00",
+        "descargado_utc": "2026-11-19T13:13:53.570222+00:00",
         "error": null,
         "last_modified": null
       },
@@ -227,7 +227,7 @@
         "clave": "ust_2015.csv",
         "estado": 200,
         "bytes": 16650,
-        "descargado_utc": "2026-10-13T11:56:07.265837+00:00",
+        "descargado_utc": "2026-11-19T13:14:12.864462+00:00",
         "error": null,
         "last_modified": null
       },
@@ -235,7 +235,7 @@
         "clave": "ust_2016.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:56:24.501639+00:00",
+        "descargado_utc": "2026-11-19T13:14:31.185382+00:00",
         "error": null,
         "last_modified": null
       },
@@ -243,7 +243,7 @@
         "clave": "ust_2017.csv",
         "estado": 200,
         "bytes": 16584,
-        "descargado_utc": "2026-10-13T11:56:43.598349+00:00",
+        "descargado_utc": "2026-11-19T13:14:51.264848+00:00",
         "error": null,
         "last_modified": null
       },
@@ -251,7 +251,7 @@
         "clave": "ust_2018.csv",
         "estado": 200,
         "bytes": 16978,
-        "descargado_utc": "2026-10-13T11:57:01.647872+00:00",
+        "descargado_utc": "2026-11-19T13:15:12.566771+00:00",
         "error": null,
         "last_modified": null
       },
@@ -259,7 +259,7 @@
         "clave": "ust_2019.csv",
         "estado": 200,
         "bytes": 17841,
-        "descargado_utc": "2026-10-13T11:57:21.193758+00:00",
+        "descargado_utc": "2026-11-19T13:15:31.672797+00:00",
         "error": null,
         "last_modified": null
       },
@@ -267,7 +267,7 @@
         "clave": "ust_2020.csv",
         "estado": 200,
         "bytes": 17912,
-        "descargado_utc": "2026-10-13T11:57:38.223296+00:00",
+        "descargado_utc": "2026-11-19T13:15:50.719384+00:00",
         "error": null,
         "last_modified": null
       },
@@ -275,7 +275,7 @@
         "clave": "ust_2021.csv",
         "estado": 200,
         "bytes": 17912,
-        "descargado_utc": "2026-10-13T11:57:55.223267+00:00",
+        "descargado_utc": "2026-11-19T13:16:08.920203+00:00",
         "error": null,
         "last_modified": null
       },
@@ -283,7 +283,7 @@
         "clave": "ust_2022.csv",
         "estado": 200,
         "bytes": 18226,
-        "descargado_utc": "2026-10-13T11:58:13.387078+00:00",
+        "descargado_utc": "2026-11-19T13:16:28.158344+00:00",
         "error": null,
         "last_modified": null
       },
@@ -291,7 +291,7 @@
         "clave": "ust_2023.csv",
         "estado": 200,
         "bytes": 19098,
-        "descargado_utc": "2026-10-13T11:58:30.470423+00:00",
+        "descargado_utc": "2026-11-19T13:16:49.242577+00:00",
         "error": null,
         "last_modified": null
       },
@@ -299,7 +299,7 @@
         "clave": "ust_2024.csv",
         "estado": 200,
         "bytes": 19098,
-        "descargado_utc": "2026-10-13T11:58:48.542089+00:00",
+        "descargado_utc": "2026-11-19T13:17:08.248913+00:00",
         "error": null,
         "last_modified": null
       },
@@ -307,15 +307,15 @@
         "clave": "ust_2025.csv",
         "estado": 200,
         "bytes": 20155,
-        "descargado_utc": "2026-10-13T11:59:09.747697+00:00",
+        "descargado_utc": "2026-11-19T13:17:29.222030+00:00",
         "error": null,
         "last_modified": null
       },
       {
         "clave": "ust_2026.csv",
         "estado": 200,
-        "bytes": 15905,
-        "descargado_utc": "2026-10-13T11:59:27.864668+00:00",
+        "bytes": 18011,
+        "descargado_utc": "2026-11-19T13:17:50.287501+00:00",
         "error": null,
         "last_modified": null
       }
@@ -323,8 +323,8 @@
     "series": {
       "ust:PAR.10Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -332,8 +332,8 @@
       },
       "ust:PAR.1M": {
         "inicio": "2001-07-31",
-        "fin": "2026-10-09",
-        "n_obs": 6301,
+        "fin": "2026-11-18",
+        "n_obs": 6327,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -341,8 +341,8 @@
       },
       "ust:PAR.1Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -350,8 +350,8 @@
       },
       "ust:PAR.20Y": {
         "inicio": "1993-10-01",
-        "fin": "2026-10-09",
-        "n_obs": 8261,
+        "fin": "2026-11-18",
+        "n_obs": 8287,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -359,8 +359,8 @@
       },
       "ust:PAR.2M": {
         "inicio": "2018-10-16",
-        "fin": "2026-10-09",
-        "n_obs": 1996,
+        "fin": "2026-11-18",
+        "n_obs": 2022,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -368,8 +368,8 @@
       },
       "ust:PAR.2Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -377,8 +377,8 @@
       },
       "ust:PAR.30Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 8206,
+        "fin": "2026-11-18",
+        "n_obs": 8232,
         "n_huecos": 994,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -386,8 +386,8 @@
       },
       "ust:PAR.3M": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9197,
+        "fin": "2026-11-18",
+        "n_obs": 9223,
         "n_huecos": 3,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -395,8 +395,8 @@
       },
       "ust:PAR.3Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -404,8 +404,8 @@
       },
       "ust:PAR.4M": {
         "inicio": "2022-10-19",
-        "fin": "2026-10-09",
-        "n_obs": 994,
+        "fin": "2026-11-18",
+        "n_obs": 1020,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -413,8 +413,8 @@
       },
       "ust:PAR.5Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -422,8 +422,8 @@
       },
       "ust:PAR.6M": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -431,8 +431,8 @@
       },
       "ust:PAR.6W": {
         "inicio": "2025-02-18",
-        "fin": "2026-10-09",
-        "n_obs": 413,
+        "fin": "2026-11-18",
+        "n_obs": 439,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -440,8 +440,8 @@
       },
       "ust:PAR.7Y": {
         "inicio": "1990-01-02",
-        "fin": "2026-10-09",
-        "n_obs": 9200,
+        "fin": "2026-11-18",
+        "n_obs": 9226,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 1,
@@ -459,5 +459,5 @@
     "Hora: publicador treasury_curva de publicaciones.yaml (18:00 NY, sin verificar con fuente oficial)",
     "Descarga lenta (unos 20 s por CSV anual el 2026-10-13): 37 ficheros en dos pasadas reanudables (descargar('ust_curva', desde_anio=N) reutiliza los crudos del día)"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

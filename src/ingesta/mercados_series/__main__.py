@@ -11,7 +11,8 @@
   argumentos usa los de ``FUENTES_CLI`` (descarga del día + fichas); los argumentos van tal cual.
 - ``descargar-precios --nivel nucleo|ampliado [--fichero CSV] [--etiqueta E]``: precios as-traded de
   Yahoo (``proveedores.yahoo``; reanudable, <= 0,5 tickers/s).
-- ``construir-base [--sin-red] [--desde-cero] [--respaldo F] [--reemplazar] [--purgar] [--sin-escribir]``:
+- ``construir-base [--sin-red] [--desde-cero] [--respaldo F] [--reemplazar] [--errores-propios ID ...] [--purgar]
+  [--sin-escribir]``:
   une ALFRED > académicos > FRED vivo > fuentes oficiales (BCE, Eurostat, BIS, FMI, Banco Mundial, OCDE,
   bancos centrales, curvas) > Philadelphia Fed (antes de ALFRED) > fase1 (``base.construir_base``), escribe
   ``<corpus>/mercados_series/series/base_series.parquet`` y
@@ -20,15 +21,40 @@
   ``series/respaldo_bloque2.parquet`` (si no existe ya) y la sustituye entera (cambio de reglas o
   fuentes). Las revisiones de valores de las revisables con vintage ``unico`` se admiten siempre;
   ``--reemplazar`` permite cambiar cualquier fila guardada (correcciones propias) y ``--purgar``
-  quitar las series guardadas que ya no se construyen. ``--sin-escribir``: no escribe nada.
+  quitar las series guardadas que ya no se construyen. ``--errores-propios``: series con un error propio de
+  fechado declarado (sus filas guardadas solo pueden retrasar su fecha; claves y valores fijos). El
+  solo-añadir de las oficiales sin historia de revisiones se aplica siempre, también con ``--desde-cero`` y
+  ``--reemplazar``. Cada escritura deja la base anterior en ``series/base_series_previa.parquet`` (y la de
+  antes en ``_previa_2``) y el desglose del solo-añadir en ``tablas/solo_anadir_ultima.csv``.
+  ``--sin-escribir``: no escribe nada.
 - ``informe-alfred``: desde la base guardada, ``tablas/alfred_revisiones_resumen.csv`` (revisiones por
   serie, en %, sin niveles) y ``tablas/alfred_vs_lag.csv`` (adelantos de la regla previa frente a la
   primera publicación real).
 - ``resumen [--csv]``: recuentos de la base guardada (y, con ``--csv``, rehace la tabla de cobertura).
+- ``inventario [--consultar-boe | --sin-red]`` (paso 2 de la descarga completa): ``inventario.construir_inventario``
+  escribe ``tablas/inventario_series.csv``, ``inventario_precios.csv`` y ``fiabilidad_c.csv`` (solo metadatos
+  y medidas) e imprime un resumen. El ``robots.txt`` del BoE (una petición: ``tablas/boe_rutas.csv`` y ficha
+  ``boe``: motivo del bloqueo, estado ``fallo``) solo se consulta si aún no existe ``boe_rutas.csv`` o con
+  ``--consultar-boe``;
+  ``--sin-red`` no lo consulta nunca.
+- ``redundancia [--destino DIR] [--max-tickers N] [--solo series|precios]`` (paso 2): delega en
+  ``redundancia.main`` (pares de series y de ETF por correlación, sensibilidad del umbral, conceptos, Banco
+  Mundial/WEO y mínimos de tickers en ``tablas/redundancia_*.csv`` y ``tickers_sensibilidad.csv``).
+- ``eda``, ``seleccion`` y ``preprocesado`` (paso 3): delegan en ``<modulo>.main`` con el resto de argumentos.
+  Orden de regeneración: ``eda`` → ``seleccion`` (lee ``eda_precios.csv``) → ``preprocesado`` (lee la lista curada).
 - ``excepciones-alfred [--ids ...] [--sin-red]``: contrasta las reglas de publicación de las series de
   FRED con la primera vintage de ALFRED (``fuentes.fred.medir_excepciones``) y escribe
   ``config/excepciones_publicacion.csv`` y ``tablas/publicacion_alfred_medida.csv`` (solo fechas).
   Reanudable: lo descargado hoy se sirve de la caché.
+- ``archivar-oas [--sin-red] [--sin-crudo]``: captura fechada de la ventana de FRED de las 8 OAS de ICE
+  BofA y unión al acumulado sin perder historia (``archivo_oas``; ejecutar cada mes).
+- ``curar-precios [--sin-escribir] [--tickers A,B]`` (paso 4): ``<corpus>/mercados_series/precios_curados/`` con los
+  tickers «queda», hasta el corte G2 y con las velas de relleno quitadas y las aperturas de relleno a nulo
+  (``curada_precios``; no toca ``precios/``). Tablas ``precios_curados_{avisos,resumen,verificaciones}.csv``.
+- ``curar [--sin-escribir]`` (paso 4): ``series/base_curada.parquet`` (mismo contrato: las «queda» con las fechas
+  curadas, las escalas por vintage, las derivadas recalculadas y el corte G2), ``alias.parquet``,
+  ``proyecciones.parquet`` y ``registro_cambios.parquet`` (``curada``; no toca ``base_series.parquet``). Tablas
+  ``curada_verificaciones.csv`` y ``curada_resumen.csv``; si alguna verificación falla, no escribe nada.
 
 This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.
 """
@@ -158,11 +184,13 @@ def _construir(a: argparse.Namespace) -> int:
 
     resumen, tabla = base.construir_base(sin_red=a.sin_red, escribir=not a.sin_escribir,
                                          permitir_perdidas=a.reemplazar, purgar=a.purgar,
-                                         desde_cero=a.desde_cero, respaldo=a.respaldo, registro=print)
+                                         desde_cero=a.desde_cero, respaldo=a.respaldo,
+                                         errores_propios=a.errores_propios or (), registro=print)
     if a.sin_escribir:
         print("ensayo (--sin-escribir): no se escribe ni la base ni la cobertura")
     else:
         print(f"cobertura -> {base.escribir_cobertura(base.cobertura(tabla))}")
+        print(f"solo-añadir -> {base.escribir_solo_anadir(resumen.solo_anadir)}")
         print(f"anomalías -> {base.escribir_anomalias(resumen.detalle_anomalias)}")
     _imprimir({k: v for k, v in resumen.como_dict().items() if k != "detalle_anomalias"})
     print(base.AVISO_FRED)
@@ -181,6 +209,48 @@ def _resumen(a: argparse.Namespace) -> int:
     _imprimir(base.resumen_base(tabla))
     if a.csv:
         print(f"cobertura -> {base.escribir_cobertura(base.cobertura(tabla))}")
+    return 0
+
+
+def _inventario(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import almacen, inventario
+
+    if not almacen.ruta_series().exists():
+        print(f"no hay base en {almacen.ruta_series()}: python -m ingesta.mercados_series construir-base --sin-red",
+              file=sys.stderr)
+        return 1
+    consultar = False if a.sin_red else (True if a.consultar_boe else None)
+    res = inventario.construir_inventario(consultar_boe_red=consultar, registro=print)
+    for nombre, ruta in res.pop("rutas").items():
+        print(f"{nombre} -> {ruta}")
+    _imprimir(res)
+    return 0
+
+
+def _redundancia(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import redundancia
+
+    argumentos = []
+    if a.destino is not None:
+        argumentos += ["--destino", str(a.destino)]
+    if a.max_tickers is not None:
+        argumentos += ["--max-tickers", str(a.max_tickers)]
+    if a.solo:
+        argumentos += ["--solo", a.solo]
+    for nombre, ruta in redundancia.main(argumentos).items():
+        print(f"{nombre} -> {ruta}")
+    return 0
+
+
+def _paso3(a: argparse.Namespace) -> int:
+    """Delega en ``<modulo>.main`` con el resto de argumentos (pasos 3: seleccion, eda, preprocesado)."""
+    import importlib
+
+    modulo = importlib.import_module(f"ingesta.mercados_series.{a.orden}")
+    salida = modulo.main(list(a.resto))
+    if isinstance(salida, dict):
+        for nombre, ruta in salida.items():
+            print(f"{nombre} -> {ruta}")
     return 0
 
 
@@ -256,6 +326,24 @@ def _descargar_precios(a: argparse.Namespace) -> int:
     return int(yahoo.main(argumentos) or 0)
 
 
+def _archivar_oas(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import archivo_oas
+
+    return archivo_oas.main(["--sin-red"] * a.sin_red + ["--sin-crudo"] * a.sin_crudo)
+
+
+def _curar(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import curada
+
+    return curada.main(["--sin-escribir"] * a.sin_escribir)
+
+
+def _curar_precios(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import curada_precios
+
+    return curada_precios.main(["--sin-escribir"] * a.sin_escribir + (["--tickers", a.tickers] if a.tickers else []))
+
+
 def _sin_red(url: str, params: dict) -> dict:
     raise RuntimeError("sin red (--sin-red): falta en la caché de hoy")
 
@@ -283,6 +371,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                    help="nombre de la copia previa con --desde-cero (p. ej. respaldo_bloque3.parquet)")
     c.add_argument("--reemplazar", action="store_true",
                    help="permite cambiar filas guardadas (revisiones del último vintage, errores propios)")
+    c.add_argument("--errores-propios", nargs="+", default=None, metavar="ID",
+                   help="series con un error propio de fechado declarado: sus filas guardadas solo retrasan su fecha")
     c.add_argument("--purgar", action="store_true",
                    help="quita de la base guardada las series que ya no se construyen (las enumera)")
     c.add_argument("--sin-escribir", action="store_true",
@@ -291,6 +381,27 @@ def main(argv: Sequence[str] | None = None) -> int:
     r = sub.add_parser("resumen", help="recuentos de la base guardada")
     r.add_argument("--csv", action="store_true", help="rehace tablas/cobertura_series.csv")
     r.set_defaults(func=_resumen)
+    iv = sub.add_parser("inventario", help="inventario de series y precios, fiabilidad del nivel C y BoE (paso 2)")
+    gb = iv.add_mutually_exclusive_group()
+    gb.add_argument("--consultar-boe", action="store_true",
+                    help="vuelve a consultar el robots.txt del BoE aunque exista tablas/boe_rutas.csv")
+    gb.add_argument("--sin-red", action="store_true", help="no consulta el robots.txt del BoE")
+    iv.set_defaults(func=_inventario)
+    rd = sub.add_parser("redundancia", help="redundancia de series y ETF y sensibilidad de umbrales (paso 2)")
+    rd.add_argument("--destino", type=Path, default=None, help="carpeta de las tablas (por defecto results/.../tablas)")
+    rd.add_argument("--max-tickers", type=int, default=None, help="solo los N primeros tickers por proveedor (prueba)")
+    rd.add_argument("--solo", choices=("series", "precios"), default=None)
+    rd.set_defaults(func=_redundancia)
+    for orden, ayuda in (
+        ("eda", "EDA de series y precios: detecta incidencias y propone, no corrige (paso 3)"),
+        ("seleccion", "lista curada (queda / alias / fuera / proyecciones) y lista de descargas del paso 3b (paso 3)"),
+        ("preprocesado", "valida config/preprocesado.yaml y simula su efecto sin escribir ninguna base (paso 3)"),
+        ("estado_3b", "estado de cada fila del 3b (3b-1 y 3b-2): hecho, parcial, resuelto, limitación declarada "
+                      "o aplazado"),
+    ):
+        p3 = sub.add_parser(orden, help=ayuda, add_help=False)
+        p3.add_argument("resto", nargs=argparse.REMAINDER, help=f"argumentos de python -m ingesta.mercados_series.{orden}")
+        p3.set_defaults(func=_paso3)
     x = sub.add_parser("excepciones-alfred", help="fechas de publicación medidas en ALFRED (excepciones)")
     x.add_argument("--ids", nargs="*", help="ids del catálogo (por defecto fuentes.fred.ids_excepciones())")
     x.add_argument("--sin-red", action="store_true", help="solo lo descargado hoy (caché)")
@@ -308,11 +419,29 @@ def main(argv: Sequence[str] | None = None) -> int:
                          "tickers_ampliado.csv; una ruta relativa también se busca en <corpus>/mercados_series)")
     dp.add_argument("--etiqueta", default=None)
     dp.set_defaults(func=_descargar_precios)
+    ao = sub.add_parser("archivar-oas", help="captura de las OAS de ICE BofA de FRED y unión al acumulado (mensual)")
+    ao.add_argument("--sin-red", action="store_true", help="no descarga: solo capturas antiguas y unión")
+    ao.add_argument("--sin-crudo", action="store_true", help="no importa la caché cruda de FRED")
+    ao.set_defaults(func=_archivar_oas)
+    cp = sub.add_parser("curar-precios", help="precios curados del paso 4: tickers «queda», corte G2 y propuestas "
+                                              "automáticas del EDA (no toca precios/)")
+    cp.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
+    cp.add_argument("--tickers", default=None, help="solo estos tickers, separados por comas (prueba; no escribe)")
+    cp.set_defaults(func=_curar_precios)
+    cu = sub.add_parser("curar", help="base curada de series del paso 4 (alias, proyecciones y registro de cambios; "
+                                      "no toca base_series.parquet)")
+    cu.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
+    cu.set_defaults(func=_curar)
     a, resto = p.parse_known_args(argv)
-    if resto:
+    if a.func is _paso3:
+        # Tal cual van tras la orden (parse_known_args separa las opciones de los posicionales y las desordena).
+        crudos = list(sys.argv[1:] if argv is None else argv)
+        a.resto = crudos[crudos.index(a.orden) + 1:]
+    elif resto:
         if a.func is not _descargar_fuente:
             p.error(f"argumentos no reconocidos: {' '.join(resto)}")
-        a.argumentos = [*a.argumentos, *resto]
+        else:
+            a.argumentos = [*a.argumentos, *resto]
     return a.func(a)
 
 

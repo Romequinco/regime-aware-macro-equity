@@ -1,0 +1,947 @@
+# Plan de preprocesado del Tema 1 (paso 3 de la descarga completa). BORRADOR: NO SE EJECUTA EN EL PASO 3.
+#
+# Qué es: el plan que el paso 4 (`04_preprocesado`) aplicará para construir una BASE CURADA APARTE a partir del
+# crudo y de la lista aprobada (`config/lista_curada.yaml`, de B1). La base actual (`series/base_series.parquet`)
+# y el crudo no se tocan nunca. Decisiones que recoge (docs/fase2/mercados_series/PLAN_DESCARGA.md): D2 y D4 del
+# paso 2; E4 y E5 del paso 3.
+#
+# En el paso 3 este fichero solo se carga, se valida y se SIMULA (`python -m ingesta.mercados_series.preprocesado`:
+# tablas/preprocesado_simulacion.csv, solo recuentos y días). El módulo `preprocesado.py` tiene las funciones puras
+# que dan la fecha conservadora de cada fila; el paso 4 las usará tal cual.
+#
+# Qué series: las «queda» de config/lista_curada.yaml (B1), que es la fuente de verdad de la decisión, del aviso de
+# fecha y del grupo conservador (preprocesado.asignar_series; un test comprueba que coinciden).
+#
+# Formato de las reglas (el de config/lags.yaml):
+#   de retraso:    {lag, fin_periodo, habiles?, n_habiles?, tramos?}: fin del periodo de referencia + lag ("nM" fines
+#                  de mes, "nD" días naturales, "nMmD" primero los meses), primer hábil de 'habiles' y nunca antes del
+#                  n-ésimo hábil tras el fin (catalogo.fecha_publicacion_tramos). 'tramos' por FECHA DE REFERENCIA.
+#   de publicador: {publicador, lag?, habiles?}: la fecha de decisión que da hoy el publicador de publicaciones.yaml
+#                  (visibilidad.disponible_publicador, decisión 16:30 NY) más 'lag' en días naturales (fin_periodo:
+#                  fecha) y llevada al primer hábil de 'habiles'.
+# Fecha curada de cada fila, por capas y siempre con max (NUNCA anterior a la original):
+#   1. reglas_conservadoras o tramo_no_fiable: max(actual, min(regla conservadora, X)); X = el primer vintage de las
+#      filas con la nota «anterior a ALFRED: valor del primer vintage (X)» (ese valor es público en X con seguridad y
+#      así no adelanta a los vintages reales posteriores);
+#   2. h15_diario: + 7 días antes de 2005-06-28;
+#   3. reconstruidas: las filas publicadas antes de publicado_desde pasan a publicado_desde.
+# Las capas 1 y 2 solo tocan las filas fechadas por una regla (calendario, lag_fijo, fichero); nunca vintage_exacto ni
+# cierre_mercado. Si la fecha cambia, disponible_utc pasa a nulo (solo se conoce el día), como en
+# catalogo.aplicar_excepciones, y se anota en registro_cambios. Las derivadas se recalculan en el paso 4 con sus
+# componentes curados (contrato.fecha_publicacion_derivada).
+#
+# Sin red: todas las fuentes citadas están en el repo (publicaciones.yaml, notas de lags.yaml, fichas en
+# results/ingesta/mercados_series/fichas/*.json, README del tema y tablas del paso 2).
+
+version: 1
+estado: borrador
+
+# 1. Reglas conservadoras de los «no medibles» (D2, E4) ----------------------------------------------------------
+# Series con veredicto_desde_2000 = 'no medible' (inventario_series.csv) y las de reglas con menos de
+# inventario.MIN_COMPARACIONES comparaciones (FF_MENSUAL y EUROSTAT_PARO, n = 1), como en el 02. Entran con aviso y con
+# la fecha más tardía plausible según el calendario documentado de cada fuente. En el backtest se hace una prueba de
+# robustez contra la fecha normal (D2).
+reglas_conservadoras:
+  mercado_diario:
+    descripcion: 'Curvas y tipos de cambio de bancos centrales, €STR y OAS de ICE en FRED. Regla: si hoy la decisión ya es
+      el día siguiente al dato, se añade un día de margen (hábil siguiente a esa decisión); si hoy es el mismo día, pasa
+      al hábil siguiente. Mismo calendario de hábiles que el publicador (TARGET en el BCE y el Bundesbank; us_federal en
+      el Tesoro y FRED; semana en el resto)'
+    notas:
+      - 'Riesgo pequeño y acotado (02_inventario: un día si un festivo o un retraso no está en el calendario); sin revisiones'
+      - 'Festivos nacionales de Japón, Canadá, Reino Unido y Australia fuera del calendario semana: el cargador ya usa la
+        siguiente fecha con dato; con max(actual, regla) esas filas no se adelantan'
+    reglas:
+      ecb_fx:
+        actual: {publicador: ecb_fx, dia: mismo, hora: "16:00", huso: Europe/Berlin}
+        conservadora: {publicador: ecb_fx, lag: "1D", habiles: target}
+        fuente: 'publicaciones.yaml (ecb_fx: tipos de referencia hacia las 16:00 CET, días TARGET2); ficha bce (FX: mismo
+          día 16:00 Berlín, visible en la decisión del día)'
+        motivo: 'hoy visible el mismo día (16:00 Berlín = 10:00 NY); sin medir: pasa al hábil TARGET siguiente'
+      ecb_estr:
+        actual: {publicador: ecb_estr, dia: siguiente_habil, hora: "08:00", huso: Europe/Berlin, habiles: target}
+        conservadora: {publicador: ecb_estr, lag: "1D", habiles: target}
+        fuente: 'publicaciones.yaml (ecb_estr: el €STR de D a las 08:00 CET del hábil TARGET siguiente); ficha bce
+          (retraso mediano 1 día)'
+        motivo: 'hoy ya es día siguiente: un hábil TARGET de margen'
+      ecb_tipos_oficiales:
+        actual: {publicador: ecb_tipos_oficiales, dia: mismo, hora: "00:00", huso: Europe/Berlin}
+        conservadora: {publicador: ecb_tipos_oficiales}
+        fuente: 'publicaciones.yaml (ecb_tipos_oficiales: la fila es la fecha de efecto; la decisión se anuncia días antes);
+          ficha bce (tipos oficiales visibles en su fecha de efecto)'
+        motivo: 'igual que la actual: la fecha de efecto ya es la más tardía plausible (el tipo se anuncia antes de aplicarse)'
+      ecb_yc:
+        actual: {publicador: ecb_yc, dia: siguiente_habil, hora: "12:00", huso: Europe/Berlin, habiles: target}
+        conservadora: {publicador: ecb_yc, lag: "1D", habiles: target}
+        fuente: 'publicaciones.yaml (ecb_yc: Last-Modified 2026-10-13 12:00 Berlín con el dato del 12); ficha bce_curvas
+          (mediana 1 día natural, máximo 6)'
+        motivo: 'hoy ya es día siguiente: un hábil TARGET de margen'
+      bundesbank_diario:
+        actual: {publicador: bundesbank_diario, dia: siguiente_habil, hora: "12:00", huso: Europe/Berlin, habiles: target}
+        conservadora: {publicador: bundesbank_diario, lag: "1D", habiles: target}
+        fuente: 'publicaciones.yaml (bundesbank_diario: medido 2026-10-13, la curva de D aparece ya el día D; se usa D+1
+          12:00, conservador)'
+        motivo: 'hoy ya es día siguiente: un hábil TARGET de margen'
+      treasury_curva:
+        actual: {publicador: treasury_curva, dia: mismo, hora: "18:00", huso: America/New_York}
+        conservadora: {publicador: treasury_curva, lag: "1D", habiles: us_federal}
+        fuente: 'publicaciones.yaml (treasury_curva: fin de la tarde del mismo día, 18:00 NY > 16:30: el dato de t es
+          visible en la decisión de t+1); ficha ust_curva (mediana 1 día, máximo 1)'
+        motivo: 'hoy ya es día siguiente (18:00 NY): un hábil us_federal de margen; hora sin fuente oficial (README)'
+      ice_bofa_fred:
+        actual: {publicador: ice_bofa_fred, dia: siguiente_habil, hora: "09:15", huso: America/New_York, habiles: us_federal}
+        conservadora: {publicador: ice_bofa_fred, lag: "1D", habiles: us_federal}
+        fuente: 'publicaciones.yaml (ice_bofa_fred: last_updated 2026-10-09 09:08 NY con el dato del 08); ficha ice_bofa_oas
+          (hábil siguiente hacia las 09:10 NY; ALFRED fecha la vintage antes de la carga real)'
+        motivo: 'hoy ya es día siguiente: un hábil us_federal de margen'
+      mof_jgb:
+        actual: {publicador: mof_jgb, dia: siguiente_habil, hora: "08:30", huso: Asia/Tokyo, habiles: semana}
+        conservadora: {publicador: mof_jgb, lag: "1D", habiles: semana}
+        fuente: 'publicaciones.yaml (mof_jgb: Last-Modified 08:30 JST del hábil siguiente); ficha mof_jgb (mediana 1 día,
+          máximo 11)'
+        motivo: 'hoy ya es día siguiente: un hábil de margen'
+      boj_diario:
+        actual: {publicador: boj_diario, dia: siguiente_habil, hora: "12:00", huso: Asia/Tokyo, habiles: semana}
+        conservadora: {lag: "1D", fin_periodo: fecha, habiles: semana, n_habiles: 3}
+        fuente: 'publicaciones.yaml (boj_diario: la cifra definitiva del tipo call de D sale el hábil siguiente por la
+          mañana); ficha boj (medido en la sonda: boj:FM01.STRDCLUCON iba 5 días naturales por detrás, con fin de
+          semana y el festivo japonés del 12-oct)'
+        motivo: 'la medida (5 días naturales) no cabe en el hábil siguiente: tercer hábil tras el dato (el jueves sale el
+          martes), que cubre un festivo japonés fuera del calendario semana'
+      boc_valet:
+        actual: {publicador: boc_valet, dia: siguiente_habil, hora: "12:00", huso: America/Toronto, habiles: semana}
+        conservadora: {publicador: boc_valet, lag: "1D", habiles: semana}
+        fuente: 'publicaciones.yaml (boc_valet: conservador, hábil siguiente a las 12:00 de Toronto)'
+        motivo: 'hoy ya es día siguiente: un hábil de margen'
+      boc_bonos:
+        actual: {publicador: boc_bonos, dia: siguiente_habil, hora: "18:00", huso: America/Toronto, habiles: semana}
+        conservadora: {publicador: boc_bonos, lag: "1D", habiles: semana}
+        fuente: 'publicaciones.yaml (boc_bonos: el 2026-10-13 a las 07:44 de Toronto el último dato era el del 8, festivo
+          el 12)'
+        motivo: 'hoy ya es día siguiente: un hábil de margen'
+      boe_yc:
+        actual: {publicador: boe_yc, dia: siguiente_habil, hora: "12:00", huso: Europe/London, habiles: semana}
+        conservadora: {publicador: boe_yc, lag: "1D", habiles: semana}
+        fuente: 'publicaciones.yaml (boe_yc: Last-Modified del zip 2026-10-13 11:04 Londres con el dato del 12)'
+        motivo: 'hoy ya es día siguiente: un hábil de margen'
+      rba_diario:
+        actual: {publicador: rba_diario, dia: siguiente_habil, hora: "12:00", huso: Australia/Sydney, habiles: semana}
+        conservadora: {lag: "7D", fin_periodo: fecha, habiles: semana}
+        fuente: 'publicaciones.yaml (rba_diario: tablas F1/F2; conservador, hábil siguiente a las 12:00 de Sídney); ficha
+          rba (medido en la sonda: la tabla F2, rba:FCMYGBAG10D, iba 6 días naturales por detrás; F1, 1 día)'
+        motivo: 'la F2 se actualiza con hasta 6 días de retraso: 7 días naturales y primer hábil (la misma regla para
+          las dos tablas del publicador)'
+
+  banco_mundial:
+    descripcion: 'Anuales del WDI (594 series en la base; 24 en el alcance estricto de D9). Regla: la siguiente
+      actualización del WDI tras el fin del año: si un país no entra en la del año t+1, entra en la del t+2'
+    notas:
+      - 'La fecha no arregla la fuga de revisiones: los valores son los del último vintage (nota de revisable)'
+    reglas:
+      WB_ANUAL:
+        actual: {lag: "12M", fin_periodo: anio}
+        conservadora: {lag: "19M", fin_periodo: anio}
+        fuente: 'lags.yaml (WB_ANUAL: el año t sale entre abril y julio de t+1); ficha worldbank (lastupdated 2026-10-08;
+          2025 ya publicado para 186 países frente a 200 con 2024: unos 14 países llegan después de t+1)'
+        motivo: 'fin de t+1 cubre el ciclo regular de abril a julio de t+1, pero no a los países que no entran en él;
+          la siguiente actualización regular, la de abril a julio de t+2, da el 31 de julio de t+2 (19 fines de mes)'
+
+  macro_eurostat_bce_bis:
+    descripcion: 'Macro de Eurostat, BCE y BIS sin vintages: el retraso máximo de su calendario documentado más 7 días
+      de margen (el mismo margen que el tramo no fiable)'
+    notas:
+      - 'Valores del último vintage (revisiones del PIB y del paro): la fecha no arregla la fuga de revisiones'
+    reglas:
+      EUROSTAT_PARO:
+        actual:
+          lag: "2M"
+          fin_periodo: mes
+          tramos:
+            - {desde: '2012-01-01', lag: "1M10D", habiles: target}
+        conservadora:
+          lag: "2M7D"
+          fin_periodo: mes
+          tramos:
+            - {desde: '2012-01-01', lag: "1M17D", habiles: target, verificado: false,
+               fuente: 'lags.yaml EUROSTAT_PARO: noviembre, el mes más tardío, sale hacia t+40 (2014-01-08, 2019-01-09,
+                 2024-01-09); + 7 días'}
+        fuente: 'lags.yaml (EUROSTAT_PARO: muestras de notas de prensa archivadas de Eurostat; antes de 2012, noviembre de
+          2009 salió el 2010-01-08); fiabilidad_c.csv (n = 1: cuenta como no medible)'
+        motivo: 'retraso máximo documentado (t+40 en noviembre) + 7 días desde 2012; antes de 2012, fin de M+2 + 7 días'
+      EUROSTAT_HICP:
+        regla_de_lags: CPIAUCSL
+        fuentes: [eurostat]
+        actual: {lag: "1M1D", fin_periodo: mes}
+        conservadora: {lag: "1M8D", fin_periodo: mes}
+        fuente: 'ficha bce (HICP 4D0: retraso de la primera versión, mediana 46 días y máximo 49 desde el inicio del mes,
+          es decir, hacia el día 18 de M+1); ficha eurostat (HICP 1M1D desde el fin de mes, Euro indicators a las 11:00)'
+        motivo: 'antes, «no fiable» en toda la serie con la medida prestada del IPC de EE. UU. (regla CPIAUCSL); con el
+          calendario de Eurostat la regla actual (día 1 de M+2) ya pasa del máximo medido: + 7 días de margen'
+      EUROSTAT_ESI:
+        regla_de_lags: UMCSENT
+        fuentes: [eurostat]
+        actual: {lag: "1D", fin_periodo: mes}
+        conservadora: {lag: "8D", fin_periodo: mes}
+        fuente: 'ficha eurostat (ESI 1D desde el fin de mes; ei_bssi_m_r2 actualizado el 2026-09-29 con septiembre:
+          la encuesta sale a final de M)'
+        motivo: 'antes, «no fiable» en toda la serie con la medida prestada de Michigan (UMCSENT); con el calendario de
+          Eurostat (final de M) la regla actual + 7 días de margen'
+      EUROSTAT_PARO_UK:
+        actual: {lag: "3M", fin_periodo: mes}
+        conservadora: {lag: "4M", fin_periodo: mes}
+        fuente: 'lags.yaml (EUROSTAT_PARO_UK: LFS de la ONS a mediados de M+2 y Eurostat la incorporaba 1-2 meses más tarde)'
+        motivo: 'el máximo documentado (mediados de M+2 + 2 meses = mediados de M+4) pasa del fin de M+3 actual: fin de
+          M+4 (unas dos semanas de margen)'
+      EUROSTAT_PIB:
+        actual:
+          lag: "2M10D"
+          fin_periodo: trimestre
+          tramos:
+            - {desde: '2003-01-01', hasta: '2015-12-31', lag: "1M18D", habiles: target}
+            - {desde: '2016-01-01', lag: "1M5D", habiles: target}
+        conservadora:
+          lag: "2M17D"
+          fin_periodo: trimestre
+          tramos:
+            - {desde: '2003-01-01', hasta: '2015-12-31', lag: "1M22D", habiles: target, verificado: false,
+               fuente: 'lags.yaml EUROSTAT_PIB: flash t+45 (2003-05-15, 2007-08-14, 2009-02-13, 2016-02-12); t+45 + 7'}
+            - {desde: '2016-01-01', lag: "1M9D", habiles: target, verificado: false,
+               fuente: 'lags.yaml EUROSTAT_PIB: flash preliminar t+30, el más tardío t+33 (2021-02-02); t+33 + 7'}
+        fuente: 'lags.yaml (EUROSTAT_PIB: notas de prensa de Eurostat; antes de 2003 primera estimación hacia t+60-70, sin
+          muestra); ficha eurostat'
+        motivo: 'retraso máximo documentado de cada época + 7 días: t+78 antes de 2003, t+52 en 2003-2015 y t+40 desde 2016'
+      EUROSTAT_PIB_PAISES:
+        actual:
+          lag: "2M10D"
+          fin_periodo: trimestre
+          tramos:
+            - {desde: '2003-01-01', lag: "1M18D", habiles: target}
+        conservadora:
+          lag: "2M17D"
+          fin_periodo: trimestre
+          tramos:
+            - {desde: '2003-01-01', lag: "1M22D", habiles: target, verificado: false,
+               fuente: 'lags.yaml EUROSTAT_PIB_PAISES: el más lento de los cuatro institutos, t+45 (Destatis desde 2003,
+                 ONS t+40/45 desde 2018); + 7 días'}
+        fuente: 'lags.yaml (EUROSTAT_PIB_PAISES: calendarios nacionales de Destatis, INSEE, Istat y ONS resumidos, sin
+          muestra archivada)'
+        motivo: 'retraso máximo documentado (t+45) + 7 días desde 2003; antes, t+71 + 7'
+      BIS_WS_CBPOL:
+        actual: {lag: "7D", fin_periodo: mes}
+        conservadora: {lag: "14D", fin_periodo: mes}
+        fuente: 'lags.yaml (BIS_WS_CBPOL: el tipo se conoce el día de la decisión; el BIS lo recopila con días de retraso);
+          ficha bis (por_flujo.WS_CBPOL: retraso observado mínimo 13 días)'
+        motivo: 'sin calendario del BIS: la regla actual + 7 días de margen, que cubre los 13 días observados'
+      BIS_WS_CREDIT_GAP:
+        actual: {lag: "6M", fin_periodo: trimestre}
+        conservadora: {lag: "6M7D", fin_periodo: trimestre}
+        fuente: 'lags.yaml (BIS_WS_CREDIT_GAP: publicación trimestral del BIS con 3-6 meses de retraso); ficha bis
+          (retraso observado mínimo 196 días)'
+        motivo: 'retraso máximo documentado (6 meses) + 7 días'
+        notas:
+          - 'F2: retraso medido de unos 5,5 meses tras el fin del trimestre (la publicación del 2026-09-14 trae 2026-Q1);
+            6M7D lo cubre (2026-Q1 visible el 2026-10-07; test). Confianza media: una sola publicación comprobada'
+          - 'Publicado desde 2016-09-18 (https://www.bis.org/publ/qtrpdf/r_qt1609c.htm): reconstruidas.externas'
+      BIS_WS_DSR:
+        actual: {lag: "6M", fin_periodo: trimestre}
+        conservadora: {lag: "6M7D", fin_periodo: trimestre}
+        fuente: 'lags.yaml (BIS_WS_DSR: se publica con el crédito total, 3-6 meses); ficha bis (retraso observado mínimo
+          196 días)'
+        motivo: 'retraso máximo documentado (6 meses) + 7 días'
+        notas:
+          - 'F2: retraso medido de unos 5,5 meses tras el fin del trimestre (la publicación del 2026-09-14 trae 2026-Q1);
+            6M7D lo cubre (2026-Q1 visible el 2026-10-07; test). Confianza media: una sola publicación comprobada'
+          - 'Publicado desde 2015-09-13 (https://www.bis.org/press/p150913.htm): reconstruidas.externas'
+      BIS_WS_EER:
+        actual: {lag: "1M", fin_periodo: mes}
+        conservadora: {lag: "1M7D", fin_periodo: mes}
+        fuente: 'lags.yaml (BIS_WS_EER: publicación mensual hacia mediados del mes siguiente); ficha bis (retraso observado
+          mínimo 43 días)'
+        motivo: 'retraso máximo documentado (fin del mes siguiente) + 7 días'
+
+  academicas:
+    descripcion: 'Ficheros académicos y espejos (Ken French, Shiller, Goyal-Welch, OFR FSI y datahub): la cadencia de
+      actualización documentada más un margen (una edición saltada en las de cadencia mensual)'
+    notas:
+      - 'Solo se mueven las filas fechadas por la regla: las de ediciones archivadas posteriores ya llevan su fecha real,
+        más tardía, y max(actual, regla) no las cambia'
+      - 'Ken French, OFR FSI y Goyal-Welch se reconstruyen hacia atrás: además de la regla, publicado_desde en
+        reconstruidas.externas (F1 y F2, fechas comprobadas en la web)'
+    reglas:
+      FF_MENSUAL:
+        actual: {lag: "45D", fin_periodo: mes}
+        conservadora:
+          segmentos:
+            - hasta: '2005-08-31'
+              regla: {lag: "12M7D", fin_periodo: anio}
+            - desde: '2005-09-01'
+              regla: {lag: "2M7D", fin_periodo: mes}
+        fuente: 'F1, verificado en la Wayback Machine (2026-11-19):
+          https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+          y las capturas posteriores (la página decía «updated at least once a year» y no hay zips archivados antes de
+          2005); archivo anual de factores desde 2005:
+          https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors_archive.html; ficha
+          ken_french y fiabilidad_c.csv (n = 1, +19 días)'
+        motivo: 'por periodo de referencia: antes de 2005-09, cadencia anual (fin del año + 12 meses + 7 días: el dato de
+          un mes de t se ve a primeros de enero de t+2); desde 2005-09, mensual, medida a 17-30 días del fin de mes y a
+          veces más de 45 (en 2006 septiembre aún no estaba el 17 de noviembre; en 2025, 42 días): 2M7D cubre ese máximo'
+        notas:
+          - 'French reconstruye TODA la historia en cada actualización (revisiones): los valores son los de la edición
+            descargada, no los de su fecha (archivo anual desde 2005 en f-f_factors_archive.html)'
+          - 'publicado_desde por fichero en reconstruidas.externas (F3M 2001-12-18, F3D 2002-06-04, F5M 2014-12-19, F5D
+            2015-06-01)'
+      GW_ANUAL:
+        actual: {lag: "7M1D", fin_periodo: anio}
+        conservadora:
+          lag: "13M"
+          fin_periodo: anio
+          tramos:
+            - {desde: '2022-01-01', hasta: '2022-12-31', lag: "15M15D", verificado: true,
+               fuente: 'Wayback Machine (2026-11-19): la web pasa de «hasta 2021» a «hasta 2023» entre 2023-03-25 y
+                 2024-04-15; los datos de 2022 nunca salieron sueltos: visibles el 2024-04-15'}
+        fuente: 'F2, verificado en la Wayback Machine (2026-11-19):
+          https://web.archive.org/web/20040413082023/http://www.bus.emory.edu:80/AGoyal/ y capturas posteriores (datos
+          hasta 2009 guardados el 2010-11-10; los de 2011 enlazados entre febrero y diciembre de 2012); lags.yaml y
+          ficha goyal_welch'
+        motivo: 'la edición anual sale entre abril y noviembre de t+1 y a veces más tarde: 13 fines de mes tras el fin
+          del año (31 de enero de t+2). El año 2022, con fecha fija (2024-04-15). Vale para las mensuales y trimestrales
+          del año t, que salen en la misma edición anual (fin_periodo: anio)'
+      SHILLER_FICHERO:
+        actual: {lag: "1M1D", fin_periodo: mes}
+        conservadora: {lag: "2M1D", fin_periodo: mes}
+        fuente: 'lags.yaml (SHILLER_FICHERO: edición irregular; Last-Modified 2026-09-02 con agosto completo y 41 días sin
+          edición nueva a 2026-10-12); ficha shiller'
+        motivo: 'cadencia irregular, más o menos mensual: una edición saltada más (día 1 de M+3)'
+      SHILLER_DE:
+        actual: {lag: "3M1D", fin_periodo: trimestre}
+        conservadora: {lag: "4M1D", fin_periodo: trimestre}
+        fuente: 'lags.yaml (SHILLER_DE: D y E con retraso trimestral; la edición del 2026-09-02 llega hasta junio); ficha
+          shiller (retraso de edición 64 días)'
+        motivo: 'la misma cadencia que SHILLER_FICHERO: una edición mensual saltada más'
+      OFR_FSI:
+        actual: {lag: "5D", fin_periodo: fecha}
+        conservadora: {lag: "7D", fin_periodo: fecha, habiles: us_federal}
+        fuente: 'lags.yaml (OFR_FSI: unos 2 días hábiles de retraso; el lunes 2026-07-20 el último dato era el jueves
+          anterior); ficha ofr_fsi (edición a 4 días, fichero diario)'
+        motivo: 'cadencia diaria con 2 hábiles de retraso: una semana y el primer hábil us_federal cubren dos festivos
+          (comprobado en un test: siempre >= el segundo hábil us_federal tras el dato)'
+        notas:
+          - 'Publicado desde 2017-10-25 (reconstruidas.externas): las filas anteriores no existían'
+      GH_US10Y_MONTHLY:
+        actual: {lag: "2M1D", fin_periodo: mes}
+        conservadora: {lag: "3M1D", fin_periodo: mes}
+        fuente: 'lags.yaml (GH_US10Y_MONTHLY: espejo datahub de GS10 con actualización periódica, retraso de 20 a 50 días)'
+        motivo: 'cadencia periódica sin calendario: una actualización mensual saltada más'
+      SP500_MONTHLY_DEEP_SRC:
+        actual: {lag: "1M1D", fin_periodo: mes}
+        conservadora: {lag: "2M1D", fin_periodo: mes}
+        fuente: 'lags.yaml (SP500_MONTHLY_DEEP_SRC: espejo datahub del precio medio de Shiller; junio-2026 ya estaba el
+          2026-07-20)'
+        motivo: 'la misma cadencia que SHILLER_FICHERO: una edición saltada más'
+
+  otras_fred:
+    descripcion: 'Reglas especiales de FRED sin vintages (recesiones del NBER y papel comercial antiguo)'
+    notas:
+      - 'Hoy ninguna serie de este grupo es «no medible»: USRECD y el papel comercial del NBER (M13002US35620M156NNBR)
+        son exactas (vintage_exacto) y no tienen filas fechadas por regla; USREC (NBER_RECESSION_MONTHLY) y el papel
+        comercial de la Fed (fed_cp) son «no fiable» y van por el tramo no fiable. Las reglas quedan por si el paso 4
+        recibe filas fechadas por ellas. LIOR3M (LIBOR_3M_QUARTERLY, 3 comparaciones) entra aquí como no medible'
+    reglas:
+      NBER_RECESSION_DAILY:
+        actual: {lag: "24M", fin_periodo: mes}
+        conservadora: {lag: "29M", fin_periodo: mes}
+        fuente: 'lags.yaml (NBER_RECESSION_DAILY: mismo fechado que USREC; el comité fecha picos y valles con 6-21 meses
+          de retraso); fiabilidad_c.csv (NBER_RECESSION_MONTHLY adelanta hasta 130 días)'
+        motivo: 'la regla mensual adelanta hasta 130 días: + 5 meses (más de 130 días + 7 de margen)'
+      LIBOR_3M_QUARTERLY:
+        actual: {lag: "1M1D", fin_periodo: trimestre}
+        conservadora: {lag: "2M1D", fin_periodo: trimestre}
+        fuente: 'lags.yaml (LIBOR_3M_QUARTERLY: media del trimestre de la OCDE en FRED; visible al cerrar el trimestre +
+          un mes por la OCDE); publicacion_alfred_medida.csv (fred:LIOR3M: solo 3 periodos cubiertos, los 3 con el alta
+          tardía en FRED, hasta 272 días)'
+        motivo: 'con 3 comparaciones (< inventario.MIN_COMPARACIONES) no se mide: pasa de «no fiable» a no medible. El
+          adelanto de 272 días es el alta de la serie en FRED, no un retraso de publicación: un mes más de la OCDE'
+      NBER_NY_COMMERCIAL_PAPER:
+        actual: {lag: "1D", fin_periodo: mes}
+        conservadora: {lag: "1M1D", fin_periodo: mes}
+        fuente: 'lags.yaml (NBER_NY_COMMERCIAL_PAPER: media mensual de cotizaciones diarias en prensa; serie cerrada en 1971)'
+        motivo: 'recopilación histórica sin calendario: un mes más (día 1 de M+2)'
+
+# 2. Tramo no fiable (E5) y «fiable con margen» que adelanta --------------------------------------------------------
+# Las series que se quedan con veredicto_desde_2000 = 'no fiable' NO se borran: antes de su corte
+# (tramo_conservador_antes_de de lista_curada.yaml = fiable_desde; 'toda' = toda la serie, sin corte) su regla pasa a
+# ser la actual + el adelanto máximo medido DE ESA SERIE + margen_dias. Las «fiable con margen» que adelantan antes de su
+# fiable_desde entran igual, con el techo del adelanto y sin margen. Desde el corte nada cambia.
+# Adelanto por serie (preprocesado.adelantos_por_serie; los tests comprueban que esta lista sale de las tablas):
+#   alfred_previa: regla previa frente a la primera vintage de ALFRED, periodo a periodo (alfred_vs_lag.csv);
+#   excepciones:   regla contrastada con ALFRED: excepción medida - regla en cada periodo de
+#                  config/excepciones_publicacion.csv, sin los periodos de episodios_excluidos (ya corregidos por la
+#                  excepción y que no se repiten: Moody's fuera de FRED);
+#   regla:         sin datos por serie: el adelanto_max_dias de la regla en fiabilidad_c.csv (la tabla no guarda el
+#                  p99; el máximo es más conservador).
+# Salen del tramo y pasan a no medibles en su grupo: las de menos de inventario.MIN_COMPARACIONES comparaciones con un
+# grupo para su regla (fred:LIOR3M) y las de Eurostat con 'toda' (HICP empalmado y ESI: EUROSTAT_HICP y EUROSTAT_ESI,
+# con el calendario de Eurostat en vez de la medida prestada de EE. UU.).
+tramo_no_fiable:
+  descripcion: 'regla actual + adelanto máximo medido de la serie + margen antes del corte; nada cambia después'
+  margen_dias: 7
+  medida: 'adelanto por serie (alfred_previa, excepciones o regla): ver la cabecera de la sección'
+  fuente: 'results/ingesta/mercados_series/tablas/alfred_vs_lag.csv, publicacion_alfred_medida.csv y fiabilidad_c.csv;
+    config/excepciones_publicacion.csv; corte de config/lista_curada.yaml (tramo_conservador_antes_de)'
+  episodios_excluidos:
+    - {desde: '2016-09-01', hasta: '2017-04-30', reglas: [moodys, MOODYS_AAA, MOODYS_BAA, BAAFFM, fred_calculadas_dia_siguiente],
+       motivo: "Moody's fuera de FRED (sep-2016 a abr-2017): episodio único que ya corrige excepciones_publicacion.csv",
+       fuente: 'lags.yaml (cabecera: Moody''s fuera de FRED de oct-2016 a mar-2017) y config/excepciones_publicacion.csv'}
+  notas:
+    - 'Sin el episodio de Moody''s, moodys (DAAA, DBAA) se queda en 5 días y BAAFFM en 18; TEDRATE ya no hereda los 162
+      días de BAA10Y por compartir regla: se usa su medida propia'
+    - 'IRLTLT01USM156N (247 días, el alta en FRED) es alias en lista_curada.yaml: no entra'
+  derivadas: 'deriv:DBAA-DAAA, deriv:DBAA-DGS10 y deriv:DCPF3M-DFF llevan «no fiable» en la lista por sus componentes
+    (131 series con ese aviso en la lista frente a 128 en el inventario): no entran en el tramo porque el paso 4 las
+    recalcula con los componentes curados (fecha = la máxima de los componentes)'
+  reglas:   # la regla actual de cada clave usada abajo (validada contra lags.yaml y publicaciones.yaml)
+    ANFCI: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    BAAFFM: {tipo: lag, actual: {lag: "1D", fin_periodo: mes, habiles: us_federal}}
+    BEA_MTIS_REAL: {tipo: lag, actual: {lag: "3M1D", fin_periodo: mes}}
+    BEA_PIB_SEGUNDA: {tipo: lag, actual: {lag: "3M1D", fin_periodo: trimestre}}
+    BEA_RENTA_GASTO: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    BEA_VEHICULOS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    CBO: {tipo: lag, actual: {lag: "6M1D", fin_periodo: trimestre}}
+    CENSUS_CONSTRUCCION: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    CENSUS_M3: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    CENSUS_VENTAS_MINORISTAS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    CENSUS_VIVIENDA_NUEVA: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    CENSUS_VIVIENDA_NUEVA_TRIMESTRAL: {tipo: lag, actual: {lag: "1M1D", fin_periodo: trimestre}}
+    CFNAI: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    CFNAIMA3: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    CFSI: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha}}
+    CHICAGO_BBK: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    CLAIMS_CONTINUADAS: {tipo: lag, actual: {lag: "13D", fin_periodo: fecha}}
+    CLEVELAND_EXPINF: {tipo: lag, actual: {lag: "1D", fin_periodo: mes}}
+    COMERCIO_EXTERIOR: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    CPIAUCSL: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    DALLAS_TMOS: {tipo: lag, actual: {lag: "1D", fin_periodo: mes}}
+    ECI: {tipo: lag, actual: {lag: "2M1D", fin_periodo: trimestre}}
+    FED_H41: {tipo: lag, actual: {lag: "3D", fin_periodo: fecha, habiles: us_federal}}
+    FED_H6: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    FED_H8_SEMANAL: {tipo: lag, actual: {lag: "13D", fin_periodo: fecha, habiles: us_federal}}
+    FED_Z1: {tipo: lag, actual: {lag: "3M1D", fin_periodo: trimestre}}
+    FHFA_HPI: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    GDP_GROWTH_QOQ: {tipo: lag, actual: {lag: "1M1D", fin_periodo: trimestre}}
+    ICSA: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha}}
+    INDPRO: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    IPC_DERIVADOS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    JOLTS: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    KCFSI: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    KC_LMCI: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    NFCI: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    NFCI_CREDIT: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    NFCI_LEVERAGE: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    NFCI_RISK: {tipo: lag, actual: {lag: "5D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    NNUSBIS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    OCDE_CLI: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    PHILLY_COINCIDENTES: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes}}
+    PMI_PROXY_PHILLY: {tipo: lag, actual: {lag: "1D", fin_periodo: mes}}
+    PPI_ALL_COMMODITIES: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    PPI_FUELS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    PPI_METALS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    PRECIOS_IMPORTACION: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    RECESSION_PROB_SMOOTHED: {tipo: lag, actual: {lag: "2M1D", fin_periodo: mes, habiles: us_federal}}
+    RNUSBIS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    SAHM_RULE_CURRENT: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    SAHM_RULE_REALTIME: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    TBILL3M_MINUS_FEDFUNDS: {tipo: lag, actual: {lag: "1D", fin_periodo: mes, habiles: us_federal}}
+    TESORO_MTS: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    TRANSACCIONES_INTERNACIONALES: {tipo: lag, actual: {lag: "3M1D", fin_periodo: trimestre}}
+    UNRATE: {tipo: lag, actual: {lag: "1M1D", fin_periodo: mes}}
+    WTI_SPOT_MONTHLY: {tipo: lag, actual: {lag: "11D", fin_periodo: mes}}
+    fed_cp: {tipo: publicador, actual: {publicador: fed_cp}}
+    fred_calculadas_dia_siguiente: {tipo: publicador, actual: {publicador: fred_calculadas_dia_siguiente}}
+    fred_tesoro_calculadas: {tipo: publicador, actual: {publicador: fred_tesoro_calculadas}}
+    moodys: {tipo: publicador, actual: {publicador: moodys}}
+  series:
+    ecb:HICP.M.U2.N.000000.4D0.ANR: {regla: CPIAUCSL, veredicto: no fiable, corte: '2026-02-03',
+                                     adelanto_dias: 17.0, medida: regla, n: 2484, dias_extra: 24,
+                                     conservadora: {lag: "1M25D", fin_periodo: mes}}
+    fred:A191RL1Q225SBEA: {regla: GDP_GROWTH_QOQ, veredicto: no fiable, corte: '2014-09-26',
+                           adelanto_dias: 52.0, medida: alfred_previa, n: 48, dias_extra: 59,
+                           conservadora: {lag: "1M60D", fin_periodo: trimestre}}
+    fred:A261RX1Q020SBEA: {regla: BEA_PIB_SEGUNDA, veredicto: no fiable, corte: '2013-03-28',
+                           adelanto_dias: 8.0, medida: alfred_previa, n: 55, dias_extra: 15,
+                           conservadora: {lag: "3M16D", fin_periodo: trimestre}}
+    fred:AMTMNO: {regla: CENSUS_M3, veredicto: no fiable, corte: '2011-06-24',
+                  adelanto_dias: 17.0, medida: alfred_previa, n: 184, dias_extra: 24,
+                  conservadora: {lag: "2M25D", fin_periodo: mes}}
+    fred:ANFCI: {regla: ANFCI, veredicto: no fiable, corte: '2011-05-25',
+                 adelanto_dias: 15.0, medida: alfred_previa, n: 802, dias_extra: 22,
+                 conservadora: {lag: "27D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    fred:AWHAETP: {regla: UNRATE, veredicto: no fiable, corte: '2010-06-04',
+                   adelanto_dias: 19.0, medida: alfred_previa, n: 196, dias_extra: 26,
+                   conservadora: {lag: "1M27D", fin_periodo: mes}}
+    fred:BAAFFM: {regla: BAAFFM, veredicto: no fiable, corte: '2014-05-16',
+                  adelanto_dias: 18.0, medida: excepciones, n: 149, dias_extra: 25,
+                  conservadora: {lag: "26D", fin_periodo: mes, habiles: us_federal}}
+    fred:BACTSAMFRBDAL: {regla: DALLAS_TMOS, veredicto: no fiable, corte: '2016-01-25',
+                         adelanto_dias: 30.0, medida: alfred_previa, n: 128, dias_extra: 37,
+                         conservadora: {lag: "38D", fin_periodo: mes}}
+    fred:BBKMGDP: {regla: CHICAGO_BBK, veredicto: no fiable, corte: '2021-05-04',
+                   adelanto_dias: 96.0, medida: alfred_previa, n: 66, dias_extra: 103,
+                   conservadora: {lag: "2M104D", fin_periodo: mes}}
+    fred:BBKMLEIX: {regla: CHICAGO_BBK, veredicto: no fiable, corte: '2021-04-01',
+                    adelanto_dias: 35.0, medida: alfred_previa, n: 66, dias_extra: 42,
+                    conservadora: {lag: "2M43D", fin_periodo: mes}}
+    fred:BCNSDODNS: {regla: FED_Z1, veredicto: no fiable, corte: '2010-06-10',
+                     adelanto_dias: 8.0, medida: alfred_previa, n: 65, dias_extra: 15,
+                     conservadora: {lag: "3M16D", fin_periodo: trimestre}}
+    fred:BOGMBASE: {regla: FED_H6, veredicto: no fiable, corte: '2013-07-12',
+                    adelanto_dias: 20.0, medida: alfred_previa, n: 158, dias_extra: 27,
+                    conservadora: {lag: "1M28D", fin_periodo: mes}}
+    fred:BOPTEXP: {regla: COMERCIO_EXTERIOR, veredicto: no fiable, corte: '2010-04-13',
+                   adelanto_dias: 18.0, medida: alfred_previa, n: 198, dias_extra: 25,
+                   conservadora: {lag: "2M26D", fin_periodo: mes}}
+    fred:BOPTIMP: {regla: COMERCIO_EXTERIOR, veredicto: no fiable, corte: '2010-04-13',
+                   adelanto_dias: 18.0, medida: alfred_previa, n: 198, dias_extra: 25,
+                   conservadora: {lag: "2M26D", fin_periodo: mes}}
+    fred:CCSA: {regla: CLAIMS_CONTINUADAS, veredicto: no fiable, corte: '2009-09-10',
+                adelanto_dias: 48.0, medida: alfred_previa, n: 891, dias_extra: 55,
+                conservadora: {lag: "68D", fin_periodo: fecha}}
+    fred:CES0500000003: {regla: UNRATE, veredicto: no fiable, corte: '2011-03-04',
+                         adelanto_dias: 19.0, medida: alfred_previa, n: 187, dias_extra: 26,
+                         conservadora: {lag: "1M27D", fin_periodo: mes}}
+    fred:CFNAI: {regla: CFNAI, veredicto: no fiable, corte: '2011-05-23',
+                 adelanto_dias: 56.0, medida: alfred_previa, n: 184, dias_extra: 63,
+                 conservadora: {lag: "1M64D", fin_periodo: mes}}
+    fred:CFNAIMA3: {regla: CFNAIMA3, veredicto: no fiable, corte: '2011-05-23',
+                    adelanto_dias: 56.0, medida: alfred_previa, n: 184, dias_extra: 63,
+                    conservadora: {lag: "1M64D", fin_periodo: mes}}
+    fred:CFSI: {regla: CFSI, veredicto: fiable con margen, corte: '2014-02-17',
+                adelanto_dias: 2.0, medida: alfred_previa, n: 811, dias_extra: 2,
+                conservadora: {lag: "7D", fin_periodo: fecha}}
+    fred:CMRMTSPL: {regla: BEA_MTIS_REAL, veredicto: no fiable, corte: '2013-06-24',
+                    adelanto_dias: 22.0, medida: alfred_previa, n: 161, dias_extra: 29,
+                    conservadora: {lag: "3M30D", fin_periodo: mes}}
+    fred:CORESTICKM159SFRBATL: {regla: IPC_DERIVADOS, veredicto: no fiable, corte: '2014-03-18',
+                                adelanto_dias: 17.0, medida: alfred_previa, n: 151, dias_extra: 24,
+                                conservadora: {lag: "1M25D", fin_periodo: mes}}
+    fred:CUSR0000SACL1E: {regla: CPIAUCSL, veredicto: no fiable, corte: '2011-04-15',
+                          adelanto_dias: 0.0, medida: alfred_previa, n: 184, dias_extra: 7,
+                          conservadora: {lag: "1M8D", fin_periodo: mes}}
+    fred:CUSR0000SAH1: {regla: CPIAUCSL, veredicto: no fiable, corte: '2011-04-15',
+                        adelanto_dias: 0.0, medida: alfred_previa, n: 184, dias_extra: 7,
+                        conservadora: {lag: "1M8D", fin_periodo: mes}}
+    fred:CUSR0000SASLE: {regla: CPIAUCSL, veredicto: no fiable, corte: '2011-04-15',
+                         adelanto_dias: 0.0, medida: alfred_previa, n: 184, dias_extra: 7,
+                         conservadora: {lag: "1M8D", fin_periodo: mes}}
+    fred:CUSR0000SEHA: {regla: CPIAUCSL, veredicto: no fiable, corte: '2011-04-15',
+                        adelanto_dias: 0.0, medida: alfred_previa, n: 184, dias_extra: 7,
+                        conservadora: {lag: "1M8D", fin_periodo: mes}}
+    fred:CUSR0000SEHC: {regla: CPIAUCSL, veredicto: no fiable, corte: '2011-04-15',
+                        adelanto_dias: 0.0, medida: alfred_previa, n: 184, dias_extra: 7,
+                        conservadora: {lag: "1M8D", fin_periodo: mes}}
+    fred:CUSR0000SETA02: {regla: CPIAUCSL, veredicto: no fiable, corte: '2011-04-15',
+                          adelanto_dias: 17.0, medida: alfred_previa, n: 185, dias_extra: 24,
+                          conservadora: {lag: "1M25D", fin_periodo: mes}}
+    fred:DAAA: {regla: moodys, veredicto: no fiable, corte: '2014-04-02',
+                adelanto_dias: 5.0, medida: excepciones, n: 3130, dias_extra: 12,
+                conservadora: {publicador: moodys, lag: "12D"}}
+    fred:DBAA: {regla: moodys, veredicto: no fiable, corte: '2014-04-02',
+                adelanto_dias: 5.0, medida: excepciones, n: 3130, dias_extra: 12,
+                conservadora: {publicador: moodys, lag: "12D"}}
+    fred:DCPF3M: {regla: fed_cp, veredicto: no fiable, corte: '2006-03-22',
+                  adelanto_dias: 5.0, medida: excepciones, n: 4439, dias_extra: 12,
+                  conservadora: {publicador: fed_cp, lag: "12D"}}
+    fred:DPSACBW027SBOG: {regla: FED_H8_SEMANAL, veredicto: fiable con margen, corte: '2012-08-18',
+                          adelanto_dias: 4.0, medida: alfred_previa, n: 738, dias_extra: 4,
+                          conservadora: {lag: "17D", fin_periodo: fecha, habiles: us_federal}}
+    fred:ECIALLCIV: {regla: ECI, veredicto: no fiable, corte: '2013-07-31',
+                     adelanto_dias: 9.0, medida: alfred_previa, n: 52, dias_extra: 16,
+                     conservadora: {lag: "2M17D", fin_periodo: trimestre}}
+    fred:EXPINF10YR: {regla: CLEVELAND_EXPINF, veredicto: no fiable, corte: '2021-10-14',
+                      adelanto_dias: 71.0, medida: alfred_previa, n: 59, dias_extra: 78,
+                      conservadora: {lag: "79D", fin_periodo: mes}}
+    fred:EXPINF1YR: {regla: CLEVELAND_EXPINF, veredicto: no fiable, corte: '2021-10-14',
+                     adelanto_dias: 71.0, medida: alfred_previa, n: 59, dias_extra: 78,
+                     conservadora: {lag: "79D", fin_periodo: mes}}
+    fred:FRBKCLMCILA: {regla: KC_LMCI, veredicto: no fiable, corte: '2014-11-14',
+                       adelanto_dias: 73.0, medida: alfred_previa, n: 142, dias_extra: 80,
+                       conservadora: {lag: "1M81D", fin_periodo: mes}}
+    fred:FRBKCLMCIM: {regla: KC_LMCI, veredicto: no fiable, corte: '2014-11-14',
+                      adelanto_dias: 73.0, medida: alfred_previa, n: 142, dias_extra: 80,
+                      conservadora: {lag: "1M81D", fin_periodo: mes}}
+    fred:GACDFSA066MSFRBPHI: {regla: PMI_PROXY_PHILLY, veredicto: no fiable, corte: '2015-04-16',
+                              adelanto_dias: 17.0, medida: alfred_previa, n: 137, dias_extra: 24,
+                              conservadora: {lag: "25D", fin_periodo: mes}}
+    fred:GAFDFSA066MSFRBPHI: {regla: PMI_PROXY_PHILLY, veredicto: no fiable, corte: '2015-04-16',
+                              adelanto_dias: 17.0, medida: alfred_previa, n: 137, dias_extra: 24,
+                              conservadora: {lag: "25D", fin_periodo: mes}}
+    fred:HPIPONM226S: {regla: FHFA_HPI, veredicto: no fiable, corte: '2012-05-23',
+                       adelanto_dias: 29.0, medida: alfred_previa, n: 172, dias_extra: 36,
+                       conservadora: {lag: "2M37D", fin_periodo: mes}}
+    fred:ICSA: {regla: ICSA, veredicto: no fiable, corte: '2009-05-28',
+                adelanto_dias: 49.0, medida: alfred_previa, n: 906, dias_extra: 56,
+                conservadora: {lag: "61D", fin_periodo: fecha}}
+    fred:IEABC: {regla: TRANSACCIONES_INTERNACIONALES, veredicto: no fiable, corte: '2014-06-18',
+                 adelanto_dias: 13.0, medida: alfred_previa, n: 49, dias_extra: 20,
+                 conservadora: {lag: "3M21D", fin_periodo: trimestre}}
+    fred:IPMAN: {regla: INDPRO, veredicto: no fiable, corte: '2007-12-14',
+                 adelanto_dias: 32.0, medida: alfred_previa, n: 225, dias_extra: 39,
+                 conservadora: {lag: "1M40D", fin_periodo: mes}}
+    fred:IQ: {regla: PRECIOS_IMPORTACION, veredicto: no fiable, corte: '2010-03-16',
+              adelanto_dias: 32.0, medida: alfred_previa, n: 197, dias_extra: 39,
+              conservadora: {lag: "1M40D", fin_periodo: mes}}
+    fred:IR: {regla: PRECIOS_IMPORTACION, veredicto: no fiable, corte: '2010-03-16',
+              adelanto_dias: 32.0, medida: alfred_previa, n: 197, dias_extra: 39,
+              conservadora: {lag: "1M40D", fin_periodo: mes}}
+    fred:JTSHIR: {regla: JOLTS, veredicto: no fiable, corte: '2010-08-11',
+                  adelanto_dias: 8.0, medida: alfred_previa, n: 194, dias_extra: 15,
+                  conservadora: {lag: "2M16D", fin_periodo: mes}}
+    fred:JTSJOL: {regla: JOLTS, veredicto: no fiable, corte: '2010-08-11',
+                  adelanto_dias: 8.0, medida: alfred_previa, n: 194, dias_extra: 15,
+                  conservadora: {lag: "2M16D", fin_periodo: mes}}
+    fred:JTSLDL: {regla: JOLTS, veredicto: no fiable, corte: '2010-08-11',
+                  adelanto_dias: 8.0, medida: alfred_previa, n: 194, dias_extra: 15,
+                  conservadora: {lag: "2M16D", fin_periodo: mes}}
+    fred:JTSQUR: {regla: JOLTS, veredicto: no fiable, corte: '2010-08-11',
+                  adelanto_dias: 8.0, medida: alfred_previa, n: 194, dias_extra: 15,
+                  conservadora: {lag: "2M16D", fin_periodo: mes}}
+    fred:KCFSI: {regla: KCFSI, veredicto: no fiable, corte: '2010-11-08',
+                 adelanto_dias: 10.0, medida: alfred_previa, n: 191, dias_extra: 17,
+                 conservadora: {lag: "1M18D", fin_periodo: mes}}
+    fred:LNS12300060: {regla: UNRATE, veredicto: no fiable, corte: '2014-12-05',
+                       adelanto_dias: 19.0, medida: alfred_previa, n: 141, dias_extra: 26,
+                       conservadora: {lag: "1M27D", fin_periodo: mes}}
+    fred:MCUMFN: {regla: INDPRO, veredicto: no fiable, corte: '2002-12-17',
+                  adelanto_dias: 32.0, medida: alfred_previa, n: 286, dias_extra: 39,
+                  conservadora: {lag: "1M40D", fin_periodo: mes}}
+    fred:MEDCPIM158SFRBCLE: {regla: IPC_DERIVADOS, veredicto: no fiable, corte: '2014-02-21',
+                             adelanto_dias: 17.0, medida: alfred_previa, n: 152, dias_extra: 24,
+                             conservadora: {lag: "1M25D", fin_periodo: mes}}
+    fred:MSACSR: {regla: CENSUS_VIVIENDA_NUEVA, veredicto: no fiable, corte: '2011-05-24',
+                  adelanto_dias: 73.0, medida: alfred_previa, n: 184, dias_extra: 80,
+                  conservadora: {lag: "1M81D", fin_periodo: mes}}
+    fred:MSPUS: {regla: CENSUS_VIVIENDA_NUEVA_TRIMESTRAL, veredicto: no fiable, corte: '2011-04-25',
+                 adelanto_dias: 144.0, medida: alfred_previa, n: 61, dias_extra: 151,
+                 conservadora: {lag: "1M152D", fin_periodo: trimestre}}
+    fred:MTSDS133FMS: {regla: TESORO_MTS, veredicto: no fiable, corte: '2015-09-11',
+                       adelanto_dias: 12.0, medida: alfred_previa, n: 132, dias_extra: 19,
+                       conservadora: {lag: "1M20D", fin_periodo: mes}}
+    fred:NCBEILQ027S: {regla: FED_Z1, veredicto: no fiable, corte: '2013-06-06',
+                       adelanto_dias: 8.0, medida: alfred_previa, n: 53, dias_extra: 15,
+                       conservadora: {lag: "3M16D", fin_periodo: trimestre}}
+    fred:NFCI: {regla: NFCI, veredicto: no fiable, corte: '2011-05-25',
+                adelanto_dias: 15.0, medida: alfred_previa, n: 802, dias_extra: 22,
+                conservadora: {lag: "27D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    fred:NFCICREDIT: {regla: NFCI_CREDIT, veredicto: no fiable, corte: '2012-07-05',
+                      adelanto_dias: 15.0, medida: alfred_previa, n: 744, dias_extra: 22,
+                      conservadora: {lag: "27D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    fred:NFCILEVERAGE: {regla: NFCI_LEVERAGE, veredicto: no fiable, corte: '2012-07-05',
+                        adelanto_dias: 15.0, medida: alfred_previa, n: 744, dias_extra: 22,
+                        conservadora: {lag: "27D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    fred:NFCIRISK: {regla: NFCI_RISK, veredicto: no fiable, corte: '2012-07-05',
+                    adelanto_dias: 15.0, medida: alfred_previa, n: 744, dias_extra: 22,
+                    conservadora: {lag: "27D", fin_periodo: fecha, habiles: us_federal, n_habiles: 3}}
+    fred:NNUSBIS: {regla: NNUSBIS, veredicto: no fiable, corte: '2014-02-18',
+                   adelanto_dias: 15.0, medida: alfred_previa, n: 150, dias_extra: 22,
+                   conservadora: {lag: "1M23D", fin_periodo: mes}}
+    fred:NOCDFSA066MSFRBPHI: {regla: PMI_PROXY_PHILLY, veredicto: no fiable, corte: '2015-04-16',
+                              adelanto_dias: 17.0, medida: alfred_previa, n: 137, dias_extra: 24,
+                              conservadora: {lag: "25D", fin_periodo: mes}}
+    fred:NROU: {regla: CBO, veredicto: no fiable, corte: '2011-02-03',
+                adelanto_dias: 0.0, medida: alfred_previa, n: 99, dias_extra: 7,
+                conservadora: {lag: "6M8D", fin_periodo: trimestre}}
+    fred:PCETRIM12M159SFRBDAL: {regla: BEA_RENTA_GASTO, veredicto: no fiable, corte: '2005-09-01',
+                                adelanto_dias: 59.0, medida: alfred_previa, n: 254, dias_extra: 66,
+                                conservadora: {lag: "1M67D", fin_periodo: mes}}
+    fred:PPICOR: {regla: PPI_ALL_COMMODITIES, veredicto: no fiable, corte: '2014-02-19',
+                  adelanto_dias: 44.0, medida: alfred_previa, n: 151, dias_extra: 51,
+                  conservadora: {lag: "1M52D", fin_periodo: mes}}
+    fred:PPIFIS: {regla: PPI_ALL_COMMODITIES, veredicto: no fiable, corte: '2014-02-19',
+                  adelanto_dias: 44.0, medida: alfred_previa, n: 151, dias_extra: 51,
+                  conservadora: {lag: "1M52D", fin_periodo: mes}}
+    fred:RECPROUSM156N: {regla: RECESSION_PROB_SMOOTHED, veredicto: no fiable, corte: '2012-09-04',
+                         adelanto_dias: 29.0, medida: alfred_previa, n: 170, dias_extra: 36,
+                         conservadora: {lag: "2M37D", fin_periodo: mes, habiles: us_federal}}
+    fred:RNUSBIS: {regla: RNUSBIS, veredicto: no fiable, corte: '2014-02-18',
+                   adelanto_dias: 15.0, medida: alfred_previa, n: 150, dias_extra: 22,
+                   conservadora: {lag: "1M23D", fin_periodo: mes}}
+    fred:RRSFS: {regla: CENSUS_VENTAS_MINORISTAS, veredicto: no fiable, corte: '2001-06-16',
+                 adelanto_dias: 25.0, medida: alfred_previa, n: 302, dias_extra: 32,
+                 conservadora: {lag: "1M33D", fin_periodo: mes}}
+    fred:RSAFS: {regla: CENSUS_VENTAS_MINORISTAS, veredicto: no fiable, corte: '2001-06-13',
+                 adelanto_dias: 24.0, medida: alfred_previa, n: 303, dias_extra: 31,
+                 conservadora: {lag: "1M32D", fin_periodo: mes}}
+    fred:SAHMCURRENT: {regla: SAHM_RULE_CURRENT, veredicto: no fiable, corte: '2019-09-06',
+                       adelanto_dias: 20.0, medida: alfred_previa, n: 85, dias_extra: 27,
+                       conservadora: {lag: "1M28D", fin_periodo: mes}}
+    fred:SAHMREALTIME: {regla: SAHM_RULE_REALTIME, veredicto: no fiable, corte: '2019-09-06',
+                        adelanto_dias: 20.0, medida: alfred_previa, n: 84, dias_extra: 27,
+                        conservadora: {lag: "1M28D", fin_periodo: mes}}
+    fred:T10Y2Y: {regla: fred_tesoro_calculadas, veredicto: no fiable, corte: '2014-01-27',
+                  adelanto_dias: 5.0, medida: excepciones, n: 3179, dias_extra: 12,
+                  conservadora: {publicador: fred_tesoro_calculadas, lag: "12D"}}
+    fred:T10Y3M: {regla: fred_tesoro_calculadas, veredicto: no fiable, corte: '2014-01-27',
+                  adelanto_dias: 5.0, medida: excepciones, n: 3179, dias_extra: 12,
+                  conservadora: {publicador: fred_tesoro_calculadas, lag: "12D"}}
+    fred:T10YIE: {regla: fred_tesoro_calculadas, veredicto: no fiable, corte: '2014-01-27',
+                  adelanto_dias: 5.0, medida: excepciones, n: 3179, dias_extra: 12,
+                  conservadora: {publicador: fred_tesoro_calculadas, lag: "12D"}}
+    fred:T5YIE: {regla: fred_tesoro_calculadas, veredicto: no fiable, corte: '2014-01-27',
+                 adelanto_dias: 5.0, medida: excepciones, n: 3179, dias_extra: 12,
+                 conservadora: {publicador: fred_tesoro_calculadas, lag: "12D"}}
+    fred:T5YIFR: {regla: fred_tesoro_calculadas, veredicto: no fiable, corte: '2014-01-27',
+                  adelanto_dias: 5.0, medida: excepciones, n: 3179, dias_extra: 12,
+                  conservadora: {publicador: fred_tesoro_calculadas, lag: "12D"}}
+    fred:TB3SMFFM: {regla: TBILL3M_MINUS_FEDFUNDS, veredicto: no fiable, corte: '2014-06-19',
+                    adelanto_dias: 7.0, medida: excepciones, n: 148, dias_extra: 14,
+                    conservadora: {lag: "15D", fin_periodo: mes, habiles: us_federal}}
+    fred:TEDRATE: {regla: fred_calculadas_dia_siguiente, veredicto: no fiable, corte: '2014-01-27',
+                   adelanto_dias: 7.0, medida: excepciones, n: 1950, dias_extra: 14,
+                   conservadora: {publicador: fred_calculadas_dia_siguiente, lag: "14D"}}
+    fred:TEMPHELPS: {regla: UNRATE, veredicto: no fiable, corte: '2011-01-07',
+                     adelanto_dias: 19.0, medida: alfred_previa, n: 189, dias_extra: 26,
+                     conservadora: {lag: "1M27D", fin_periodo: mes}}
+    fred:TNWBSHNO: {regla: FED_Z1, veredicto: no fiable, corte: '2010-06-10',
+                    adelanto_dias: 8.0, medida: alfred_previa, n: 65, dias_extra: 15,
+                    conservadora: {lag: "3M16D", fin_periodo: trimestre}}
+    fred:TOTALSA: {regla: BEA_VEHICULOS, veredicto: no fiable, corte: '2013-01-31',
+                   adelanto_dias: 34.0, medida: alfred_previa, n: 165, dias_extra: 41,
+                   conservadora: {lag: "1M42D", fin_periodo: mes}}
+    fred:TRMMEANCPIM158SFRBCLE: {regla: IPC_DERIVADOS, veredicto: no fiable, corte: '2014-02-21',
+                                 adelanto_dias: 17.0, medida: alfred_previa, n: 152, dias_extra: 24,
+                                 conservadora: {lag: "1M25D", fin_periodo: mes}}
+    fred:TTLCONS: {regla: CENSUS_CONSTRUCCION, veredicto: no fiable, corte: '2011-07-01',
+                   adelanto_dias: 51.0, medida: alfred_previa, n: 183, dias_extra: 58,
+                   conservadora: {lag: "2M59D", fin_periodo: mes}}
+    fred:U6RATE: {regla: UNRATE, veredicto: no fiable, corte: '2011-03-04',
+                  adelanto_dias: 19.0, medida: alfred_previa, n: 186, dias_extra: 26,
+                  conservadora: {lag: "1M27D", fin_periodo: mes}}
+    fred:USALOLITOAASTSAM: {regla: OCDE_CLI, veredicto: no fiable, corte: '2018-07-18',
+                            adelanto_dias: 12.0, medida: alfred_previa, n: 99, dias_extra: 19,
+                            conservadora: {lag: "2M20D", fin_periodo: mes}}
+    fred:USPHCI: {regla: PHILLY_COINCIDENTES, veredicto: no fiable, corte: '2010-10-26',
+                  adelanto_dias: 20.0, medida: alfred_previa, n: 191, dias_extra: 27,
+                  conservadora: {lag: "2M28D", fin_periodo: mes}}
+    fred:W875RX1: {regla: BEA_RENTA_GASTO, veredicto: no fiable, corte: '2010-05-28',
+                   adelanto_dias: 52.0, medida: alfred_previa, n: 196, dias_extra: 59,
+                   conservadora: {lag: "1M60D", fin_periodo: mes}}
+    fred:WALCL: {regla: FED_H41, veredicto: fiable con margen, corte: '2011-07-08',
+                 adelanto_dias: 4.0, medida: alfred_previa, n: 796, dias_extra: 4,
+                 conservadora: {lag: "7D", fin_periodo: fecha, habiles: us_federal}}
+    fred:WPSFD49207: {regla: PPI_ALL_COMMODITIES, veredicto: no fiable, corte: '2015-03-13',
+                      adelanto_dias: 44.0, medida: alfred_previa, n: 138, dias_extra: 51,
+                      conservadora: {lag: "1M52D", fin_periodo: mes}}
+    fred:WPU0561: {regla: PPI_FUELS, veredicto: no fiable, corte: '2015-03-13',
+                   adelanto_dias: 44.0, medida: alfred_previa, n: 138, dias_extra: 51,
+                   conservadora: {lag: "1M52D", fin_periodo: mes}}
+    fred:WPU102301: {regla: PPI_METALS, veredicto: no fiable, corte: '2015-03-13',
+                     adelanto_dias: 44.0, medida: alfred_previa, n: 138, dias_extra: 51,
+                     conservadora: {lag: "1M52D", fin_periodo: mes}}
+    fred:WTISPLC: {regla: WTI_SPOT_MONTHLY, veredicto: no fiable, corte: '2016-10-13',
+                   adelanto_dias: 26.0, medida: excepciones, n: 120, dias_extra: 33,
+                   conservadora: {lag: "44D", fin_periodo: mes}}
+
+# 3. H.15 diario antes de 2005-06-28 ----------------------------------------------------------------------------------
+h15_diario:
+  descripcion: 'series diarias del publicador fed_h15 (catálogo): + 7 días en las filas por calendario publicadas antes
+    de 2005-06-28'
+  publicador: fed_h15
+  hasta: '2005-06-28'
+  conservadora: {publicador: fed_h15, lag: "7D"}
+  fuente: 'README del tema (deudas, riesgo medio: el archivo de la Fed solo guarda la edición semanal de H.15 antes de
+    2005-06-28; si la web no publicaba el dato diario, DGS*, DTB*, DFF y demás se ven hasta una semana antes)'
+  notas:
+    - 'Una semana: lo que tarda la edición semanal. Sin muestra archivada'
+
+# 4. Índices reconstruidos hacia atrás --------------------------------------------------------------------------------
+# Un índice creado en publicado_desde no existía antes: sus filas anteriores, aunque la regla las dé por visibles,
+# pasan a publicado_desde (catalogo.anotar_reconstruidas solo anota NOTA_RECONSTRUIDA; aquí se aplica a la fecha).
+reconstruidas:
+  descripcion: 'fecha curada = max(curada, publicado_desde) en las filas publicadas antes de publicado_desde: antes de
+    esa fecha no se ve nada'
+  fuente: 'series: config/catalogo_series.yaml (publicado_desde, primera vintage de ALFRED; catalogo.anotar_reconstruidas y
+    NOTA_RECONSTRUIDA); un test comprueba que coincide con el catálogo'
+  series:
+    fred:ANFCI: '2011-05-25'
+    fred:NFCI: '2011-05-25'
+    fred:NFCICREDIT: '2012-07-05'
+    fred:NFCILEVERAGE: '2012-07-05'
+    fred:NFCIRISK: '2012-07-05'
+    fred:SAHMCURRENT: '2019-09-06'
+    fred:SAHMREALTIME: '2019-09-06'
+    fred:STLFSI4: '2022-11-10'
+  externas:   # F1 y F2: fechas de creación comprobadas en la web (Wayback Machine y páginas oficiales, 2026-11-19)
+    ofr:FSI*:
+      publicado_desde: '2017-10-25'
+      fuente: 'https://www.financialresearch.gov/working-papers/2017/10/25/the-ofr-financial-stability-index/ (y la
+        entrada del director del mismo día)'
+    gw:*:
+      publicado_desde: '2004-04-13'
+      fuente: 'https://web.archive.org/web/20040413082023/http://www.bus.emory.edu:80/AGoyal/ (primer enlace a los datos
+        en la web de Emory)'
+    bis:WS_CREDIT_GAP.*:
+      publicado_desde: '2016-09-18'
+      fuente: 'https://www.bis.org/publ/qtrpdf/r_qt1609c.htm'
+    bis:WS_DSR.*:
+      publicado_desde: '2015-09-13'
+      fuente: 'https://www.bis.org/press/p150913.htm y https://www.bis.org/publ/qtrpdf/r_qt1509h.htm'
+    ff:F3M.*:
+      publicado_desde: '2001-12-18'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html (primera captura de la biblioteca: tres factores mensuales)'
+    ff:F3D.*:
+      publicado_desde: '2002-06-04'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html y capturas posteriores (tres factores diarios desde 2002-06-04)'
+    ff:F5M.*:
+      publicado_desde: '2014-12-19'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html y capturas posteriores (cinco factores mensuales desde 2014-12-19)'
+    ff:F5D.*:
+      publicado_desde: '2015-06-01'
+      fuente: 'https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html y capturas posteriores (cinco factores diarios desde 2015-06-01)'
+    ff:MOMD.*:
+      publicado_desde: '2005-07-26'
+      fuente: 'http://web.archive.org/web/20050726075154/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        (primera captura con el fichero; en la anterior, http://web.archive.org/web/20050606003547/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html,
+        aún no está). https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        es la primera captura de la biblioteca'
+      nota: 'F-F_Momentum_Factor_daily y 5_Industry_Portfolios_daily aparecen a la vez entre 2005-06-06 y 2005-07-26: se
+        toma 2005-07-26 (conservador)'
+    ff:IND5D.*:
+      publicado_desde: '2005-07-26'
+      fuente: 'http://web.archive.org/web/20050726075154/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        (primera captura con el fichero; en la anterior, http://web.archive.org/web/20050606003547/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html,
+        aún no está). https://web.archive.org/web/20011218003540/http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html
+        es la primera captura de la biblioteca'
+      nota: 'F-F_Momentum_Factor_daily y 5_Industry_Portfolios_daily aparecen a la vez entre 2005-06-06 y 2005-07-26: se
+        toma 2005-07-26 (conservador)'
+  notas:
+    - 'fred:STLFSI4: publicado_desde 2022-11-10 (versión 4 del índice): las filas anteriores son la metodología nueva
+      recalculada hacia atrás'
+
+# 5. Proyecciones (D4) ------------------------------------------------------------------------------------------------
+proyecciones:
+  descripcion: 'Las proyecciones van a una tabla aparte, fuera de la base curada: no son datos de su fecha de referencia'
+  destino: 'series/proyecciones.parquet (en el corpus del paso 4, junto a la base curada)'
+  columnas: [serie, fecha_referencia, fecha_publicacion, disponible_utc, vintage, valor, unidad, divisa, fuente,
+             metodo_publicacion, nota, horizonte, edicion]
+  identificacion:
+    regla: 'inventario.es_proyeccion (columna es_proyeccion de inventario_series.csv): proyecciones: conservar en el
+      catálogo, «.PROY.» en el id o fecha_referencia posterior al vintage en al menos la mitad de las filas'
+    weo: 'imf:WEO.<país>.<concepto>.PROY.H<h>: estimación del año en curso y horizontes a 1-5 años; horizonte = h del id;
+      edicion = vintage (AAAA-MM de la edición del WEO)'
+    sep: 'fred:FEDTARMD, fred:PCECTPIMD y fred:UNRATEMD (SEP del FOMC, vintage_exacto de ALFRED); horizonte = año de
+      fecha_referencia - año del vintage; edicion = vintage (fecha de la reunión)'
+    funcion: 'preprocesado.separar_proyecciones (reparte filas; no cambia ninguna)'
+  # 3b-2: + 66 del WEO (11 conceptos de los agregados 001, 163 y 200 × 6 horizontes); antes 240 + 3 = 243
+  esperadas: {imf_weo: 306, fred_alfred: 3, total: 309}
+  notas:
+    - 'Las fechas de las proyecciones no cambian: son exactas (vintage del WEO o de ALFRED)'
+
+# 6. Homogeneización (solo lo que hace falta de verdad) -----------------------------------------------------------------
+homogeneizacion:
+  unidades_equivalentes:   # mismo significado con nombres distintos (inventario_series.csv): se deja el canónico
+    - {unidades: ['% de la población activa', '% población activa'], canonica: '% de la población activa',
+       motivo: 'paro de FRED, WEO, OCDE y Banco Mundial frente a BCE y Eurostat (9 series)'}
+    - {unidades: ['% (variación interanual)', '% interanual'], canonica: '% (variación interanual)',
+       motivo: 'IPC de Atlanta y Dallas frente a HICP, PIB y paro del BCE y Eurostat (36 series)'}
+    - {unidades: ['USD por índice', 'USD por índice (anualizado)'], canonica: 'USD por índice (anualizado)',
+       motivo: 'dividendos y beneficios de 12 meses de Goyal-Welch (D12, E12) frente a los anualizados de Shiller (D, E)'}
+  no_equivalentes:   # parecen iguales y no lo son: no se tocan
+    - {unidades: ['% anual (base descuento)', '% anual'], motivo: 'letras del Tesoro en base descuento (DTB*, TB3MS, ^IRX)
+       frente al rendimiento equivalente de bono: otra convención'}
+    - {unidades: ['% anual (fin de mes)', '% anual'], motivo: 'tipo oficial del BIS a fin de mes frente a medias o diarios'}
+    - {unidades: ['% de la renta disponible', '% de la renta personal disponible'], motivo: 'servicio de la deuda (BIS)
+       frente a tasa de ahorro (PSAVERT): conceptos distintos'}
+    - {unidades: ['<X> por 1 EUR', 'USD por 1 <X>', '<X> por 1 USD'], motivo: 'cotizaciones de divisas: se guardan tal cual
+       y divisas.py convierte a USD al leer (USD base, decisión de la sonda)'}
+  escalas:   # tanto por uno → porcentaje (solo series que se quedan; las de alias no se escalan)
+    - {unidad: 'tanto por uno anual', factor: 100, unidad_nueva: '% anual',
+       series: [gw:M.lty],
+       motivo: 'tipos de Goyal-Welch frente a AAA, BAA, GS10 y TB3MS de FRED en % anual'}
+    - {unidad: 'tanto por uno mensual', factor: 100, unidad_nueva: '% mensual',
+       series: [gw:M.CRSP_SPvw, gw:M.CRSP_SPvwx, gw:M.Rfree, gw:M.corpr, gw:M.infl, gw:M.ltr],
+       motivo: 'rentabilidades de Goyal-Welch frente a las de Ken French en %'}
+    - {unidad: 'tanto por uno anualizado', factor: 100, unidad_nueva: '% anualizado',
+       series: [deriv:VOLREAL21_GSPC],
+       motivo: 'volatilidad realizada frente al VIX y demás volatilidades implícitas en %'}
+  sin_escalar:
+    - {unidades: ['tanto por uno', 'tanto por uno al cuadrado (mensual)'], series: ['gw:M.csp', 'gw:M.ntis', 'gw:M.svar'],
+       motivo: 'ratios y varianza sin equivalente en %: se dejan como están'}
+  frecuencias:
+    remuestrear: false
+    motivo: 'frecuencias nativas (decisión del paso 4 en PLAN_DESCARGA.md): ni se agregan ni se rellenan'
+  alias:
+    donde: 'tabla de alias aparte (series/alias.parquet del paso 4), NO en la base curada'
+    nota: 'los alias y canónicos los decide B1 en config/lista_curada.yaml; aquí solo cómo se marcan: la base curada
+      solo lleva el canónico y la tabla de alias guarda {alias, canonico, motivo, correlacion} sin valores'
+  notas:
+    - 'Una escala cambia valores: va al registro de cambios con la unidad antes y después (no los valores)'
+    - 'unidad_por_vintage del catálogo (año base o dólares encadenados de cada vintage) no se homogeneiza: es la unidad
+      de cada vintage'
+
+# 7. Escalas por vintage (×1000 o ×0,001 entre vintages de ALFRED) -----------------------------------------------------------
+escalas_por_vintage:
+  descripcion: 'los vintages anteriores a antes_de_vintage se multiplican por factor para llevarlos a la unidad vigente
+    (la del catálogo); el valor no cambia de significado, solo de escala'
+  fuente: 'results/ingesta/mercados_series/tablas/eda_series_incidencias.csv (tipo cambio_unidad, de B2)'
+  criterio: 'log10 del factor entero = ±3, al menos 20 fechas comunes, sin declarar en el catálogo (unidad_por_vintage)
+    y serie que se queda (preprocesado.propuesta_escalas_vintage; los tests comprueban que coincide)'
+  series:
+    - {serie: 'fred:BCNSDODNS', antes_de_vintage: '2026-01-09', factor: 1000.0, comunes: 301}
+    - {serie: 'fred:BOGMBASE', antes_de_vintage: '2024-09-24', factor: 0.001, comunes: 787}
+    - {serie: 'fred:CMDEBT', antes_de_vintage: '2026-01-09', factor: 1000.0, comunes: 301}
+    - {serie: 'fred:REVOLSL', antes_de_vintage: '2025-02-07', factor: 1000.0, comunes: 683}
+    - {serie: 'fred:TNWBSHNO', antes_de_vintage: '2026-01-09', factor: 1000.0, comunes: 301}
+    - {serie: 'fred:TOTALSL', antes_de_vintage: '2025-02-07', factor: 1000.0, comunes: 983}
+  notas:
+    - 'Los demás cambio_unidad del EDA (GDPNOW, FEDTARMD, RECPROUSM156N con 1-2 fechas comunes; CBIC1 declarado en el
+      catálogo) no se escalan: revisar a mano'
+
+# 8. Incidencias del EDA (E7): generada desde eda.PROPUESTAS y eda.NOTAS (B2) --------------------------------------------
+incidencias_eda:
+  fuente: 'ingesta.mercados_series.eda.PROPUESTAS (acción) y eda.NOTAS (nota); un test comprueba que no falta ni sobra
+    ningún tipo'
+  tipos:
+    hueco_largo: {accion: marcar, nota: 'periodos seguidos sin dato (frecuencia del catálogo; diarias en días L-V)'}
+    salto: {accion: revisar a mano, nota: 'cambio a más de 8 desviaciones robustas de los cambios de la serie'}
+    ruptura_nivel: {accion: revisar a mano, nota: 'salto de la mediana móvil (antes frente a después)'}
+    cambio_unidad: {accion: revisar a mano, nota: 'cambio de escala entre vintages consecutivos (log10 del factor)'}
+    pct_parece_tanto_por_uno: {accion: revisar a mano, nota: 'unidad en %, pero todos los valores en [-1, 1]'}
+    tanto_por_uno_parece_pct: {accion: revisar a mano, nota: 'unidad en tanto por uno, pero mediana de |valor| > 1'}
+    negativo_en_nivel: {accion: nulo + aviso, nota: 'valores <= 0 en una serie de nivel que debe ser positiva'}
+    racha_plana: {accion: marcar, nota: 'posible dato congelado de la fuente: racha plana de 120 o más observaciones seguidas'}
+    fin_de_semana: {accion: marcar, nota: 'posible error de fecha de la fuente: cierre de mercado en fin de semana'}
+    festivo: {accion: marcar, nota: 'posible error de fecha de la fuente: cierre de mercado en festivo'}
+    salto_sin_split: {accion: revisar a mano, nota: '|Δlog close| > 0,4 sin split ni dividendo esa sesión ni la siguiente'}
+    contrasplit: {accion: marcar, nota: 'split < 1 (contrasplit)'}
+    split_fraccionario: {accion: marcar, nota: 'split > 1 no entero que no explica el precio: |log(close_t·split/close_t-1)| > 0,2'}
+    volumen_cero: {accion: marcar, nota: 'calidad.incidencias_precios: volumen 0 en instrumento con volumen'}
+    cierre_repetido: {accion: marcar, nota: 'calidad.incidencias_precios: cierre igual al de la sesión previa'}
+    dividendo_alto: {accion: revisar a mano, nota: 'calidad.incidencias_precios: dividendo > 20 % del cierre previo'}
+    apertura_igual_cierre: {accion: nulo + aviso, nota: 'open == close y high == low: relleno de Yahoo; no vale como apertura de t+1'}
+    sesion_faltante: {accion: marcar, nota: 'día hábil del calendario del mercado sin vela'}
+    sesion_fuera_calendario: {accion: revisar a mano, nota: 'vela en un día que el calendario del mercado da cerrado (con movimiento o volumen)'}
+    sesion_fuera_calendario_relleno: {accion: nulo + aviso, nota: 'vela de relleno en día cerrado: repite el cierre y no tiene volumen'}
+    serie_sospechosa: {accion: marcar, nota: 'historial roto: muchos saltos sin split, cierres repetidos o aperturas de relleno'}
+
+# 9. Salidas del paso 4 y verificaciones ------------------------------------------------------------------------------
+salidas_paso4:
+  ficheros:
+    - {ruta: 'series/base_curada.parquet', contenido: 'base curada (mismo contrato que base_series.parquet): solo las
+       series «queda» de lista_curada.yaml, con las fechas de este plan y sin proyecciones'}
+    - {ruta: 'series/alias.parquet', contenido: 'tabla de alias: alias, canónico, motivo y correlación (sin valores)'}
+    - {ruta: 'series/proyecciones.parquet', contenido: 'tabla de proyecciones (sección proyecciones)'}
+    - {ruta: 'series/registro_cambios.parquet', contenido: 'una fila por fila curada con fecha cambiada: serie,
+       fecha_referencia, vintage, fecha_publicacion y disponible_utc antes y después, capa (sección, grupo y regla,
+       h15_diario o reconstruidas) y si la paró el tope del primer vintage; también los cambios de unidad por escala'}
+  verificaciones:
+    - 'ninguna fecha_publicacion curada anterior a la original (registro_cambios: después >= antes en todas las filas)'
+    - 'disponible_utc coherente con fecha_publicacion: nulo o con primera decisión igual a la fecha curada
+      (contrato._coherencia_disponible); la simulación lo cuenta (filas_disponible_incoherente = 0)'
+    - 'el orden de vintages se mantiene: en cada serie y fecha_referencia, ordenadas por la fecha original, la curada no
+      baja (filas_orden_roto = 0)'
+    - 'el truncado se mantiene (TimeGate): ninguna fila visible antes de su fecha_publicacion curada; fecha_publicacion >=
+      fecha_referencia (contrato.validar_series)'
+    - 'los recuentos cuadran con lista_curada.yaml: series «queda» = series de la base curada; alias = filas de la
+      tabla de alias; proyecciones = 309 series (proyecciones.esperadas)'
+    - 'las filas exactas (vintage_exacto, cierre_mercado) y las posteriores al corte no cambian por las capas 1 y 2'
+    - 'las derivadas se recalculan con sus componentes curados (fecha = la máxima de los componentes)'
+    - 'la simulación del paso 3 (tablas/preprocesado_simulacion.csv) y el registro de cambios dan los mismos recuentos'

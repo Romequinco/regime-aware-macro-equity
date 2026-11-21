@@ -14,11 +14,11 @@
   "coste": "0 €",
   "licencia_y_terminos": "© Bank of England; uso permitido citando la fuente (términos del sitio)",
   "cobertura_inicio": "1979-01-02",
-  "cobertura_fin": "2026-10-12",
+  "cobertura_fin": "2026-11-18",
   "frecuencia": "diaria (hábiles del publicador)",
   "retraso_publicacion": "dato de D publicado el hábil británico siguiente antes de las 12:00 Londres → decisión D+1; medido en la tabla: mediana 1 días naturales, máximo 5",
   "formato": "zip con xlsx",
-  "volumen_estimado": "39.48 MB de crudos descargados (2 fichero(s))",
+  "volumen_estimado": "39.63 MB de crudos descargados (2 fichero(s))",
   "limites": "1 petición/s por host; robots.txt permite la descarga",
   "estado_sonda": "ok",
   "mediciones": {
@@ -26,25 +26,25 @@
       {
         "clave": "glcnominalddata.zip",
         "estado": 200,
-        "bytes": 39192649,
-        "descargado_utc": "2026-10-13T11:49:34.461638+00:00",
+        "bytes": 39275836,
+        "descargado_utc": "2026-11-19T13:19:24.611615+00:00",
         "error": null,
-        "last_modified": "Fri, 02 Oct 2026 15:36:54 GMT"
+        "last_modified": "Tue, 03 Nov 2026 15:46:06 GMT"
       },
       {
         "clave": "latest-yield-curve-data.zip",
         "estado": 200,
-        "bytes": 289989,
-        "descargado_utc": "2026-10-13T11:49:31.724444+00:00",
+        "bytes": 349641,
+        "descargado_utc": "2026-11-19T13:18:52.462701+00:00",
         "error": null,
-        "last_modified": "Tue, 13 Oct 2026 10:04:51 GMT"
+        "last_modified": "Thu, 19 Nov 2026 10:59:14 GMT"
       }
     ],
     "series": {
       "boe:NOM.10Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12076,
+        "fin": "2026-11-18",
+        "n_obs": 12103,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -52,8 +52,8 @@
       },
       "boe:NOM.15Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12076,
+        "fin": "2026-11-18",
+        "n_obs": 12103,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -61,8 +61,8 @@
       },
       "boe:NOM.1Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12061,
+        "fin": "2026-11-18",
+        "n_obs": 12088,
         "n_huecos": 15,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -70,8 +70,8 @@
       },
       "boe:NOM.20Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 10345,
+        "fin": "2026-11-18",
+        "n_obs": 10372,
         "n_huecos": 1731,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -79,8 +79,8 @@
       },
       "boe:NOM.25Y": {
         "inicio": "1992-04-30",
-        "fin": "2026-10-12",
-        "n_obs": 7408,
+        "fin": "2026-11-18",
+        "n_obs": 7435,
         "n_huecos": 1298,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -88,8 +88,8 @@
       },
       "boe:NOM.2Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12076,
+        "fin": "2026-11-18",
+        "n_obs": 12103,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -97,8 +97,8 @@
       },
       "boe:NOM.30Y": {
         "inicio": "2016-01-04",
-        "fin": "2026-10-12",
-        "n_obs": 2723,
+        "fin": "2026-11-18",
+        "n_obs": 2750,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -106,8 +106,8 @@
       },
       "boe:NOM.3Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12076,
+        "fin": "2026-11-18",
+        "n_obs": 12103,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -115,8 +115,8 @@
       },
       "boe:NOM.40Y": {
         "inicio": "2016-01-04",
-        "fin": "2026-10-12",
-        "n_obs": 2723,
+        "fin": "2026-11-18",
+        "n_obs": 2750,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -124,8 +124,8 @@
       },
       "boe:NOM.5Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12076,
+        "fin": "2026-11-18",
+        "n_obs": 12103,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -133,8 +133,8 @@
       },
       "boe:NOM.6M": {
         "inicio": "1979-05-02",
-        "fin": "2026-10-12",
-        "n_obs": 9546,
+        "fin": "2026-11-18",
+        "n_obs": 9573,
         "n_huecos": 2446,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -142,8 +142,8 @@
       },
       "boe:NOM.7Y": {
         "inicio": "1979-01-02",
-        "fin": "2026-10-12",
-        "n_obs": 12076,
+        "fin": "2026-11-18",
+        "n_obs": 12103,
         "n_huecos": 0,
         "retraso_dias_mediana": 1.0,
         "retraso_dias_max": 5,
@@ -161,5 +161,5 @@
     "El tramo de plazos depende de los gilts vivos: desde 1979 hasta 20Y (con huecos), 25Y desde 1992, 30Y y 40Y solo en el fichero 2016 en adelante; los festivos que el BoE lista en blanco se descartan (no son días publicados)",
     "Hora: Last-Modified del zip 2026-10-13 10:04 UTC (11:04 Londres) con el dato del 12: el dato sale el hábil siguiente antes de las 12:00 Londres"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-19"
 }

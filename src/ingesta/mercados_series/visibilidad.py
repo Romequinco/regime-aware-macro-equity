@@ -152,9 +152,13 @@ def _localizar(local: Any, huso: str) -> Any:
         raise ValueError(f"hora local inexistente o ambigua en {huso} por el cambio de hora: {e}") from None
 
 
-def _leer_yaml(ruta: Path) -> Any:
+def leer_yaml(ruta: Path) -> Any:
+    """Un YAML de ``config/`` (UTF-8, ``yaml.safe_load``)."""
     with open(ruta, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+_leer_yaml = leer_yaml            # nombre antiguo
 
 
 def _claves(entrada: Any, obligatorias: set[str], opcionales: set[str], donde: str) -> None:
@@ -267,7 +271,7 @@ def firma(ruta: Path) -> tuple[int, int, str]:
 
 @lru_cache(maxsize=8)
 def _mercados_cache(ruta: str, _firma: tuple) -> dict[str, dict[str, Any]]:
-    return _validar_mercados(_leer_yaml(Path(ruta)), Path(ruta).name)
+    return _validar_mercados(leer_yaml(Path(ruta)), Path(ruta).name)
 
 
 def cargar_mercados(ruta: Path | None = None) -> dict[str, dict[str, Any]]:
@@ -533,7 +537,7 @@ def _validar_publicaciones(crudo: Any, origen: str) -> dict[str, Any]:
 
 @lru_cache(maxsize=8)
 def _publicaciones_cache(ruta: str, _firma: tuple, catalogo: tuple | None = None) -> dict[str, Any]:
-    base = _validar_publicaciones(_leer_yaml(Path(ruta)), Path(ruta).name)
+    base = _validar_publicaciones(leer_yaml(Path(ruta)), Path(ruta).name)
     if catalogo is None:
         return base
     return _fusionar_catalogo(base, Path(catalogo[0]), Path(ruta).name)

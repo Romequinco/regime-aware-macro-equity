@@ -45,11 +45,17 @@ hay que evaluarlos y justificar si entran o no.
 3. **Hecho (bloque 2)**: base de series con fase1 + FRED + académicas (ver «Base de series (bloque 2)»).
 4. **Hecho (bloque 3)**: vintages exactos de ALFRED, FRED como fuente viva y ediciones académicas con vintage propio
    (ver «Vintages (bloque 3)»).
-5. Limpieza y EDA de las series (huecos, rupturas, series retiradas): inventario en el notebook 02 y revisiones en el 03.
-6. **Hecho (bloques 4–8)**: macro internacional (notebook 04), universo (05), precios as-traded (06), supervivencia
-   (07), libre de riesgo, baselines y costes (08). Ver las secciones de cada bloque.
-7. **Hecho (bloque 9, cierre)**: calidad global, tabla de fichas y las dos tools en 2008-09-15 y 2020-03-16
-   (notebook 09) y truncado real de `get_serie` y `get_precios` (`test_t1_cierre.py`, `@pytest.mark.datos`).
+5. Limpieza y EDA de las series (huecos, rupturas, series retiradas): pendiente, en la descarga completa
+   (`02_inventario` y `03_seleccion_eda`; ver [`PLAN_DESCARGA.md`](../../../docs/fase2/mercados_series/PLAN_DESCARGA.md)).
+6. **Hecho (bloques 4–8)**: macro internacional, universo, precios as-traded, supervivencia y libre de riesgo,
+   baselines y costes. Ver las secciones de cada bloque.
+7. **Hecho (bloque 9, cierre)**: calidad global, tabla de fichas, las dos tools en 2008-09-15 y 2020-03-16 y truncado
+   real de `get_serie` y `get_precios` (`test_t1_cierre.py`, `@pytest.mark.datos`).
+
+Notebooks del tema (`notebooks/fase2/mercados_series/`):
+[`01_resumen_sonda.ipynb`](../../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb) resume la sonda
+(bloques 1–9; los recorridos por bloque quedan en la etiqueta git `sonda-tema1`). La descarga completa añadirá
+`02_inventario`, `03_seleccion_eda`, `04_preprocesado` y `05_resultado`.
 
 ## Cómo usarlo
 
@@ -71,7 +77,7 @@ python -m ingesta.mercados_series resumen
 ```
 
 ```python
-from ingesta.mercados_series.tools import get_serie, get_precios
+from ingesta.mercados_series.tools import get_precios, get_proyeccion, get_serie
 
 r = get_serie("DGS10", "2020-03-16")                 # alias o id canónico ('fred:DGS10')
 r.datos      # fecha_referencia, valor, fecha_publicacion, vintage, metodo_publicacion, nota
@@ -82,6 +88,44 @@ p.datos      # sesiones visibles a las 16:30 NY, ajuste reconstruido con lo cono
 
 Las dos tools devuelven solo lo visible a las 16:30 America/New_York del día pedido: nada con `fecha_publicacion`
 posterior, ni sesiones sin cerrar (cierre local + 30 min), ni splits o dividendos futuros en el ajuste.
+
+**Base de trabajo y base curada (paso 4).** `get_serie` y `get_precios` llevan `base=`. Las dos bases usan el
+mismo TimeGate y el mismo truncado; solo cambia de dónde se lee (`almacen.ruta_series(curada=...)`,
+`ruta_precios(..., curada=...)`):
+
+| `base` | Lee | Cuándo usarla |
+|---|---|---|
+| `'trabajo'` (por defecto) | `series/base_series.parquet`, `precios/<proveedor>/` | Auditar, depurar y construir. Es lo de siempre: nada de lo existente cambia |
+| `'curada'` | `series/base_curada.parquet`, `precios_curados/<proveedor>/` | **Los agentes y el backtest** |
+| una tabla en memoria | la tabla tal cual | Tests y recortes (como antes) |
+
+En la base curada:
+- **Alias:** un id que es alias en `series/alias.parquet` (también después de resolver el alias de la Fase 1) sirve
+  su canónico con el aviso «alias de X: se sirve el canónico».
+- **Proyecciones** (WEO y SEP): no salen por `get_serie`, que lanza `KeyError` y remite a
+  `get_proyeccion(id, fecha)`. Esa tool lee `series/proyecciones.parquet` con el mismo TimeGate (la última edición
+  visible por año proyectado, con `horizonte` y `edicion`). En la base de trabajo, las proyecciones siguen saliendo
+  por `get_serie` como hasta ahora.
+- **Avisos de la curación:** las notas con «fecha no medible», «tramo conservador» o «escala corregida»
+  (`tools.NOTAS_CURADA`) pasan a `avisos`, uno por tipo. En precios, las aperturas de relleno que la curación deja
+  a nulo también se avisan.
+- **Datos atrasados:** `get_precios` avisa «última sesión AAAA-MM-DD: datos atrasados (refresco pendiente o sin
+  cotización)» si la última sesión visible queda más de `tools.MAX_DIAS_HABILES_ATRASO` (10) días hábiles antes de la
+  fecha. Es el caso de las acciones no estadounidenses, que llegan a octubre hasta el 3b-2, o de un ticker que dejó de
+  cotizar. `get_serie` avisa igual en las series diarias y semanales, con un umbral que es el mayor entre 10 días
+  hábiles y 3 veces su ritmo de publicación (una diaria que se publica una vez al mes, como los factores diarios de
+  Ken French, no avisa por eso). Las series mensuales, trimestrales y anuales no se miran.
+- **FX:** el de `divisa='USD'` sale de la base curada.
+
+**Cripto (Coinbase).** Los tickers llevan el prefijo `cb:` (`cb:BTC-USD`, `cb:ETH-USD`) y se piden con
+`proveedor='coinbase'`: `get_precios("cb:BTC-USD", fecha, proveedor="coinbase")`. Vela diaria UTC, visible en D+1
+(mercado `CRYPTO`), en USD. Con el proveedor por defecto (`yahoo`) no hay filas y el aviso lo recuerda.
+
+```python
+r = get_serie("fred:DGS10", "2020-03-16", base="curada")
+p = get_precios("SPY", "2020-03-16", base="curada")
+w = get_proyeccion("imf:WEO.USA.LUR.PROY.H1", "2020-03-16")   # solo de la base curada
+```
 
 ## Contrato (bloque 1)
 
@@ -154,8 +198,7 @@ Calendario `us_federal`: festivos federales más los cierres extraordinarios de 
 Módulos: [`contrato`](contrato.py) (columnas, validadores), [`visibilidad`](visibilidad.py) (cierres y
 publicaciones), [`timegate`](timegate.py) (`as_of_series`, `ajustar_a_fecha`), [`divisas`](divisas.py),
 [`almacen`](almacen.py) (parquet), [`tools`](tools.py) (`get_serie`, `get_precios`) y
-[`sinteticos`](sinteticos.py) (datos sin red). Demostración con gráficos y prueba de truncado en directo:
-[`notebooks/fase2/mercados_series/01_contrato_timegate.ipynb`](../../../notebooks/fase2/mercados_series/01_contrato_timegate.ipynb).
+[`sinteticos`](sinteticos.py) (datos sin red).
 
 ## Catálogo de series (bloque 2)
 
@@ -208,9 +251,22 @@ ya no se construye es un error salvo `--purgar`; `--sin-escribir` no escribe nad
 las excepciones de publicación medidas (abajo) y después se anotan en la `nota`, sin tocar valores, los índices
 reconstruidos y las anomalías de la fuente (picos aislados que se revierten, cierres en fin de semana, rachas
 planas: `tablas/anomalias_series.csv`). `python -m ingesta.mercados_series resumen [--csv]` resume la base
-guardada. Recorrido con
-gráficos (inventario, cobertura, retrasos, retiradas, el mismo día visto por `get_serie`):
-[`notebooks/fase2/mercados_series/02_base_fase1.ipynb`](../../../notebooks/fase2/mercados_series/02_base_fase1.ipynb).
+guardada.
+
+**Solo-añadir en las oficiales sin historia de revisiones (paso 3b).** BCE (también sus revisables: `includeHistory`
+da una versión por observación), Eurostat, BIS, FMI (la API solo sirve las ediciones del WEO desde 2025-04; una edición más antigua que llega
+después conserva su fecha propia), Banco
+Mundial, bancos centrales y curvas
+(`base.CARGADORES_SOLO_ANADIR`) traen solo los valores de hoy: lo guardado es lo único que queda de lo que se
+sabía antes. `base.conservar_revisiones` compara con la base guardada antes de escribir: la fila guardada que ya no
+viene se conserva tal cual con la nota «valor anterior a una revisión observada el AAAA-MM-DD»; la fila nueva que
+revisa un periodo guardado se fecha `max(regla, primera decisión tras la construcción)` con `disponible_utc` nulo y
+su nota, salvo una fecha propia posterior de la fuente (el HICP definitivo con su `VALID_FROM`); una clave que vuelve
+con otro valor (vintage `unico`: revisión en el sitio) conserva la guardada; los periodos nuevos siguen su regla.
+La vista as-of es la de cada fecha (la versión antigua antes de la revisión, la nueva después) y no hace falta
+`--reemplazar`. OCDE (todas las ediciones de `DF_STES_REVISIONS`) y RTDSM (todos los vintages) traen su historia y
+no entran. Ni `--desde-cero` ni `--reemplazar`
+la aplican. Recuentos en `solo_anadir` del resumen de la orden.
 
 **Fuentes y estado** (una serie, una fuente; si dos cargadores traen el mismo id gana `alfred` > `academicos` >
 `fred` > `fase1`, el orden de `catalogo.PRIORIDAD_ORIGENES`; las derivadas se recalculan después):
@@ -361,15 +417,13 @@ ve el 2020-05-08 y no el 07; el empleo de septiembre de 2013 se ve el 2013-10-22
 
 **Cuánto filtraba el bloque 2** (`tablas/alfred_vs_lag.csv`, `tablas/alfred_revisiones_resumen.csv`, sin niveles):
 la regla fija adelantaba la fecha del 2,8 % de los 48 161 periodos medidos (128 de 156 series, hasta 144 días) y
-todos los valores eran los revisados de hoy (el 99 % de los periodos se revisa en la serie mediana). Recorrido con
-gráficos: [`notebooks/fase2/mercados_series/03_alfred_vintages.ipynb`](../../../notebooks/fase2/mercados_series/03_alfred_vintages.ipynb).
+todos los valores eran los revisados de hoy (el 99 % de los periodos se revisa en la serie mediana).
 
 ## Macro internacional (bloque 4)
 
 Países del alcance: EE. UU., zona euro (composición cambiante `U2`/`EA`; la zona euro pasa a 21 en 2026), G7 (DE, FR,
 IT, UK, JP, CA) y China; el resto del mundo, anual (Banco Mundial). Prefijos: `ecb:`, `eurostat:`, `bis:`, `imf:`,
-`wb:`, `oecd:`, `philly:`, `boc:`, `boj:`, `bbk:`, `rba:`. Recorrido con gráficos:
-[`notebooks/fase2/mercados_series/04_macro_internacional.ipynb`](../../../notebooks/fase2/mercados_series/04_macro_internacional.ipynb).
+`wb:`, `oecd:`, `philly:`, `boc:`, `boj:`, `bbk:`, `rba:`.
 
 - **BCE** ([`fuentes.bce`](fuentes/bce.py)): 44 divisas de referencia (vigentes y retiradas; TWD no está), €STR (hábil
   TARGET siguiente a las 08:00 de Berlín), EONIA como predecesor (1999-2021), tipos oficiales DFR y MRO en su fecha de
@@ -383,22 +437,28 @@ IT, UK, JP, CA) y China; el resto del mundo, anual (Banco Mundial). Prefijos: `e
   Paro y PIB con **tramos por época** en `lags.yaml` (`tramos`, con muestras de notas de prensa y test de no fuga).
 - **BIS** ([`fuentes.bis`](fuentes/bis.py)): tipos oficiales, brecha de crédito, servicio de la deuda y tipos de cambio
   efectivos; lag fijo conservador. **Banco Mundial** ([`fuentes.worldbank`](fuentes/worldbank.py)): PIB, IPC y paro de
-  217 países, anual, fin de t+1. **FMI WEO** ([`fuentes.imf`](fuentes/imf.py)): solo la edición 2026-10. Las series
-  `imf:WEO.<país>.<concepto>` solo traen años anteriores al de la edición; la estimación del año en curso y las
-  proyecciones a 1-5 años van a `...PROY.H<h>` (fecha de referencia = año de la edición, nota «proyección, no dato»).
-  Las ediciones 2008-2025 están en DBnomics, que prohíbe el acceso por `robots.txt`.
+  217 países y de los agregados de D3 (`WLD` mundo, `LMY` renta baja y media, `EMU` zona euro; 3b-2), anual, fin de
+  t+1; rango de años explícito en la petición (`date=1960:<año>`). **FMI WEO** ([`fuentes.imf`](fuentes/imf.py)): las ediciones 2025-04, 2025-10,
+  2026-04 y 2026-10 de la API SDMX del FMI, de G7, China y los agregados `001` (mundo), `163` (zona euro) y `200`
+  (emergentes). Cada edición, fechada en su publicación (`PUBLICATION_DATE` del fichero, o su `UPDATE_DATE` si el FMI
+  la corrigió después). Las series `imf:WEO.<área>.<concepto>` solo traen años anteriores al de la edición; la
+  estimación del año en curso y las proyecciones a 1-5 años van a `...PROY.H<h>` (fecha de referencia = año de la
+  edición, nota «proyección, no dato»). Las ediciones 2008-04 a 2024-10 son limitación declarada (3b-2, G3): el
+  `robots.txt` de www.imf.org responde 403 y DBnomics no se usa.
 - **OCDE** ([`fuentes.oecd`](fuentes/oecd.py)): `DF_STES_REVISIONS` da ediciones reales (`vintage` = `AAAA-MM`, fecha
   conservadora a fin de mes): CLI desde 2001, IPC y paro desde 1999. La OCDE ya no publica el CLI de la zona euro
   (EA19/EA20: 404 en `DF_STES_REVISIONS` y `DF_CLI`); `oecd:LI_AA.G4E` son los cuatro grandes europeos (DE, FR, IT,
-  UK), con nota. Sin paro de China.
+  UK), con nota. Sin paro de China. Refresco (3b-2, `--refrescar`): solo las ediciones nuevas, una petición por
+  edición y en ficheros aparte (`revisions_<área>_<medida>__ed<AAAAMM>.csv`).
 - **Philly RTDSM** ([`fuentes.philly_rtdsm`](fuentes/philly_rtdsm.py)): solo los vintages anteriores al primero de
   ALFRED (ROUTPUT 1965-1991, PNB real); PCPI, EMPLOY y RUC no aportan filas. Empalme por vintage con `fred:GDPC1`:
   `deriv:PIB_REAL_USA_VINTAGES` (alias `PIB_REAL_USA`; `base.empalmar_pib_real_usa`, tramo PNB/PIB en la nota). Un
   solo concepto por vintage: desde el primer vintage de ALFRED (1991-12-04) todo es PIB (las filas «anterior a ALFRED»
   se refechan a esa publicación) y los periodos que solo existían como PNB (1947-1958) se retiran con una fila nula
   hasta que un vintage posterior los publica como PIB.
-- **Bancos centrales** ([`fuentes.bancos_centrales`](fuentes/bancos_centrales.py)): BoC (Valet, desde 2001), BoJ (desde
-  1998), Bundesbank (Svensson a 10 años, desde 1997) y RBA (desde 2011). BoE (IADB) vetado por `robots.txt`; sus curvas
+- **Bancos centrales** ([`fuentes.bancos_centrales`](fuentes/bancos_centrales.py)): BoC (Valet, desde 2001; objetivo
+  a fin de mes desde 1996), BoJ (desde 1998), Bundesbank (Svensson a 10 años, desde 1997) y RBA (desde 1990 con los
+  históricos oficiales; 3b-2). BoE (IADB) vetado por `robots.txt`; sus curvas
   salen de los ficheros publicados (bloque 6).
 
 ## Universo (bloque 5)
@@ -411,8 +471,7 @@ lanzamiento de justETF; divisas medidas en Yahoo (`GBp`, `GBP`, `CHF`, `USX`). C
 ([`fuentes.constituyentes`](fuentes/constituyentes.py)): S&P 500 point-in-time 1996-2026 (fecha efectiva del cambio) y
 composición actual de 10 índices (Wikipedia; sin Nikkei 225 ni Ibovespa). El universo ampliado (1.842 tickers, lista en
 `<corpus>/mercados_series/logs/tickers_ampliado.csv`) se define con los constituyentes. Futuros: solo contexto.
-Fondos: fuera de la optimización. Recorrido:
-[`05_universo.ipynb`](../../../notebooks/fase2/mercados_series/05_universo.ipynb).
+Fondos: fuera de la optimización.
 
 ## Precios (bloque 6)
 
@@ -461,8 +520,6 @@ cero, cierres repetidos, dividendos altos).
   (gilt nominal, desde 1979), MoF Japón (JGB, desde 1974) y BoC (desde 2001), en la base de series con prefijos `ust:`,
   `ecb:`, `boe:`, `mof:` y `boc:`. Hora de publicación de cada una en su ficha; la del Tesoro (18:00 NY) sin verificar.
 
-Recorrido: [`06_precios_cobertura.ipynb`](../../../notebooks/fase2/mercados_series/06_precios_cobertura.ipynb).
-
 ## Supervivencia (bloque 7)
 
 [`supervivencia`](supervivencia.py): el sesgo se **declara y se mide** con TODOS los tramos del S&P 500 que tienen
@@ -478,8 +535,7 @@ entran 144 salidos y 496 actuales. Sesgo supervivientes − PIT con precio: **7,
 (`tablas/supervivencia_cobertura.csv`, ficha `supervivencia`). Corrección completa: CRSP vía WRDS (pendiente de la
 licencia de MIAX); alternativa: Tiingo (exige cuenta propia; sin probar). Comando: `python -m
 ingesta.mercados_series.supervivencia medir`. Es una medición: no añade series, publicadores ni mercados ni escribe en
-el almacén. Recorrido:
-[`07_supervivencia.ipynb`](../../../notebooks/fase2/mercados_series/07_supervivencia.ipynb).
+el almacén.
 
 ## Cartera: libre de riesgo, baselines y costes (bloque 8)
 
@@ -497,8 +553,7 @@ el almacén. Recorrido:
   (`tablas/costes_modelo.csv`). Comisiones de la tarifa pública sin verificar.
 
 Informe: `python -m ingesta.mercados_series.cartera.informe`; ficha `cartera_baselines_costes`. Los precios
-se leen con `almacen.leer_precios` (validados por contrato: los 92 tickers del núcleo, ARCX y NAV_US incluidos). Recorrido:
-[`08_libre_riesgo_baselines_costes.ipynb`](../../../notebooks/fase2/mercados_series/08_libre_riesgo_baselines_costes.ipynb).
+se leen con `almacen.leer_precios` (validados por contrato: los 92 tickers del núcleo, ARCX y NAV_US incluidos).
 
 ## Fuentes y estado (cierre, bloque 9)
 
@@ -513,9 +568,9 @@ entera, **parcial** si falta una parte documentada en la ficha y **bloqueada** s
 | `ken_french`, `shiller`, `goyal_welch`, `ofr_fsi`, `jst_macrohistory` | ok | 1870 – 2026-08 | ediciones archivadas desde 2026; JST solo validación |
 | `bce`, `eurostat`, `bis`, `worldbank` | ok | 1945 – 2026-10 | sin vintages salvo la versión vigente |
 | `oecd` | parcial | 1949 – 2026-09 | sin CLI de la zona euro ni paro de China |
-| `imf_weo` | parcial | 1980 – 2026 | solo la edición 2026-10 (DBnomics vetado por `robots.txt`) |
+| `imf_weo` | parcial | 1980 – 2026 | ediciones 2025-04 a 2026-10 (API del FMI); 2008-2024, limitación (G3) |
 | `philly_rtdsm` | ok | 1939 – 2026-08 | solo aporta ROUTPUT anterior a ALFRED |
-| `boc`, `boj`, `bundesbank`, `rba` | ok | 1997 – 2026-10 | RBA desde 2011; BoC desde 2001 |
+| `boc`, `boj`, `bundesbank`, `rba` | ok | 1997 – 2026-10 | RBA desde 1990 (históricos, 3b-2); BoC desde 2001 (mensual desde 1996) |
 | `boe` (IADB) | bloqueada | – | `robots.txt` prohíbe la ruta CSV |
 | `ust_curva`, `bce_curvas`, `boe_curvas`, `mof_jgb`, `boc_curva` | ok | 1974 – 2026-10 | curvas oficiales |
 | `yahoo` | ok | 1927 – 2026-10 | núcleo de 92 tickers; ampliado completo (2026-10-14): 1.388 de 1.842 con datos (449 deslistados, 5 rechazos del almacén, ya tolerados) |
@@ -526,9 +581,8 @@ entera, **parcial** si falta una parte documentada en la ficha y **bloqueada** s
 | `supervivencia` | ok | 1996 – 2026-08 | medición; corrección WRDS pendiente |
 | `cartera_baselines_costes` | ok | 1993 – 2026-10 | comisiones sin verificar; 1/N con lista estática; 60/40 UCITS desde 2017-11 |
 
-Calidad global, cobertura por fuente, método y época y las dos tools en 2008-09-15 y 2020-03-16 (solo metadatos):
-[`09_cierre_calidad.ipynb`](../../../notebooks/fase2/mercados_series/09_cierre_calidad.ipynb). Truncado real
-(5 series, 5 tickers, 3 fechas): `tests/ingesta/mercados_series/test_t1_cierre.py`.
+Calidad global y cobertura por fuente, en resumen:
+[`01_resumen_sonda.ipynb`](../../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb). Truncado real (5 series, 5 tickers, 3 fechas): `tests/ingesta/mercados_series/test_t1_cierre.py`.
 
 ## Deudas pendientes
 
@@ -583,17 +637,29 @@ después de las 16:30 NY o en otro día):
 - EONIA se fecha con el publicador de €STR (hábil siguiente a las 08:00): conservador.
 
 Macro internacional:
-- FMI WEO: ediciones 2008-2025 (DBnomics en `Disallow: /`, comprobado el 2026-10-13: pedir permiso o localizar el
-  archivo del FMI) y WEO de agregados de la zona euro; fechas de edición contrastadas solo las de 2026.
+- FMI WEO: ediciones 2008-04 a 2024-10 (3b-2, G3): la API del FMI solo sirve 2025-04 a 2026-10, el `robots.txt`
+  de www.imf.org responde 403 (todo prohibido) y DBnomics no se usa. El WEO no cumple D1 (primera publicación visible:
+  2025-04-22). Fechas de edición contrastadas con el fichero solo de 2025-04 a 2026-10.
 - BCE, Eurostat, BIS y Banco Mundial sin historia de revisiones (valores de hoy con regla y nota de revisable).
-- Historia larga de RBA (antes de 2011) y BoC (antes de 2001); BoE IADB vetado por `robots.txt`.
+- Historia larga (3b-2): el RBA ya llega a 1990 (objetivo) y 1995 (bono a 10 años) con sus ficheros históricos
+  oficiales (`xls-hist/f01dhist.xls` y `f02dhist.xls`, misma serie con nota de tramo). BoC: el objetivo a fin de mes
+  desde 1996 es `boc:STATIC_ATABLE_V39079`; el diario antes de 2009-04 y el bono a 10 años antes de 2001 no están en
+  Valet (limitación; el bono, en la tabla 10-10-0122-01 de Statistics Canada). BoE IADB vetado por `robots.txt`.
 - Eurostat sin verificar (conservadoras): paro antes de 2012 (fin de M+2), PIB antes de 2003 (t+71) y PIB por país
   (`EUROSTAT_PIB_PAISES`; no aprovecha los t+30 nacionales). `CREACION_GEO` de EA20 y EA21 sin el registro de cambios
-  de Eurostat. OCDE: no hay CLI de la zona euro (G4E es un sustituto con nota). Sin filas en la base:
-  `oecd:LI_AA.EA20`, `oecd:UNEMP.CHN`, `philly:EMPLOY`, `philly:PCPI` y `philly:RUC`.
+  de Eurostat. Zona euro cambiante (`EA`) del ESI y del paro: Eurostat no la publica (solo EA20/EA21; la clave `EA`
+  da 400, medido 2026-11-20; `eurostat.SIN_EA`); el paro cambiante sale del BCE (`PARO_EA`).
+- Sin filas por limitación de la fuente (3b-2, medido 2026-11-20): `oecd:LI_AA.EA20` (la OCDE no publica el CLI de
+  ninguna zona euro; sustituto `oecd:LI_AA.G4E`) y `oecd:UNEMP.CHN` (no publica el paro de China; sustituto anual
+  `wb:CHN.SL.UEM.TOTL.ZS`), en `oecd.SIN_DATOS`. Sin filas por diseño: `philly:EMPLOY`, `philly:PCPI` y `philly:RUC`
+  (todos sus vintages son posteriores al primero de ALFRED, que ve los mismos periodos o más).
 
 Mantenimiento y pruebas:
-- **Archivo periódico de las OAS de ICE** (ventana móvil de 3 años en FRED) y de las ediciones académicas: a mano.
+- **Archivo periódico de las OAS de ICE** (ventana móvil de 3 años en FRED): el archivo ya existe
+  (`python -m ingesta.mercados_series archivar-oas`, módulo `archivo_oas`; capturas y acumulado en
+  `<corpus>/mercados_series/archivo/ice_oas/`, primera captura 2026-11-19 más las de la caché cruda de 2026-10-12
+  y 2026-10-13). Hay que ejecutarlo cada mes, a mano o con una tarea programada en el PC; su entrada en
+  `construir-base` queda para el paso 4. Ediciones académicas: a mano.
 - **package-data** de los YAML de config en `pyproject.toml` (PR común; hoy basta `pip install -e`).
 - Comisiones de DEGIRO e IBKR sin verificar; 1/N con la lista estática del núcleo.
 - Sin prueba `live` propia: `bce_curvas` (histórico entero, lento), `boe_curvas`, `jst_macrohistory`,

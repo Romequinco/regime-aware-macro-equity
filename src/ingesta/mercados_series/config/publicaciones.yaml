@@ -658,7 +658,8 @@ publicadores:
     fuente: https://www.imf.org/en/Publications/WEO
     verificado: false
     notas:
-    - la fecha de cada edición está en fuentes.imf.FECHAS_EDICION (notas de prensa)
+    - la fecha de cada edición está en fuentes.imf.FECHAS_EDICION (notas de prensa) y se contrasta con el PUBLICATION_DATE/UPDATE_DATE
+      del fichero (manda lo más tardío)
   oecd_edicion:
     hora: '23:59'
     huso: Europe/Paris

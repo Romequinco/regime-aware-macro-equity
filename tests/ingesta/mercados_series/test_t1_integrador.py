@@ -36,7 +36,8 @@ def test_t1_integrador_catalogo_fundido():
 def test_t1_integrador_patrones_banco_mundial():
     cat = c.cargar_catalogo()
     wb = [s for s in cat if s.startswith("wb:")]
-    assert len(wb) == 594 and "wb:USA.NY.GDP.MKTP.KD.ZG" in cat
+    # 594 de países + 9 de los agregados de D3 (WLD, LMY, EMU × 3 indicadores; paso 3b-2)
+    assert len(wb) == 603 and "wb:USA.NY.GDP.MKTP.KD.ZG" in cat and "wb:WLD.SL.UEM.TOTL.ZS" in cat
     assert cat["wb:USA.NY.GDP.MKTP.KD.ZG"]["nombre"].endswith(" - USA")
     assert cat["wb:USA.NY.GDP.MKTP.KD.ZG"]["lag"] == "12M"
     pat = {"wb:*.X": {"nombre": "Indicador X - todos los países", "paises": ["ESP", "FRA"], "fuente": "worldbank"}}

@@ -1,0 +1,15 @@
+verificacion,estado,n_fallos,detalle
+fechas_intactas,ok,0,fecha_publicacion y disponible_utc de cada sesión curada iguales a las originales
+quitadas_solo_relleno,ok,0,"solo faltan las sesiones posteriores al corte y las velas de relleno fuera de calendario (repiten el cierre, sin volumen ni evento)"
+sin_posteriores_corte,ok,0,ninguna sesión curada con fecha_publicacion posterior al corte G2
+close_intacto,ok,0,el close de las sesiones que quedan no cambia
+resto_intacto,ok,0,"mercado, volumen, dividendo, split, divisa, fuente y descargado no cambian"
+anulaciones_solo_en_relleno,ok,0,open/high/low solo cambian a nulo y solo en sesiones con open == close y high == low
+esquema_valido,ok,0,cada fichero pasa contrato.validar_precios y el parquet escrito se relee igual
+recuento_tickers,ok,0,tickers escritos = tickers «queda» de la lista curada (1616 de 1616)
+cabecera_lista,ok,0,las entradas «queda» de la lista curada = las de su cabecera (1616)
+queda_sin_fichero,ok,0,ningún ticker «queda» sin fichero en precios/
+ficheros_sin_decision,ok,0,ningún fichero de precios/ sin entrada en la lista curada
+ticker_en_dos_proveedores,ok,0,ningún ticker con fichero en dos proveedores
+origen_intacto,ok,0,precios/ sin cambios: mismo tamaño y fecha de cada fichero leído
+negativo_en_nivel,no aplica,0,tipo de series: el EDA no lo emite en precios; los cierres <= 0 van como salto_sin_split con nota y el contrato admite precios negativos: no se cambian
