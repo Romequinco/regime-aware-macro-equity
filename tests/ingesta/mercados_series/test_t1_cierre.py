@@ -16,6 +16,14 @@ import pytest
 
 from ingesta.mercados_series import almacen, divisas, tools
 
+
+@pytest.fixture(autouse=True)
+def _base_de_trabajo_por_defecto(monkeypatch):
+    """Estos tests prueban la base de trabajo: desde el saneado (P01) el defecto de las tools es la curada."""
+    from ingesta.mercados_series import tools as _tools
+
+    monkeypatch.setattr(_tools, "BASE_DEFECTO", "trabajo")
+
 # Una serie por método de publicación: vintage_exacto (ALFRED), calendario (H.15 y BCE), fichero (Ken French
 # por edición) y vintage_exacto por edición de la OCDE.
 SERIES = ("fred:PAYEMS", "fred:DGS10", "ecb:EXR.D.USD.EUR", "ff:F3M.Mkt-RF", "oecd:CP.DEU")

@@ -16,13 +16,13 @@ en su respuesta junto con la fuente y la fecha de publicación.
 
 Dos bases (paso 4), con el mismo TimeGate y el mismo truncado (solo cambia de dónde se lee):
 
-- ``base='trabajo'`` (por defecto, lo de siempre): la base tal como se descarga
-  (``series/base_series.parquet``, ``precios/<proveedor>/``). Para auditar, depurar y construir.
-- ``base='curada'``: la del preprocesado (``series/base_curada.parquet``, ``precios_curados/``).
-  **La que usan los agentes y el backtest.** Un alias de ``series/alias.parquet`` sirve su canónico
+- ``base='curada'`` (**por defecto** desde el saneado del 2026-11-21, P01): la del preprocesado
+  (``series/base_curada.parquet``, ``precios_curados/``). **La que usan los agentes y el backtest.** Un alias de ``series/alias.parquet`` sirve su canónico
   con un aviso; las proyecciones no salen por ``get_serie`` (``KeyError`` que remite a
   ``get_proyeccion``); las notas de la curación (fecha no medible, tramo conservador, escala
   corregida) pasan a ``avisos``.
+- ``base='trabajo'``: la base tal como se descarga (``series/base_series.parquet``, ``precios/<proveedor>/``), sin
+  las fechas prudentes del curado ni el corte. Solo para auditar, depurar y construir: hay que pedirla a mano.
 
 ``base`` admite además una tabla del contrato en memoria (como hasta ahora: tests y recortes).
 """
@@ -59,6 +59,9 @@ DIVISAS_SALIDA: tuple[str, ...] = ("original", "USD")
 BASES: tuple[str, ...] = ("trabajo", "curada")
 # ``base``: una de ``BASES`` o una tabla del contrato en memoria (tests y recortes, como antes del paso 4).
 BaseLike = Literal["trabajo", "curada"] | pd.DataFrame | None
+#: Base por defecto de las tools (P01 del saneado): la curada. ``base=None`` (el valor por defecto de las firmas) se
+#: resuelve a esta constante al llamar; los tests de la base de trabajo la cambian con ``monkeypatch``.
+BASE_DEFECTO = "curada"
 
 # Columnas de ``RespuestaSerie.datos`` (más ``divisa_original``, ``fx_usd`` y ``fx_fecha`` si se
 # pide USD).
@@ -115,10 +118,10 @@ def _validar_opcion(valor: str, validas: tuple[str, ...], nombre: str) -> None:
 def _modo_base(base: BaseLike) -> tuple[pd.DataFrame | None, bool]:
     """``(tabla en memoria o None, curada)`` de un ``base`` de las tools.
 
-    ``None`` es ``'trabajo'`` (retrocompatible); un texto fuera de ``BASES`` lanza ``ValueError``.
+    ``None`` es ``BASE_DEFECTO`` (la curada, P01); un texto fuera de ``BASES`` lanza ``ValueError``.
     """
     if base is None:
-        return None, False
+        base = BASE_DEFECTO
     if isinstance(base, str):
         _validar_opcion(base, BASES, "base")
         return None, base == "curada"
@@ -187,12 +190,13 @@ def alias_por_defecto() -> dict[str, str]:
     return {**visibilidad.cargar_publicaciones(catalogo=False)["alias"], **cat_mod.alias()}
 
 
-def resolver_id(id: str, alias: dict[str, str] | None = None, *, base: str = "trabajo") -> str:
+def resolver_id(id: str, alias: dict[str, str] | None = None, *, base: str | None = None) -> str:
     """Id canónico de ``id``: ``alias[id]`` si es un alias; si no, ``id`` tal cual.
 
     ``alias`` por defecto: ``alias_por_defecto()`` (catálogo de series + ``publicaciones.yaml``).
     ``base='curada'``: además, el canónico de la tabla de alias del paso 4 (``series/alias.parquet``).
     """
+    base = BASE_DEFECTO if base is None else base
     _validar_opcion(base, BASES, "base")
     canonico = _resolver_fase1(id, alias)
     if base == "curada":
@@ -616,7 +620,7 @@ def _meses_periodo(referencias: pd.Series) -> int:
 
 
 def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divisa: str = "original",
-              base: BaseLike = "trabajo", alias: dict[str, str] | None = None,
+              base: BaseLike = None, alias: dict[str, str] | None = None,
               base_fx: pd.DataFrame | None = None) -> RespuestaSerie:
     """Serie ``id`` tal como se conocía en ``fecha`` (``timegate.as_of_series``).
 
@@ -769,7 +773,7 @@ def _publicar_ajuste(ajustado: pd.DataFrame, ajuste: str) -> pd.DataFrame:
 
 
 def get_precios(tk: str | Sequence[str], fecha: FechaLike, *, desde: FechaLike | None = None,
-                ajuste: Ajuste = "total", divisa: str = "USD", base: BaseLike = "trabajo",
+                ajuste: Ajuste = "total", divisa: str = "USD", base: BaseLike = None,
                 base_fx: pd.DataFrame | None = None, proveedor: str = "yahoo") -> RespuestaPrecios:
     """Precios de ``tk`` (uno o varios) con el ajuste que se conocía en ``fecha``.
 

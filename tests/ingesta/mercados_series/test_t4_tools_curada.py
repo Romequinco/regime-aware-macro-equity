@@ -140,7 +140,7 @@ def test_t4_curada_lee_la_base_curada(bases, vintages):
     # 2024-02 sale en su informe en la de trabajo; en la curada, una semana después.
     mes = pd.Timestamp("2024-02-01")
     sale = vintages.loc[vintages["fecha_referencia"] == mes, "fecha_publicacion"].min()
-    trabajo = get_serie(SERIE, sale)
+    trabajo = get_serie(SERIE, sale, base="trabajo")
     curada = get_serie(SERIE, sale, base="curada")
     assert trabajo.ultimo()["fecha_referencia"] == "2024-02-01"
     assert curada.ultimo()["fecha_referencia"] == "2024-01-01"
@@ -190,9 +190,9 @@ def test_t4_alias_resuelto_con_aviso(bases):
     pd.testing.assert_frame_equal(r.datos, canonico.datos)
     assert r.avisos[1:] == canonico.avisos
     assert tools.resolver_id(ALIAS, base="curada") == SERIE
-    assert tools.resolver_id(ALIAS) == ALIAS                       # la de trabajo no conoce el alias
+    assert tools.resolver_id(ALIAS, base="trabajo") == ALIAS                       # la de trabajo no conoce el alias
     with pytest.raises(KeyError, match="sin datos publicados"):
-        get_serie(ALIAS, "2025-01-20")
+        get_serie(ALIAS, "2025-01-20", base="trabajo")
     # El alias no revela nada del futuro: antes de la primera publicación, el KeyError neutro.
     with pytest.raises(KeyError, match="desconocida o aún no publicada"):
         get_serie(ALIAS, "2023-01-02", base="curada")
@@ -244,7 +244,7 @@ def test_t4_precios_curados_avisos(bases):
     assert any(a.startswith(f"{s.TICKER_ACCION}: 3 sesiones con apertura nula") for a in r.avisos)
     assert any(a.startswith("NOEXISTE: sin sesiones publicadas") and "base curada" in a for a in r.avisos)
     assert r.datos["open"].isna().sum() == 3
-    trabajo = get_precios(s.TICKER_ACCION, "2024-12-31")
+    trabajo = get_precios(s.TICKER_ACCION, "2024-12-31", base="trabajo")
     assert not any("apertura nula" in a for a in trabajo.avisos)
     assert len(trabajo.datos) == len(r.datos) + 2
 
@@ -266,7 +266,7 @@ def test_t4_precios_atrasados(bases):
     con_desde = get_precios(s.TICKER_ACCION, "2025-03-01", base="curada", desde="2025-01-01").avisos
     assert _atrasos(con_desde) and any("ninguna sesión visible" in a for a in con_desde)
     # La base de trabajo no avisa (sin cambios).
-    assert not _atrasos(get_precios(s.TICKER_ACCION, "2025-03-01").avisos)
+    assert not _atrasos(get_precios(s.TICKER_ACCION, "2025-03-01", base="trabajo").avisos)
 
 
 def test_t4_series_atrasadas(bases):
@@ -315,20 +315,28 @@ def test_t4_coinbase_con_otro_proveedor():
 # --- Modo trabajo sin cambios ---------------------------------------------------------------------
 @pytest.mark.parametrize("fecha", FECHAS)
 def test_t4_trabajo_sin_cambios(bases, vintages, accion, fecha):
-    """Por defecto (y con 'trabajo' o None) se lee la base de trabajo, igual que con la tabla en memoria."""
-    por_defecto = get_serie(SERIE, fecha)
-    for otra in (get_serie(SERIE, fecha, base="trabajo"), get_serie(SERIE, fecha, base=None),
-                 get_serie(SERIE, fecha, base=vintages)):
-        _iguales(por_defecto, otra)
-    precios = get_precios(s.TICKER_ACCION, fecha, divisa="original")
-    for otra in (get_precios(s.TICKER_ACCION, fecha, divisa="original", base="trabajo"),
-                 get_precios(s.TICKER_ACCION, fecha, divisa="original", base=None),
-                 get_precios(s.TICKER_ACCION, fecha, divisa="original", base=accion)):
-        _iguales(precios, otra)
+    """Con base='trabajo' se lee la base de trabajo, igual que con la tabla en memoria (pedida a mano: P01)."""
+    trabajo = get_serie(SERIE, fecha, base="trabajo")
+    _iguales(trabajo, get_serie(SERIE, fecha, base=vintages))
+    precios = get_precios(s.TICKER_ACCION, fecha, divisa="original", base="trabajo")
+    _iguales(precios, get_precios(s.TICKER_ACCION, fecha, divisa="original", base=accion))
     # El modo trabajo no consulta las tablas aparte del paso 4: una proyección que no está en su base da el
     # KeyError neutro de siempre (no el que remite a get_proyeccion).
     with pytest.raises(KeyError, match="desconocida o aún no publicada"):
-        get_serie(PROY, fecha)
+        get_serie(PROY, fecha, base="trabajo")
+
+
+@pytest.mark.parametrize("fecha", FECHAS)
+def test_t4_defecto_es_la_curada(bases, fecha):
+    """P01 del saneado: sin decir nada (o con None) las tools leen la base curada, la de los agentes y el backtest."""
+    curada = get_serie(SERIE, fecha, base="curada")
+    for otra in (get_serie(SERIE, fecha), get_serie(SERIE, fecha, base=None)):
+        _iguales(curada, otra)
+    precios = get_precios(s.TICKER_ACCION, fecha, divisa="original", base="curada")
+    for otra in (get_precios(s.TICKER_ACCION, fecha, divisa="original"),
+                 get_precios(s.TICKER_ACCION, fecha, divisa="original", base=None)):
+        _iguales(precios, otra)
+    assert tools.resolver_id(ALIAS) == tools.resolver_id(ALIAS, base="curada") == SERIE
 
 
 def test_t4_base_desconocida():
