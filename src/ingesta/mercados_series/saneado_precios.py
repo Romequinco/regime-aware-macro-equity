@@ -54,7 +54,7 @@ from __future__ import annotations
 
 import argparse
 import re
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -92,6 +92,18 @@ COLUMNAS_SALTOS = ("ticker", "proveedor", "sesion", "tipo", "razon", "factor_spl
 
 # --- P28 -------------------------------------------------------------------------------------------------------
 MAX_HUECO = 5
+#: P28 (decisión del usuario, 2026-11-21): se quedan aunque tengan un hueco de más de ``MAX_HUECO`` sesiones (los
+#: huecos cortos se rellenan igual; los largos se dejan como están, con su aviso ``hueco_largo``). Los tipos de cambio
+#: de Yahoo (EURUSD=X, JPY=X, USDJPY=X, CNY=X, USDCNY=X) siguen fuera: los cubren el BCE y la Fed H.10.
+EXCEPCIONES_HUECO: frozenset[str] = frozenset({"^SKEW", "BZ=F", "ZC=F", "ZN=F", "ZW=F"})
+REGLA_EXCEPCION_HUECO = "saneado_P28_excepcion"
+MOTIVO_EXCEPCION_HUECO = ("queda por decisión del usuario pese a un hueco de más de 5 sesiones (aviso hueco_largo; "
+                          "saneado P28, 2026-11-21)")
+#: P11 (decisión del usuario, 2026-11-21): saltos que la regla registraba como split y son movimientos reales
+#: conocidos (revisados a mano): se mantienen tal cual.
+SALTOS_REALES: frozenset[tuple[str, str]] = frozenset({
+    ("AES", "2001-09-26"), ("HIG", "2008-12-05"), ("NKTR", "2023-02-24"), ("NWG.L", "2009-01-19"),
+})
 
 # --- P02 -------------------------------------------------------------------------------------------------------
 AVISO_REUTILIZADO = "ticker reutilizado"
@@ -156,6 +168,7 @@ def clasificar_saltos(p: pd.DataFrame, clase: str | None = None) -> list[dict[st
     ``clase`` fuera de ``CLASES_P11`` (índices, volatilidad, divisas, futuros): todos ``real``."""
     p = p.reset_index(drop=True)
     corregible = (clase or "") in CLASES_P11
+    ticker = str(p["ticker"].iloc[0]) if "ticker" in p.columns and len(p) else ""
     n = len(p)
     if n < 2:
         return []
@@ -212,6 +225,10 @@ def clasificar_saltos(p: pd.DataFrame, clase: str | None = None) -> list[dict[st
             spl[max(0, i - VENTANA_CONFIRMACION):i + VENTANA_CONFIRMACION + 1] != 1.0)
         factor = _ratio_limpio(base / c[i])
         volumen_ok = factor is not None and _volumen_coherente(vol, i, factor)
+        if (ticker, f"{pd.Timestamp(s):%Y-%m-%d}") in SALTOS_REALES:
+            filas.append({**fila, "tipo": REAL, "nota": "movimiento real revisado a mano (excepción del usuario, "
+                                                        "saneado P11): se mantiene"})
+            continue
         if persiste and factor is not None and not cerca.any() and volumen_ok:
             filas.append({**fila, "tipo": SPLIT, "factor": factor,
                           "tocadas": list(range(i, i + VENTANA_CONFIRMACION)), "confirma": i + VENTANA_CONFIRMACION,
@@ -388,6 +405,34 @@ def marcar_fuera_en_lista(ruta: Path, fuera: Mapping[str, tuple[str, str]]) -> d
     return {"cambiados": sorted(cambiados), "precios": n, "fuera": n_fuera, "queda": n - n_fuera}
 
 
+def restaurar_en_lista(ruta: Path, tickers: Iterable[str], regla_fuera: str, regla: str, motivo: str) -> list[str]:
+    """Vuelve a «queda» los ``tickers`` que están «fuera» con ``regla_fuera`` (excepciones del usuario): ``regla`` y
+    ``motivo`` nuevos (el anterior queda detrás, tras «antes:»). Solo cambia esas líneas. Idempotente."""
+    tickers = set(tickers)
+    lineas = Path(ruta).read_text(encoding="utf-8").split("\n")
+    ini = lineas.index("precios:")
+    cambiados = []
+    for k in range(ini + 1, len(lineas)):
+        m = _LINEA.match(lineas[k])
+        if not m:
+            if lineas[k] and not lineas[k].startswith(" "):
+                break
+            continue
+        clave, cuerpo = m.group("clave").strip("'"), m.group("cuerpo")
+        if clave not in tickers or "decision: fuera" not in cuerpo or f"regla: {regla_fuera}" not in cuerpo:
+            continue
+        previo = re.search(r"motivo: ('(?:[^']|'')*'|[^,]*)", cuerpo)
+        antes = previo.group(1).strip("'").replace("''", "'") if previo else ""
+        nuevo = f"{motivo}; antes: {antes}".replace("'", "''")
+        cuerpo = cuerpo.replace("decision: fuera", "decision: queda", 1)
+        cuerpo = re.sub(r"regla: [^,]*", f"regla: {regla}", cuerpo, count=1)
+        cuerpo = cuerpo.replace(previo.group(0), f"motivo: '{nuevo}'", 1) if previo else cuerpo + f", motivo: '{nuevo}'"
+        lineas[k] = f"  {m.group('clave')}: {{{cuerpo}}}"
+        cambiados.append(clave)
+    Path(ruta).write_text("\n".join(lineas), encoding="utf-8")
+    return sorted(cambiados)
+
+
 def tickers_reutilizados(lista: Mapping[str, Mapping[str, Any]]) -> list[str]:
     """Tickers «queda» de la lista con aviso de ticker reutilizado (P02)."""
     return sorted(tk for tk, e in lista.items()
@@ -407,7 +452,7 @@ def tickers_con_hueco_largo(lista: Mapping[str, Mapping[str, Any]], origen: Path
     ficheros, _ = cp.ficheros_origen(Path(origen or corpus_dir(cp.TEMA) / "precios"))
     out = {}
     for tk, e in sorted(lista.items()):
-        if (e or {}).get("decision") != "queda" or tk not in ficheros:
+        if (e or {}).get("decision") != "queda" or tk not in ficheros or tk in EXCEPCIONES_HUECO:
             continue
         r = cp.curar_ticker(validar_precios(pq.read_table(ficheros[tk][1]).to_pandas()), corte)
         if r.saneado.huecos_largos:
@@ -431,6 +476,9 @@ def main(argv: list[str] | None = None) -> int:
           f"sesiones: {len(largos)} ({', '.join(f'{t} {v[2]}' for t, v in largos.items())})")
     if a.sin_escribir:
         return 0
+    vueltos = restaurar_en_lista(cp.RUTA_LISTA, EXCEPCIONES_HUECO, "hueco_largo", REGLA_EXCEPCION_HUECO,
+                                 MOTIVO_EXCEPCION_HUECO)
+    print(f"excepciones P28 que vuelven a «queda»: {vueltos}")
     print(marcar_fuera_en_lista(cp.RUTA_LISTA, fuera))
     return 0
 

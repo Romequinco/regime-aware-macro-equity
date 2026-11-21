@@ -323,7 +323,7 @@ Por eso ninguna de esas fuentes sale como opción «fuente alternativa».
 
 ## Resultado del saneado (2026-11-21)
 
-El usuario eligió una opción por pendiente en el HTML (32 de 35, con notas; P16, P25 y P28 sin opción, solo con nota).
+El usuario eligió una opción por pendiente en el HTML (32 de 35, con notas; P16, P25 y P28 sin opción, solo con nota) y después cerró las tres decisiones que quedaban: P15 descartado, P28 con excepciones y P11 con 4 casos revisados.
 Se aplicó con dos agentes en paralelo, cada uno en su propio worktree y su rama, y una cadena final con el código
 fusionado en `fase2/t1-saneado`:
 - **Agente A (precios):** rama `fase2/t1-san-precios`.
@@ -337,15 +337,15 @@ Antes de tocar nada se hizo un respaldo completo en `D:/tfm_corpus/mercados_seri
 
 | | Antes | Después |
 |---|---|---|
-| Base de trabajo | 10.620.113 filas, 1.521 series | 11.193.883 filas, 1.523 series (la segunda construcción no cambia nada) |
-| Base curada | 10.189.709 filas, 533 series | 10.627.785 filas, 514 series |
+| Base de trabajo | 10.620.113 filas, 1.521 series | 10.675.327 filas, 1.523 series |
+| Base curada | 10.189.709 filas, 533 series | 10.212.510 filas, 514 series |
 | Alias / proyecciones | 109 / 309 | 59 / 3 (solo SEP) |
-| Precios curados | 1.616 tickers | 1.489 tickers |
-| Posible fuga de revisiones (con las anteriores a ALFRED) | 4,96 % | 4,34 % |
-| Vintage «unico» | 17,07 % | 15,65 % |
+| Precios curados | 1.616 tickers | 1.494 tickers |
+| Posible fuga de revisiones (con las anteriores a ALFRED) | 4,96 % | 4,95 % (P15 descartado: Ken French, OFR y Shiller como antes) |
+| Vintage «unico» | 17,07 % | 16,62 % |
 | Tickers que no llegan al corte | 21 | 1 (PARA) |
-| Huecos de calendario en precios | 9.126 sesiones | 0 (6.427 rellenadas; 15 tickers fuera) |
-| Verificaciones | 13 + 13 en 0 | 13 + 13 en 0, más 5 nuevas de precios en 0 |
+| Huecos de calendario en precios | 9.126 sesiones | Solo los largos de 5 excepciones (7.199 rellenadas; 10 tickers fuera) |
+| Verificaciones | 13 + 13 en 0 | 13 + 18 en 0 (5 nuevas de precios) y 1 que no aplica |
 
 | Id | Elegida | Estado | Qué se hizo |
 |---|---|---|---|
@@ -359,11 +359,11 @@ Antes de tocar nada se hizo un respaldo completo en `D:/tfm_corpus/mercados_seri
 | P08 | c | Hecho | Ejecución en la apertura de t+1; si falta, cierre de t+1 con aviso (nunca el de t); cierre de t+1 como sensibilidad. Decisión cerrada en `docs/tfm/arquitectura.md` |
 | P09 | b | Hecho | ESI EA21 canónico (EA20 historia previa); HICP del BCE/Eurostat canónico con el IPC de la OCDE como historia previa |
 | P10 | c + nota | Hecho | Aviso de atraso en todas las frecuencias; 13 series pasan a «retirada»; salen 20 paradas (6 con sustituto, 14 acaban antes de 2016) |
-| P11 | c + nota | Hecho, 4 dudosos | 1.477 saltos revisados: 283 picos rellenados con el día anterior (360 sesiones), 71 splits no registrados apuntados en `split`, 851 movimientos reales que se mantienen. Registro en `precios_curados_saltos.csv` |
+| P11 | c + nota | Hecho | 1.477 saltos revisados: 283 picos rellenados con el día anterior (360 sesiones), 67 splits no registrados apuntados en `split`, 855 movimientos reales que se mantienen (incluidos los 4 que el usuario confirmó como reales: AES 2001-09-26, HIG 2008-12-05, NKTR 2023-02-24 y NWG.L 2009-01-19, en `saneado_precios.SALTOS_REALES`). Registro en `precios_curados_saltos.csv` |
 | P12 | b | Hecho | ICSA de 61 a 7 días y peticiones continuadas de 68 a 15 (mediana 2007–2009); `rba:FIRMMCRTD` con su regla F1 (de 7 a 2 días) |
 | P13 | b | Hecho | Eurostat, BIS y RBA con vintage con fecha: se recuperan las 463 correcciones |
 | P14 | b | Hecho | Recordatorio mensual en el README del tema: `refrescar --mensual` |
-| P15 | b | Hecho, a decidir | `fuentes/wayback.py`: 65 capturas de Ken French, 121 de Shiller y 19 de la OFR. Coste: un periodo nuevo se ve en la captura siguiente (ver abajo) |
+| P15 | b | **Descartado** | Se probó (65 capturas de Ken French, 121 de Shiller y 19 de la OFR), pero fechar por la captura retrasaba demasiado los datos (Ken French diario de 83 a 219 días de mediana). El usuario lo descartó: se quita el código, las capturas se quedan en el crudo sin uso y la base vuelve a como estaba en esas fuentes |
 | P16 | nota | Hecho | El WEO sale de la curada (28 series y 306 proyecciones); crudo y base de trabajo intactos |
 | P17 | b + nota | Hecho | Fallo del cargador de ALFRED (no de la fuente), arreglado sin redescargar: MEDCPI y TRMMEANCPI recuperan agosto y septiembre y se quedan (108 nulos falsos menos) |
 | P18 | c | Hecho | 6 baselines con los precios curados hasta el corte; la 60/40 europea desde el 2017-11-30, con costes y sin empalme |
@@ -376,7 +376,7 @@ Antes de tocar nada se hizo un respaldo completo en `D:/tfm_corpus/mercados_seri
 | P25 | nota | Limitación | No se elimina nada: no había nada irrelevante que quitar (las 618 sesiones de CNY anteriores a 2000 salen vacías en USD con aviso) |
 | P26 | a | Limitación | Se declara; la cifra buena de historia recortada es 18 (avisos), no 16 |
 | P27 | b | Hecho, sin cambios | fja05680 idéntico (última instantánea 2026-08-18) |
-| P28 | nota | Hecho, a revisar | Huecos de hasta 5 sesiones rellenados (6.427 sesiones en 631 tickers); 15 tickers con huecos mayores fuera (ver abajo) |
+| P28 | nota | Hecho | Huecos de hasta 5 sesiones rellenados (7.199 sesiones). Salen 10 tickers con huecos mayores, entre ellos los tipos de cambio de Yahoo (EURUSD=X, JPY=X, USDJPY=X, CNY=X, USDCNY=X), que cubren el BCE y la Fed. Se quedan por decisión del usuario ^SKEW, BZ=F, ZC=F, ZN=F y ZW=F (`saneado_precios.EXCEPCIONES_HUECO`), con sus huecos largos sin rellenar y el aviso `hueco_largo` |
 | P29 | b + nota | Hecho | Octubre de 2025 rellenado con septiembre en 21 series, con nota y sin adelantar ninguna fecha |
 | P30 | b | Hecho | Fuera las filas vacías en días de mercado cerrado (6) |
 | P31 | b | Hecho | «Posible fuga de revisiones» en las 73.559 filas de FRED anteriores a ALFRED (las 971 de `philly:ROUTPUT` ya no están: la serie salió por P10) |
@@ -385,17 +385,9 @@ Antes de tocar nada se hizo un respaldo completo en `D:/tfm_corpus/mercados_seri
 | P34 | a | Limitación | Solo Yahoo (F3) |
 | P35 | a | Fase 4 | D10 abierta |
 
-**Quedan tres cosas para el usuario:**
-1. **P15, retraso de las ediciones de la Wayback.** Con vintage = fecha de captura, la Wayback tiene huecos (Ken French
-   no tiene ninguna captura entre 2017-07 y 2020-05). Retraso mediano 2016–2026:
-   - Ken French diario: de 83 a 219 días;
-   - OFR: de 7 a 129 días.
+**Decisiones finales del usuario (2026-11-21):**
+- **P15:** descartado.
+- **P28:** los tipos de cambio de Yahoo fuera; ^SKEW y los 4 futuros se quedan.
+- **P11:** los 4 casos son movimientos reales.
 
-   Al corte, las 5 series de la OFR salen desfasadas. La alternativa es fechar los periodos nuevos con la regla de
-   publicación y el valor de su primera captura, marcado como fuga menor.
-2. **P28, instrumentos que salen por la regla de los 5 días:** EURUSD=X, JPY=X, USDJPY=X, CNY=X, USDCNY=X, ^SKEW,
-   BZ=F, ZC=F, ZN=F y ZW=F. Si alguno debe quedarse, hace falta una excepción.
-3. **P11, cuatro casos registrados como split que pueden ser caídas o subidas reales:** AES 2001-09-26,
-   HIG 2008-12-05, NKTR 2023-02-24 y NWG.L 2009-01-19.
-
-Pendiente también: regenerar los notebooks `03`–`05` con las cifras nuevas.
+Los notebooks `03`–`05` están regenerados con las cifras nuevas.

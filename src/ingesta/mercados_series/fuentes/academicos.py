@@ -97,12 +97,13 @@ VINTAGE = "unico"
 RAIZ_FASE1 = ROOT / "data" / "raw"
 FUENTES = ("ken_french", "shiller", "goyal_welch", "ofr_fsi", "jst_macrohistory")
 FUENTES_CATALOGO = ("ken_french", "shiller", "goyal_welch", "ofr_fsi")
-# Fuentes con vintage por edición (AAAA-MM). Saneado P15 (2026-11-21): también la OFR, con las capturas antiguas de
-# la Wayback Machine (``fuentes.wayback``) como ediciones; antes iba con vintage 'unico' y la última edición.
-FUENTES_VINTAGE = ("ken_french", "shiller", "goyal_welch", "ofr_fsi")
+# Fuentes con vintage por edición (AAAA-MM); la OFR sigue con vintage 'unico' y la última edición.
+# (El saneado P15, capturas de la Wayback Machine como ediciones, se descartó el 2026-11-21: retrasaba demasiado.)
+FUENTES_VINTAGE = ("ken_french", "shiller", "goyal_welch")
 CARPETA_EDICIONES = "ediciones"
 PREFIJO_FASE1 = "fase1_"
-ORIGEN_WAYBACK = "wayback"   # meta.origen de las capturas de la Wayback Machine (fuentes.wayback, saneado P15)
+# meta.origen de capturas de la Wayback Machine que pueda haber en el crudo (P15 descartado): se IGNORAN siempre.
+ORIGEN_WAYBACK = "wayback"
 # Dos valores son iguales entre ediciones si difieren menos que esto (ruido de coma flotante).
 TOLERANCIA_ABS, TOLERANCIA_REL = 1e-9, 1e-12
 
@@ -319,6 +320,8 @@ def ediciones(fuente: str, clave: str, raiz: Path | None = None) -> list[Edicion
     """
     por_sha: dict[str, Edicion] = {}
     for ruta, meta in crudos(fuente, clave, raiz):
+        if meta.get("origen") == ORIGEN_WAYBACK:
+            continue   # P15 descartado: las capturas de la Wayback no son ediciones (se quedan en el crudo, sin uso)
         contenido = ruta.read_bytes()
         sha = meta.get("sha256") or hashlib.sha256(contenido).hexdigest()
         descarga = _utc(meta.get("descargado_utc")) or _mtime_utc(ruta)
@@ -333,9 +336,6 @@ def ediciones(fuente: str, clave: str, raiz: Path | None = None) -> list[Edicion
         e = por_sha.get(sha)
         if e is None:
             por_sha[sha] = Edicion("crudo", ruta, lm, fuente_fecha, descarga, sha)
-            if meta.get("origen") == ORIGEN_WAYBACK:
-                por_sha[sha].fuente_fecha = "captura_wayback"
-                por_sha[sha].extra["wayback"] = True
         else:
             e.visto = max(e.visto, descarga)
             if lm < e.fecha_edicion:

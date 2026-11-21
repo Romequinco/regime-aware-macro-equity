@@ -15,7 +15,7 @@ import pytest
 from ingesta.mercados_series import almacen, base, catalogo, curada, tools
 from ingesta.mercados_series import preprocesado as pp
 from ingesta.mercados_series.contrato import COLUMNAS_SERIES, validar_series
-from ingesta.mercados_series.fuentes import academicos, alfred, wayback, wdi_archivo
+from ingesta.mercados_series.fuentes import academicos, alfred, wdi_archivo
 
 
 def _filas(serie, refs, pubs, valores, *, vintage="unico", fuente="eurostat", metodo="lag_fijo", nota=None):
@@ -107,21 +107,17 @@ def test_p23_tabla_archivo_estilo_alfred(tmp_path, monkeypatch):
     assert wdi_archivo.fecha_version("200412") == pd.Timestamp("2005-01-01")
 
 
-# --- P15: capturas de la Wayback como ediciones ----------------------------------------------------------------------
-def test_p15_captura_wayback_es_una_edicion_con_su_fecha(tmp_path):
-    ts = "20190109160343"
-    ruta = wayback._destino("ofr_fsi", "fsi.csv", ts, tmp_path)
-    assert ruta.parent.name == "2019-01" and ruta.name == "20190109_fsi.csv"
-    ruta.parent.mkdir(parents=True)
-    ruta.write_text("Date,OFR FSI\n2019-01-07,1.0\n2019-01-08,1.1\n", encoding="utf-8")
-    meta = {"origen": wayback.ORIGEN, "descargado_utc": wayback._instante(ts).isoformat()}
-    ruta.with_name(ruta.name + ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
-    (e,) = academicos.ediciones("ofr_fsi", "fsi.csv", tmp_path)
-    assert e.fecha_edicion == pd.Timestamp("2019-01-09 16:03:43", tz="UTC") and e.extra.get("wayback")
-    assert e.fuente_fecha == "captura_wayback" and e.etiqueta == "2019-01"
-    assert wayback._sha1_b32(b"abc") == "VGMT4NSHA2AWVOR6EVYXQUGCNSONBWE5"
-    assert "ofr_fsi" in academicos.FUENTES_VINTAGE
+# --- P15 descartado: las capturas de la Wayback que haya en el crudo no cuentan como ediciones ----------------------
+def test_p15_descartado_capturas_wayback_ignoradas(tmp_path):
+    import json
 
+    ruta = tmp_path / "ofr_fsi" / "ediciones" / "2019-01" / "20190109_fsi.csv"
+    ruta.parent.mkdir(parents=True)
+    ruta.write_text("Date,OFR FSI" + chr(10) + "2019-01-07,1.0" + chr(10), encoding="utf-8")
+    meta = {"origen": academicos.ORIGEN_WAYBACK, "descargado_utc": "2019-01-09T16:03:43+00:00"}
+    ruta.with_name(ruta.name + ".meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    assert academicos.ediciones("ofr_fsi", "fsi.csv", tmp_path) == []
+    assert "ofr_fsi" not in academicos.FUENTES_VINTAGE
 
 # --- P29: octubre de 2025 rellenado -----------------------------------------------------------------------------------
 def test_p29_relleno_del_mes_no_publicado_y_variaciones():

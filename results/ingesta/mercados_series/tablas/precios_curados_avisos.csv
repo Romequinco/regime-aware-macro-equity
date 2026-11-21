@@ -2150,8 +2150,8 @@ AEP,yahoo,apertura_igual_cierre_con_volumen,1,1974-04-22,1974-04-22,nulo,nulo + 
 AEP,yahoo,cierre_repetido,2009,1962-01-19,2025-10-17,solo aviso,marcar,
 AES,yahoo,apertura_igual_cierre_con_volumen,1,1993-12-28,1993-12-28,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 AES,yahoo,cierre_repetido,383,1991-07-08,2026-11-13,solo aviso,marcar,
+AES,yahoo,salto_real,1,2001-09-26,2001-09-26,solo aviso,revisar a mano,movimiento real o sin confirmar: se mantiene (saneado P11; ver precios_curados_saltos.csv)
 AES,yahoo,salto_sin_split,2,1992-06-23,2001-09-26,solo aviso,revisar a mano,
-AES,yahoo,salto_split_registrado,1,2001-09-26,2001-09-26,split registrado,revisar a mano,cambio de nivel persistente con razón de split limpio: factor en la columna split (saneado P11; ver precios_curados_saltos.csv)
 AFL,yahoo,apertura_igual_cierre,1,1982-09-21,1982-09-21,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 AFL,yahoo,apertura_igual_cierre_con_volumen,26,1981-02-03,1984-12-28,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 AFL,yahoo,cierre_repetido,780,1980-03-18,2023-03-30,solo aviso,marcar,
@@ -2783,6 +2783,14 @@ BWA,yahoo,cierre_repetido,203,1993-08-26,2026-09-21,solo aviso,marcar,
 BWX,yahoo,cierre_repetido,117,2008-01-17,2026-10-27,solo aviso,marcar,
 BX,yahoo,cierre_repetido,44,2007-07-02,2024-05-20,solo aviso,marcar,
 BXP,yahoo,cierre_repetido,114,1997-07-22,2025-10-03,solo aviso,marcar,
+BZ=F,yahoo,apertura_igual_cierre,5,2013-01-17,2016-05-02,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
+BZ=F,yahoo,apertura_igual_cierre_con_volumen,83,2008-11-28,2019-02-01,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
+BZ=F,yahoo,cierre_repetido,26,2007-10-03,2026-03-04,solo aviso,marcar,
+BZ=F,yahoo,hueco_largo,12,2009-04-15,2009-04-30,solo aviso,,hueco de 12 sesiones seguidas sin vela (> 5): no se rellena; el ticker debe salir de la curada (saneado P28)
+BZ=F,yahoo,relleno_ffill,163,2007-09-03,2026-09-07,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
+BZ=F,yahoo,sesion_faltante,175,2007-09-03,2026-09-07,solo aviso,marcar,calendario CMES desde 2007-07-30
+BZ=F,yahoo,sesion_fuera_calendario,1,2025-01-09,2025-01-09,solo aviso,revisar a mano,calendario CMES desde 2007-07-30
+BZ=F,yahoo,volumen_cero,14,2013-01-17,2026-07-02,solo aviso,marcar,
 BZU.MI,yahoo,apertura_igual_cierre,1720,1987-07-01,2003-08-15,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 BZU.MI,yahoo,apertura_igual_cierre_con_volumen,9,1995-08-10,2001-09-28,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 BZU.MI,yahoo,cierre_repetido,384,1987-07-31,2025-10-31,solo aviso,marcar,
@@ -4096,9 +4104,8 @@ HG=F,yahoo,sesion_faltante,181,2000-09-04,2026-09-07,solo aviso,marcar,calendari
 HG=F,yahoo,sesion_fuera_calendario,4,2006-12-25,2025-01-09,solo aviso,revisar a mano,calendario CMES desde 2000-08-30
 HG=F,yahoo,volumen_cero,73,2000-09-26,2026-04-02,solo aviso,marcar,
 HIG,yahoo,cierre_repetido,72,1995-12-28,2026-05-22,solo aviso,marcar,
-HIG,yahoo,salto_real,2,2008-10-30,2008-11-03,solo aviso,revisar a mano,movimiento real o sin confirmar: se mantiene (saneado P11; ver precios_curados_saltos.csv)
+HIG,yahoo,salto_real,3,2008-10-30,2008-12-05,solo aviso,revisar a mano,movimiento real o sin confirmar: se mantiene (saneado P11; ver precios_curados_saltos.csv)
 HIG,yahoo,salto_sin_split,3,2008-10-30,2008-12-05,solo aviso,revisar a mano,
-HIG,yahoo,salto_split_registrado,1,2008-12-05,2008-12-05,split registrado,revisar a mano,cambio de nivel persistente con razón de split limpio: factor en la columna split (saneado P11; ver precios_curados_saltos.csv)
 HII,yahoo,cierre_repetido,6,2011-03-24,2022-06-01,solo aviso,marcar,
 HINDALCO.NS,yahoo,apertura_igual_cierre,33,1996-01-26,2025-03-18,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 HINDALCO.NS,yahoo,cierre_repetido,66,1996-01-10,2025-03-18,solo aviso,marcar,
@@ -5243,9 +5250,8 @@ NKTR,yahoo,apertura_igual_cierre,74,1994-06-28,2014-06-12,nulo,nulo + aviso,"ope
 NKTR,yahoo,apertura_igual_cierre_con_volumen,137,1994-05-17,2005-09-08,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 NKTR,yahoo,cierre_repetido,432,1994-05-04,2025-06-06,solo aviso,marcar,
 NKTR,yahoo,contrasplit,1,2025-06-09,2025-06-09,solo aviso,marcar,
-NKTR,yahoo,salto_real,4,2022-03-14,2026-02-10,solo aviso,revisar a mano,movimiento real o sin confirmar: se mantiene (saneado P11; ver precios_curados_saltos.csv)
+NKTR,yahoo,salto_real,5,2022-03-14,2026-02-10,solo aviso,revisar a mano,movimiento real o sin confirmar: se mantiene (saneado P11; ver precios_curados_saltos.csv)
 NKTR,yahoo,salto_sin_split,7,2004-08-05,2026-02-10,solo aviso,revisar a mano,
-NKTR,yahoo,salto_split_registrado,1,2023-02-24,2023-02-24,split registrado,revisar a mano,cambio de nivel persistente con razón de split limpio: factor en la columna split (saneado P11; ver precios_curados_saltos.csv)
 NKTR,yahoo,volumen_cero,74,1994-06-28,2014-06-12,solo aviso,marcar,
 NN.AS,yahoo,cierre_repetido,42,2014-07-04,2026-10-14,solo aviso,marcar,
 NN.AS,yahoo,relleno_ffill,1,2015-12-31,2015-12-31,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
@@ -5308,8 +5314,8 @@ NWG.L,yahoo,apertura_igual_cierre_con_volumen,142,1995-01-03,2011-01-21,nulo,nul
 NWG.L,yahoo,cierre_repetido,479,1988-07-08,2025-09-22,solo aviso,marcar,
 NWG.L,yahoo,contrasplit,2,2012-06-06,2022-08-30,solo aviso,marcar,
 NWG.L,yahoo,relleno_ffill,1,2012-05-28,2012-05-28,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
+NWG.L,yahoo,salto_real,1,2009-01-19,2009-01-19,solo aviso,revisar a mano,movimiento real o sin confirmar: se mantiene (saneado P11; ver precios_curados_saltos.csv)
 NWG.L,yahoo,salto_sin_split,2,2008-10-07,2009-01-19,solo aviso,revisar a mano,
-NWG.L,yahoo,salto_split_registrado,1,2009-01-19,2009-01-19,split registrado,revisar a mano,cambio de nivel persistente con razón de split limpio: factor en la columna split (saneado P11; ver precios_curados_saltos.csv)
 NWG.L,yahoo,sesion_faltante,1,2012-05-28,2012-05-28,solo aviso,marcar,calendario XLON desde 1990-01-02
 NWG.L,yahoo,sesion_fuera_calendario,5,2000-05-29,2001-05-28,solo aviso,revisar a mano,calendario XLON desde 1990-01-02
 NWG.L,yahoo,sesion_fuera_calendario_relleno,125,1990-04-13,2011-04-29,quitada,nulo + aviso,
@@ -6952,6 +6958,15 @@ ZB=F,yahoo,volumen_cero,11,2007-10-05,2025-11-03,solo aviso,marcar,
 ZBH,yahoo,cierre_repetido,25,2002-01-07,2026-08-24,solo aviso,marcar,
 ZBRA,yahoo,apertura_igual_cierre_con_volumen,8,1991-11-05,1993-01-14,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 ZBRA,yahoo,cierre_repetido,303,1991-08-23,2025-09-08,solo aviso,marcar,
+ZC=F,yahoo,apertura_igual_cierre,1,2005-12-13,2005-12-13,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
+ZC=F,yahoo,apertura_igual_cierre_con_volumen,113,2000-09-14,2022-09-14,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
+ZC=F,yahoo,cierre_repetido,183,2000-07-31,2026-08-07,solo aviso,marcar,
+ZC=F,yahoo,hueco_largo,9,2000-12-05,2000-12-15,solo aviso,,hueco de 9 sesiones seguidas sin vela (> 5): no se rellena; el ticker debe salir de la curada (saneado P28)
+ZC=F,yahoo,hueco_largo,9,2001-01-03,2001-01-15,solo aviso,,hueco de 9 sesiones seguidas sin vela (> 5): no se rellena; el ticker debe salir de la curada (saneado P28)
+ZC=F,yahoo,relleno_ffill,186,2000-09-04,2026-09-07,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
+ZC=F,yahoo,sesion_faltante,204,2000-09-04,2026-09-07,solo aviso,marcar,calendario CMES desde 2000-07-17
+ZC=F,yahoo,sesion_fuera_calendario,2,2004-06-11,2025-01-09,solo aviso,revisar a mano,calendario CMES desde 2000-07-17
+ZC=F,yahoo,volumen_cero,11,2003-12-11,2026-04-02,solo aviso,marcar,
 ZF=F,yahoo,apertura_igual_cierre,14,2007-11-12,2025-06-25,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 ZF=F,yahoo,apertura_igual_cierre_con_volumen,63,2000-12-19,2026-09-25,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 ZF=F,yahoo,cierre_repetido,144,2000-11-14,2026-10-16,solo aviso,marcar,
@@ -6963,6 +6978,13 @@ ZION,yahoo,apertura_igual_cierre,137,1980-03-19,1994-06-14,nulo,nulo + aviso,"op
 ZION,yahoo,apertura_igual_cierre_con_volumen,329,1984-08-14,1995-05-15,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 ZION,yahoo,cierre_repetido,1423,1980-03-19,2026-10-01,solo aviso,marcar,
 ZION,yahoo,volumen_cero,140,1980-03-19,1994-06-14,solo aviso,marcar,
+ZN=F,yahoo,apertura_igual_cierre_con_volumen,7,2002-10-14,2005-10-10,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
+ZN=F,yahoo,cierre_repetido,136,2000-10-18,2026-09-25,solo aviso,marcar,
+ZN=F,yahoo,hueco_largo,7,2008-06-20,2008-06-30,solo aviso,,hueco de 7 sesiones seguidas sin vela (> 5): no se rellena; el ticker debe salir de la curada (saneado P28)
+ZN=F,yahoo,relleno_ffill,172,2000-11-23,2026-09-07,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
+ZN=F,yahoo,sesion_faltante,179,2000-11-23,2026-09-07,solo aviso,marcar,calendario CMES desde 2000-09-21
+ZN=F,yahoo,sesion_fuera_calendario,3,2004-06-11,2025-01-09,solo aviso,revisar a mano,calendario CMES desde 2000-09-21
+ZN=F,yahoo,volumen_cero,10,2007-10-05,2025-11-03,solo aviso,marcar,
 ZPRR.DE,yahoo,apertura_igual_cierre,342,2014-11-12,2023-12-06,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 ZPRR.DE,yahoo,apertura_igual_cierre_con_volumen,4,2016-02-10,2017-11-29,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
 ZPRR.DE,yahoo,aviso_lista,3047,2014-11-10,2026-11-13,solo aviso,,"historia recortada por Yahoo: faltan 133 días desde el lanzamiento; alias UCITS con correlación semanal baja con IWM (0,880 < 0,90)"
@@ -6991,6 +7013,14 @@ ZURN.SW,yahoo,cierre_repetido,165,1998-10-16,2026-10-19,solo aviso,marcar,
 ZURN.SW,yahoo,sesion_fuera_calendario,8,2001-08-01,2009-12-31,solo aviso,revisar a mano,calendario XSWX desde 1998-10-06
 ZURN.SW,yahoo,sesion_fuera_calendario_relleno,73,1998-12-24,2009-12-24,quitada,nulo + aviso,
 ZURN.SW,yahoo,volumen_cero,207,1998-10-06,2014-08-04,solo aviso,marcar,
+ZW=F,yahoo,apertura_igual_cierre,14,2005-05-10,2006-05-09,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
+ZW=F,yahoo,apertura_igual_cierre_con_volumen,208,2001-03-09,2026-09-14,nulo,nulo + aviso,"open, high y low a nulo: OHLC plano con volumen > 0, no es una apertura ejecutable"
+ZW=F,yahoo,cierre_repetido,120,2000-07-25,2026-09-14,solo aviso,marcar,
+ZW=F,yahoo,hueco_largo,7,2000-12-06,2000-12-14,solo aviso,,hueco de 7 sesiones seguidas sin vela (> 5): no se rellena; el ticker debe salir de la curada (saneado P28)
+ZW=F,yahoo,relleno_ffill,185,2000-09-04,2026-09-07,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
+ZW=F,yahoo,sesion_faltante,192,2000-09-04,2026-09-07,solo aviso,marcar,calendario CMES desde 2000-07-17
+ZW=F,yahoo,sesion_fuera_calendario,2,2004-06-11,2025-01-09,solo aviso,revisar a mano,calendario CMES desde 2000-07-17
+ZW=F,yahoo,volumen_cero,24,2005-05-10,2026-04-02,solo aviso,marcar,
 ^AEX,yahoo,apertura_igual_cierre,2,1993-12-30,1999-04-28,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 ^AEX,yahoo,cierre_repetido,10,1996-09-23,2022-12-27,solo aviso,marcar,
 ^AEX,yahoo,relleno_ffill,7,1994-12-30,2015-12-31,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
@@ -7094,6 +7124,14 @@ ZURN.SW,yahoo,volumen_cero,207,1998-10-06,2014-08-04,solo aviso,marcar,
 ^RUI,yahoo,relleno_ffill,1,2014-12-24,2014-12-24,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
 ^RUI,yahoo,sesion_faltante,1,2014-12-24,2014-12-24,solo aviso,marcar,calendario XNYS desde 1992-12-10
 ^RUT,yahoo,cierre_repetido,11,1988-07-18,2019-07-01,solo aviso,marcar,
+^SKEW,yahoo,apertura_igual_cierre,9203,1990-01-02,2026-11-13,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
+^SKEW,yahoo,aviso_lista,9278,1990-01-02,2026-11-13,solo aviso,,serie sospechosa; limitación declarada (F3)
+^SKEW,yahoo,cierre_repetido,101,1992-10-05,2025-12-24,solo aviso,marcar,
+^SKEW,yahoo,hueco_largo,8,2000-09-20,2000-09-29,solo aviso,,hueco de 8 sesiones seguidas sin vela (> 5): no se rellena; el ticker debe salir de la curada (saneado P28)
+^SKEW,yahoo,relleno_ffill,66,1998-06-30,2024-10-01,relleno,,"hueco de calendario de hasta 5 sesiones: vela plana del cierre anterior (open/high/low nulos, volumen 0); no vale como apertura de t+1"
+^SKEW,yahoo,serie_sospechosa,9212,1990-01-02,2026-11-13,solo aviso,marcar,99.9 % de aperturas iguales al cierre desde 2000 (> 50 %)
+^SKEW,yahoo,sesion_faltante,74,1998-06-30,2024-10-01,solo aviso,marcar,calendario XNYS desde 1990-01-02
+^SKEW,yahoo,sin_apertura,9269,1990-01-02,2026-11-13,solo aviso,,99.9 % de las sesiones curadas sin open (> 99 %): no hay apertura; la ejecución en t+1 tendrá que usar el cierre
 ^SP400,yahoo,apertura_igual_cierre,2634,1981-01-02,1991-06-03,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"
 ^SP400,yahoo,cierre_repetido,36,1981-02-25,2005-11-30,solo aviso,marcar,
 ^SP500TR,yahoo,apertura_igual_cierre,5379,1988-01-04,2021-01-06,nulo,nulo + aviso,"open, high y low a nulo (sin volumen)"

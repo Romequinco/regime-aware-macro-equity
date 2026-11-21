@@ -128,7 +128,7 @@ AAPL,yahoo,2000-09-29,real,0.5,,0,,movimiento real (razón sin split limpio): se
 ABBN.SW,yahoo,2002-10-22,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
 ADANIENT.NS,yahoo,2005-07-28,pico,1.8,,1,2005-07-29,revierte en 1 sesión(es)
 ADANIENT.NS,yahoo,2005-07-29,pico,0.5,,0,,parte del pico que empieza en la sesión 772
-AES,yahoo,2001-09-26,split,0.5,2.0,3,2001-10-01,cambio de nivel persistente con razón de split limpio
+AES,yahoo,2001-09-26,real,0.5,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
 AIG,yahoo,2008-09-15,real,0.4,,0,,movimiento real (no persiste): se mantiene
 AIG,yahoo,2009-03-16,real,1.7,,0,,movimiento real (no persiste): se mantiene
 AIG,yahoo,2009-08-05,real,1.6,,0,,movimiento real (no persiste): se mantiene
@@ -492,7 +492,7 @@ GRASIM.NS,yahoo,2005-07-29,pico,0.2,,0,,parte del pico que empieza en la sesión
 HBAN,yahoo,2008-10-14,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
 HIG,yahoo,2008-10-30,real,0.5,,0,,movimiento real (no persiste): se mantiene
 HIG,yahoo,2008-11-03,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
-HIG,yahoo,2008-12-05,split,2.0,0.5,3,2008-12-10,cambio de nivel persistente con razón de split limpio
+HIG,yahoo,2008-12-05,real,2.0,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
 HOOD,yahoo,2021-08-04,pico,1.5,,1,2021-08-05,revierte en 1 sesión(es)
 HSX.L,yahoo,2001-01-23,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
 HUBB,yahoo,1994-10-31,split,9.9,0.1,3,1994-11-03,cambio de nivel persistente con razón de split limpio
@@ -897,13 +897,13 @@ NBR,yahoo,2020-06-05,real,1.5,,0,,movimiento real (no persiste): se mantiene
 NESTLEIND.NS,yahoo,2010-01-08,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
 NGAS.L,yahoo,2012-01-03,real,1783.0,,0,,movimiento real (razón sin split limpio): se mantiene
 NKTR,yahoo,2022-03-14,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
-NKTR,yahoo,2023-02-24,split,0.5,2.0,3,2023-03-01,cambio de nivel persistente con razón de split limpio
+NKTR,yahoo,2023-02-24,real,0.5,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
 NKTR,yahoo,2023-08-07,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
 NKTR,yahoo,2025-06-24,real,2.6,,0,,movimiento real (razón sin split limpio): se mantiene
 NKTR,yahoo,2026-02-10,real,1.5,,0,,movimiento real (no persiste): se mantiene
 NVR,yahoo,1987-06-23,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
 NVR,yahoo,1993-10-01,real,27.3,,0,,movimiento real (razón sin split limpio): se mantiene
-NWG.L,yahoo,2009-01-19,split,0.3,3.0,3,2009-01-22,cambio de nivel persistente con razón de split limpio
+NWG.L,yahoo,2009-01-19,real,0.3,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
 ON,yahoo,2002-01-03,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
 ONGC.NS,yahoo,1996-11-12,pico,1.5,,1,1996-11-13,revierte en 1 sesión(es)
 ONGC.NS,yahoo,1996-11-13,pico,0.7,,0,,parte del pico que empieza en la sesión 226

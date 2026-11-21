@@ -151,7 +151,7 @@ VERIFICACIONES = {
                                  "anterior y open/high/low nulos; split = razón limpia; publicación solo más tarde",
     "mercado_corregido_sin_adelanto": "el mercado corregido (P21) no adelanta ningún disponible_utc",
     "reutilizados_fuera": "ningún ticker «queda» con aviso de ticker reutilizado (P02)",
-    "sin_huecos_largos": "ningún ticker «queda» con un hueco de calendario de más de 5 sesiones (P28)",
+    "sin_huecos_largos": "ningún ticker «queda» con un hueco de calendario de más de 5 sesiones (P28; salvo las excepciones del usuario, saneado_precios.EXCEPCIONES_HUECO)",
 }
 _REINTENTOS = 5
 _CABECERA = re.compile(r"^#\s*Precios:\s*([\d.]+)\s*\((.*)\)", re.MULTILINE)
@@ -612,7 +612,7 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
             if tk in sp.MERCADO_CORREGIDO:
                 falla("mercado_corregido_sin_adelanto",
                       int((r.referencia["disponible_utc"] < original["disponible_utc"]).sum()), tk)
-            falla("sin_huecos_largos", int(bool(r.saneado.huecos_largos)), tk)
+            falla("sin_huecos_largos", int(bool(r.saneado.huecos_largos) and tk not in sp.EXCEPCIONES_HUECO), tk)
             saltos += sp.registro_saltos(tk, pv, r.saneado)
             if escribir:
                 ruta = ruta_precios_curados(pv, tk, nuevo)

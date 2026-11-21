@@ -238,10 +238,13 @@ publicaciones), [`timegate`](timegate.py) (`as_of_series`, `ajustar_a_fecha`), [
 
 **Saneado de los precios (2026-11-21, agente A).** Lo aplica `curar-precios` (`curada_precios`, con las reglas y el
 TimeGate en el docstring de `saneado_precios`): fuera de la curada los 112 tickers reutilizados del S&P 500 (P02) y
-los que tienen algún hueco de calendario de más de 5 sesiones (P28); los huecos de hasta 5 sesiones se rellenan con
+los que tienen algún hueco de calendario de más de 5 sesiones (P28; salvo ^SKEW, BZ=F, ZC=F, ZN=F y ZW=F, que se
+quedan por decisión del usuario con aviso `hueco_largo`: `saneado_precios.EXCEPCIONES_HUECO`); los huecos de hasta 5
+sesiones se rellenan con
 la última vela (aviso `relleno_ffill`); los saltos de más del 50 % sin split se clasifican en pico aislado
 (corregido con el cierre anterior), cambio de nivel con razón de split limpio (factor en `split`) o movimiento real
-(se mantiene), con registro sin valores en `tablas/precios_curados_saltos.csv` (P11); ^W5000 pasa al cierre y el
+(se mantiene; los 4 casos revisados a mano por el usuario como reales están en `saneado_precios.SALTOS_REALES`), con
+registro sin valores en `tablas/precios_curados_saltos.csv` (P11); ^W5000 pasa al cierre y el
 calendario de la NYSE (P21). El almacén tolera revisiones OHLC aisladas de Yahoo (hasta 3 sesiones por ticker: se
 conserva lo guardado y se apunta, P06). La lista curada se marca con `python -m
 ingesta.mercados_series.saneado_precios marcar-lista` (solo las entradas de precios que cambian).
@@ -306,9 +309,10 @@ guardada.
 - **Banco Mundial (P23):** las series de la lista curada (`fuentes.wdi_archivo.PAISES`) se cargan con las 142
   ediciones del archivo del WDI (API v2, fuente 57; `python -m ingesta.mercados_series.fuentes.wdi_archivo`), estilo
   ALFRED: vintage = primer día del mes siguiente a la edición. Esas series salen del solo-añadir.
-- **Ediciones académicas antiguas (P15):** capturas de la Wayback Machine de Ken French, Shiller y la OFR
-  (`python -m ingesta.mercados_series.fuentes.wayback`) en el archivo de ediciones del crudo, con la fecha de
-  captura como fecha de la edición. La OFR pasa a vintage por edición (`AAAA-MM`).
+- **Ediciones académicas antiguas (P15): descartado** por el usuario (2026-11-21). Fechar las capturas de la Wayback
+  Machine por su fecha de captura retrasaba demasiado los datos (Ken French diario de 83 a 219 días de mediana). Las
+  capturas que se bajaron siguen en el crudo (`meta.origen = wayback`), pero `fuentes.academicos.ediciones` las
+  ignora; la OFR sigue con vintage `unico`.
 - **ALFRED (P17):** `fuentes.alfred._compactar` ya no da por retirado un periodo vigente con el mismo valor en dos
   vintages seguidos (MEDCPI y TRMMEANCPI de 2026-08 y 2026-09).
 - **Festivos (P30):** fuera las filas vacías de las curvas en días que su calendario da cerrados

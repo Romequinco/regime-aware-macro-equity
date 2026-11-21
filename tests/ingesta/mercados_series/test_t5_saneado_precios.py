@@ -378,3 +378,36 @@ def test_p05_medir_sesgo_curado_solo_porcentajes():
     fila = tabla.iloc[0]
     assert 0 < fila["pct_cobertura_min"] < fila["pct_cobertura_max"] == 100.0
     assert not {"close", "open", "valor"} & set(tabla.columns)
+
+
+def test_p11_excepcion_del_usuario_es_movimiento_real(monkeypatch):
+    """Un cambio de nivel con forma de split que el usuario revisó a mano como real: se mantiene sin split."""
+    c = _base()
+    c[60:] /= 2.0
+    p = _tabla(c, tk="AES")
+    p.loc[p.index >= 60, "volume"] *= 2.0
+    monkeypatch.setattr(sp, "SALTOS_REALES", frozenset({("AES", f"{SESIONES[60]:%Y-%m-%d}")}))
+    r, fallos = _curar(p)
+    assert not any(fallos.values()), fallos
+    assert [x["tipo"] for x in r.saneado.saltos] == ["real"]
+    assert (r.curado["split"] == 1.0).all()
+
+
+def test_p11_y_p28_excepciones_reales_del_usuario():
+    assert {("AES", "2001-09-26"), ("HIG", "2008-12-05"), ("NKTR", "2023-02-24"),
+            ("NWG.L", "2009-01-19")} == set(sp.SALTOS_REALES)
+    assert sp.EXCEPCIONES_HUECO == {"^SKEW", "BZ=F", "ZC=F", "ZN=F", "ZW=F"}
+    assert not sp.EXCEPCIONES_HUECO & {"EURUSD=X", "JPY=X", "USDJPY=X", "CNY=X", "USDCNY=X"}
+
+
+def test_p28_restaurar_en_lista_vuelve_a_queda_solo_las_excepciones(tmp_path):
+    ruta = tmp_path / "lista.yaml"
+    ruta.write_text("series:\n  'a:B': {decision: queda}\nprecios:\n"
+                    "  ^SKEW: {decision: fuera, regla: hueco_largo, motivo: 'hueco; antes: queda: D10', clase: indice}\n"
+                    "  EURUSD=X: {decision: fuera, regla: hueco_largo, motivo: 'hueco', clase: divisa}\n"
+                    "  SPY: {decision: queda, regla: d10_abierta, motivo: 'queda'}\n", encoding="utf-8")
+    assert sp.restaurar_en_lista(ruta, sp.EXCEPCIONES_HUECO, "hueco_largo", sp.REGLA_EXCEPCION_HUECO, "vuelve") == ["^SKEW"]
+    lista = visibilidad.leer_yaml(ruta)["precios"]
+    assert lista["^SKEW"]["decision"] == "queda" and lista["^SKEW"]["regla"] == sp.REGLA_EXCEPCION_HUECO
+    assert lista["EURUSD=X"]["decision"] == "fuera"
+    assert sp.restaurar_en_lista(ruta, sp.EXCEPCIONES_HUECO, "hueco_largo", sp.REGLA_EXCEPCION_HUECO, "vuelve") == []

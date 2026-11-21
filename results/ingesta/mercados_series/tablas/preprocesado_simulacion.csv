@@ -1,9 +1,9 @@
 seccion,grupo,regla,n_series,filas_regla,filas_cambian,pct_cambian,retraso_mediana_dias,retraso_p95_dias,retraso_max_dias,filas_adelantan,filas_disponible_incoherente,filas_orden_roto,filas_con_tope,pendiente_calendario
-reglas_conservadoras,academicas,FF_MENSUAL,13,720371,266972,37.06,480.0,661.0,662.0,0.0,0.0,0.0,0.0,False
+reglas_conservadoras,academicas,FF_MENSUAL,13,311067,296310,95.26,449.0,661.0,662.0,0.0,0.0,0.0,0.0,False
 reglas_conservadoras,academicas,GW_ANUAL,12,16568,16568,100.0,183.0,183.0,258.0,0.0,0.0,0.0,0.0,False
-reglas_conservadoras,academicas,OFR_FSI,5,35900,24275,67.62,2.0,2.0,8.0,0.0,0.0,0.0,0.0,False
-reglas_conservadoras,academicas,SHILLER_DE,2,3945,3430,86.95,31.0,47.0,120.0,0.0,0.0,0.0,0.0,False
-reglas_conservadoras,academicas,SHILLER_FICHERO,4,11330,6930,61.17,31.0,31.0,61.0,0.0,0.0,0.0,0.0,False
+reglas_conservadoras,academicas,OFR_FSI,5,34015,34015,100.0,2.0,2.0,7.0,0.0,0.0,0.0,0.0,False
+reglas_conservadoras,academicas,SHILLER_DE,2,3732,3732,100.0,31.0,31.0,31.0,0.0,0.0,0.0,0.0,False
+reglas_conservadoras,academicas,SHILLER_FICHERO,4,7352,7352,100.0,31.0,31.0,31.0,0.0,0.0,0.0,0.0,False
 reglas_conservadoras,banco_mundial,WB_ANUAL,31,32907,1511,4.59,212.0,517.0,911.0,0.0,0.0,0.0,0.0,False
 reglas_conservadoras,macro_eurostat_bce_bis,BIS_WS_CBPOL,6,4192,4192,100.0,7.0,7.0,7.0,0.0,0.0,0.0,0.0,False
 reglas_conservadoras,macro_eurostat_bce_bis,BIS_WS_CREDIT_GAP,9,1756,1756,100.0,7.0,7.0,7.0,0.0,0.0,0.0,0.0,False
@@ -92,4 +92,4 @@ h15_diario,capa,,19,153055,153055,100.0,7.0,7.0,7.0,0.0,0.0,0.0,0.0,False
 reconstruidas,capa,,55,280714,280714,100.0,12469.0,26948.0,48102.0,0.0,0.0,0.0,0.0,False
 escalas_por_vintage,valores,,6,49143,0,,,,,,,,,
 proyecciones,tabla_aparte,,3,125,0,,,,,,,,,
-total,verificaciones,,514,10643136,1341131,,,,,0.0,0.0,0.0,94.0,
+total,verificaciones,,514,10227756,1380933,,,,,0.0,0.0,0.0,94.0,

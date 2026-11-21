@@ -6,8 +6,8 @@ close_intacto,ok,0,el close de las sesiones que quedan no cambia
 resto_intacto,ok,0,"mercado, volumen, dividendo, split, divisa, fuente y descargado no cambian"
 anulaciones_solo_en_relleno,ok,0,open/high/low solo cambian a nulo y solo en sesiones con open == close y high == low
 esquema_valido,ok,0,cada fichero pasa contrato.validar_precios y el parquet escrito se relee igual
-recuento_tickers,ok,0,tickers escritos = tickers «queda» de la lista curada (1489 de 1489)
-cabecera_lista,ok,0,las entradas «queda» de la lista curada = las de su cabecera (1489)
+recuento_tickers,ok,0,tickers escritos = tickers «queda» de la lista curada (1494 de 1494)
+cabecera_lista,ok,0,las entradas «queda» de la lista curada = las de su cabecera (1494)
 queda_sin_fichero,ok,0,ningún ticker «queda» sin fichero en precios/
 ficheros_sin_decision,ok,0,ningún fichero de precios/ sin entrada en la lista curada
 ticker_en_dos_proveedores,ok,0,ningún ticker con fichero en dos proveedores
@@ -17,4 +17,4 @@ rellenos_ffill_validos,ok,0,"las sesiones añadidas (P28) rellenan huecos de cal
 saltos_corregidos_validos,ok,0,cada cambio de P11 está registrado y sigue su regla: pico = cierre de la vela buena anterior y open/high/low nulos; split = razón limpia; publicación solo más tarde
 mercado_corregido_sin_adelanto,ok,0,el mercado corregido (P21) no adelanta ningún disponible_utc
 reutilizados_fuera,ok,0,ningún ticker «queda» con aviso de ticker reutilizado (P02)
-sin_huecos_largos,ok,0,ningún ticker «queda» con un hueco de calendario de más de 5 sesiones (P28)
+sin_huecos_largos,ok,0,"ningún ticker «queda» con un hueco de calendario de más de 5 sesiones (P28; salvo las excepciones del usuario, saneado_precios.EXCEPCIONES_HUECO)"
