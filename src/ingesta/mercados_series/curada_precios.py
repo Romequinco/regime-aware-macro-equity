@@ -86,7 +86,7 @@ from ingesta.mercados_series.contrato import COLUMNAS_PRECIOS, ErrorContrato, va
 
 TEMA = "mercados_series"
 # Corte G2 (PLAN_DESCARGA.md, paso 3b): nada con fecha_publicacion posterior entra en los precios curados.
-CORTE_G2 = pd.Timestamp("2026-11-13")
+CORTE_G2 = __import__("ingesta.mercados_series.corte", fromlist=["corte_vigente"]).corte_vigente()  # P07
 CARPETA_CURADOS = almacen.CARPETA_PRECIOS_CURADOS     # "precios_curados", la de almacen.ruta_precios(curada=True)
 RUTA_LISTA = Path(__file__).resolve().parent / "config" / "lista_curada.yaml"
 

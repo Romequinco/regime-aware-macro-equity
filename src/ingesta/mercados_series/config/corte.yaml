@@ -1,0 +1,11 @@
+# Fecha de corte del dataset del Tema 1 (G2, PLAN_DESCARGA.md, paso 3b; aprobada el 2026-11-19).
+# Único sitio donde vive el corte (P07 de AUDITORIA_SANEADO.md). La leen curada.py, curada_precios.py,
+# seleccion.py y estado_3b.py a través de ``corte.corte_vigente()``.
+#
+# Para un refresco: ``python -m ingesta.mercados_series refrescar --corte AAAA-MM-DD`` (la orden pasa el corte a
+# cada paso con la variable de entorno T1_CORTE, sin tocar este fichero). Cuando el refresco se da por bueno, se
+# cambia aquí la fecha y se hace commit.
+#
+# Regla: el último día con cierre completo de todas las fuentes que entran (en G2, el último viernes antes de las
+# descargas). La base curada y los precios curados no llevan nada con fecha_publicacion posterior.
+corte: "2026-11-13"

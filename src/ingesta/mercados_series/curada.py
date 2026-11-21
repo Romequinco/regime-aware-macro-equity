@@ -76,7 +76,7 @@ TEMA = "mercados_series"
 # completo antes del 3b-1. Las fuentes acaban entre el 11-16 y el 11-19, así que todas lo cubren. La base curada y
 # las proyecciones no llevan nada con fecha_publicacion (curada) posterior; la base de trabajo y el crudo sí lo
 # guardan, para el siguiente refresco.
-CORTE_G2 = pd.Timestamp("2026-11-13")
+CORTE_G2 = __import__("ingesta.mercados_series.corte", fromlist=["corte_vigente"]).corte_vigente()  # P07
 
 FICHERO_REGISTRO = "registro_cambios.parquet"
 FICHERO_MANIFIESTO = "curada_manifiesto.json"

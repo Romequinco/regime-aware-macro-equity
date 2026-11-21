@@ -60,7 +60,7 @@ TEMA = "mercados_series"
 FICHERO_ENTRADA = "descargas_3b.csv"
 FICHERO_SALIDA = "descargas_3b_estado.csv"
 FICHERO_COBERTURA_SP500 = "sp500_cobertura_3b1.csv"
-FECHA_CORTE = "2026-11-13"               # G2 (igual que seleccion.FECHA_CORTE)
+FECHA_CORTE = __import__("ingesta.mercados_series.corte", fromlist=["x"]).corte_vigente().date().isoformat()  # G2 (P07)
 ESTADOS = ("hecho", "parcial", "resuelto", "limitacion_declarada", "aplazado")
 
 # Fuentes refrescadas en el 3b-1 (alcance H1) y en el 3b-2 (el resto). ``yfinance`` va serie a serie
