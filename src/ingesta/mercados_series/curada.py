@@ -66,7 +66,7 @@ from ingesta.mercados_series.fuentes import fase1
 
 __all__ = [
     "CORTE_G2", "NOTA_CONSERVADORA", "NOTA_TRAMO", "NOTA_TOPE", "NOTA_PENDIENTE", "NOTA_H15", "NOTA_PUBLICADO_DESDE",
-    "NOTA_DERIVADA", "NOTA_ESCALA", "COLUMNAS_REGISTRO", "COLUMNAS_ALIAS_CURADA", "COLUMNAS_VERIFICACIONES",
+    "NOTA_DERIVADA", "NOTA_ESCALA", "NOTA_FUGA_PREVIA", "NOTA_RELLENO", "MESES_NO_PUBLICADOS", "rellenar_meses_no_publicados", "COLUMNAS_REGISTRO", "COLUMNAS_ALIAS_CURADA", "COLUMNAS_VERIFICACIONES",
     "COLUMNAS_RESUMEN", "VERIFICACIONES", "ErrorCuracion", "Curada", "ids_derivadas", "escalas_vintage",
     "recalcular_derivadas", "tabla_alias", "homogeneizar", "firma", "construir", "escribir", "curar", "main",
 ]
@@ -102,6 +102,14 @@ NOTA_PUBLICADO_DESDE = "tramo conservador: índice reconstruido, fecha llevada a
 NOTA_DERIVADA = ("tramo conservador: derivada recalculada con sus componentes curados (fecha = la máxima de los "
                  "componentes)")
 NOTA_ESCALA = "escala corregida"
+# Saneado P31: filas anteriores a ALFRED (valor del primer vintage, ya revisado, con la fecha de la regla previa).
+NOTA_FUGA_PREVIA = catalogo.NOTA_FUGA_PREVIA
+# Saneado P29: meses que la fuente no publicó nunca en ninguna vintage (octubre de 2025: cierre del Gobierno de EE. UU.).
+# En las mensuales de FRED/ALFRED que tienen el mes anterior y el siguiente pero no ese, se rellena con el valor del mes
+# anterior visible cuando se publicó el siguiente (cuando se supo que ese mes no saldría), con esa misma fecha.
+MESES_NO_PUBLICADOS = {"2025-10-01": "cierre del Gobierno 2025"}
+NOTA_RELLENO = "relleno: mes no publicado ({motivo}); valor del mes anterior, visible desde la publicación del siguiente"
+FUENTES_RELLENO = ("fred_alfred",)
 
 COLUMNAS_REGISTRO = (
     "serie", "fecha_referencia", "vintage", "fecha_publicacion_antes", "fecha_publicacion_despues",
@@ -343,6 +351,64 @@ def recalcular_derivadas(comp: pd.DataFrame, ids: Iterable[str],
     return pd.concat(out, ignore_index=True), info
 
 
+def rellenar_meses_no_publicados(cur: pd.DataFrame, catalogo_series: dict[str, dict],
+                                 meses: dict[str, str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Saneado P29: relleno de los meses de ``MESES_NO_PUBLICADOS`` que una serie mensual de ``FUENTES_RELLENO`` no tiene
+    con valor en NINGUNA vintage, teniendo el mes anterior y el siguiente.
+
+    - Si la fuente da el mes vacío (ALFRED: «'.'», dato no publicado), cada fila vacía de ese mes conserva su clave y su
+      fecha (la de la publicación que lo dejó vacío: cuando se supo que no saldría) y toma el valor del mes anterior en
+      la vista as-of de esa misma fecha.
+    - Si no hay ninguna fila del mes, se añade una con el valor del mes anterior visible el día en que se publicó por
+      primera vez el mes siguiente, con esa fecha, su vintage y su método.
+    Las dos llevan ``NOTA_RELLENO``: una variación mensual da 0 en el mes rellenado y la del mes siguiente mide dos
+    meses, sin huecos; nada se ve antes de lo que ya se veía (la fecha no cambia o es la del mes siguiente). Devuelve
+    ``(cur con las filas vacías rellenadas, mismo orden y longitud; filas nuevas)``.
+    """
+    meses = MESES_NO_PUBLICADOS if meses is None else meses
+    cur = cur.copy()
+    nuevas = []
+    serie = cur["serie"].astype(str)
+    ids = [sid for sid in serie.unique() if catalogo_series.get(sid, {}).get("frecuencia") == "mensual"
+           and catalogo_series.get(sid, {}).get("fuente") in FUENTES_RELLENO]
+    sub = cur[serie.isin(ids).to_numpy()]
+    for mes, motivo in meses.items():
+        m = pd.Timestamp(mes)
+        ant, sig = m - pd.offsets.MonthBegin(1), m + pd.offsets.MonthBegin(1)
+        nota = NOTA_RELLENO.format(motivo=motivo)
+        for _sid, g in sub[sub["fecha_referencia"].isin([ant, m, sig])].groupby(sub["serie"].astype(str), sort=True):
+            con_valor = set(g.loc[g["valor"].notna(), "fecha_referencia"])
+            if m in con_valor or ant not in con_valor or sig not in con_valor:
+                continue
+            ga = g[(g["fecha_referencia"] == ant) & g["valor"].notna()].sort_values(["fecha_publicacion", "vintage"])
+            vacias = g[g["fecha_referencia"] == m]
+            if len(vacias):
+                for ix, fila in vacias.iterrows():
+                    previo = ga[ga["fecha_publicacion"] <= fila["fecha_publicacion"]]
+                    if previo.empty:
+                        continue
+                    cur.at[ix, "valor"] = float(previo["valor"].iloc[-1])
+                    n0 = cur.at[ix, "nota"]
+                    cur.at[ix, "nota"] = nota if not isinstance(n0, str) else f"{n0}; {nota}"
+                continue
+            gs = g[(g["fecha_referencia"] == sig) & g["valor"].notna()].sort_values(["fecha_publicacion", "vintage"])
+            p = gs.iloc[0]
+            previo = ga[ga["fecha_publicacion"] <= p["fecha_publicacion"]]
+            if previo.empty:
+                continue
+            a = previo.iloc[-1]
+            nuevas.append({**{c: a[c] for c in COLUMNAS_SERIES}, "fecha_referencia": m,
+                           "fecha_publicacion": p["fecha_publicacion"], "disponible_utc": pd.NaT,
+                           "vintage": p["vintage"], "metodo_publicacion": p["metodo_publicacion"], "nota": nota})
+    if not nuevas:
+        return cur, pd.DataFrame({c: pd.Series(dtype=t) for c, t in COLUMNAS_SERIES.items()})
+    out = pd.DataFrame(nuevas)[list(COLUMNAS_SERIES)]
+    out["fecha_referencia"] = out["fecha_referencia"].astype(FECHA)
+    out["fecha_publicacion"] = out["fecha_publicacion"].astype(FECHA)
+    out["disponible_utc"] = pd.Series(pd.NaT, index=out.index, dtype=UTC)
+    return cur, out
+
+
 def tabla_alias(lista: dict[str, dict], pares: pd.DataFrame | None = None) -> pd.DataFrame:
     """Alias → canónico (``COLUMNAS_ALIAS_CURADA``), una fila por serie ``decision: alias`` de la lista.
 
@@ -470,6 +536,9 @@ def construir(base: pd.DataFrame, plan: dict[str, Any] | None = None, lista: dic
     unidad_a = _texto_obj(b["unidad"])
     fh, unidad_n, nota_h = homogeneizar(s_b, unidad_a, plan)
     extra = _unir(_notas_nuevas(s_b, cur, plan, factor, desde), nota_h)
+    # Saneado P31: «posible fuga de revisiones» también en las filas anteriores a ALFRED.
+    previa = b["nota"].astype(object).fillna("").astype(str).str.contains(catalogo.NOTA_PREVIA_ALFRED, regex=False)
+    extra = _unir(extra, np.where(previa.to_numpy(), NOTA_FUGA_PREVIA, None).astype(object))
     c = pd.DataFrame({
         "serie": _texto_obj(b["serie"]), "fecha_referencia": b["fecha_referencia"].to_numpy(dtype=FECHA),
         "fecha_publicacion": nueva, "disponible_utc": disp_n.array, "vintage": _texto_obj(b["vintage"]),
@@ -559,8 +628,12 @@ def construir(base: pd.DataFrame, plan: dict[str, Any] | None = None, lista: dic
 
     # Todo junto (antes del corte): las «queda» curadas fila a fila y las derivadas
     n_es_queda = int(es_queda.sum())
-    todo = pd.concat([c[es_queda], deriv_filas], ignore_index=True)
-    del c   # lo que queda de ella está en todo (y comp_cur)
+    cq, relleno = rellenar_meses_no_publicados(c[es_queda], cat)
+    n_rell = int(cq["nota"].fillna("").astype(str).str.contains("relleno: mes no publicado", regex=False).sum())
+    # Las filas nuevas van al final: las posiciones de las «queda» y las derivadas no cambian (registro de cambios).
+    todo = pd.concat([cq, deriv_filas, relleno], ignore_index=True)
+    del c, cq   # lo que queda de ellas está en todo (y comp_cur)
+    log(f"relleno de meses no publicados (P29): {n_rell} filas vacías rellenadas y {len(relleno)} añadidas")
     en_corte = (todo["fecha_publicacion"] <= corte).to_numpy()
     cortadas = todo.loc[~en_corte, "serie"].value_counts()
     final = todo[en_corte]

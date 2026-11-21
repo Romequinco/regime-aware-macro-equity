@@ -28,6 +28,8 @@ Dos bases (paso 4), con el mismo TimeGate y el mismo truncado (solo cambia de d�
 """
 from __future__ import annotations
 
+import fnmatch
+import re
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date
@@ -318,7 +320,8 @@ MAX_HUECOS_DETALLADOS = 3
 
 
 # Notas que tienen su propio aviso (no se repiten en el de huecos).
-_NOTAS_CON_AVISO = (NOTA_EXCEPCION, NOTA_RECONSTRUIDA, NOTA_PREVIA_ALFRED, NOTA_REESTIMADA, NOTA_UNIDAD_VINTAGE)
+_NOTAS_CON_AVISO = (NOTA_EXCEPCION, NOTA_RECONSTRUIDA, NOTA_PREVIA_ALFRED, NOTA_REESTIMADA, NOTA_UNIDAD_VINTAGE,
+                    cat_mod.NOTA_FUGA_PREVIA)
 
 
 # Paso 4: notas de la base curada que pasan a ``avisos`` (subcadena de una parte de la nota, sin
@@ -330,6 +333,9 @@ NOTAS_CURADA: dict[str, str] = {
                          "fecha no es fiable: se retrasa con la regla conservadora)",
     "escala corregida": "escala corregida (valores multiplicados para llevarlos a la unidad vigente; el "
                         "significado no cambia)",
+    # Saneado P29: meses que la fuente no publicó (octubre de 2025), rellenados en la curada con el mes anterior.
+    "relleno: mes no publicado": "mes no publicado por la fuente, rellenado con el valor del mes anterior (variación "
+                                 "0 ese mes; la del mes siguiente mide dos meses)",
 }
 # Partes de nota distintas que se citan en cada aviso de la curación.
 _MAX_NOTAS_CITADAS = 2
@@ -425,8 +431,9 @@ def _avisos_serie(datos: pd.DataFrame, curada: bool = False) -> list[str]:
     if edicion.any():
         primera_ed = _contiene(nota, NOTA_PRIMERA_EDICION) & edicion
         ediciones = sorted(set(vint[edicion]))
+        lista_ed = ", ".join(ediciones) if len(ediciones) <= 6 else f"{ediciones[0]} … {ediciones[-1]}"
         avisos.append(f"valores por edición del fichero (vintage AAAA-MM): {int(edicion.sum())} periodos de "
-                      f"{len(ediciones)} ediciones ({', '.join(ediciones)}); la última visible en la fecha es "
+                      f"{len(ediciones)} ediciones ({lista_ed}); la última visible en la fecha es "
                       f"{ediciones[-1]}" + (f"; {int(primera_ed.sum())} periodos con el valor de la primera edición "
                                             f"archivada: posible fuga de revisiones anteriores a ella"
                                             if primera_ed.any() else ""))
@@ -479,6 +486,117 @@ def _aviso_atraso_serie(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> 
         return None
     return (f"{serie}: última fecha de referencia {_iso(refs[-1])} (publicada {_iso(ultima_pub)}, {n} días hábiles "
             f"antes de {_iso(f)}): datos atrasados (refresco pendiente o sin publicación)")
+
+
+# Saneado P10 (2026-11-21): el aviso de datos atrasados vale para TODAS las frecuencias. En las de paso mediano mayor
+# de MAX_DIAS_PASO_ATRASO (mensuales, trimestrales, anuales...) avisa si desde la última fecha de referencia visible
+# han pasado más días que su retraso mediano de publicación + PERIODOS_ATRASO periodos + MARGEN_ATRASO_DIAS (la misma
+# regla que la auditoría de saneado). Las series que se retrasan por diseño (SIN_AVISO_ATRASO: ediciones anuales,
+# proyecciones de la CBO, recesiones del NBER fechadas con 24 meses) no avisan por eso. Una serie retirada por la fuente
+# (estado «retirada» del catálogo) avisa siempre que su último dato quede atrás.
+PERIODOS_ATRASO = 2
+MARGEN_ATRASO_DIAS = 10
+SIN_AVISO_ATRASO = ("fred:USRECD", "fred:GDPPOT", "fred:NROU", "gw:*")
+
+
+def _sin_aviso_atraso(serie: str) -> bool:
+    return any(fnmatch.fnmatchcase(serie, p) for p in SIN_AVISO_ATRASO)
+
+
+def _aviso_atraso_periodica(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> str | None:
+    """Aviso de una serie de paso mayor de una semana parada más allá de su retraso mediano + 2 periodos + margen."""
+    ult = visibles[visibles["valor"].notna()].tail(_ULTIMAS_ATRASO)
+    refs = pd.DatetimeIndex(ult["fecha_referencia"].dropna()).sort_values()
+    if len(refs) < 3 or _sin_aviso_atraso(serie):
+        return None
+    paso = float(np.median(np.diff(refs.values).astype("timedelta64[D]").astype(int)))
+    if paso <= MAX_DIAS_PASO_ATRASO:
+        return None
+    lag = float(np.median((ult["fecha_publicacion"] - ult["fecha_referencia"]).dt.days.tail(12)))
+    umbral = lag + PERIODOS_ATRASO * paso + MARGEN_ATRASO_DIAS
+    dias = int((f - refs[-1]).days)
+    if dias <= umbral:
+        return None
+    ultima_pub = pd.Timestamp(ult["fecha_publicacion"].max())
+    return (f"{serie}: última fecha de referencia {_iso(refs[-1])} (publicada {_iso(ultima_pub)}), {dias} días antes de "
+            f"{_iso(f)}, más que su retraso mediano ({lag:.0f} días) + {PERIODOS_ATRASO} periodos de {paso:.0f} días + "
+            f"{MARGEN_ATRASO_DIAS}: datos atrasados (serie parada, refresco pendiente o sin publicación)")
+
+
+def _aviso_retirada(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> str | None:
+    """Aviso de una serie que la fuente ya no publica (estado ``retirada`` del catálogo), si su último dato es anterior."""
+    e = cat_mod._cat(None).get(serie) or {}
+    if e.get("estado") != "retirada":
+        return None
+    con_valor = visibles.loc[visibles["valor"].notna(), "fecha_referencia"]
+    if con_valor.empty:
+        return None
+    return (f"{serie}: serie retirada por la fuente (catálogo); último dato visible {_iso(con_valor.max())}: no se "
+            f"actualiza más, usa su sustituta si la hay")
+
+
+# Saneado P19: aviso con el % de periodos vacíos (valor nulo) de la ventana pedida, desde este umbral.
+MIN_PCT_VACIOS = 1.0
+
+
+def _aviso_vacios(serie: str, datos: pd.DataFrame) -> str | None:
+    """«X de N periodos (P %) vacíos entre A y B» si la ventana devuelta tiene al menos ``MIN_PCT_VACIOS`` % de nulos."""
+    n = len(datos)
+    if not n:
+        return None
+    vacios = int(datos["valor"].isna().sum())
+    pct = 100.0 * vacios / n
+    if pct < MIN_PCT_VACIOS:
+        return None
+    return (f"{serie}: {vacios} de {n} periodos ({pct:.1f} %) vacíos entre {_iso(datos['fecha_referencia'].min())} y "
+            f"{_iso(datos['fecha_referencia'].max())}: trátalos (no se rellenan con valores posteriores)")
+
+
+# Saneado P20: zona euro con la composición FIJA de hoy retropolada (los países actuales también antes de entrar en el
+# euro). La versión de composición de cada fecha (U2 del BCE, EA de Eurostat) se prefiere como canónico donde existe.
+_ZONA_EURO_FIJA = re.compile(r"EA2[01]|EA19|\.XM\.|\.XM$|EMU|\.I\d+\.")
+_ZONA_EURO_NO_IMPORTA = ("bis:WS_CBPOL.M.XM", "bis:WS_EER.M.R.B.XM")   # tipo oficial y TCE del euro: no cambia el dato
+AVISO_ZONA_EURO_FIJA = ("{s}: zona euro con la composición fija de hoy retropolada (antes de su entrada, cuenta países "
+                        "que aún no estaban en el euro); la de composición de cada fecha es U2 (BCE) o EA (Eurostat)")
+
+# Lista curada (``config/lista_curada.yaml``) en caché por mtime: historia previa (``completa_a``) y notas.
+_CACHE_LISTA: dict[str, tuple[int, dict[str, dict], dict[str, list[str]]]] = {}
+
+
+def _lista_curada() -> tuple[dict[str, dict], dict[str, list[str]]]:
+    from ingesta.mercados_series import preprocesado as pp
+
+    ruta = pp.RUTA_LISTA
+    try:
+        mt = ruta.stat().st_mtime_ns
+    except FileNotFoundError:
+        return {}, {}
+    g = _CACHE_LISTA.get(str(ruta))
+    if g is None or g[0] != mt:
+        lista = pp.cargar_lista(ruta)
+        previas: dict[str, list[str]] = {}
+        for sid, e in lista.items():
+            if e.get("completa_a") and e.get("decision") == "queda":
+                previas.setdefault(str(e["completa_a"]), []).append(sid)
+        g = _CACHE_LISTA[str(ruta)] = (mt, lista, previas)
+    return g[1], g[2]
+
+
+def _avisos_lista(serie: str) -> list[str]:
+    """Avisos estáticos de la lista curada (sin fechas ni valores): historia previa, composición de la zona euro, notas."""
+    lista, previas = _lista_curada()
+    e = lista.get(serie) or {}
+    out = []
+    if e.get("completa_a"):
+        out.append(f"{serie}: historia previa de {e['completa_a']} (serie más antigua o parada del mismo concepto; "
+                   f"desde donde acaba, usa {e['completa_a']}): no mezclar los dos niveles sin revisar el salto")
+    if previas.get(serie):
+        out.append(f"{serie}: su historia anterior está en {', '.join(sorted(previas[serie]))} (historia previa)")
+    if _ZONA_EURO_FIJA.search(serie) and serie not in _ZONA_EURO_NO_IMPORTA:
+        out.append(AVISO_ZONA_EURO_FIJA.format(s=serie))
+    if e.get("nota"):
+        out.append(f"{serie}: {e['nota']}")
+    return out
 
 
 _MESES_PERIODO = (1, 3, 6, 12)
@@ -579,9 +697,14 @@ def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divi
     datos = datos.reset_index(drop=True)
     avisos += _avisos_serie(datos, curada)
     if curada:
-        atraso = _aviso_atraso_serie(canonico, visibles, f)
+        atraso = (_aviso_atraso_serie(canonico, visibles, f) or _aviso_atraso_periodica(canonico, visibles, f)
+                  or _aviso_retirada(canonico, visibles, f))
         if atraso:
             avisos.append(atraso)
+        avisos += _avisos_lista(canonico)
+        vacios = _aviso_vacios(canonico, datos)
+        if vacios:
+            avisos.append(vacios)
 
     columnas = dict(COLUMNAS_DATOS_SERIE)
     divisa_salida = divisa_serie

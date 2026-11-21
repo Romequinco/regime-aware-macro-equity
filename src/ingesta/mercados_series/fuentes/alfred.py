@@ -326,9 +326,13 @@ def _compactar(df: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     igual = (df["ausente"] & prev_aus) | (~df["ausente"] & ~prev_aus & df["valor"].eq(prev["valor"]))
     funde = misma & contigua & igual
     tramo = (~funde).cumsum()
-    fin = df.groupby(tramo)["realtime_end"].last()
+    # Fin del tramo = realtime_end de su ÚLTIMA fila, también si es nulo (vigente). ``groupby().last()`` salta los
+    # nulos y devolvía el fin de la penúltima: un periodo vigente con el mismo valor en dos vintages seguidos salía
+    # como «retirado» (saneado P17: MEDCPI y TRMMEANCPI de 2026-08 y 2026-09 vacíos en el vintage del 2026-11-10).
+    ultima = ~funde.shift(-1, fill_value=False).to_numpy()
+    fin = pd.Series(df["realtime_end"].to_numpy()[ultima], index=tramo[ultima].to_numpy())
     out = df[~funde].copy()
-    out["realtime_end"] = fin.loc[tramo[~funde]].to_numpy()
+    out["realtime_end"] = fin.loc[tramo[~funde].to_numpy()].to_numpy()
     return out.reset_index(drop=True), int(funde.sum())
 
 

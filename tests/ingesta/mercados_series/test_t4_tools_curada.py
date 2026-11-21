@@ -279,9 +279,10 @@ def test_t4_series_atrasadas(bases):
     ultima_pub = pd.Timestamp("2024-07-05")
     assert not _atrasos(get_serie(DIARIA_MENSUAL, ultima_pub + pd.offsets.BDay(40), base="curada").avisos)
     assert _atrasos(get_serie(DIARIA_MENSUAL, ultima_pub + pd.offsets.BDay(80), base="curada").avisos)
-    # Mensual: nunca, aunque la fecha quede muy lejos.
-    assert not _atrasos(get_serie(SERIE, "2027-06-01", base="curada").avisos)
-    assert not _atrasos(get_serie(ESCALA, "2027-06-01", base="curada").avisos)
+    # Saneado P10: también las mensuales, con su retraso mediano + 2 periodos + margen (antes no avisaban nunca).
+    atraso_m = _atrasos(get_serie(SERIE, "2027-06-01", base="curada").avisos)
+    assert len(atraso_m) == 1 and "retraso mediano" in atraso_m[0] and "2 periodos" in atraso_m[0]
+    assert not _atrasos(get_serie(SERIE, "2026-03-13", base="curada").avisos)
 
 
 # --- Caché de alias ---------------------------------------------------------------------------------

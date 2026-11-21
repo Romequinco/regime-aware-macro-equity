@@ -114,7 +114,13 @@ En la base curada:
   fecha. Es el caso de las acciones no estadounidenses, que llegan a octubre hasta el 3b-2, o de un ticker que dejó de
   cotizar. `get_serie` avisa igual en las series diarias y semanales, con un umbral que es el mayor entre 10 días
   hábiles y 3 veces su ritmo de publicación (una diaria que se publica una vez al mes, como los factores diarios de
-  Ken French, no avisa por eso). Las series mensuales, trimestrales y anuales no se miran.
+  Ken French, no avisa por eso). Desde el saneado (P10, 2026-11-21) también las mensuales, trimestrales y anuales:
+  avisan si desde su última fecha de referencia ha pasado más que su retraso mediano + 2 periodos + 10 días (salvo
+  las que se retrasan por diseño, `tools.SIN_AVISO_ATRASO`), y una serie con estado `retirada` lo dice siempre.
+- **Otros avisos del saneado (solo en la curada):** el % de periodos vacíos de la ventana pedida si pasa del 1 %
+  (P19); «historia previa de X» o «su historia anterior está en Y» (`completa_a` de la lista curada: P09, P22, P24);
+  la zona euro con composición fija retropolada (EA20, EA21, XM, EMU, I10...: P20); la `nota` de la lista curada
+  (P21, P22); y los meses no publicados rellenados (octubre de 2025, P29).
 - **FX:** el de `divisa='USD'` sale de la base curada.
 
 **Cripto (Coinbase).** Los tickers llevan el prefijo `cb:` (`cb:BTC-USD`, `cb:ETH-USD`) y se piden con
@@ -252,6 +258,24 @@ las excepciones de publicación medidas (abajo) y después se anotan en la `nota
 reconstruidos y las anomalías de la fuente (picos aislados que se revierten, cierres en fin de semana, rachas
 planas: `tablas/anomalias_series.csv`). `python -m ingesta.mercados_series resumen [--csv]` resume la base
 guardada.
+
+**Saneado del 2026-11-21 (series).**
+- **Vintage con fecha (P13):** Eurostat, BIS y RBA ya no llevan vintage `unico`: lo guardado lleva la fecha de su
+  primera descarga (`base.VINTAGE_PRIMERA_DESCARGA`) y cada valor nuevo o corregido, la de su observación
+  (`base.fechar_vintages`); el solo-añadir conserva la versión anterior, como en el BCE.
+- **Banco Mundial (P23):** las series de la lista curada (`fuentes.wdi_archivo.PAISES`) se cargan con las 142
+  ediciones del archivo del WDI (API v2, fuente 57; `python -m ingesta.mercados_series.fuentes.wdi_archivo`), estilo
+  ALFRED: vintage = primer día del mes siguiente a la edición. Esas series salen del solo-añadir.
+- **Ediciones académicas antiguas (P15):** capturas de la Wayback Machine de Ken French, Shiller y la OFR
+  (`python -m ingesta.mercados_series.fuentes.wayback`) en el archivo de ediciones del crudo, con la fecha de
+  captura como fecha de la edición. La OFR pasa a vintage por edición (`AAAA-MM`).
+- **ALFRED (P17):** `fuentes.alfred._compactar` ya no da por retirado un periodo vigente con el mismo valor en dos
+  vintages seguidos (MEDCPI y TRMMEANCPI de 2026-08 y 2026-09).
+- **Festivos (P30):** fuera las filas vacías de las curvas en días que su calendario da cerrados
+  (`base.quitar_vacios_cerrados`). **GC=F y ^W5000 (P21):** rehechas desde el almacén de precios
+  (`fuentes.fase1.REHACER_DESDE_ALMACEN`). **H.10 (P03):** `fred:DEXTAUS` y `fred:DEXCHUS`.
+- La primera construcción con este código cambia claves guardadas (vintages de ALFRED, académicas, Banco Mundial):
+  `construir-base --sin-red --reemplazar` una vez; el solo-añadir se aplica igual.
 
 **Solo-añadir en las oficiales sin historia de revisiones (paso 3b).** BCE (también sus revisables: `includeHistory`
 da una versión por observación), Eurostat, BIS, FMI (la API solo sirve las ediciones del WEO desde 2025-04; una edición más antigua que llega

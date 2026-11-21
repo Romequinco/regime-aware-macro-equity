@@ -97,10 +97,12 @@ VINTAGE = "unico"
 RAIZ_FASE1 = ROOT / "data" / "raw"
 FUENTES = ("ken_french", "shiller", "goyal_welch", "ofr_fsi", "jst_macrohistory")
 FUENTES_CATALOGO = ("ken_french", "shiller", "goyal_welch", "ofr_fsi")
-# Fuentes con vintage por edición (AAAA-MM); la OFR sigue con vintage 'unico' y la última edición.
-FUENTES_VINTAGE = ("ken_french", "shiller", "goyal_welch")
+# Fuentes con vintage por edición (AAAA-MM). Saneado P15 (2026-11-21): también la OFR, con las capturas antiguas de
+# la Wayback Machine (``fuentes.wayback``) como ediciones; antes iba con vintage 'unico' y la última edición.
+FUENTES_VINTAGE = ("ken_french", "shiller", "goyal_welch", "ofr_fsi")
 CARPETA_EDICIONES = "ediciones"
 PREFIJO_FASE1 = "fase1_"
+ORIGEN_WAYBACK = "wayback"   # meta.origen de las capturas de la Wayback Machine (fuentes.wayback, saneado P15)
 # Dos valores son iguales entre ediciones si difieren menos que esto (ruido de coma flotante).
 TOLERANCIA_ABS, TOLERANCIA_REL = 1e-9, 1e-12
 
@@ -128,6 +130,8 @@ CABECERAS = ("Last-Modified", "ETag", "Content-Type", "Content-Length", "Content
 
 FALTANTES_FRENCH = (-99.99, -999.0)
 COLUMNAS_SHILLER = {"Long Interest Rate": "Rate GS10"}  # id_origen del catálogo -> cabecera real
+# Saneado P15: cabeceras de las ediciones antiguas (capturas de la Wayback) con otro nombre: (fuente, columna) -> antigua.
+ALTERNATIVAS_COLUMNA: dict[tuple[str, str], str] = {("shiller", "CAPE"): "P/E10"}
 NOTA_HUECO = "hueco permanente: la fuente no publica dato de este periodo"
 # Si el catálogo la declara (para que get_serie la reconozca como nota de revisable), se usa la suya.
 NOTA_PRIMERA_EDICION = getattr(cat_mod, "NOTA_PRIMERA_EDICION",
@@ -329,6 +333,9 @@ def ediciones(fuente: str, clave: str, raiz: Path | None = None) -> list[Edicion
         e = por_sha.get(sha)
         if e is None:
             por_sha[sha] = Edicion("crudo", ruta, lm, fuente_fecha, descarga, sha)
+            if meta.get("origen") == ORIGEN_WAYBACK:
+                por_sha[sha].fuente_fecha = "captura_wayback"
+                por_sha[sha].extra["wayback"] = True
         else:
             e.visto = max(e.visto, descarga)
             if lm < e.fecha_edicion:
@@ -412,7 +419,11 @@ def fechas_shiller(columna: Any) -> pd.DatetimeIndex:
 def _rejilla_shiller(ruta: Path) -> pd.DataFrame:
     if Path(ruta).suffix.lower() in (".csv", ".txt"):
         return pd.read_csv(ruta, header=None, dtype=str, keep_default_na=False)
-    return pd.read_excel(ruta, sheet_name="Data", header=None)
+    try:
+        return pd.read_excel(ruta, sheet_name="Data", header=None)
+    except ValueError:
+        # Saneado P15: las ediciones de 2003-2009 (capturas de la Wayback) llaman a la hoja «Stock Data».
+        return pd.read_excel(ruta, sheet_name="Stock Data", header=None)
 
 
 def leer_shiller(fuente: Path | pd.DataFrame) -> pd.DataFrame:
@@ -567,6 +578,8 @@ class _Info:
     revision: dict[str, Any] = field(default_factory=dict)
     ultimo_por_edicion: list[dict[str, Any]] = field(default_factory=list)
     cambios: list[dict[str, Any]] = field(default_factory=list)   # una entrada por edición posterior
+    wayback: int = 0            # capturas de la Wayback Machine usadas (saneado P15)
+    wayback_saltadas: int = 0   # capturas ilegibles o sin la columna (formato antiguo)
 
 
 def _leer_parquet_fase1(ruta: Path, col: str) -> pd.Series | None:
@@ -857,11 +870,29 @@ def _cargar(fuentes: Iterable[str] | None, catalogo: dict[str, dict] | None, rai
         versiones: list[tuple[Edicion, pd.Series]] = []
         for ed in cache_ed[(e["fuente"], clave)]:
             k = (ed.ruta, hoja)
+            wayback = bool(ed.extra.get("wayback"))
             if k not in cache_df:
-                cache_df[k] = leer_fichero(e["fuente"], clave, ed.ruta, hoja)
-            if col not in cache_df[k].columns:
+                try:
+                    cache_df[k] = leer_fichero(e["fuente"], clave, ed.ruta, hoja)
+                except Exception:  # noqa: BLE001 - una captura antigua ilegible se salta (las propias, no)
+                    if not wayback:
+                        raise
+                    cache_df[k] = None
+            if cache_df[k] is None:
+                info.wayback_saltadas += 1
+                continue
+            columna = col if col in cache_df[k].columns else ALTERNATIVAS_COLUMNA.get((e["fuente"], col))
+            if columna is None or columna not in cache_df[k].columns:
+                if wayback:   # formato antiguo sin esa columna: la captura no sirve para esta serie
+                    info.wayback_saltadas += 1
+                    continue
                 raise KeyError(f"{sid}: la columna {col!r} no está en {ed.ruta.name} ({list(cache_df[k].columns)})")
-            versiones.append((ed, cache_df[k][col]))
+            serie = cache_df[k][columna]
+            if wayback and serie.notna().sum() == 0:
+                info.wayback_saltadas += 1
+                continue
+            versiones.append((ed, serie))
+            info.wayback += int(wayback)
         f1 = _edicion_fase1(e, raiz_fase1, raiz_crudo, cache_ed[(e["fuente"], clave)])
         if f1 is not None:
             if versiones:
