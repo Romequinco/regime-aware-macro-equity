@@ -238,9 +238,11 @@ def referencia_ticker(original: pd.DataFrame) -> pd.DataFrame:
 
 
 def curar_ticker(original: pd.DataFrame, corte: pd.Timestamp = CORTE_G2,
-                 sesiones_cal: np.ndarray | None = None, *, sanear: bool = True) -> Curado:
+                 sesiones_cal: np.ndarray | None = None, *, sanear: bool = True,
+                 clase: str | None = None) -> Curado:
     """Corte G2, acciones automáticas del EDA y saneado (P21, P11 y P28) sobre un fichero validado (ordenado por
-    sesión). ``sanear=False``: sin P11 ni P28 (el mercado de P21 se corrige siempre).
+    sesión). ``sanear=False``: sin P11 ni P28 (el mercado de P21 se corrige siempre). ``clase``: la de la lista
+    curada (P11 solo corrige acciones, ETF, ETP y fondos).
 
     ``sesiones_cal`` sustituye al calendario del mercado (pruebas; ver ``eda.sesiones_faltantes``).
     """
@@ -257,7 +259,7 @@ def curar_ticker(original: pd.DataFrame, corte: pd.Timestamp = CORTE_G2,
         cur.loc[nulos, col] = np.nan
     saneado = sp.Saneado()
     if sanear and len(cur):
-        cur, saneado = sp.sanear(cur.reset_index(drop=True), mercado, sesiones_cal)
+        cur, saneado = sp.sanear(cur.reset_index(drop=True), mercado, sesiones_cal, clase)
     return Curado(curado=validar_precios(cur), hasta_corte=hasta, quitada=quitada, anulada=anulada,
                   relleno_con_evento=relleno & evento, fuera_corte=int(len(original) - len(hasta)),
                   saneado=saneado, referencia=referencia)
@@ -601,7 +603,7 @@ def curar_precios(origen: Path | None = None, destino: Path | None = None, tabla
                 original = validar_precios(pq.read_table(f).to_pandas())
                 if set(original["ticker"]) - {tk}:
                     raise ErrorContrato("precios", [f"{f.name} contiene otro ticker"])
-                r = curar_ticker(original, corte, sesiones_cal)
+                r = curar_ticker(original, corte, sesiones_cal, clase=(lista[tk] or {}).get("clase"))
             except ErrorContrato as e:
                 falla("esquema_valido", 1, f"{tk}: {str(e)[:200]}")
                 continue

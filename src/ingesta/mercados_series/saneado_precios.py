@@ -19,11 +19,19 @@ ningún valor corregido usa un dato posterior y ninguna ``fecha_publicacion``/``
      ``low`` nulos, como toda vela plana en la curada: no es una apertura ejecutable; volumen tal cual).
   b. ``split``: **cambio de nivel persistente** (las ``VENTANA_CONFIRMACION`` sesiones siguientes se quedan a menos
      de la mitad del salto del nuevo nivel) con una razón ``cierre previo / cierre`` a menos de ``TOLERANCIA_RATIO``
-     (log) de un split limpio (``RATIOS_LIMPIOS`` y sus inversas: 2, 3, 4, 5, 10, 20, 25, 50, 100) y sin ningún
-     split registrado a ``VENTANA_CONFIRMACION`` sesiones → acción corporativa no registrada (bonus indio,
-     agrupación, cambio de unidad): **se mantiene el precio** y se registra el factor en la columna ``split`` de esa
-     sesión (las rentabilidades ajustadas salen bien).
+     (log) de un split limpio (``RATIOS_LIMPIOS`` y sus inversas: 2, 3, 4, 5, 10, 20, 25, 50, 100), sin ningún
+     split registrado a ``VENTANA_CONFIRMACION`` sesiones y, si hay volumen a los dos lados, con el volumen mediano
+     de las ``VENTANA_VOLUMEN`` sesiones siguientes frente a las anteriores a menos de x/÷``TOLERANCIA_VOLUMEN`` del
+     factor (un split multiplica las acciones; un rally como el de GME del 2021-02-24 no) → acción corporativa no
+     registrada (bonus indio, agrupación, cambio de unidad): **se mantiene el precio** y se registra el factor en la
+     columna ``split`` de esa sesión (las rentabilidades ajustadas salen bien). Límite declarado: una caída real de
+     justo la mitad o un tercio con mucho volumen (RBS en enero de 2009) no se distingue de un split con precio y
+     volumen solos; esos casos quedan en el registro para revisarlos a mano.
   c. ``real``: lo demás (quiebra, OPA, crisis, o sin sesiones para confirmar) → **se mantiene**.
+
+  Solo en las clases con acciones corporativas (``CLASES_P11``: acción, ETF, ETP, fondo, otro y sin clase): en
+  índices, volatilidad, tipos (^IRX), divisas y futuros todos los saltos son ``real`` (un pico de la volatilidad que
+  revierte es real, y un índice no hace splits).
 
   TimeGate: (a) y (b) solo se saben al ver las sesiones siguientes, así que las sesiones corregidas (a) y la
   ventana de confirmación (b) toman la ``fecha_publicacion`` y el ``disponible_utc`` de la sesión que lo confirma
@@ -72,6 +80,9 @@ FRACCION_REVERSION = 0.25
 VENTANA_CONFIRMACION = 3
 RATIOS_LIMPIOS = (2.0, 3.0, 4.0, 5.0, 10.0, 20.0, 25.0, 50.0, 100.0)
 TOLERANCIA_RATIO = 0.02
+VENTANA_VOLUMEN = 20
+TOLERANCIA_VOLUMEN = 2.0
+CLASES_P11 = frozenset({"accion", "etf", "etp", "fondo", "otro", ""})
 PICO, SPLIT, REAL = "pico", "split", "real"
 TIPOS_SALTO = {PICO: "pico aislado que revierte: vela plana del cierre anterior",
                SPLIT: "cambio de nivel persistente con razón de split limpio: factor en la columna split",
@@ -126,15 +137,30 @@ def _ratio_limpio(r: float) -> float | None:
     return float(candidatos[k]) if d[k] < TOLERANCIA_RATIO else None
 
 
-def clasificar_saltos(p: pd.DataFrame) -> list[dict[str, Any]]:
+def _volumen_coherente(v: np.ndarray, i: int, factor: float) -> bool:
+    """El volumen mediano de las ``VENTANA_VOLUMEN`` sesiones desde ``i`` frente al de las anteriores está a menos de
+    x/÷``TOLERANCIA_VOLUMEN`` de ``factor`` (sin volumen a algún lado no se puede mirar y vale)."""
+    antes = v[max(0, i - VENTANA_VOLUMEN):i]
+    despues = v[i:i + VENTANA_VOLUMEN]
+    a = np.nanmedian(antes) if np.isfinite(antes).any() else np.nan
+    b = np.nanmedian(despues) if np.isfinite(despues).any() else np.nan
+    if not (np.isfinite(a) and np.isfinite(b) and a > 0 and b > 0):
+        return True
+    return bool(abs(np.log((b / a) / factor)) < np.log(TOLERANCIA_VOLUMEN))
+
+
+def clasificar_saltos(p: pd.DataFrame, clase: str | None = None) -> list[dict[str, Any]]:
     """Clasifica los saltos sin split de ``p`` (ordenada por sesión, sin cierres nulos): una fila por salto con
     ``i`` (posición), ``tipo``, ``razon``, ``factor``, ``tocadas`` (posiciones que cambian) y ``confirma``
-    (posición cuya publicación toman). Los saltos de vuelta y los interiores de un pico van como ``pico``."""
+    (posición cuya publicación toman). Los saltos de vuelta y los interiores de un pico van como ``pico``.
+    ``clase`` fuera de ``CLASES_P11`` (índices, volatilidad, divisas, futuros): todos ``real``."""
     p = p.reset_index(drop=True)
+    corregible = (clase or "") in CLASES_P11
     n = len(p)
     if n < 2:
         return []
     c = p["close"].to_numpy(dtype=float)
+    vol = p["volume"].to_numpy(dtype=float)
     spl = p["split"].fillna(1.0).to_numpy(dtype=float)
     evento = (spl != 1.0) | (p["dividendo"].fillna(0.0).to_numpy(dtype=float) > 0)
     ss = eda.saltos_sin_split(p)
@@ -155,6 +181,9 @@ def clasificar_saltos(p: pd.DataFrame) -> list[dict[str, Any]]:
             continue
         if no_pos or i == 0 or c[i - 1] <= 0 or c[i] <= 0:
             filas.append({**fila, "tipo": REAL, "nota": "cierre <= 0: se mantiene"})
+            continue
+        if not corregible:
+            filas.append({**fila, "tipo": REAL, "nota": f"clase {clase} sin acciones corporativas: se mantiene"})
             continue
         base = c[i - 1]
         salto = np.log(c[i] / base)
@@ -182,13 +211,14 @@ def clasificar_saltos(p: pd.DataFrame) -> list[dict[str, Any]]:
         cerca = evento[max(0, i - VENTANA_CONFIRMACION):i + VENTANA_CONFIRMACION + 1] & (
             spl[max(0, i - VENTANA_CONFIRMACION):i + VENTANA_CONFIRMACION + 1] != 1.0)
         factor = _ratio_limpio(base / c[i])
-        if persiste and factor is not None and not cerca.any():
+        volumen_ok = factor is not None and _volumen_coherente(vol, i, factor)
+        if persiste and factor is not None and not cerca.any() and volumen_ok:
             filas.append({**fila, "tipo": SPLIT, "factor": factor,
                           "tocadas": list(range(i, i + VENTANA_CONFIRMACION)), "confirma": i + VENTANA_CONFIRMACION,
                           "nota": "cambio de nivel persistente con razón de split limpio"})
         else:
-            motivo = ("no persiste" if not persiste else "split registrado cerca" if cerca.any()
-                      else "razón sin split limpio")
+            motivo = ("no persiste" if not persiste else "razón sin split limpio" if factor is None
+                      else "split registrado cerca" if cerca.any() else "el volumen no acompaña al factor")
             filas.append({**fila, "tipo": REAL, "nota": f"movimiento real ({motivo}): se mantiene"})
     return filas
 
@@ -198,12 +228,13 @@ def _copiar_publicacion(out: pd.DataFrame, filas: list[int], de: int) -> None:
         out.iloc[filas, out.columns.get_loc(col)] = out.iloc[de][col]
 
 
-def sanear_saltos(p: pd.DataFrame, s: Saneado | None = None) -> tuple[pd.DataFrame, Saneado]:
+def sanear_saltos(p: pd.DataFrame, s: Saneado | None = None,
+                  clase: str | None = None) -> tuple[pd.DataFrame, Saneado]:
     """Aplica ``clasificar_saltos`` a ``p`` (ordenada por sesión): (a) vela plana del cierre anterior, (b) factor en
     ``split``; en los dos, la publicación de la sesión que lo confirma. Devuelve la tabla y ``s`` actualizado."""
     s = s or Saneado()
     out = p.reset_index(drop=True).copy()
-    filas = clasificar_saltos(out)
+    filas = clasificar_saltos(out, clase)
     ses = out["sesion"]
     for f in filas:
         if f["tipo"] == PICO and f["tocadas"]:
@@ -295,9 +326,10 @@ def rellenar_huecos(p: pd.DataFrame, mercado: str | None, sesiones_cal: np.ndarr
     return out.sort_values("sesion", kind="mergesort").reset_index(drop=True), s
 
 
-def sanear(p: pd.DataFrame, mercado: str | None, sesiones_cal: np.ndarray | None = None) -> tuple[pd.DataFrame, Saneado]:
-    """P11 y después P28 sobre una tabla ya curada por el EDA (ordenada por sesión)."""
-    out, s = sanear_saltos(p)
+def sanear(p: pd.DataFrame, mercado: str | None, sesiones_cal: np.ndarray | None = None,
+           clase: str | None = None) -> tuple[pd.DataFrame, Saneado]:
+    """P11 y después P28 sobre una tabla ya curada por el EDA (ordenada por sesión); ``clase``: la de la lista."""
+    out, s = sanear_saltos(p, clase=clase)
     return rellenar_huecos(out, mercado, sesiones_cal, s)
 
 
