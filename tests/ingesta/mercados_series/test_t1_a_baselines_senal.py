@@ -1,7 +1,8 @@
 """La señal de un baseline no puede usar el cierre con el que se ejecuta (sin red, precios sintéticos).
 
-Convención (``cartera.baselines``): se opera al cierre de la fecha de control (el último publicado a
-esa fecha); ``estrategia.pesos`` recibe las vistas sin ese cierre ni nada posterior. Una estrategia espía registra lo que ve: si el motor
+Convención ANTIGUA (``ejecucion="cierre_t"``, solo para comparar desde el saneado P08): se opera al cierre de la
+fecha de control (el último publicado a esa fecha); ``estrategia.pesos`` recibe las vistas sin ese cierre ni nada
+posterior. La convención por defecto (apertura de t+1) se prueba en ``test_t5_saneado_precios.py``. Una estrategia espía registra lo que ve: si el motor
 le pasara la sesión de la fecha de control (o una posterior), el test falla. Otra estrategia que
 «mira» el cierre de ejecución (compra si sube ese día) daría otra curva: se comprueba que no puede.
 """
@@ -28,7 +29,7 @@ def test_t1_a_baselines_senal_no_usa_cierre_de_ejecucion():
         return {"AAA": 0.5, "BBB": 0.5}
 
     est = b.Estrategia(nombre="espia", universo=lambda f: ["AAA", "BBB"], pesos=pesos)
-    res = b.simular(est, _precios(), "2010-03-01", "2011-12-30")
+    res = b.simular(est, _precios(), "2010-03-01", "2011-12-30", ejecucion="cierre_t")
     assert len(vistos) > 20 and len(res.rebalanceos) > 20
     assert all(ultima < fecha.normalize() for fecha, ultima in vistos), "la señal vio el cierre de ejecución"
 
@@ -43,7 +44,7 @@ def test_t1_a_baselines_estrategia_que_mira_el_cierre_no_lo_ve():
         return {"AAA": 1.0}
 
     b.simular(b.Estrategia(nombre="mira", universo=lambda f: ["AAA"], pesos=pesos), _precios(),
-              "2010-03-01", "2011-06-30")
+              "2010-03-01", "2011-06-30", ejecucion="cierre_t")
     assert usados and not any(usados)
 
 
@@ -67,7 +68,8 @@ def _espia_ejecucion(precios, inicio, fin):
             pares.append((ejec, float(v["close"].iloc[-1])))
         return {tk: 1.0}
 
-    b.simular(b.Estrategia(nombre="espia", universo=lambda f: list(precios), pesos=pesos), precios, inicio, fin)
+    b.simular(b.Estrategia(nombre="espia", universo=lambda f: list(precios), pesos=pesos), precios, inicio, fin,
+              ejecucion="cierre_t")
     return pares
 
 

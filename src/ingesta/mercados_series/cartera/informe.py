@@ -8,9 +8,16 @@ Pasos (cada uno por debajo de unos 5 minutos; se pueden lanzar por separado y en
 - ``--parte ficha``: lee lo anterior y escribe ``fichas/cartera_baselines_costes.json`` y
   ``tablas/costes_modelo.csv`` (parámetros, sin precios).
 
-Los parquet con curvas van al corpus (no al repositorio). Los precios se leen con
-``almacen.leer_precios`` (validados por contrato; ARCX y NAV_US ya están en ``config/mercados.yaml``).
-Si un ticker no supera el contrato, se lee su parquet tal cual y queda en ``avisos_carga``.
+Los parquet con curvas van al corpus (no al repositorio). Saneado P18 (2026-11-21): los precios son los
+**curados** (``almacen.leer_precios(curada=True)``: corte G2, propuestas del EDA y saneado), hasta el corte
+(``FIN`` = ``curada_precios.CORTE_G2``), y el FX es el del BCE (y la Fed H.10) de la base curada de series
+(``divisas.series_fx``); el USD por EUR de los costes también sale de ahí (``ecb:EXR.D.USD.EUR``). Si un ticker no
+tiene fichero curado, queda en ``avisos_carga``.
+
+Ejecución (P08): apertura de ``t + 1`` (``baselines.EJECUCION_POR_DEFECTO``); los brutos repiten todo al cierre de
+``t + 1`` como prueba de sensibilidad (variante ``bruto_cierre_t1``). La 60/40 europea (60 % CSPX.L, 40 % EUNA.DE)
+empieza en el primer control con EUNA.DE vivo (``INICIO_EUROPEO`` = 2017-11-30), sin empalme con el proxy (BNDX), y
+va también con costes.
 """
 from __future__ import annotations
 
@@ -24,7 +31,8 @@ import pandas as pd
 from ingesta.comun.esquema import FichaFuente
 from ingesta.comun.fichas import guardar_ficha
 from ingesta.comun.rutas import corpus_dir, resultados_dir
-from ingesta.mercados_series import almacen
+from ingesta.mercados_series import almacen, divisas
+from ingesta.mercados_series.curada_precios import CORTE_G2
 from ingesta.mercados_series.cartera import baselines as b
 from ingesta.mercados_series.cartera import costes as c
 from ingesta.mercados_series.cartera import libre_riesgo as lr
@@ -32,8 +40,11 @@ from ingesta.mercados_series.contrato import ErrorContrato
 
 TEMA = "mercados_series"
 FUENTE = "cartera_baselines_costes"
-INICIO, FIN = "1993-01-01", "2026-10-12"
+INICIO = "1993-01-01"
+FIN = CORTE_G2.strftime("%Y-%m-%d")       # corte G2 de los precios curados (P18)
+INICIO_EUROPEO = "2017-11-30"             # primer control con EUNA.DE vivo (lanzado en 2017-11): sin empalme
 CAPITAL_EUR = 10_000.0
+EUROPEO = ("CSPX.L", "EUNA.DE")
 
 
 def carpeta() -> Path:
@@ -46,31 +57,56 @@ def nucleo() -> pd.DataFrame:
     return pd.read_csv(resultados_dir(TEMA) / "tablas" / "yahoo_nucleo.csv")
 
 
-def cargar_precios(tickers, proveedor: str = "yahoo") -> tuple[dict[str, pd.DataFrame], list[str]]:
-    """Precios del contrato por ticker: validados si se puede; si no, el parquet tal cual + aviso."""
+def cargar_precios(tickers, proveedor: str = "yahoo", *, curada: bool = True
+                   ) -> tuple[dict[str, pd.DataFrame], list[str]]:
+    """Precios del contrato por ticker (los curados por defecto, P18): validados si se puede; si no, el parquet
+    tal cual + aviso; un ticker sin fichero, aviso."""
     out, avisos = {}, []
     for tk in tickers:
         try:
-            t = almacen.leer_precios(tk, proveedor)
+            t = almacen.leer_precios(tk, proveedor, curada=curada)
         except ErrorContrato as e:
-            ruta = almacen.ruta_precios(proveedor, tk)
+            ruta = almacen.ruta_precios(proveedor, tk, curada=curada)
             t = pd.read_parquet(ruta) if ruta.exists() else None
             avisos.append(f"{tk}: leído sin validar ({str(e).splitlines()[0][:120]})")
         if t is not None and len(t):
             out[tk] = t.sort_values("sesion").reset_index(drop=True)
+        elif t is not None:
+            avisos.append(f"{tk}: sin fichero en los precios {'curados' if curada else 'de trabajo'}")
     return out, avisos
 
 
-def estrategias(etf: list[str]) -> list[b.Estrategia]:
-    return [b.buy_hold("SPY"), b.sesenta_cuarenta(), b.uno_n(etf, nombre=f"1/N {len(etf)} ETF"), b.buy_hold("RSP"),
-            b.momentum_sectorial(), b.sesenta_cuarenta_europeo()]
+def base_fx(precios: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    """FX de la base curada de series para las divisas de ``precios`` (BCE y Fed H.10)."""
+    divs = sorted({d for t in precios.values() for d in t["divisa"].dropna().unique()})
+    return almacen.leer_series(sorted(divisas.series_fx(divs)), curada=True)
 
 
-def _eur_usd(precios: dict[str, pd.DataFrame]) -> pd.Series | float:
-    t = precios.get("EURUSD=X")
-    if t is None:
+def estrategias(etf: list[str]) -> list[tuple[b.Estrategia, str]]:
+    """Los 6 baselines con su fecha de inicio (la 60/40 europea, desde ``INICIO_EUROPEO``)."""
+    return [(b.buy_hold("SPY"), INICIO), (b.sesenta_cuarenta(), INICIO),
+            (b.uno_n(etf, nombre=f"1/N {len(etf)} ETF"), INICIO), (b.buy_hold("RSP"), INICIO),
+            (b.momentum_sectorial(), INICIO), (b.sesenta_cuarenta_europeo(*EUROPEO), INICIO_EUROPEO)]
+
+
+def _eur_usd(fx: pd.DataFrame | None = None) -> pd.Series | float:
+    """USD por EUR del BCE (base curada) por fecha de publicación; 1,10 si no está."""
+    fx = almacen.leer_series([divisas.SERIE_USD_EUR], curada=True) if fx is None else fx
+    t = fx[(fx["serie"] == divisas.SERIE_USD_EUR) & fx["valor"].notna()]
+    if t.empty:
         return 1.10
-    return pd.Series(t["close"].to_numpy(float), index=pd.DatetimeIndex(t["fecha_publicacion"])).sort_index()
+    t = t.sort_values(["fecha_publicacion", "fecha_referencia"]).drop_duplicates("fecha_publicacion", keep="last")
+    return pd.Series(t["valor"].to_numpy(float), index=pd.DatetimeIndex(t["fecha_publicacion"])).sort_index()
+
+
+def _info(nuc: pd.DataFrame, precios: dict[str, pd.DataFrame]) -> dict[str, dict[str, str]]:
+    """Mercado, divisa y clase por ticker para los costes: el núcleo y, para los UCITS, su fichero curado."""
+    info = {r.ticker: {"mercado": r.mercado, "divisa": r.divisa, "clase": r.clase} for r in nuc.itertuples()}
+    for tk in EUROPEO:
+        if tk in precios and tk not in info:
+            t = precios[tk]
+            info[tk] = {"mercado": str(t["mercado"].iloc[0]), "divisa": str(t["divisa"].iloc[0]), "clase": "ETF"}
+    return info
 
 
 def _curvas(resultados: list[b.Resultado], etiqueta: str = "") -> pd.DataFrame:
@@ -84,27 +120,33 @@ def _curvas(resultados: list[b.Resultado], etiqueta: str = "") -> pd.DataFrame:
 def parte_brutos() -> dict:
     nuc = nucleo()
     etf = sorted(nuc.loc[nuc["clase"] == "ETF", "ticker"])
-    precios, avisos = cargar_precios(sorted(set(etf) | {"SPY", "AGG", "VBMFX", "RSP", "CSPX.L", "EUNA.DE"}))
-    med, res = {}, []
-    for est in estrategias(etf):
-        t0 = time.time()
-        r = b.simular(est, precios, INICIO, FIN)
-        res.append(r)
-        med[r.nombre] = {**b.metricas(r), "segundos": round(time.time() - t0, 1), "avisos": r.avisos[:5],
-                         "notas": est.notas}
-    _curvas(res, "bruto").to_parquet(carpeta() / "baselines_brutos.parquet", index=False)
-    return {"metricas": med, "avisos_carga": avisos}
+    precios, avisos = cargar_precios(sorted(set(etf) | {"SPY", "AGG", "VBMFX", "RSP", *EUROPEO}))
+    fx = base_fx(precios)
+    med, curvas = {}, []
+    for variante, ejecucion in (("bruto", b.EJECUCION_POR_DEFECTO), ("bruto_cierre_t1", "cierre_t1")):
+        res = []
+        for est, inicio in estrategias(etf):
+            t0 = time.time()
+            r = b.simular(est, precios, inicio, FIN, base_fx=fx, ejecucion=ejecucion)
+            res.append(r)
+            clave = r.nombre if variante == "bruto" else f"{r.nombre} [cierre t+1]"
+            med[clave] = {**b.metricas(r), "segundos": round(time.time() - t0, 1), "avisos": r.avisos[:5],
+                          "notas": est.notas, "ejecucion": ejecucion}
+        curvas.append(_curvas(res, variante))
+    pd.concat(curvas, ignore_index=True).to_parquet(carpeta() / "baselines_brutos.parquet", index=False)
+    return {"metricas": med, "avisos_carga": avisos, "fin": FIN, "precios": "curados"}
 
 
 def parte_costes() -> dict:
     nuc = nucleo()
     etf = sorted(nuc.loc[nuc["clase"] == "ETF", "ticker"])
-    precios, _ = cargar_precios(sorted(set(etf) | {"SPY", "AGG", "VBMFX", "EURUSD=X"}))
-    info = {r.ticker: {"mercado": r.mercado, "divisa": r.divisa, "clase": r.clase} for r in nuc.itertuples()}
+    precios, _ = cargar_precios(sorted(set(etf) | {"SPY", "AGG", "VBMFX", *EUROPEO}))
+    fx = base_fx(precios)
+    info = _info(nuc, precios)
     mult = c.multiplicador_crisis(precios["SPY"])
     mult.to_parquet(carpeta() / "multiplicador_spy.parquet")
     m_pub = mult.set_index("fecha_publicacion")["m"]
-    eur = _eur_usd(precios)
+    eur = _eur_usd(fx)
     variantes = {
         "degiro": c.ModeloCostes(broker=c.DEGIRO, info=info, multiplicador=m_pub, eur_usd=eur),
         "ibkr": c.ModeloCostes(broker=c.IBKR, info=info, multiplicador=m_pub, eur_usd=eur),
@@ -113,12 +155,15 @@ def parte_costes() -> dict:
     capital = CAPITAL_EUR * c.valor_en(eur, pd.Timestamp(INICIO), 1.10)
     med, curvas = {}, []
     for nombre, modelo in variantes.items():
-        ests = [b.sesenta_cuarenta(), b.momentum_sectorial()]
+        ests = [(b.sesenta_cuarenta(), INICIO), (b.momentum_sectorial(), INICIO)]
         if nombre == "degiro":
-            ests.append(b.uno_n(etf, nombre=f"1/N {len(etf)} ETF"))
-        for est in ests:
+            ests.append((b.uno_n(etf, nombre=f"1/N {len(etf)} ETF"), INICIO))
+        if nombre in ("degiro", "ibkr"):
+            ests.append((b.sesenta_cuarenta_europeo(*EUROPEO), INICIO_EUROPEO))
+        for est, inicio in ests:
             t0 = time.time()
-            r = b.simular(est, precios, INICIO, FIN, capital=capital, costes=modelo)
+            cap = capital if inicio == INICIO else CAPITAL_EUR * c.valor_en(eur, pd.Timestamp(inicio), 1.10)
+            r = b.simular(est, precios, inicio, FIN, capital=cap, costes=modelo, base_fx=fx)
             curvas.append(_curvas([r], nombre))
             med[f"{r.nombre} [{nombre}]"] = {**b.metricas(r), "segundos": round(time.time() - t0, 1)}
     pd.concat(curvas, ignore_index=True).to_parquet(carpeta() / "baselines_costes.parquet", index=False)
@@ -178,11 +223,13 @@ def ficha(mediciones: dict) -> FichaFuente:
             "60/40: VBMFX hasta el primer control con AGG visible (2003-09-30); VBMFX publica en D+1 (NAV)",
             "1/N sobre los ETF del núcleo de Yahoo vivos en la fecha (lista estática del núcleo: sesgo de supervivencia "
             "declarado; WRDS pendiente)",
-            "60/40 europeo (anexo) con CSPX.L/EUNA.DE: sin precios UCITS descargados, no invierte" if eu else
+            "60/40 europeo (anexo) con CSPX.L/EUNA.DE: sin precios UCITS curados, no invierte" if eu else
             "60/40 europeo (anexo): CSPX.L (USD, Londres) 60 % y EUNA.DE (EUR, Xetra; a USD con el FX del BCE "
-            "visible) 40 %, rebalanceo anual; empieza cuando EUNA.DE está vivo (lanzado en 2017-11)",
-            "Ejecución al cierre de la fecha de control; la señal solo ve sesiones anteriores (sesion < fecha: "
-            "baselines.vista_senal), con test que falla si una estrategia usa el cierre de ejecución",
+            "visible) 40 %, rebalanceo anual, desde el 2017-11-30 (EUNA.DE lanzado en 2017-11), sin empalme con "
+            "el proxy, bruto y con costes (DEGIRO e IBKR)",
+            "Ejecución en t+1 (saneado P08): se decide tras el cierre de t y se opera a la apertura de la sesión "
+            "siguiente de cada instrumento (si no hay apertura, a su cierre, con aviso; nunca al cierre de t); "
+            "sensibilidad al cierre de t+1 (variante bruto_cierre_t1). Precios curados hasta el corte G2 (P18)",
             "EUR: EONIA hasta que €STR es visible y €STR después (lr.tasa_eur, de la base de series); Euribor 3M "
             "no catalogado" if eur_ok else
             "EONIA/€STR no están en la base: sin libre de riesgo en EUR; Euribor 3M no catalogado",

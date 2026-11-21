@@ -41,12 +41,20 @@ Pasos comunes:
    composición de hoy aplicada hacia atrás). Limitación DECLARADA: los salidos sin precio en Yahoo
    (sobre todo quiebras y compras) no entran, y son los peores; el sesgo medido es una COTA INFERIOR.
 
+**Regla fija del saneado P05 (2026-11-21)** (``REGLA_SESGO``, ``miembros_con_precio``): en cada fecha, solo entran
+los miembros point-in-time del S&P 500 con precio CURADO visible (sesión publicada en los ``DIAS_VIVO`` días
+naturales previos), con un aviso que dice cuántos miembros quedan fuera y qué %. La cartera principal del TFM se
+hace con índices y ETF; las acciones individuales solo como prueba aparte, con el sesgo medido
+(``medir_sesgo_curado``: cobertura por fecha y, por año, la cartera equiponderada de los miembros con precio
+frente al ^GSPC y al SPY; tabla ``tablas/sp500_sesgo_supervivencia.csv``, solo recuentos y %).
+
 Opciones de corrección (``OPCIONES_CORRECCION``): WRDS/CRSP (pendiente de la licencia de MIAX),
 Alpha Vantage LISTING_STATUS (solo lista de deslistados, sin precios) y Tiingo (requiere cuenta del
 usuario). CLI::
 
     python -m ingesta.mercados_series.supervivencia medir                  # vía almacén (CSV + ficha)
     python -m ingesta.mercados_series.supervivencia descargar --via muestra  # respaldo (~5 min)
+    python -m ingesta.mercados_series.supervivencia sesgo-curada           # P05: tabla con los precios curados
 """
 from __future__ import annotations
 
@@ -570,6 +578,162 @@ def medir_almacen(tramos: pd.DataFrame | None = None, *, ruta: Path | None = Non
     return {"cobertura": cob, "sesgo": variantes["sin_sospechas"], "variantes": variantes, "mediciones": med}
 
 
+# --- Saneado P05: regla fija y sesgo con los precios curados -------------------------------------
+DIAS_VIVO = 7          # un miembro «tiene precio» en la fecha si hay una sesión curada publicada en los 7 días previos
+REGLA_SESGO = ("En cada fecha solo entran los miembros point-in-time del S&P 500 con precio curado visible (y un "
+               "aviso con los que faltan); la cartera principal se hace con índices y ETF y las acciones solo como "
+               "prueba aparte, con el sesgo de supervivencia medido (tablas/sp500_sesgo_supervivencia.csv)")
+FICHERO_SESGO = "sp500_sesgo_supervivencia.csv"
+COLUMNAS_SESGO = ("periodo", "sesiones", "miembros_medio", "con_precio_medio", "sin_precio_medio",
+                  "pct_cobertura_media", "pct_cobertura_min", "pct_cobertura_max", "rent_ew_con_precio_pct",
+                  "rent_ew_supervivientes_pct", "rent_gspc_pct", "rent_spy_total_pct", "dif_ew_menos_gspc_pp",
+                  "dif_supervivientes_menos_ew_pp")
+
+
+def lector_curado(ruta: Path | None = None) -> Callable[[str], pd.DataFrame | None]:
+    """Como ``lector_almacen`` pero sobre los precios CURADOS (``precios_curados/yahoo``)."""
+    from ingesta.mercados_series import almacen
+
+    @functools.lru_cache(maxsize=None)
+    def leer(sym: str) -> pd.DataFrame | None:
+        p = almacen.leer_precios(sym, "yahoo", ruta, curada=ruta is None)
+        return None if p.empty else rentabilidad_total_precios(p)
+
+    return leer
+
+
+def miembros_con_precio(fecha: Any, tramos: pd.DataFrame, publicadas: Callable[[str], pd.Series | None],
+                        dias: int = DIAS_VIVO) -> tuple[list[str], list[str], str]:
+    """Regla P05: ``(con_precio, sin_precio, aviso)`` de los miembros point-in-time del S&P 500 en ``fecha``.
+
+    ``publicadas(símbolo)``: ``fecha_publicacion`` de sus sesiones curadas (o ``None``). Un miembro tiene precio
+    si alguna sesión se publicó en ``(fecha − dias, fecha]``. El aviso dice cuántos faltan y su %, siempre.
+    """
+    from ingesta.mercados_series.fuentes.constituyentes import miembros_en
+
+    f = pd.Timestamp(fecha).normalize()
+    miembros = miembros_en(tramos, f)
+    con, sin = [], []
+    for tk in miembros:
+        pub = publicadas(ticker_yahoo(tk))
+        ok = False
+        if pub is not None and len(pub):
+            pub = pd.DatetimeIndex(pub)
+            i = pub.searchsorted(f, side="right") - 1
+            ok = i >= 0 and (f - pub[i]).days < dias
+        (con if ok else sin).append(tk)
+    n = len(miembros)
+    aviso = (f"{len(sin)} de {n} miembros del S&P 500 en {f:%Y-%m-%d} sin precio curado "
+             f"({100 * len(sin) / n:.1f} %): solo entran los {len(con)} con precio (sesgo de supervivencia; "
+             f"ver {FICHERO_SESGO})" if n else f"sin miembros del S&P 500 en {f:%Y-%m-%d}")
+    return con, sin, aviso
+
+
+def _anual(r: pd.Series) -> float:
+    r = r.dropna()
+    return round(float(((1.0 + r).prod() - 1.0) * 100), 2) if len(r) else np.nan
+
+
+def medir_sesgo_curado(tramos: pd.DataFrame | None = None, *, desde: Any = "1996-01-02", hasta: Any = None,
+                       lector: Callable[[str], pd.DataFrame | None] | None = None,
+                       indice: pd.Series | None = None, spy: pd.Series | None = None,
+                       excluir: set[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Sesgo de supervivencia con los precios curados (P05). Devuelve ``(diario, tabla)``.
+
+    ``diario`` (por sesión de NYSE): miembros PIT, con precio (sesión curada ese día) y rentabilidades
+    equiponderadas: ``ew`` de los miembros PIT con rentabilidad ese día y ``supervivientes`` de los miembros ACTUALES
+    (tramo abierto) con rentabilidad, sin mirar cuándo entraron. ``tabla`` (``COLUMNAS_SESGO``, una fila por año y
+    una ``total``): cobertura media, mínima y máxima, miembros con y sin precio, rentabilidad anual compuesta de
+    ``ew``, ``supervivientes``, ^GSPC (precio) y SPY (total), y las diferencias en puntos. Solo % y recuentos.
+    ``lector``: símbolo → rentabilidad total diaria (``lector_curado`` por defecto); ``indice`` y ``spy``: sus
+    rentabilidades diarias (por defecto, de los curados). ``excluir``: símbolos de Yahoo que cuentan para la
+    cobertura pero no entran en las rentabilidades (por defecto, las series sospechosas de la lista curada, con
+    historial roto: MCIC sola daba un +193 % equiponderado en 1998).
+    """
+    from ingesta.mercados_series.curada_precios import CORTE_G2
+
+    tramos = cargar_tramos() if tramos is None else tramos
+    lector = lector or lector_curado()
+    hasta = CORTE_G2 if hasta is None else pd.Timestamp(hasta)
+    if excluir is None:
+        from ingesta.mercados_series.curada_precios import cargar_lista_precios
+        excluir = {tk for tk, e in cargar_lista_precios().items()
+                   if "serie sospechosa" in str((e or {}).get("aviso") or "")}
+    sesiones = sesiones_nyse(desde, hasta)
+    t = tramos.reset_index(drop=True)
+    dias = sesiones.to_numpy()[:, None]
+    viva = (t["alta"].to_numpy()[None, :] <= dias) & (t["baja"].isna().to_numpy()[None, :]
+                                                      | (t["baja"].to_numpy()[None, :] > dias))
+    n_miembros = viva.sum(axis=1)
+    rent = np.full(viva.shape, np.nan)
+    tiene = np.zeros(viva.shape, bool)
+    for j, r in enumerate(t.itertuples(index=False)):
+        d = lector(ticker_yahoo(r.ticker))
+        if d is None or d.empty:
+            continue
+        idx = sesiones.get_indexer(pd.DatetimeIndex(d["sesion"]))
+        ok = idx >= 0
+        tiene[idx[ok], j] = True
+        if ticker_yahoo(r.ticker) not in excluir:
+            rent[idx[ok], j] = d["rentabilidad"].to_numpy(float)[ok]
+    con = (viva & tiene).sum(axis=1)
+    with np.errstate(invalid="ignore"):
+        en_pit = np.where(viva & np.isfinite(rent), rent, np.nan)
+        actual = t["baja"].isna().to_numpy()[None, :]
+        en_sup = np.where(actual & np.isfinite(rent), rent, np.nan)
+        ew = np.nanmean(en_pit, axis=1)
+        sup = np.nanmean(en_sup, axis=1)
+
+    def _de(serie: pd.Series | None, sym: str) -> pd.Series:
+        if serie is None:
+            d = lector(sym)
+            serie = pd.Series(dtype=float) if d is None else d.set_index("sesion")["rentabilidad"]
+        return serie.reindex(sesiones)
+
+    if indice is None:
+        from ingesta.mercados_series import almacen
+        g = almacen.leer_precios("^GSPC", "yahoo", curada=True)
+        indice = (g.set_index("sesion")["close"].pct_change() if len(g) else pd.Series(dtype=float))
+    diario = pd.DataFrame({"miembros": n_miembros, "con_precio": con, "ew": ew, "supervivientes": sup,
+                           "gspc": _de(indice, "^GSPC").to_numpy(), "spy": _de(spy, "SPY").to_numpy()},
+                          index=sesiones)
+    diario["sin_precio"] = diario["miembros"] - diario["con_precio"]
+    diario["pct_cobertura"] = 100 * diario["con_precio"] / diario["miembros"].where(diario["miembros"] > 0)
+
+    def fila(periodo: str, g: pd.DataFrame) -> dict[str, Any]:
+        ew_, sup_, gs, sp_ = (_anual(g[k]) for k in ("ew", "supervivientes", "gspc", "spy"))
+        return {"periodo": periodo, "sesiones": int(len(g)), "miembros_medio": round(float(g["miembros"].mean()), 1),
+                "con_precio_medio": round(float(g["con_precio"].mean()), 1),
+                "sin_precio_medio": round(float(g["sin_precio"].mean()), 1),
+                "pct_cobertura_media": round(float(g["pct_cobertura"].mean()), 2),
+                "pct_cobertura_min": round(float(g["pct_cobertura"].min()), 2),
+                "pct_cobertura_max": round(float(g["pct_cobertura"].max()), 2),
+                "rent_ew_con_precio_pct": ew_, "rent_ew_supervivientes_pct": sup_, "rent_gspc_pct": gs,
+                "rent_spy_total_pct": sp_,
+                "dif_ew_menos_gspc_pp": round(ew_ - gs, 2) if np.isfinite(ew_) and np.isfinite(gs) else np.nan,
+                "dif_supervivientes_menos_ew_pp": round(sup_ - ew_, 2) if np.isfinite(ew_) and np.isfinite(sup_)
+                else np.nan}
+
+    filas = [fila(str(a), g) for a, g in diario.groupby(diario.index.year)]
+    total = fila("total", diario)
+    anos = (diario.index[-1] - diario.index[0]).days / 365.25 if len(diario) > 1 else np.nan
+    for k in ("rent_ew_con_precio_pct", "rent_ew_supervivientes_pct", "rent_gspc_pct", "rent_spy_total_pct"):
+        v = total[k]                       # total: anualizada (CAGR) en vez de acumulada
+        total[k] = round(((1 + v / 100) ** (1 / anos) - 1) * 100, 2) if np.isfinite(v) and anos > 0 else np.nan
+    total["dif_ew_menos_gspc_pp"] = round(total["rent_ew_con_precio_pct"] - total["rent_gspc_pct"], 2)
+    total["dif_supervivientes_menos_ew_pp"] = round(total["rent_ew_supervivientes_pct"]
+                                                    - total["rent_ew_con_precio_pct"], 2)
+    total["periodo"] = "total (anualizada)"
+    return diario, pd.DataFrame(filas + [total], columns=list(COLUMNAS_SESGO))
+
+
+def guardar_sesgo_curado(tabla: pd.DataFrame) -> Path:
+    """``tablas/sp500_sesgo_supervivencia.csv`` (solo recuentos y %)."""
+    from ingesta.mercados_series import almacen
+
+    return almacen.escribir_csv_atomico(tabla, resultados_dir(TEMA) / "tablas" / FICHERO_SESGO)
+
+
 # --- Ficha y CLI --------------------------------------------------------------------------------
 def guardar_tabla(cob: pd.DataFrame) -> Path:
     destino = resultados_dir(TEMA) / "tablas" / "supervivencia_cobertura.csv"
@@ -685,7 +849,7 @@ def guardar_ficha_supervivencia(med: dict[str, Any], cob: pd.DataFrame) -> Path:
 
 def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    p.add_argument("accion", choices=["descargar", "medir", "todo"])
+    p.add_argument("accion", choices=["descargar", "medir", "todo", "sesgo-curada"])
     p.add_argument("--via", choices=VIAS, default="almacen",
                    help="almacen: parquet as-traded de todos los tramos; muestra: 122 tramos descargados aparte")
     p.add_argument("--por-anio", type=int, default=POR_ANIO)
@@ -693,6 +857,11 @@ def main(argv: list[str] | None = None) -> None:
     a = p.parse_args(argv)
     logging.basicConfig(level=logging.INFO)
     tramos = cargar_tramos()
+    if a.accion == "sesgo-curada":
+        _, tabla = medir_sesgo_curado(tramos)
+        print(tabla.to_string(index=False))
+        print(guardar_sesgo_curado(tabla))
+        return
     muestra = pd.concat([muestra_salidos(tramos, a.por_anio), muestra_actuales(tramos, a.actuales)], ignore_index=True)
     if a.accion in ("descargar", "todo") and a.via == "muestra":
         reg = descargar_muestra([ticker_yahoo(t) for t in muestra["ticker"]])
