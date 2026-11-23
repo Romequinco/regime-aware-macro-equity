@@ -17,7 +17,7 @@ Tool                Qué devuelve                                               
 ``get_serie``       serie de la base curada: resumen y últimas filas             macro, risk, portfolio, cio
 ``get_precios``     hasta 10 tickers: resumen (rentabilidades, volatilidad,      equity, portfolio, risk, cio
                     caída desde máximos) y últimas sesiones OHLCV
-``get_proyeccion``  proyecciones FMI / FOMC: última edición visible por periodo  macro, cio
+``get_proyeccion``  proyecciones SEP del FOMC: última edición visible por periodo  macro, cio
 ``buscar_series``   fichas del catálogo del Tema 1 con su puntuación             todos
 ==================  ===========================================================  =============================
 

@@ -20,7 +20,7 @@ una fuente pueden cambiar sin romperlos. La decisión está en
 | `get_regimen` | Régimen de mercado publicado hasta la fecha y el consenso de detectores | macro, risk, portfolio, cio |
 | `get_serie` | Serie macro o de mercado de la base curada: resumen (último dato, cambio frente al periodo anterior y a hace un año, percentil histórico, mínimo y máximo de la ventana) y las últimas `max_filas` (24) filas | macro, risk, portfolio, cio |
 | `get_precios` | Hasta 10 tickers (Yahoo, o Coinbase con `cb:`): por ticker, último cierre, rentabilidad a 1, 3 y 12 meses, volatilidad a 3 meses, caída desde el máximo de 12 meses y las últimas `max_filas` (20) sesiones OHLCV | equity, portfolio, risk, cio |
-| `get_proyeccion` | Proyecciones oficiales (WEO del FMI, SEP del FOMC): por periodo, la última edición visible, con su horizonte | macro, cio |
+| `get_proyeccion` | Proyecciones de la Fed (SEP del FOMC; el WEO del FMI salió de la curada en el saneado P16): por periodo, la última edición visible, con su horizonte | macro, cio |
 | `buscar_series` | Fichas del catálogo de datos del Tema 1 que encajan con un texto o unos filtros (tema, zona, agente, tipo), con su `puntuacion` | todos |
 
 Las tools de datos devuelven un **resumen más las últimas N filas**, nunca la ventana entera, para no saturar al

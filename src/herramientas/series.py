@@ -299,7 +299,7 @@ def get_serie(entrada: EntradaSerie, fecha: date) -> SalidaSerie:
 
 # --- get_proyeccion -----------------------------------------------------------------------------
 class EntradaProyeccion(EntradaTool):
-    id: str = Field(min_length=1, description="Id de la proyección (WEO del FMI o SEP del FOMC, p. ej. "
+    id: str = Field(min_length=1, description="Id de la proyección (SEP del FOMC, p. ej. "
                                               "'fred:FEDTARMD'). Si no lo sabes, búscalo con buscar_series.")
     desde: date | None = Field(default=None, description="Primer año proyectado (fecha de referencia, AAAA-MM-DD).")
 
@@ -326,7 +326,7 @@ class SalidaProyeccion(SalidaTool):
 
 @registrar("get_proyeccion", EntradaProyeccion, agentes=("macro", "cio"))
 def get_proyeccion(entrada: EntradaProyeccion, fecha: date) -> SalidaProyeccion:
-    """Proyecciones oficiales (FMI, FOMC) visibles en la fecha de la decisión: por periodo, la última edición publicada, con su horizonte."""
+    """Proyecciones de la Fed (SEP del FOMC) visibles en la fecha de la decisión: por periodo, la última edición publicada, con su horizonte."""
     comun = {"tool": "get_proyeccion", "fecha_consulta": fecha, "id": entrada.id}
     ruta = almacen.ruta_proyecciones()
     try:

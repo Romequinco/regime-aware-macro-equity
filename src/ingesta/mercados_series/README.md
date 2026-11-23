@@ -56,6 +56,8 @@ Notebooks del tema (`notebooks/fase2/mercados_series/`):
 [`01_resumen_sonda.ipynb`](../../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb) resume la sonda
 (bloques 1–9; los recorridos por bloque quedan en la etiqueta git `sonda-tema1`). La descarga completa añadirá
 `02_inventario`, `03_seleccion_eda`, `04_preprocesado` y `05_resultado`.
+[`06_catalogo.ipynb`](../../../notebooks/fase2/mercados_series/06_catalogo.ipynb) explica el catálogo para los agentes
+y las tools que lo usan (sin valores).
 
 ## Cómo usarlo
 
