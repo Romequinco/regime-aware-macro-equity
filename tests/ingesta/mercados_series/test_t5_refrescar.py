@@ -37,7 +37,9 @@ def test_validar_corte_no_admite_futuro():
 def test_pasos_orden_y_lista_congelada():
     t = pd.Timestamp("2026-11-20")
     completos = [p.nombre for p in refrescar.pasos(t)]
-    assert completos[0] == "fred-vivo" and completos[-2:] == ["curar", "curar-precios"]
+    assert completos[0] == "fred-vivo" and completos[-1] == "catalogo-agentes"
+    assert completos.index("curar") < completos.index("curar-precios") < completos.index("cartera-brutos")
+    assert [p.grupo for p in refrescar.pasos(t)][-5:] == ["derivados"] * 5
     assert completos.index("precios-yahoo") < completos.index("construir-base") < completos.index("curar")
     assert "seleccion" not in completos                      # G6: lista congelada por defecto
     sin = refrescar.pasos(t, sin_descargas=True)

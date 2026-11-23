@@ -79,13 +79,14 @@ python -m ingesta.mercados_series resumen
 ```
 
 **Refresco con una sola orden (saneado P07, 2026-11-21).** El corte vive en `config/corte.yaml` (`corte.py`; la
-variable `T1_CORTE` lo sobrescribe). `refrescar` encadena descargas, base y curado con el corte pedido, deja un log
+variable `T1_CORTE` lo sobrescribe). `refrescar` encadena descargas, base, curado y derivados (cartera, sesgo de supervivencia y catálogo para los
+agentes) con el corte pedido, deja un log
 por paso en `<corpus>/mercados_series/logs/refrescar/` y una fila por paso en `logs/refrescar_estado.csv`. La lista
 curada queda **congelada** salvo con `--reseleccionar`, y entonces la orden se para si la lista cambia (G6). Es larga
 (horas): mejor lanzarla en segundo plano y sin cambiar de rama mientras corre.
 
 ```bash
-python -m ingesta.mercados_series refrescar --corte 2026-12-11 --plan        # enseña los 20 pasos sin hacer nada
+python -m ingesta.mercados_series refrescar --corte 2026-12-11 --plan        # enseña los 25 pasos sin hacer nada
 python -m ingesta.mercados_series refrescar --corte 2026-12-11               # descargas + base + curado
 python -m ingesta.mercados_series refrescar --corte 2026-12-11 --desde curar # reanudar desde un paso
 python -m ingesta.mercados_series curar --corte 2026-11-20                   # solo una pieza, con otro corte

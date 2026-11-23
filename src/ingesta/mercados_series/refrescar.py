@@ -19,6 +19,9 @@ que antes se lanzaban a mano (unas 20), cada una en un proceso aparte con ``T1_C
    cambia, la orden **se para** (código 3) y enseña la diferencia; se sigue con ``--aceptar-seleccion``.
 4. **Curado**: ``curar`` y ``curar-precios`` con el corte pedido (publicación atómica; si una verificación falla, no
    escriben nada y la orden se para).
+5. **Derivados** de la curada (sin red): las tablas de la cartera (``cartera.informe --parte brutos|costes|ficha``,
+   en ``<corpus>/cartera``), el sesgo de supervivencia del S&P 500 (``supervivencia sesgo-curada``) y el catálogo para
+   los agentes (``catalogo-agentes``: si no se regenera, ``buscar_series`` no ve lo nuevo y su test falla).
 
 El corte pedido no se escribe en ``config/corte.yaml``: cuando el refresco se da por bueno, se cambia allí y se hace
 commit. ``--plan`` enseña los pasos sin ejecutar nada. ``--mensual`` es el mantenimiento mensual (P14):
@@ -58,7 +61,7 @@ COLUMNAS_ESTADO = ("corte", "paso", "grupo", "inicio", "fin", "codigo", "intento
 @dataclass(frozen=True)
 class Paso:
     nombre: str
-    grupo: str                                  # descargas | base | seleccion | curado
+    grupo: str                                  # descargas | base | seleccion | curado | derivados | mensual
     argv: tuple[str, ...]                       # argumentos de ``python -m <modulo>``
     modulo: str = "ingesta.mercados_series"
     repetir_si: tuple[int, ...] = ()            # códigos de salida que piden repetir la orden (reanudable)
@@ -103,7 +106,20 @@ def pasos(corte: pd.Timestamp, *, sin_descargas: bool = False, reseleccionar: bo
             Paso("preprocesado", "seleccion", ("preprocesado",)),
         ]
     out += [Paso("curar", "curado", ("curar",)), Paso("curar-precios", "curado", ("curar-precios",))]
+    out += pasos_derivados()
     return out
+
+
+def pasos_derivados() -> list[Paso]:
+    """Lo que se recalcula desde la curada tras curar (sin red): cartera, sesgo de supervivencia y catálogo."""
+    cartera = "ingesta.mercados_series.cartera.informe"
+    return [
+        Paso("cartera-brutos", "derivados", ("--parte", "brutos"), modulo=cartera),
+        Paso("cartera-costes", "derivados", ("--parte", "costes"), modulo=cartera),
+        Paso("cartera-ficha", "derivados", ("--parte", "ficha"), modulo=cartera),
+        Paso("sesgo-supervivencia", "derivados", ("sesgo-curada",), modulo="ingesta.mercados_series.supervivencia"),
+        Paso("catalogo-agentes", "derivados", ("catalogo-agentes",)),
+    ]
 
 
 def pasos_mensuales() -> list[Paso]:
