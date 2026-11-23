@@ -26,6 +26,14 @@ from ingesta.mercados_series.contrato import COLUMNAS_SERIES, ErrorContrato, val
 from ingesta.mercados_series.fuentes import alfred, bce
 from ingesta.mercados_series.fuentes.bce import NOTA_PREVIA
 
+
+@pytest.fixture(autouse=True)
+def _base_de_trabajo_por_defecto(monkeypatch):
+    """Estos tests prueban la base de trabajo: desde el saneado (P01) el defecto de las tools es la curada."""
+    from ingesta.mercados_series import tools as _tools
+
+    monkeypatch.setattr(_tools, "BASE_DEFECTO", "trabajo")
+
 PARO = "ecb:LFSI.M.U2.S.UNEHRT.TOTAL0.15_74.T"
 HICP = "ecb:HICP.M.U2.N.000000.4D0.ANR"
 ESTR = "ecb:ESTR"

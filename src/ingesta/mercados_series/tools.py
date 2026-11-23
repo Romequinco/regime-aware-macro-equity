@@ -16,18 +16,20 @@ en su respuesta junto con la fuente y la fecha de publicación.
 
 Dos bases (paso 4), con el mismo TimeGate y el mismo truncado (solo cambia de dónde se lee):
 
-- ``base='trabajo'`` (por defecto, lo de siempre): la base tal como se descarga
-  (``series/base_series.parquet``, ``precios/<proveedor>/``). Para auditar, depurar y construir.
-- ``base='curada'``: la del preprocesado (``series/base_curada.parquet``, ``precios_curados/``).
-  **La que usan los agentes y el backtest.** Un alias de ``series/alias.parquet`` sirve su canónico
+- ``base='curada'`` (**por defecto** desde el saneado del 2026-11-21, P01): la del preprocesado
+  (``series/base_curada.parquet``, ``precios_curados/``). **La que usan los agentes y el backtest.** Un alias de ``series/alias.parquet`` sirve su canónico
   con un aviso; las proyecciones no salen por ``get_serie`` (``KeyError`` que remite a
   ``get_proyeccion``); las notas de la curación (fecha no medible, tramo conservador, escala
   corregida) pasan a ``avisos``.
+- ``base='trabajo'``: la base tal como se descarga (``series/base_series.parquet``, ``precios/<proveedor>/``), sin
+  las fechas prudentes del curado ni el corte. Solo para auditar, depurar y construir: hay que pedirla a mano.
 
 ``base`` admite además una tabla del contrato en memoria (como hasta ahora: tests y recortes).
 """
 from __future__ import annotations
 
+import fnmatch
+import re
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date
@@ -57,6 +59,9 @@ DIVISAS_SALIDA: tuple[str, ...] = ("original", "USD")
 BASES: tuple[str, ...] = ("trabajo", "curada")
 # ``base``: una de ``BASES`` o una tabla del contrato en memoria (tests y recortes, como antes del paso 4).
 BaseLike = Literal["trabajo", "curada"] | pd.DataFrame | None
+#: Base por defecto de las tools (P01 del saneado): la curada. ``base=None`` (el valor por defecto de las firmas) se
+#: resuelve a esta constante al llamar; los tests de la base de trabajo la cambian con ``monkeypatch``.
+BASE_DEFECTO = "curada"
 
 # Columnas de ``RespuestaSerie.datos`` (más ``divisa_original``, ``fx_usd`` y ``fx_fecha`` si se
 # pide USD).
@@ -113,10 +118,10 @@ def _validar_opcion(valor: str, validas: tuple[str, ...], nombre: str) -> None:
 def _modo_base(base: BaseLike) -> tuple[pd.DataFrame | None, bool]:
     """``(tabla en memoria o None, curada)`` de un ``base`` de las tools.
 
-    ``None`` es ``'trabajo'`` (retrocompatible); un texto fuera de ``BASES`` lanza ``ValueError``.
+    ``None`` es ``BASE_DEFECTO`` (la curada, P01); un texto fuera de ``BASES`` lanza ``ValueError``.
     """
     if base is None:
-        return None, False
+        base = BASE_DEFECTO
     if isinstance(base, str):
         _validar_opcion(base, BASES, "base")
         return None, base == "curada"
@@ -185,12 +190,13 @@ def alias_por_defecto() -> dict[str, str]:
     return {**visibilidad.cargar_publicaciones(catalogo=False)["alias"], **cat_mod.alias()}
 
 
-def resolver_id(id: str, alias: dict[str, str] | None = None, *, base: str = "trabajo") -> str:
+def resolver_id(id: str, alias: dict[str, str] | None = None, *, base: str | None = None) -> str:
     """Id canónico de ``id``: ``alias[id]`` si es un alias; si no, ``id`` tal cual.
 
     ``alias`` por defecto: ``alias_por_defecto()`` (catálogo de series + ``publicaciones.yaml``).
     ``base='curada'``: además, el canónico de la tabla de alias del paso 4 (``series/alias.parquet``).
     """
+    base = BASE_DEFECTO if base is None else base
     _validar_opcion(base, BASES, "base")
     canonico = _resolver_fase1(id, alias)
     if base == "curada":
@@ -318,7 +324,8 @@ MAX_HUECOS_DETALLADOS = 3
 
 
 # Notas que tienen su propio aviso (no se repiten en el de huecos).
-_NOTAS_CON_AVISO = (NOTA_EXCEPCION, NOTA_RECONSTRUIDA, NOTA_PREVIA_ALFRED, NOTA_REESTIMADA, NOTA_UNIDAD_VINTAGE)
+_NOTAS_CON_AVISO = (NOTA_EXCEPCION, NOTA_RECONSTRUIDA, NOTA_PREVIA_ALFRED, NOTA_REESTIMADA, NOTA_UNIDAD_VINTAGE,
+                    cat_mod.NOTA_FUGA_PREVIA)
 
 
 # Paso 4: notas de la base curada que pasan a ``avisos`` (subcadena de una parte de la nota, sin
@@ -330,6 +337,9 @@ NOTAS_CURADA: dict[str, str] = {
                          "fecha no es fiable: se retrasa con la regla conservadora)",
     "escala corregida": "escala corregida (valores multiplicados para llevarlos a la unidad vigente; el "
                         "significado no cambia)",
+    # Saneado P29: meses que la fuente no publicó (octubre de 2025), rellenados en la curada con el mes anterior.
+    "relleno: mes no publicado": "mes no publicado por la fuente, rellenado con el valor del mes anterior (variación "
+                                 "0 ese mes; la del mes siguiente mide dos meses)",
 }
 # Partes de nota distintas que se citan en cada aviso de la curación.
 _MAX_NOTAS_CITADAS = 2
@@ -425,8 +435,9 @@ def _avisos_serie(datos: pd.DataFrame, curada: bool = False) -> list[str]:
     if edicion.any():
         primera_ed = _contiene(nota, NOTA_PRIMERA_EDICION) & edicion
         ediciones = sorted(set(vint[edicion]))
+        lista_ed = ", ".join(ediciones) if len(ediciones) <= 6 else f"{ediciones[0]} … {ediciones[-1]}"
         avisos.append(f"valores por edición del fichero (vintage AAAA-MM): {int(edicion.sum())} periodos de "
-                      f"{len(ediciones)} ediciones ({', '.join(ediciones)}); la última visible en la fecha es "
+                      f"{len(ediciones)} ediciones ({lista_ed}); la última visible en la fecha es "
                       f"{ediciones[-1]}" + (f"; {int(primera_ed.sum())} periodos con el valor de la primera edición "
                                             f"archivada: posible fuga de revisiones anteriores a ella"
                                             if primera_ed.any() else ""))
@@ -481,6 +492,117 @@ def _aviso_atraso_serie(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> 
             f"antes de {_iso(f)}): datos atrasados (refresco pendiente o sin publicación)")
 
 
+# Saneado P10 (2026-11-21): el aviso de datos atrasados vale para TODAS las frecuencias. En las de paso mediano mayor
+# de MAX_DIAS_PASO_ATRASO (mensuales, trimestrales, anuales...) avisa si desde la última fecha de referencia visible
+# han pasado más días que su retraso mediano de publicación + PERIODOS_ATRASO periodos + MARGEN_ATRASO_DIAS (la misma
+# regla que la auditoría de saneado). Las series que se retrasan por diseño (SIN_AVISO_ATRASO: ediciones anuales,
+# proyecciones de la CBO, recesiones del NBER fechadas con 24 meses) no avisan por eso. Una serie retirada por la fuente
+# (estado «retirada» del catálogo) avisa siempre que su último dato quede atrás.
+PERIODOS_ATRASO = 2
+MARGEN_ATRASO_DIAS = 10
+SIN_AVISO_ATRASO = ("fred:USRECD", "fred:GDPPOT", "fred:NROU", "gw:*")
+
+
+def _sin_aviso_atraso(serie: str) -> bool:
+    return any(fnmatch.fnmatchcase(serie, p) for p in SIN_AVISO_ATRASO)
+
+
+def _aviso_atraso_periodica(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> str | None:
+    """Aviso de una serie de paso mayor de una semana parada más allá de su retraso mediano + 2 periodos + margen."""
+    ult = visibles[visibles["valor"].notna()].tail(_ULTIMAS_ATRASO)
+    refs = pd.DatetimeIndex(ult["fecha_referencia"].dropna()).sort_values()
+    if len(refs) < 3 or _sin_aviso_atraso(serie):
+        return None
+    paso = float(np.median(np.diff(refs.values).astype("timedelta64[D]").astype(int)))
+    if paso <= MAX_DIAS_PASO_ATRASO:
+        return None
+    lag = float(np.median((ult["fecha_publicacion"] - ult["fecha_referencia"]).dt.days.tail(12)))
+    umbral = lag + PERIODOS_ATRASO * paso + MARGEN_ATRASO_DIAS
+    dias = int((f - refs[-1]).days)
+    if dias <= umbral:
+        return None
+    ultima_pub = pd.Timestamp(ult["fecha_publicacion"].max())
+    return (f"{serie}: última fecha de referencia {_iso(refs[-1])} (publicada {_iso(ultima_pub)}), {dias} días antes de "
+            f"{_iso(f)}, más que su retraso mediano ({lag:.0f} días) + {PERIODOS_ATRASO} periodos de {paso:.0f} días + "
+            f"{MARGEN_ATRASO_DIAS}: datos atrasados (serie parada, refresco pendiente o sin publicación)")
+
+
+def _aviso_retirada(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> str | None:
+    """Aviso de una serie que la fuente ya no publica (estado ``retirada`` del catálogo), si su último dato es anterior."""
+    e = cat_mod._cat(None).get(serie) or {}
+    if e.get("estado") != "retirada":
+        return None
+    con_valor = visibles.loc[visibles["valor"].notna(), "fecha_referencia"]
+    if con_valor.empty:
+        return None
+    return (f"{serie}: serie retirada por la fuente (catálogo); último dato visible {_iso(con_valor.max())}: no se "
+            f"actualiza más, usa su sustituta si la hay")
+
+
+# Saneado P19: aviso con el % de periodos vacíos (valor nulo) de la ventana pedida, desde este umbral.
+MIN_PCT_VACIOS = 1.0
+
+
+def _aviso_vacios(serie: str, datos: pd.DataFrame) -> str | None:
+    """«X de N periodos (P %) vacíos entre A y B» si la ventana devuelta tiene al menos ``MIN_PCT_VACIOS`` % de nulos."""
+    n = len(datos)
+    if not n:
+        return None
+    vacios = int(datos["valor"].isna().sum())
+    pct = 100.0 * vacios / n
+    if pct < MIN_PCT_VACIOS:
+        return None
+    return (f"{serie}: {vacios} de {n} periodos ({pct:.1f} %) vacíos entre {_iso(datos['fecha_referencia'].min())} y "
+            f"{_iso(datos['fecha_referencia'].max())}: trátalos (no se rellenan con valores posteriores)")
+
+
+# Saneado P20: zona euro con la composición FIJA de hoy retropolada (los países actuales también antes de entrar en el
+# euro). La versión de composición de cada fecha (U2 del BCE, EA de Eurostat) se prefiere como canónico donde existe.
+_ZONA_EURO_FIJA = re.compile(r"EA2[01]|EA19|\.XM\.|\.XM$|EMU|\.I\d+\.")
+_ZONA_EURO_NO_IMPORTA = ("bis:WS_CBPOL.M.XM", "bis:WS_EER.M.R.B.XM")   # tipo oficial y TCE del euro: no cambia el dato
+AVISO_ZONA_EURO_FIJA = ("{s}: zona euro con la composición fija de hoy retropolada (antes de su entrada, cuenta países "
+                        "que aún no estaban en el euro); la de composición de cada fecha es U2 (BCE) o EA (Eurostat)")
+
+# Lista curada (``config/lista_curada.yaml``) en caché por mtime: historia previa (``completa_a``) y notas.
+_CACHE_LISTA: dict[str, tuple[int, dict[str, dict], dict[str, list[str]]]] = {}
+
+
+def _lista_curada() -> tuple[dict[str, dict], dict[str, list[str]]]:
+    from ingesta.mercados_series import preprocesado as pp
+
+    ruta = pp.RUTA_LISTA
+    try:
+        mt = ruta.stat().st_mtime_ns
+    except FileNotFoundError:
+        return {}, {}
+    g = _CACHE_LISTA.get(str(ruta))
+    if g is None or g[0] != mt:
+        lista = pp.cargar_lista(ruta)
+        previas: dict[str, list[str]] = {}
+        for sid, e in lista.items():
+            if e.get("completa_a") and e.get("decision") == "queda":
+                previas.setdefault(str(e["completa_a"]), []).append(sid)
+        g = _CACHE_LISTA[str(ruta)] = (mt, lista, previas)
+    return g[1], g[2]
+
+
+def _avisos_lista(serie: str) -> list[str]:
+    """Avisos estáticos de la lista curada (sin fechas ni valores): historia previa, composición de la zona euro, notas."""
+    lista, previas = _lista_curada()
+    e = lista.get(serie) or {}
+    out = []
+    if e.get("completa_a"):
+        out.append(f"{serie}: historia previa de {e['completa_a']} (serie más antigua o parada del mismo concepto; "
+                   f"desde donde acaba, usa {e['completa_a']}): no mezclar los dos niveles sin revisar el salto")
+    if previas.get(serie):
+        out.append(f"{serie}: su historia anterior está en {', '.join(sorted(previas[serie]))} (historia previa)")
+    if _ZONA_EURO_FIJA.search(serie) and serie not in _ZONA_EURO_NO_IMPORTA:
+        out.append(AVISO_ZONA_EURO_FIJA.format(s=serie))
+    if e.get("nota"):
+        out.append(f"{serie}: {e['nota']}")
+    return out
+
+
 _MESES_PERIODO = (1, 3, 6, 12)
 
 
@@ -498,7 +620,7 @@ def _meses_periodo(referencias: pd.Series) -> int:
 
 
 def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divisa: str = "original",
-              base: BaseLike = "trabajo", alias: dict[str, str] | None = None,
+              base: BaseLike = None, alias: dict[str, str] | None = None,
               base_fx: pd.DataFrame | None = None) -> RespuestaSerie:
     """Serie ``id`` tal como se conocía en ``fecha`` (``timegate.as_of_series``).
 
@@ -579,9 +701,14 @@ def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divi
     datos = datos.reset_index(drop=True)
     avisos += _avisos_serie(datos, curada)
     if curada:
-        atraso = _aviso_atraso_serie(canonico, visibles, f)
+        atraso = (_aviso_atraso_serie(canonico, visibles, f) or _aviso_atraso_periodica(canonico, visibles, f)
+                  or _aviso_retirada(canonico, visibles, f))
         if atraso:
             avisos.append(atraso)
+        avisos += _avisos_lista(canonico)
+        vacios = _aviso_vacios(canonico, datos)
+        if vacios:
+            avisos.append(vacios)
 
     columnas = dict(COLUMNAS_DATOS_SERIE)
     divisa_salida = divisa_serie
@@ -620,12 +747,11 @@ def _es_tipo_de_cambio(serie: str) -> bool:
 
 
 def _base_fx(divisas_necesarias: Sequence[str], curada: bool = False) -> pd.DataFrame:
-    """Series del BCE que hacen falta para convertir ``divisas_necesarias`` (leídas del almacén;
-    de la base curada con ``curada``)."""
-    isos = {divisas.normalizar_subunidad(1.0, d)[1] for d in divisas_necesarias} - {"USD"}
-    if not isos:
+    """Series de FX que hacen falta para convertir ``divisas_necesarias`` (BCE y la secundaria de la Fed H.10,
+    ``divisas.series_fx``; leídas del almacén, de la base curada con ``curada``)."""
+    ids = divisas.series_fx(divisas_necesarias)
+    if not ids:
         return vacio_series()
-    ids = {divisas.SERIE_USD_EUR} | {divisas.SERIE_FX.format(divisa=d) for d in isos if d != "EUR"}
     return almacen.leer_series(sorted(ids), curada=curada)
 
 
@@ -647,7 +773,7 @@ def _publicar_ajuste(ajustado: pd.DataFrame, ajuste: str) -> pd.DataFrame:
 
 
 def get_precios(tk: str | Sequence[str], fecha: FechaLike, *, desde: FechaLike | None = None,
-                ajuste: Ajuste = "total", divisa: str = "USD", base: BaseLike = "trabajo",
+                ajuste: Ajuste = "total", divisa: str = "USD", base: BaseLike = None,
                 base_fx: pd.DataFrame | None = None, proveedor: str = "yahoo") -> RespuestaPrecios:
     """Precios de ``tk`` (uno o varios) con el ajuste que se conocía en ``fecha``.
 

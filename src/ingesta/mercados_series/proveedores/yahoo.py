@@ -339,6 +339,11 @@ def leer_registro(etiqueta: str) -> pd.DataFrame:
 # los dividendos corregidos (ITX.MC 2002-2008, MC.PA 2008-11-05, VOD.L 2026-06-04). Se conserva la vela
 # guardada y la discrepancia queda en <corpus>/mercados_series/logs/revisiones_precios_yahoo.csv.
 REVISIONES_TOLERADAS = ("volume", "dividendo")
+# Saneado P06 (2026-11-21): revisiones AISLADAS de OHLC (Yahoo retocó una sola vela antigua de los suizos .SW del
+# 2026-09-07, de 000001.SS, EXO.AS y JD.L del 2026-10-13, y el almacén rechazaba el ticker entero). Hasta 3 sesiones
+# revisadas por ticker se toleran igual que el volumen y el dividendo (se conserva la vela guardada y se apunta);
+# más es una revisión de la historia (GP, LU, PARA: miles de sesiones) y sigue siendo error.
+MAX_REVISIONES_OHLC = 3
 
 
 def respetar_mercado_guardado(tabla: pd.DataFrame, guardado: pd.DataFrame,
@@ -398,7 +403,8 @@ def descargar_lote(tickers: list[str] | tuple[str, ...], *, etiqueta: str = "nuc
                     info.setdefault("avisos", []).append(aviso)
                     info["mercado"] = str(tabla["mercado"].iloc[0])   # el registro dice lo que se guarda
             if escribir:
-                almacen.escribir_precios(tabla, PROVEEDOR, revisiones_toleradas=REVISIONES_TOLERADAS)
+                almacen.escribir_precios(tabla, PROVEEDOR, revisiones_toleradas=REVISIONES_TOLERADAS,
+                                         max_revisiones_ohlc=MAX_REVISIONES_OHLC)
             fila.update(info, estado="ok", error=None)
         except Exception as e:   # noqa: BLE001 - se registra y se sigue con el lote
             fila.update(estado="error", error=f"{type(e).__name__}: {e}"[:500])

@@ -732,6 +732,44 @@ series:
       1971-01-04 a 2026-10-02'
     - 'tipo de cambio (cotización): divisa null, no es un importe convertible a USD (bloque 2)'
     verificado: true
+  fred:DEXTAUS:
+    alias: DEXTAUS
+    nombre: Dólares taiwaneses por dólar (H.10, mediodía en Nueva York)
+    fuente: fred_alfred
+    id_origen: DEXTAUS
+    frecuencia: diaria
+    unidad: TWD por 1 USD
+    divisa: null
+    metodo: calendario
+    publicador: fed_h10
+    revisable: false
+    rol_fase1: null
+    licencia: 'dominio público (Gobierno de EE. UU.: Fed, Tesoro); vía FRED: solo local, sin redistribuir'
+    estado: activa
+    notas:
+    - 'saneado P03 (2026-11-21): cambio secundario del TWD para divisas.py; el BCE dejó de publicar el TWD el 2020-10-30'
+    - 'tipo de cambio (cotización): divisa null, no es un importe convertible a USD (bloque 2)'
+    - 'H.10 sale los lunes (martes si es festivo) a las 16:15 NY con los datos de la semana anterior (publicador fed_h10)'
+    verificado: false
+  fred:DEXCHUS:
+    alias: DEXCHUS
+    nombre: Yuanes chinos por dólar (H.10, mediodía en Nueva York)
+    fuente: fred_alfred
+    id_origen: DEXCHUS
+    frecuencia: diaria
+    unidad: CNY por 1 USD
+    divisa: null
+    metodo: calendario
+    publicador: fed_h10
+    revisable: false
+    rol_fase1: null
+    licencia: 'dominio público (Gobierno de EE. UU.: Fed, Tesoro); vía FRED: solo local, sin redistribuir'
+    estado: activa
+    notas:
+    - 'saneado P03 (2026-11-21): cambio secundario del CNY para divisas.py (el BCE solo lo da desde 2005)'
+    - 'tipo de cambio (cotización): divisa null, no es un importe convertible a USD (bloque 2)'
+    - 'H.10 sale los lunes (martes si es festivo) a las 16:15 NY con los datos de la semana anterior (publicador fed_h10)'
+    verificado: false
   fred:DEXSZUS:
     alias: DEXSZUS
     nombre: Francos suizos por dólar (H.10, mediodía en Nueva York)
@@ -3161,8 +3199,9 @@ series:
     revisable: false
     rol_fase1: spine
     licencia: 'copyright Bloomberg; vía Yahoo Finance: uso personal, solo local, sin redistribuir'
-    estado: activa
+    estado: retirada
     notas:
+    - 'saneado P21 (2026-11-21): Yahoo dejó de servir ^BCOM (último dato 2026-07-17; sin fichero en el almacén de precios)'
     - 'cierre de los futuros que lo componen: mercado CME (17:00 NY, t+1; conservador)'
     - 'descarga Fase 1 2026-07-20 15:37 NY; última barra 2026-07-17 completa (regla: descartar la barra con fecha >= día de
       descarga)'
@@ -9433,10 +9472,11 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'Eurostat: reutilización libre con cita (Decisión 2011/833/UE; © Unión Europea)'
-    estado: activa
+    estado: retirada
     verificado: false
     lag_clave: UMCSENT
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2025-12); antes decía «activa»'
     - 'valores de la última edición del fichero: posible fuga de revisiones (archivo de ediciones propio desde 2026-10-12; ALFRED
       no tiene esta fuente)'
   eurostat:ei_bssi_m_r2.M.BS-ESI-I.SA.EA21:
@@ -9649,10 +9689,11 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'Eurostat: reutilización libre con cita (Decisión 2011/833/UE; © Unión Europea)'
-    estado: activa
+    estado: retirada
     verificado: false
     lag_clave: EUROSTAT_PIB_PAISES
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2020-07); antes decía «activa»'
     - 'valores de la última edición del fichero: posible fuga de revisiones (archivo de ediciones propio desde 2026-10-12; ALFRED
       no tiene esta fuente)'
   eurostat:prc_hicp_manr.M.RCH_A.CP00.DE:
@@ -10123,10 +10164,11 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'Eurostat: reutilización libre con cita (Decisión 2011/833/UE; © Unión Europea)'
-    estado: activa
+    estado: retirada
     verificado: false
     lag_clave: EUROSTAT_PARO_UK
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2020-09); antes decía «activa»'
     - 'valores de la última edición del fichero: posible fuga de revisiones (archivo de ediciones propio desde 2026-10-12; ALFRED
       no tiene esta fuente)'
   eurostat:une_rt_m.M.SA.TOTAL.PC_ACT.T.US:
@@ -10202,11 +10244,12 @@ series:
     revisable: false
     rol_fase1: null
     licencia: 'BIS: uso libre con cita (términos de stats.bis.org)'
-    estado: activa
+    estado: retirada
     agentes:
     - macro
     - risk
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 1998-12); antes decía «activa»'
     - 'retraso conservador 7D desde el fin del periodo: el tipo se conoce el día de la decisión; el BIS lo recopila con retraso
       de días: 7 días tras el fin de mes (conservador)'
     verificado: false
@@ -10223,11 +10266,12 @@ series:
     revisable: false
     rol_fase1: null
     licencia: 'BIS: uso libre con cita (términos de stats.bis.org)'
-    estado: activa
+    estado: retirada
     agentes:
     - macro
     - risk
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 1998-12); antes decía «activa»'
     - 'retraso conservador 7D desde el fin del periodo: el tipo se conoce el día de la decisión; el BIS lo recopila con retraso
       de días: 7 días tras el fin de mes (conservador)'
     verificado: false
@@ -10265,11 +10309,12 @@ series:
     revisable: false
     rol_fase1: null
     licencia: 'BIS: uso libre con cita (términos de stats.bis.org)'
-    estado: activa
+    estado: retirada
     agentes:
     - macro
     - risk
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 1998-12); antes decía «activa»'
     - 'retraso conservador 7D desde el fin del periodo: el tipo se conoce el día de la decisión; el BIS lo recopila con retraso
       de días: 7 días tras el fin de mes (conservador)'
     verificado: false
@@ -19173,13 +19218,14 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'OCDE: CC BY 4.0 (términos de la OCDE); citar ''OECD, Short-term economic statistics revisions'''
-    estado: activa
+    estado: retirada
     verificado: false
     grupo: precios
     agentes:
     - macro
     unidad_por_vintage: true
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2025-12); antes decía «activa»'
     - vintage = edición AAAA-MM de la OCDE; fecha de publicación conservadora = fin del mes de la edición (23:59 París)
     - solo valores nuevos o revisados entre ediciones consecutivas
     - 'área sin datos en DF_STES_REVISIONS: queda sin filas (ver ficha oecd)'
@@ -19219,13 +19265,14 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'OCDE: CC BY 4.0 (términos de la OCDE); citar ''OECD, Short-term economic statistics revisions'''
-    estado: activa
+    estado: retirada
     verificado: false
     grupo: precios
     agentes:
     - macro
     unidad_por_vintage: true
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2025-12); antes decía «activa»'
     - vintage = edición AAAA-MM de la OCDE; fecha de publicación conservadora = fin del mes de la edición (23:59 París)
     - solo valores nuevos o revisados entre ediciones consecutivas
     - 'área sin datos en DF_STES_REVISIONS: queda sin filas (ver ficha oecd)'
@@ -19242,13 +19289,14 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'OCDE: CC BY 4.0 (términos de la OCDE); citar ''OECD, Short-term economic statistics revisions'''
-    estado: activa
+    estado: retirada
     verificado: false
     grupo: precios
     agentes:
     - macro
     unidad_por_vintage: true
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2025-12); antes decía «activa»'
     - vintage = edición AAAA-MM de la OCDE; fecha de publicación conservadora = fin del mes de la edición (23:59 París)
     - solo valores nuevos o revisados entre ediciones consecutivas
     - 'área sin datos en DF_STES_REVISIONS: queda sin filas (ver ficha oecd)'
@@ -19288,13 +19336,14 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'OCDE: CC BY 4.0 (términos de la OCDE); citar ''OECD, Short-term economic statistics revisions'''
-    estado: activa
+    estado: retirada
     verificado: false
     grupo: precios
     agentes:
     - macro
     unidad_por_vintage: true
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2022-04); antes decía «activa»'
     - vintage = edición AAAA-MM de la OCDE; fecha de publicación conservadora = fin del mes de la edición (23:59 París)
     - solo valores nuevos o revisados entre ediciones consecutivas
     - 'área sin datos en DF_STES_REVISIONS: queda sin filas (ver ficha oecd)'
@@ -21512,10 +21561,11 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'Eurostat: reutilización libre con cita (Decisión 2011/833/UE; © Unión Europea)'
-    estado: activa
+    estado: retirada
     verificado: false
     lag_clave: CPIAUCSL
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2020-11); antes decía «activa»'
     - 'valores de la última edición del fichero: posible fuga de revisiones (archivo de ediciones propio desde 2026-10-12;
       ALFRED no tiene esta fuente)'
     - 'HICP empalmado por fecha de publicación: ECOICOP v1 (prc_hicp_manr) en los periodos publicados antes de la primera
@@ -21535,10 +21585,11 @@ series:
     revisable: true
     rol_fase1: null
     licencia: 'Eurostat: reutilización libre con cita (Decisión 2011/833/UE; © Unión Europea)'
-    estado: activa
+    estado: retirada
     verificado: false
     lag_clave: CPIAUCSL
     notas:
+    - 'saneado P10 (2026-11-21): la fuente ya no la publica (último periodo 2024-12); antes decía «activa»'
     - 'valores de la última edición del fichero: posible fuga de revisiones (archivo de ediciones propio desde 2026-10-12;
       ALFRED no tiene esta fuente)'
     - 'HICP empalmado por fecha de publicación: ECOICOP v1 (prc_hicp_manr) en los periodos publicados antes de la primera

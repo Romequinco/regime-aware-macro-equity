@@ -1,0 +1,1478 @@
+ticker,proveedor,sesion,tipo,razon,factor_split,sesiones_tocadas,confirmada_en,nota
+000080.KS,yahoo,2009-10-19,real,14.1,,0,,movimiento real (razón sin split limpio): se mantiene
+000120.KS,yahoo,2005-09-29,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+000120.KS,yahoo,2007-02-14,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+000120.KS,yahoo,2007-09-04,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+000120.KS,yahoo,2007-09-11,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+000120.KS,yahoo,2009-05-15,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+000240.KS,yahoo,2012-10-04,real,4.5,,0,,movimiento real (razón sin split limpio): se mantiene
+001040.KS,yahoo,2007-09-28,real,3.1,,0,,movimiento real (razón sin split limpio): se mantiene
+001440.KS,yahoo,2005-09-29,real,9.0,,0,,movimiento real (razón sin split limpio): se mantiene
+001440.KS,yahoo,2005-10-11,pico,0.4,,1,2005-10-12,revierte en 1 sesión(es)
+001440.KS,yahoo,2005-10-12,pico,2.9,,0,,parte del pico que empieza en la sesión 1418
+001440.KS,yahoo,2005-10-19,pico,0.3,,1,2005-10-20,revierte en 1 sesión(es)
+001440.KS,yahoo,2005-10-20,pico,3.2,,0,,parte del pico que empieza en la sesión 1424
+001440.KS,yahoo,2005-11-08,pico,0.3,,2,2005-11-10,revierte en 2 sesión(es)
+001440.KS,yahoo,2005-11-10,pico,3.1,,0,,parte del pico que empieza en la sesión 1438
+001440.KS,yahoo,2005-12-05,pico,0.3,,1,2005-12-06,revierte en 1 sesión(es)
+001440.KS,yahoo,2005-12-06,pico,3.0,,0,,parte del pico que empieza en la sesión 1457
+001440.KS,yahoo,2005-12-23,pico,0.3,,2,2005-12-27,revierte en 2 sesión(es)
+001440.KS,yahoo,2005-12-27,pico,3.2,,0,,parte del pico que empieza en la sesión 1471
+001440.KS,yahoo,2006-01-31,pico,0.3,,1,2006-02-01,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-02-01,pico,2.8,,0,,parte del pico que empieza en la sesión 1496
+001440.KS,yahoo,2006-02-10,pico,0.4,,1,2006-02-13,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-02-13,pico,3.1,,0,,parte del pico que empieza en la sesión 1504
+001440.KS,yahoo,2006-02-15,pico,0.3,,1,2006-02-16,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-02-16,pico,3.1,,0,,parte del pico que empieza en la sesión 1507
+001440.KS,yahoo,2006-02-23,pico,0.3,,1,2006-02-24,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-02-24,pico,3.0,,0,,parte del pico que empieza en la sesión 1513
+001440.KS,yahoo,2006-03-02,pico,0.3,,1,2006-03-03,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-03-03,pico,2.9,,0,,parte del pico que empieza en la sesión 1517
+001440.KS,yahoo,2006-03-15,pico,0.3,,1,2006-03-16,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-03-16,pico,3.0,,0,,parte del pico que empieza en la sesión 1526
+001440.KS,yahoo,2006-05-16,pico,0.3,,1,2006-05-17,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-05-17,pico,3.0,,0,,parte del pico que empieza en la sesión 1568
+001440.KS,yahoo,2006-07-31,pico,0.3,,1,2006-08-01,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-08-01,pico,2.9,,0,,parte del pico que empieza en la sesión 1620
+001440.KS,yahoo,2006-08-02,pico,0.3,,1,2006-08-03,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-08-03,pico,3.0,,0,,parte del pico que empieza en la sesión 1622
+001440.KS,yahoo,2006-09-05,pico,0.3,,1,2006-09-06,revierte en 1 sesión(es)
+001440.KS,yahoo,2006-09-06,pico,3.0,,0,,parte del pico que empieza en la sesión 1645
+001440.KS,yahoo,2006-12-28,pico,0.3,,2,2007-01-03,revierte en 2 sesión(es)
+001440.KS,yahoo,2007-01-03,pico,2.9,,0,,parte del pico que empieza en la sesión 1723
+001440.KS,yahoo,2007-01-17,pico,0.3,,1,2007-01-18,revierte en 1 sesión(es)
+001440.KS,yahoo,2007-01-18,pico,2.9,,0,,parte del pico que empieza en la sesión 1735
+001440.KS,yahoo,2007-02-15,pico,0.3,,1,2007-02-16,revierte en 1 sesión(es)
+001440.KS,yahoo,2007-02-16,pico,3.0,,0,,parte del pico que empieza en la sesión 1756
+001440.KS,yahoo,2007-03-05,pico,0.3,,2,2007-03-07,revierte en 2 sesión(es)
+001440.KS,yahoo,2007-03-07,pico,3.0,,0,,parte del pico que empieza en la sesión 1765
+002030.KS,yahoo,2005-09-29,split,5.1,0.2,3,2005-10-05,cambio de nivel persistente con razón de split limpio
+003030.KS,yahoo,2018-10-05,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+004990.KS,yahoo,2001-09-11,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+004990.KS,yahoo,2002-10-01,real,2.8,,0,,movimiento real (razón sin split limpio): se mantiene
+004990.KS,yahoo,2005-09-29,split,2.0,0.5,3,2005-10-05,cambio de nivel persistente con razón de split limpio
+0241.HK,yahoo,2009-11-20,real,2.3,,0,,movimiento real (razón sin split limpio): se mantiene
+0241.HK,yahoo,2014-01-24,real,4.7,,0,,movimiento real (razón sin split limpio): se mantiene
+0241.HK,yahoo,2015-04-15,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+0267.HK,yahoo,2008-10-21,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+0285.HK,yahoo,2008-10-02,real,1.8,,0,,movimiento real (no persiste): se mantiene
+0291.HK,yahoo,2015-04-21,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2001-11-13,real,3.8,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2001-12-28,real,0.3,,0,,movimiento real (no persiste): se mantiene
+032640.KS,yahoo,2002-01-02,pico,3.8,,2,2002-01-04,revierte en 2 sesión(es)
+032640.KS,yahoo,2002-01-04,pico,0.3,,0,,parte del pico que empieza en la sesión 412
+032640.KS,yahoo,2002-01-29,real,3.7,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2002-02-26,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2002-03-22,real,3.5,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2002-04-16,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2002-05-03,pico,3.3,,1,2002-05-06,revierte en 1 sesión(es)
+032640.KS,yahoo,2002-05-06,pico,0.3,,0,,parte del pico que empieza en la sesión 493
+032640.KS,yahoo,2002-06-03,split,3.0,0.3333333333333333,3,2002-06-07,cambio de nivel persistente con razón de split limpio
+032640.KS,yahoo,2002-06-26,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2002-11-22,real,3.3,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2003-02-13,pico,0.3,,3,2003-02-18,revierte en 3 sesión(es)
+032640.KS,yahoo,2003-02-18,pico,2.9,,0,,parte del pico que empieza en la sesión 685
+032640.KS,yahoo,2003-02-24,pico,0.3,,2,2003-02-26,revierte en 2 sesión(es)
+032640.KS,yahoo,2003-02-26,pico,3.0,,0,,parte del pico que empieza en la sesión 692
+032640.KS,yahoo,2003-03-05,pico,0.3,,2,2003-03-07,revierte en 2 sesión(es)
+032640.KS,yahoo,2003-03-07,pico,2.6,,0,,parte del pico que empieza en la sesión 699
+032640.KS,yahoo,2003-03-11,pico,0.4,,1,2003-03-12,revierte en 1 sesión(es)
+032640.KS,yahoo,2003-03-12,pico,2.8,,0,,parte del pico que empieza en la sesión 703
+032640.KS,yahoo,2003-03-18,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2003-05-06,split,3.0,0.3333333333333333,3,2003-05-12,cambio de nivel persistente con razón de split limpio
+032640.KS,yahoo,2003-06-20,pico,0.4,,1,2003-06-23,revierte en 1 sesión(es)
+032640.KS,yahoo,2003-06-23,pico,2.6,,0,,parte del pico que empieza en la sesión 772
+032640.KS,yahoo,2003-06-24,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2003-07-15,real,2.8,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2003-08-08,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2003-09-25,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2003-11-11,pico,1.8,,1,2003-11-12,revierte en 1 sesión(es)
+032640.KS,yahoo,2003-11-12,pico,0.6,,0,,parte del pico que empieza en la sesión 868
+032640.KS,yahoo,2003-11-13,pico,2.0,,1,2003-11-14,revierte en 1 sesión(es)
+032640.KS,yahoo,2003-11-14,pico,0.5,,0,,parte del pico que empieza en la sesión 870
+032640.KS,yahoo,2004-02-13,pico,2.0,,1,2004-02-16,revierte en 1 sesión(es)
+032640.KS,yahoo,2004-02-16,pico,0.5,,0,,parte del pico que empieza en la sesión 930
+032640.KS,yahoo,2004-02-17,pico,1.9,,1,2004-02-18,revierte en 1 sesión(es)
+032640.KS,yahoo,2004-02-18,pico,0.5,,0,,parte del pico que empieza en la sesión 932
+032640.KS,yahoo,2004-02-19,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2004-03-31,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2004-12-09,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2005-08-01,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2005-09-15,split,2.0,0.5,3,2005-09-21,cambio de nivel persistente con razón de split limpio
+032640.KS,yahoo,2006-10-18,pico,0.5,,1,2006-10-19,revierte en 1 sesión(es)
+032640.KS,yahoo,2006-10-19,pico,2.2,,0,,parte del pico que empieza en la sesión 1597
+032640.KS,yahoo,2007-02-15,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2007-04-23,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2007-06-01,pico,2.3,,1,2007-06-04,revierte en 1 sesión(es)
+032640.KS,yahoo,2007-06-04,pico,0.4,,0,,parte del pico que empieza en la sesión 1751
+032640.KS,yahoo,2007-06-05,real,2.3,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2007-08-02,pico,0.4,,1,2007-08-03,revierte en 1 sesión(es)
+032640.KS,yahoo,2007-08-03,pico,2.6,,0,,parte del pico que empieza en la sesión 1793
+032640.KS,yahoo,2007-08-09,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2007-08-30,pico,2.5,,1,2007-08-31,revierte en 1 sesión(es)
+032640.KS,yahoo,2007-08-31,pico,0.4,,0,,parte del pico que empieza en la sesión 1812
+032640.KS,yahoo,2007-09-03,real,2.6,,0,,movimiento real (razón sin split limpio): se mantiene
+032640.KS,yahoo,2007-10-04,pico,0.3,,1,2007-10-05,revierte en 1 sesión(es)
+032640.KS,yahoo,2007-10-05,pico,3.1,,0,,parte del pico que empieza en la sesión 1833
+032640.KS,yahoo,2008-01-11,pico,0.4,,1,2008-01-14,revierte en 1 sesión(es)
+032640.KS,yahoo,2008-01-14,pico,2.2,,0,,parte del pico que empieza en la sesión 1900
+032640.KS,yahoo,2008-01-15,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+042660.KS,yahoo,2017-10-30,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+0669.HK,yahoo,2008-10-30,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+071970.KS,yahoo,2017-05-25,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+0981.HK,yahoo,2009-11-11,real,1.7,,0,,movimiento real (no persiste): se mantiene
+2319.HK,yahoo,2008-09-23,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+AAL,yahoo,2008-07-22,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+AAP,yahoo,2025-05-22,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+AAPL,yahoo,2000-09-29,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+ABBN.SW,yahoo,2002-10-22,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+ADANIENT.NS,yahoo,2005-07-28,pico,1.8,,1,2005-07-29,revierte en 1 sesión(es)
+ADANIENT.NS,yahoo,2005-07-29,pico,0.5,,0,,parte del pico que empieza en la sesión 772
+AES,yahoo,2001-09-26,real,0.5,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
+AIG,yahoo,2008-09-15,real,0.4,,0,,movimiento real (no persiste): se mantiene
+AIG,yahoo,2009-03-16,real,1.7,,0,,movimiento real (no persiste): se mantiene
+AIG,yahoo,2009-08-05,real,1.6,,0,,movimiento real (no persiste): se mantiene
+ALW.L,yahoo,1975-01-31,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+AMD,yahoo,2016-04-22,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+AN,yahoo,1995-05-22,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+APA,yahoo,2020-03-09,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+ASML.AS,yahoo,2000-01-03,real,3.1,,0,,movimiento real (razón sin split limpio): se mantiene
+BA.L,yahoo,1995-12-25,pico,0.1,,1,1995-12-27,revierte en 1 sesión(es)
+BA.L,yahoo,1995-12-27,pico,16.2,,0,,parte del pico que empieza en la sesión 1906
+BA.L,yahoo,1996-01-01,pico,0.1,,1,1996-01-02,revierte en 1 sesión(es)
+BA.L,yahoo,1996-01-02,pico,15.9,,0,,parte del pico que empieza en la sesión 1910
+BA.L,yahoo,1996-04-05,pico,0.1,,1,1996-04-09,revierte en 1 sesión(es)
+BA.L,yahoo,1996-04-09,pico,15.8,,0,,parte del pico que empieza en la sesión 1979
+BA.L,yahoo,1996-05-06,pico,0.1,,1,1996-05-07,revierte en 1 sesión(es)
+BA.L,yahoo,1996-05-07,pico,15.8,,0,,parte del pico que empieza en la sesión 1999
+BA.L,yahoo,1996-05-27,pico,0.1,,1,1996-05-28,revierte en 1 sesión(es)
+BA.L,yahoo,1996-05-28,pico,16.0,,0,,parte del pico que empieza en la sesión 2014
+BA.L,yahoo,1996-08-26,pico,0.1,,1,1996-08-27,revierte en 1 sesión(es)
+BA.L,yahoo,1996-08-27,pico,16.0,,0,,parte del pico que empieza en la sesión 2079
+BA.L,yahoo,1996-10-21,pico,0.1,,1,1996-10-22,revierte en 1 sesión(es)
+BA.L,yahoo,1996-10-22,pico,15.8,,0,,parte del pico que empieza en la sesión 2119
+BA.L,yahoo,1996-12-25,pico,0.1,,1,1996-12-27,revierte en 1 sesión(es)
+BA.L,yahoo,1996-12-27,pico,16.0,,0,,parte del pico que empieza en la sesión 2166
+BA.L,yahoo,1997-01-01,pico,0.1,,1,1997-01-02,revierte en 1 sesión(es)
+BA.L,yahoo,1997-01-02,pico,16.0,,0,,parte del pico que empieza en la sesión 2170
+BA.L,yahoo,1997-03-28,pico,0.1,,1,1997-04-01,revierte en 1 sesión(es)
+BA.L,yahoo,1997-04-01,pico,15.9,,0,,parte del pico que empieza en la sesión 2232
+BA.L,yahoo,1997-05-05,pico,0.1,,1,1997-05-06,revierte en 1 sesión(es)
+BA.L,yahoo,1997-05-06,pico,15.9,,0,,parte del pico que empieza en la sesión 2257
+BA.L,yahoo,1997-05-26,pico,0.1,,1,1997-05-27,revierte en 1 sesión(es)
+BA.L,yahoo,1997-05-27,pico,15.8,,0,,parte del pico que empieza en la sesión 2272
+BA.L,yahoo,1997-08-25,pico,0.1,,1,1997-08-26,revierte en 1 sesión(es)
+BA.L,yahoo,1997-08-26,pico,16.0,,0,,parte del pico que empieza en la sesión 2337
+BA.L,yahoo,1997-12-25,pico,0.1,,1,1997-12-29,revierte en 1 sesión(es)
+BA.L,yahoo,1997-12-29,pico,16.7,,0,,parte del pico que empieza en la sesión 2425
+BA.L,yahoo,1998-01-01,pico,0.1,,1,1998-01-02,revierte en 1 sesión(es)
+BA.L,yahoo,1998-01-02,pico,16.0,,0,,parte del pico que empieza en la sesión 2429
+BA.L,yahoo,1998-04-10,pico,0.1,,1,1998-04-14,revierte en 1 sesión(es)
+BA.L,yahoo,1998-04-14,pico,16.1,,0,,parte del pico que empieza en la sesión 2500
+BAJAJFINSV.NS,yahoo,2008-03-14,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+BAJAJFINSV.NS,yahoo,2008-05-26,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+BAJFINANCE.NS,yahoo,2005-07-28,pico,109.5,,1,2005-07-29,revierte en 1 sesión(es)
+BAJFINANCE.NS,yahoo,2005-07-29,pico,0.0,,0,,parte del pico que empieza en la sesión 772
+BARC.L,yahoo,2009-01-26,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+BBWI,yahoo,1982-11-23,split,0.5,2.0,3,1982-11-29,cambio de nivel persistente con razón de split limpio
+BBWI,yahoo,1985-06-26,split,0.5,2.0,3,1985-07-01,cambio de nivel persistente con razón de split limpio
+BC,yahoo,2008-12-02,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+BE,yahoo,2024-11-15,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+BEL.NS,yahoo,2005-07-28,pico,33.0,,1,2005-07-29,revierte en 1 sesión(es)
+BEL.NS,yahoo,2005-07-29,pico,0.0,,0,,parte del pico que empieza en la sesión 772
+BEN,yahoo,1984-12-31,pico,0.4,,1,1985-01-02,revierte en 1 sesión(es)
+BEN,yahoo,1985-01-02,pico,2.5,,0,,parte del pico que empieza en la sesión 321
+BKT.MC,yahoo,2002-01-03,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+BKT.MC,yahoo,2002-03-04,real,7.8,,0,,movimiento real (razón sin split limpio): se mantiene
+BKT.MC,yahoo,2002-04-03,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+BKT.MC,yahoo,2004-02-03,real,7.6,,0,,movimiento real (razón sin split limpio): se mantiene
+BKT.MC,yahoo,2004-03-02,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+BKT.MC,yahoo,2005-03-29,pico,7.5,,2,2005-03-31,revierte en 2 sesión(es)
+BKT.MC,yahoo,2007-12-18,pico,1.5,,1,2007-12-19,revierte en 1 sesión(es)
+BKT.MC,yahoo,2007-12-19,pico,0.7,,0,,parte del pico que empieza en la sesión 2009
+BKT.MC,yahoo,2011-08-12,pico,1.6,,1,2011-08-15,revierte en 1 sesión(es)
+BLDR,yahoo,2015-04-13,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+BMPS.MI,yahoo,2017-10-25,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+BTRW.L,yahoo,1991-07-29,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+BTRW.L,yahoo,2002-03-07,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+C,yahoo,2008-11-24,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CAR,yahoo,2009-03-20,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+CAR,yahoo,2021-11-02,real,2.1,,0,,movimiento real (razón sin split limpio): se mantiene
+CBRE,yahoo,2009-03-25,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CIPLA.NS,yahoo,2003-04-14,pico,0.1,,1,2003-04-15,revierte en 1 sesión(es)
+CIPLA.NS,yahoo,2003-04-15,pico,12.5,,0,,parte del pico que empieza en la sesión 1838
+CIPLA.NS,yahoo,2003-11-26,pico,0.1,,1,2003-11-27,revierte en 1 sesión(es)
+CIPLA.NS,yahoo,2003-11-27,pico,13.2,,0,,parte del pico que empieza en la sesión 1996
+CIPLA.NS,yahoo,2003-12-25,pico,0.1,,1,2003-12-26,revierte en 1 sesión(es)
+CIPLA.NS,yahoo,2003-12-26,pico,12.7,,0,,parte del pico que empieza en la sesión 2017
+CIPLA.NS,yahoo,2004-04-26,pico,0.1,,1,2004-04-27,revierte en 1 sesión(es)
+CIPLA.NS,yahoo,2004-04-27,pico,12.9,,0,,parte del pico que empieza en la sesión 2099
+CIPLA.NS,yahoo,2004-05-12,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+CL=F,yahoo,2020-04-20,real,-2.1,,0,,cierre <= 0: se mantiene
+CL=F,yahoo,2020-04-21,real,-0.3,,0,,cierre <= 0: se mantiene
+CNP,yahoo,2002-07-25,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+COHR,yahoo,2000-03-02,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+COHR,yahoo,2000-08-18,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CON.DE,yahoo,1998-07-22,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+COO,yahoo,1993-06-07,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+COO,yahoo,1993-09-30,real,1.7,,0,,movimiento real (no persiste): se mantiene
+CPG.L,yahoo,2003-07-22,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPR.MI,yahoo,2001-10-01,split,5.0,0.2,3,2001-10-04,cambio de nivel persistente con razón de split limpio
+CPRI,yahoo,2023-08-10,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2006-12-13,real,3.9,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2006-12-27,pico,1.6,,2,2006-12-29,revierte en 2 sesión(es)
+CPWR,yahoo,2008-01-22,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2008-06-10,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2008-06-17,real,1.7,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2008-07-03,pico,1.6,,1,2008-07-07,revierte en 1 sesión(es)
+CPWR,yahoo,2008-07-07,pico,0.6,,0,,parte del pico que empieza en la sesión 397
+CPWR,yahoo,2009-01-12,real,2.5,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2009-01-16,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2009-04-08,pico,1.7,,1,2009-04-09,revierte en 1 sesión(es)
+CPWR,yahoo,2009-04-09,pico,0.7,,0,,parte del pico que empieza en la sesión 589
+CPWR,yahoo,2009-08-19,pico,1.7,,1,2009-08-20,revierte en 1 sesión(es)
+CPWR,yahoo,2009-08-20,pico,0.6,,0,,parte del pico que empieza en la sesión 681
+CPWR,yahoo,2010-04-15,split,0.2,5.0,3,2010-04-20,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2010-05-05,split,3.0,0.3333333333333333,3,2010-05-10,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2010-06-15,pico,3.0,,3,2010-06-18,revierte en 3 sesión(es)
+CPWR,yahoo,2010-06-18,pico,0.4,,0,,parte del pico que empieza en la sesión 887
+CPWR,yahoo,2010-06-21,real,2.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2010-06-30,split,0.5,2.0,3,2010-07-06,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2010-08-16,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2010-09-03,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2010-10-07,real,2.8,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2010-11-18,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2011-01-13,split,2.0,0.5,3,2011-01-19,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2011-05-23,split,0.1,10.0,3,2011-05-26,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2011-06-03,real,4.8,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2011-06-27,split,0.5,2.0,3,2011-06-30,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2011-08-16,split,4.0,0.25,3,2011-08-19,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2011-09-07,split,0.2,4.0,3,2011-09-12,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2011-12-23,split,2.0,0.5,3,2011-12-29,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2012-07-23,real,4.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2012-10-17,split,2.0,0.5,3,2012-10-22,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2013-06-19,split,0.5,2.0,3,2013-06-24,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2015-02-13,split,3.0,0.3333333333333333,3,2015-02-19,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2015-05-26,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2015-05-27,real,0.4,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2015-05-28,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2015-06-26,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2016-01-28,real,1.7,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2016-12-21,real,0.4,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2016-12-23,real,0.4,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2016-12-28,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-01-27,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-02-23,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-03-06,real,2.4,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-06-05,real,2.0,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2017-06-06,real,0.2,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2017-06-07,real,2.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-07-18,real,0.5,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2017-07-20,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-09-22,pico,0.4,,3,2017-09-27,revierte en 3 sesión(es)
+CPWR,yahoo,2017-09-27,pico,2.4,,0,,parte del pico que empieza en la sesión 2719
+CPWR,yahoo,2017-09-29,real,0.5,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2017-10-02,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2017-11-20,real,0.1,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2017-11-22,real,1.8,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2017-11-24,real,2.8,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2019-10-15,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2019-10-24,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2019-11-20,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2020-01-16,real,1.7,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2020-05-22,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2022-02-04,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2022-05-20,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2022-05-26,real,2.0,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2022-11-29,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-08-09,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-08-17,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-09-15,real,1.5,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2023-09-18,real,16.7,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-09-27,pico,0.4,,1,2023-09-28,revierte en 1 sesión(es)
+CPWR,yahoo,2023-09-28,pico,2.5,,0,,parte del pico que empieza en la sesión 4231
+CPWR,yahoo,2023-10-02,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-10-06,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-11-02,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-11-27,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2023-12-12,real,1.5,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2023-12-28,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2024-01-05,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2024-03-22,real,1.8,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2024-04-08,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2024-04-22,pico,1.7,,2,2024-04-24,revierte en 2 sesión(es)
+CPWR,yahoo,2024-04-24,pico,0.6,,0,,parte del pico que empieza en la sesión 4373
+CPWR,yahoo,2024-05-22,pico,0.3,,1,2024-05-23,revierte en 1 sesión(es)
+CPWR,yahoo,2024-05-23,pico,3.5,,0,,parte del pico que empieza en la sesión 4395
+CPWR,yahoo,2024-06-06,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2024-06-17,real,0.4,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2024-06-18,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2024-12-27,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-01-17,pico,2.0,,3,2025-01-23,revierte en 3 sesión(es)
+CPWR,yahoo,2025-01-23,pico,0.5,,0,,parte del pico que empieza en la sesión 4559
+CPWR,yahoo,2025-01-24,split,3.0,0.3333333333333333,3,2025-01-29,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-02-07,real,3.3,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-02-25,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-05-01,real,2.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-05-19,split,0.2,5.0,3,2025-05-22,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-06-10,real,6.0,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2025-06-11,split,0.3,3.0,3,2025-06-16,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-06-17,split,5.0,0.2,3,2025-06-23,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-07-09,split,0.1,10.0,3,2025-07-14,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-07-17,split,2.0,0.5,3,2025-07-22,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-08-04,split,0.5,2.0,3,2025-08-07,cambio de nivel persistente con razón de split limpio
+CPWR,yahoo,2025-09-09,pico,2.0,,2,2025-09-11,revierte en 2 sesión(es)
+CPWR,yahoo,2025-09-11,pico,0.5,,0,,parte del pico que empieza en la sesión 4719
+CPWR,yahoo,2025-09-25,real,22.0,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-09-26,real,2.4,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2025-09-29,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-10-22,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-10-28,real,0.2,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2025-10-29,real,7.0,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2025-10-31,real,7.1,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-11-19,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-12-19,real,6.9,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2025-12-29,pico,1.6,,3,2026-01-02,revierte en 3 sesión(es)
+CPWR,yahoo,2026-01-02,pico,0.6,,0,,parte del pico que empieza en la sesión 4796
+CPWR,yahoo,2026-01-07,pico,1.6,,1,2026-01-08,revierte en 1 sesión(es)
+CPWR,yahoo,2026-01-08,pico,0.7,,0,,parte del pico que empieza en la sesión 4802
+CPWR,yahoo,2026-01-29,real,1.6,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2026-02-27,pico,1.5,,1,2026-03-02,revierte en 1 sesión(es)
+CPWR,yahoo,2026-08-06,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+CPWR,yahoo,2026-08-14,pico,1.5,,1,2026-08-17,revierte en 1 sesión(es)
+CPWR,yahoo,2026-08-17,pico,0.7,,0,,parte del pico que empieza en la sesión 4953
+CPWR,yahoo,2026-09-22,real,1.7,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2026-11-09,real,1.7,,0,,movimiento real (no persiste): se mantiene
+CPWR,yahoo,2026-11-13,real,1.9,,0,,sin sesiones para confirmar: se mantiene
+CSR,yahoo,1999-07-16,pico,2.2,,1,1999-07-19,revierte en 1 sesión(es)
+CSR,yahoo,1999-07-19,pico,0.5,,0,,parte del pico que empieza en la sesión 438
+CVNA,yahoo,2023-06-08,real,1.6,,0,,movimiento real (no persiste): se mantiene
+DB1.DE,yahoo,2007-06-11,split,0.5,2.0,3,2007-06-14,cambio de nivel persistente con razón de split limpio
+DECK,yahoo,1998-10-13,real,0.5,,0,,movimiento real (no persiste): se mantiene
+DECK,yahoo,1998-10-14,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+DGE.L,yahoo,1989-06-19,split,3.9,0.25,3,1989-06-22,cambio de nivel persistente con razón de split limpio
+DRREDDY.NS,yahoo,2001-10-15,real,0.5,,0,,movimiento real (split registrado cerca): se mantiene
+DRREDDY.NS,yahoo,2005-07-28,pico,5.0,,1,2005-07-29,revierte en 1 sesión(es)
+DRREDDY.NS,yahoo,2005-07-29,pico,0.2,,0,,parte del pico que empieza en la sesión 2415
+DVA,yahoo,1999-02-18,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+DVN,yahoo,1988-10-03,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+DXCM,yahoo,2008-12-04,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+ECHO,yahoo,2025-08-26,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EHC,yahoo,2003-03-26,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+EHC,yahoo,2003-07-07,real,2.1,,0,,movimiento real (razón sin split limpio): se mantiene
+EICHERMOT.NS,yahoo,2005-07-28,pico,10.0,,1,2005-07-29,revierte en 1 sesión(es)
+EICHERMOT.NS,yahoo,2005-07-29,pico,0.1,,0,,parte del pico que empieza en la sesión 2415
+EP,yahoo,2000-03-08,pico,1.6,,2,2000-03-10,revierte en 2 sesión(es)
+EP,yahoo,2001-01-17,real,1.9,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2001-12-31,real,2.1,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2002-10-22,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2002-11-12,pico,1.5,,1,2002-11-13,revierte en 1 sesión(es)
+EP,yahoo,2002-11-13,pico,0.7,,0,,parte del pico que empieza en la sesión 764
+EP,yahoo,2002-11-19,pico,1.5,,1,2002-11-20,revierte en 1 sesión(es)
+EP,yahoo,2002-11-20,pico,0.7,,0,,parte del pico que empieza en la sesión 769
+EP,yahoo,2002-12-19,real,1.6,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2003-02-26,real,1.6,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2003-02-27,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2003-03-07,real,1.6,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2003-03-27,real,2.0,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2003-08-01,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+EP,yahoo,2006-05-01,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2008-03-05,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2008-07-17,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2008-09-04,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2008-12-12,real,0.5,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2009-01-09,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2009-01-16,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2009-02-25,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2009-05-07,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2010-06-09,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2010-11-23,pico,1.6,,1,2010-11-24,revierte en 1 sesión(es)
+EP,yahoo,2010-11-24,pico,0.6,,0,,parte del pico que empieza en la sesión 2786
+EP,yahoo,2010-12-16,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+EP,yahoo,2010-12-27,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+EP,yahoo,2011-01-06,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2011-10-18,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2012-03-05,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2012-05-09,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2012-05-25,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2012-12-12,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2013-03-25,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2013-07-03,pico,1.5,,1,2013-07-05,revierte en 1 sesión(es)
+EP,yahoo,2013-07-05,pico,0.7,,0,,parte del pico que empieza en la sesión 3441
+EP,yahoo,2013-07-08,pico,1.5,,1,2013-07-09,revierte en 1 sesión(es)
+EP,yahoo,2013-07-09,pico,0.7,,0,,parte del pico que empieza en la sesión 3443
+EP,yahoo,2013-07-10,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2013-12-04,split,0.5,2.0,3,2013-12-09,cambio de nivel persistente con razón de split limpio
+EP,yahoo,2014-02-10,real,3.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2014-03-07,real,5.1,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2014-03-10,real,0.4,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2014-03-11,real,1.6,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2014-04-04,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2015-07-24,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2016-05-10,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2016-05-31,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2016-12-28,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2017-09-06,split,3.0,0.3333333333333333,3,2017-09-11,cambio de nivel persistente con razón de split limpio
+EP,yahoo,2018-01-09,real,1.7,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2018-04-27,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2018-05-17,real,1.9,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2018-05-22,pico,0.4,,2,2018-05-24,revierte en 2 sesión(es)
+EP,yahoo,2018-05-24,pico,2.3,,0,,parte del pico que empieza en la sesión 4671
+EP,yahoo,2018-06-05,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2018-06-25,real,1.8,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2018-08-23,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2018-11-26,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2018-12-07,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2018-12-21,split,2.0,0.5,3,2018-12-27,cambio de nivel persistente con razón de split limpio
+EP,yahoo,2019-02-06,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2019-04-03,real,1.7,,0,,movimiento real (no persiste): se mantiene
+EP,yahoo,2019-04-12,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2019-07-30,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2019-09-05,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2019-12-13,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+EP,yahoo,2020-04-15,pico,0.5,,1,2020-04-16,revierte en 1 sesión(es)
+EP,yahoo,2020-04-16,pico,2.0,,0,,parte del pico que empieza en la sesión 5148
+EP,yahoo,2021-03-15,real,2.4,,0,,movimiento real (razón sin split limpio): se mantiene
+EQIX,yahoo,2001-04-09,real,1.5,,0,,movimiento real (no persiste): se mantiene
+ETHE,yahoo,2019-06-20,real,5.0,,0,,movimiento real (no persiste): se mantiene
+ETHE,yahoo,2019-06-21,real,1.9,,0,,movimiento real (no persiste): se mantiene
+ETHE,yahoo,2019-06-24,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+ETHE,yahoo,2019-06-25,real,1.7,,0,,movimiento real (no persiste): se mantiene
+FCIT.L,yahoo,1975-01-31,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+FCIT.L,yahoo,1977-01-03,split,0.2,4.0,3,1977-01-06,cambio de nivel persistente con razón de split limpio
+FER.MC,yahoo,2004-10-27,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+FICO,yahoo,1987-10-30,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+FITB,yahoo,2009-02-06,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+FITB,yahoo,2009-05-08,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+FLR,yahoo,2020-03-19,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+FMCC,yahoo,2008-09-08,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+FMCC,yahoo,2008-09-19,real,1.7,,0,,movimiento real (no persiste): se mantiene
+FMCC,yahoo,2008-09-22,real,1.5,,0,,movimiento real (no persiste): se mantiene
+FMCC,yahoo,2008-09-23,real,1.6,,0,,movimiento real (no persiste): se mantiene
+FMCC,yahoo,2009-08-10,real,2.3,,0,,movimiento real (razón sin split limpio): se mantiene
+FMCC,yahoo,2013-03-20,pico,1.5,,1,2013-03-21,revierte en 1 sesión(es)
+FNMA,yahoo,2008-09-08,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+FNMA,yahoo,2008-09-23,real,1.7,,0,,movimiento real (no persiste): se mantiene
+FNMA,yahoo,2008-11-26,real,1.5,,0,,movimiento real (no persiste): se mantiene
+FNMA,yahoo,2008-11-28,real,1.6,,0,,movimiento real (no persiste): se mantiene
+FNMA,yahoo,2009-08-10,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+FNMA,yahoo,2025-05-22,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+FNMA,yahoo,2026-03-30,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+FOSL,yahoo,2018-02-14,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+FOSL,yahoo,2020-06-08,pico,1.5,,1,2020-06-09,revierte en 1 sesión(es)
+FOSL,yahoo,2020-06-09,pico,0.6,,0,,parte del pico que empieza en la sesión 6840
+FOSL,yahoo,2021-01-27,pico,1.9,,1,2021-01-28,revierte en 1 sesión(es)
+FOSL,yahoo,2021-01-28,pico,0.6,,0,,parte del pico que empieza en la sesión 7001
+FOSL,yahoo,2024-12-02,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+FRE.DE,yahoo,2001-03-14,pico,1.5,,1,2001-03-15,revierte en 1 sesión(es)
+FRE.DE,yahoo,2001-03-15,pico,0.7,,0,,parte del pico que empieza en la sesión 598
+GEBN.SW,yahoo,1999-06-22,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+GIVN.SW,yahoo,2000-06-08,real,5.9,,0,,movimiento real (razón sin split limpio): se mantiene
+GL,yahoo,1984-05-30,split,0.5,2.0,3,1984-06-04,cambio de nivel persistente con razón de split limpio
+GL,yahoo,1985-09-17,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+GL,yahoo,2024-04-11,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+GME,yahoo,2021-01-13,real,1.6,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2021-01-22,real,1.5,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2021-01-26,real,1.9,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2021-01-27,real,2.3,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2021-01-29,real,1.7,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2021-02-02,real,0.4,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2021-02-24,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+GME,yahoo,2021-03-25,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+GME,yahoo,2024-05-13,real,1.7,,0,,movimiento real (no persiste): se mantiene
+GME,yahoo,2024-05-14,real,1.6,,0,,movimiento real (no persiste): se mantiene
+GNW,yahoo,2008-09-19,real,1.7,,0,,movimiento real (no persiste): se mantiene
+GNW,yahoo,2008-09-30,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+GNW,yahoo,2008-10-13,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+GNW,yahoo,2008-11-11,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+GNW,yahoo,2008-11-13,real,1.5,,0,,movimiento real (no persiste): se mantiene
+GNW,yahoo,2008-11-24,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+GRASIM.NS,yahoo,2005-07-28,pico,6.5,,1,2005-07-29,revierte en 1 sesión(es)
+GRASIM.NS,yahoo,2005-07-29,pico,0.2,,0,,parte del pico que empieza en la sesión 772
+HBAN,yahoo,2008-10-14,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+HIG,yahoo,2008-10-30,real,0.5,,0,,movimiento real (no persiste): se mantiene
+HIG,yahoo,2008-11-03,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+HIG,yahoo,2008-12-05,real,2.0,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
+HOOD,yahoo,2021-08-04,pico,1.5,,1,2021-08-05,revierte en 1 sesión(es)
+HSX.L,yahoo,2001-01-23,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+HUBB,yahoo,1994-10-31,split,9.9,0.1,3,1994-11-03,cambio de nivel persistente con razón de split limpio
+IB01.L,yahoo,2019-02-22,split,19.8,0.05,3,2019-02-27,cambio de nivel persistente con razón de split limpio
+IBTM.L,yahoo,2008-02-19,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+IBTM.L,yahoo,2008-07-04,pico,0.5,,1,2008-07-07,revierte en 1 sesión(es)
+IBTM.L,yahoo,2008-07-07,pico,2.0,,0,,parte del pico que empieza en la sesión 128
+IBTS.L,yahoo,2008-01-22,real,2.0,,0,,movimiento real (razón sin split limpio): se mantiene
+IBTS.L,yahoo,2008-02-19,real,2.0,,0,,movimiento real (razón sin split limpio): se mantiene
+IBTS.L,yahoo,2008-07-04,pico,0.5,,1,2008-07-07,revierte en 1 sesión(es)
+IBTS.L,yahoo,2008-07-07,pico,2.0,,0,,parte del pico que empieza en la sesión 128
+IBTS.L,yahoo,2009-01-02,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+IDXX,yahoo,1997-03-24,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+III.L,yahoo,2009-01-02,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+ITPS.L,yahoo,2008-01-22,real,2.0,,0,,movimiento real (razón sin split limpio): se mantiene
+ITPS.L,yahoo,2008-02-19,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+ITPS.L,yahoo,2008-07-04,pico,0.5,,1,2008-07-07,revierte en 1 sesión(es)
+ITPS.L,yahoo,2008-07-07,pico,2.0,,0,,parte del pico que empieza en la sesión 128
+ITPS.L,yahoo,2009-01-02,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+IUSP.L,yahoo,2009-02-06,pico,1.6,,1,2009-02-09,revierte en 1 sesión(es)
+IUSP.L,yahoo,2009-02-09,pico,0.7,,0,,parte del pico que empieza en la sesión 25
+IUSP.L,yahoo,2010-02-09,pico,1.5,,1,2010-02-10,revierte en 1 sesión(es)
+IUSP.L,yahoo,2010-02-10,pico,0.6,,0,,parte del pico que empieza en la sesión 279
+IUSP.L,yahoo,2010-12-31,pico,1.5,,1,2011-01-04,revierte en 1 sesión(es)
+IUSP.L,yahoo,2011-01-04,pico,0.6,,0,,parte del pico que empieza en la sesión 505
+IUSP.L,yahoo,2011-04-29,pico,1.7,,1,2011-05-03,revierte en 1 sesión(es)
+IUSP.L,yahoo,2011-05-03,pico,0.6,,0,,parte del pico que empieza en la sesión 587
+IWDP.L,yahoo,2011-04-29,pico,1.7,,1,2011-05-03,revierte en 1 sesión(es)
+IWDP.L,yahoo,2011-05-03,pico,0.6,,0,,parte del pico que empieza en la sesión 587
+JKHY,yahoo,1987-11-02,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+KEY,yahoo,2008-10-14,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+KGF.L,yahoo,1990-01-02,real,4.1,,0,,movimiento real (razón sin split limpio): se mantiene
+KGF.L,yahoo,1995-03-29,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+KOTAKBANK.NS,yahoo,2004-04-26,pico,4.8,,1,2004-04-27,revierte en 1 sesión(es)
+KOTAKBANK.NS,yahoo,2004-04-27,pico,0.2,,0,,parte del pico que empieza en la sesión 702
+KOTAKBANK.NS,yahoo,2004-10-13,pico,4.7,,1,2004-10-14,revierte en 1 sesión(es)
+KOTAKBANK.NS,yahoo,2004-10-14,pico,0.2,,0,,parte del pico que empieza en la sesión 824
+KOTAKBANK.NS,yahoo,2005-07-28,pico,4.8,,1,2005-07-29,revierte en 1 sesión(es)
+KOTAKBANK.NS,yahoo,2005-07-29,pico,0.2,,0,,parte del pico que empieza en la sesión 1023
+KPN.AS,yahoo,1999-12-31,pico,0.5,,1,2000-01-03,revierte en 1 sesión(es)
+KPN.AS,yahoo,2000-01-03,pico,2.1,,0,,parte del pico que empieza en la sesión 1206
+LLOY.L,yahoo,2009-01-28,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+LNC,yahoo,1984-02-01,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+LOGN.SW,yahoo,2001-01-08,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+LUMN,yahoo,2024-08-06,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+LVS,yahoo,2008-10-29,real,1.8,,0,,movimiento real (no persiste): se mantiene
+M&M.NS,yahoo,1996-11-12,pico,2.0,,1,1996-11-13,revierte en 1 sesión(es)
+M&M.NS,yahoo,1996-11-13,pico,0.5,,0,,parte del pico que empieza en la sesión 226
+M&M.NS,yahoo,1997-03-07,pico,2.0,,1,1997-03-10,revierte en 1 sesión(es)
+M&M.NS,yahoo,1997-03-10,pico,0.5,,0,,parte del pico que empieza en la sesión 308
+M&M.NS,yahoo,1997-04-14,pico,2.0,,1,1997-04-15,revierte en 1 sesión(es)
+M&M.NS,yahoo,1997-04-15,pico,0.5,,0,,parte del pico que empieza en la sesión 332
+M&M.NS,yahoo,1998-11-04,pico,2.0,,1,1998-11-05,revierte en 1 sesión(es)
+M&M.NS,yahoo,1998-11-05,pico,0.5,,0,,parte del pico que empieza en la sesión 731
+M&M.NS,yahoo,1998-11-25,pico,2.0,,1,1998-11-26,revierte en 1 sesión(es)
+M&M.NS,yahoo,1998-11-26,pico,0.5,,0,,parte del pico que empieza en la sesión 746
+M&M.NS,yahoo,1998-12-25,pico,2.0,,1,1998-12-28,revierte en 1 sesión(es)
+M&M.NS,yahoo,1998-12-28,pico,0.5,,0,,parte del pico que empieza en la sesión 768
+M&M.NS,yahoo,1999-03-02,pico,2.0,,1,1999-03-03,revierte en 1 sesión(es)
+M&M.NS,yahoo,1999-03-03,pico,0.5,,0,,parte del pico que empieza en la sesión 813
+M&M.NS,yahoo,1999-03-29,pico,2.0,,1,1999-03-30,revierte en 1 sesión(es)
+M&M.NS,yahoo,1999-03-30,pico,0.5,,0,,parte del pico que empieza en la sesión 832
+M&M.NS,yahoo,1999-04-27,pico,2.0,,1,1999-04-28,revierte en 1 sesión(es)
+M&M.NS,yahoo,1999-04-28,pico,0.5,,0,,parte del pico que empieza en la sesión 851
+M&M.NS,yahoo,1999-11-08,pico,2.0,,1,1999-11-09,revierte en 1 sesión(es)
+M&M.NS,yahoo,1999-11-09,pico,0.5,,0,,parte del pico que empieza en la sesión 988
+M&M.NS,yahoo,1999-11-23,pico,2.0,,1,1999-11-24,revierte en 1 sesión(es)
+M&M.NS,yahoo,1999-11-24,pico,0.5,,0,,parte del pico que empieza en la sesión 999
+M&M.NS,yahoo,2005-07-28,pico,2.0,,1,2005-07-29,revierte en 1 sesión(es)
+M&M.NS,yahoo,2005-07-29,pico,0.5,,0,,parte del pico que empieza en la sesión 2425
+MAT,yahoo,1976-11-01,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MBI,yahoo,2023-12-08,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+MCD,yahoo,1968-05-21,split,0.5,2.0,3,1968-05-24,cambio de nivel persistente con razón de split limpio
+MCD,yahoo,1969-06-13,split,0.5,2.0,3,1969-06-18,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,1997-09-24,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,1997-11-26,pico,1.8,,1,1997-11-28,revierte en 1 sesión(es)
+MCIC,yahoo,1997-11-28,pico,0.6,,0,,parte del pico que empieza en la sesión 50
+MCIC,yahoo,1998-04-27,pico,0.0,,1,1998-04-28,revierte en 1 sesión(es)
+MCIC,yahoo,1998-04-28,pico,140.0,,0,,parte del pico que empieza en la sesión 152
+MCIC,yahoo,1998-04-30,real,0.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,1998-05-01,real,110.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,1998-05-05,real,0.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,1998-05-06,real,140.0,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,1998-05-11,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,1999-11-04,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,1999-11-17,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,1999-11-18,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,1999-11-29,real,2.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2000-02-10,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2000-03-27,pico,2.0,,1,2000-03-28,revierte en 1 sesión(es)
+MCIC,yahoo,2000-03-28,pico,0.6,,0,,parte del pico que empieza en la sesión 636
+MCIC,yahoo,2001-01-11,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-05-11,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-07-13,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-07-20,split,0.5,2.0,3,2001-07-25,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2001-08-15,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2001-08-22,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-09-05,real,2.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-09-20,split,2.0,0.5,3,2001-09-25,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2001-10-02,pico,1.7,,1,2001-10-03,revierte en 1 sesión(es)
+MCIC,yahoo,2001-10-03,pico,0.6,,0,,parte del pico que empieza en la sesión 1015
+MCIC,yahoo,2001-10-05,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-10-30,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2001-11-12,pico,0.5,,2,2001-11-14,revierte en 2 sesión(es)
+MCIC,yahoo,2001-11-14,pico,2.0,,0,,parte del pico que empieza en la sesión 1044
+MCIC,yahoo,2001-11-21,split,0.5,2.0,3,2001-11-27,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2001-12-12,split,0.5,2.0,3,2001-12-17,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2001-12-20,real,1.8,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2001-12-21,real,0.4,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2001-12-26,real,0.3,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2001-12-28,pico,2.0,,1,2001-12-31,revierte en 1 sesión(es)
+MCIC,yahoo,2001-12-31,pico,0.5,,0,,parte del pico que empieza en la sesión 1076
+MCIC,yahoo,2002-01-03,pico,3.0,,2,2002-01-07,revierte en 2 sesión(es)
+MCIC,yahoo,2002-01-07,pico,0.3,,0,,parte del pico que empieza en la sesión 1079
+MCIC,yahoo,2002-03-25,real,2.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2002-03-26,split,2.0,0.5,3,2002-04-01,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2002-04-04,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2002-04-11,split,0.5,2.0,3,2002-04-16,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2002-04-30,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2002-05-07,split,0.3,3.0,3,2002-05-10,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2002-05-14,split,3.0,0.3333333333333333,3,2002-05-17,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2002-05-21,split,0.5,2.0,3,2002-05-24,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2003-05-23,split,2.0,0.5,3,2003-05-29,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2003-11-07,split,0.5,2.0,3,2003-11-12,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2003-12-30,split,0.1,10.0,3,2004-01-05,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2004-01-13,real,0.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2004-03-10,split,3.0,0.3333333333333333,3,2004-03-15,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2004-04-02,real,3.2,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2004-05-06,real,2.3,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2004-07-16,real,0.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2004-07-19,pico,0.5,,1,2004-07-20,revierte en 1 sesión(es)
+MCIC,yahoo,2004-07-20,pico,2.0,,0,,parte del pico que empieza en la sesión 1717
+MCIC,yahoo,2004-07-22,split,0.5,2.0,3,2004-07-27,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2006-03-13,split,0.1,10.0,3,2006-03-16,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2006-03-17,pico,2.0,,1,2006-03-20,revierte en 1 sesión(es)
+MCIC,yahoo,2006-03-20,pico,0.5,,0,,parte del pico que empieza en la sesión 2137
+MCIC,yahoo,2006-03-22,pico,2.0,,1,2006-03-23,revierte en 1 sesión(es)
+MCIC,yahoo,2006-03-23,pico,0.5,,0,,parte del pico que empieza en la sesión 2140
+MCIC,yahoo,2006-04-24,pico,2.0,,1,2006-04-25,revierte en 1 sesión(es)
+MCIC,yahoo,2006-04-25,pico,0.5,,0,,parte del pico que empieza en la sesión 2162
+MCIC,yahoo,2006-04-27,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2006-05-03,split,0.5,2.0,3,2006-05-08,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2006-05-17,pico,2.0,,2,2006-05-19,revierte en 2 sesión(es)
+MCIC,yahoo,2006-05-19,pico,0.5,,0,,parte del pico que empieza en la sesión 2179
+MCIC,yahoo,2006-06-09,pico,2.0,,2,2006-06-13,revierte en 2 sesión(es)
+MCIC,yahoo,2006-06-13,pico,0.5,,0,,parte del pico que empieza en la sesión 2195
+MCIC,yahoo,2006-06-16,pico,2.0,,2,2006-06-20,revierte en 2 sesión(es)
+MCIC,yahoo,2006-06-20,pico,0.5,,0,,parte del pico que empieza en la sesión 2200
+MCIC,yahoo,2006-06-21,pico,2.0,,1,2006-06-22,revierte en 1 sesión(es)
+MCIC,yahoo,2006-06-22,pico,0.5,,0,,parte del pico que empieza en la sesión 2203
+MCIC,yahoo,2006-07-21,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2006-08-10,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2007-09-28,pico,1.6,,1,2007-10-01,revierte en 1 sesión(es)
+MCIC,yahoo,2007-10-01,pico,0.6,,0,,parte del pico que empieza en la sesión 2523
+MCIC,yahoo,2007-12-21,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2008-02-06,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2008-03-03,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2008-06-18,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2008-08-26,real,0.4,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2008-09-08,real,2.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2008-10-14,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2008-10-22,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2008-10-29,pico,1.5,,2,2008-10-31,revierte en 2 sesión(es)
+MCIC,yahoo,2008-10-31,pico,0.7,,0,,parte del pico que empieza en la sesión 2797
+MCIC,yahoo,2008-11-04,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2008-11-17,pico,0.5,,1,2008-11-18,revierte en 1 sesión(es)
+MCIC,yahoo,2008-11-18,pico,2.0,,0,,parte del pico que empieza en la sesión 2810
+MCIC,yahoo,2008-11-25,pico,0.5,,1,2008-11-26,revierte en 1 sesión(es)
+MCIC,yahoo,2008-11-26,pico,2.0,,0,,parte del pico que empieza en la sesión 2816
+MCIC,yahoo,2008-12-01,pico,0.5,,1,2008-12-02,revierte en 1 sesión(es)
+MCIC,yahoo,2008-12-02,pico,2.0,,0,,parte del pico que empieza en la sesión 2819
+MCIC,yahoo,2008-12-03,pico,0.5,,1,2008-12-04,revierte en 1 sesión(es)
+MCIC,yahoo,2008-12-04,pico,2.0,,0,,parte del pico que empieza en la sesión 2821
+MCIC,yahoo,2008-12-11,pico,0.5,,2,2008-12-15,revierte en 2 sesión(es)
+MCIC,yahoo,2008-12-15,pico,2.0,,0,,parte del pico que empieza en la sesión 2827
+MCIC,yahoo,2008-12-17,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2009-01-05,pico,2.0,,3,2009-01-08,revierte en 3 sesión(es)
+MCIC,yahoo,2009-01-08,pico,0.5,,0,,parte del pico que empieza en la sesión 2842
+MCIC,yahoo,2009-01-09,pico,2.0,,3,2009-01-14,revierte en 3 sesión(es)
+MCIC,yahoo,2009-01-14,pico,0.5,,0,,parte del pico que empieza en la sesión 2846
+MCIC,yahoo,2009-01-16,pico,2.0,,1,2009-01-20,revierte en 1 sesión(es)
+MCIC,yahoo,2009-01-20,pico,0.5,,0,,parte del pico que empieza en la sesión 2851
+MCIC,yahoo,2009-02-06,pico,2.0,,1,2009-02-09,revierte en 1 sesión(es)
+MCIC,yahoo,2009-02-09,pico,0.5,,0,,parte del pico que empieza en la sesión 2865
+MCIC,yahoo,2009-02-13,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2009-02-26,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2009-03-09,pico,2.0,,1,2009-03-10,revierte en 1 sesión(es)
+MCIC,yahoo,2009-03-10,pico,0.5,,0,,parte del pico que empieza en la sesión 2885
+MCIC,yahoo,2009-03-13,pico,2.0,,1,2009-03-16,revierte en 1 sesión(es)
+MCIC,yahoo,2009-03-16,pico,0.5,,0,,parte del pico que empieza en la sesión 2889
+MCIC,yahoo,2009-03-20,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2009-03-26,pico,0.5,,3,2009-03-31,revierte en 3 sesión(es)
+MCIC,yahoo,2009-03-31,pico,2.0,,0,,parte del pico que empieza en la sesión 2898
+MCIC,yahoo,2009-04-02,split,0.5,2.0,3,2009-04-07,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2009-04-09,pico,2.0,,1,2009-04-13,revierte en 1 sesión(es)
+MCIC,yahoo,2009-04-13,pico,0.5,,0,,parte del pico que empieza en la sesión 2908
+MCIC,yahoo,2009-04-15,pico,2.0,,1,2009-04-16,revierte en 1 sesión(es)
+MCIC,yahoo,2009-04-16,pico,0.5,,0,,parte del pico que empieza en la sesión 2911
+MCIC,yahoo,2009-04-17,pico,2.0,,2,2009-04-21,revierte en 2 sesión(es)
+MCIC,yahoo,2009-04-21,pico,0.5,,0,,parte del pico que empieza en la sesión 2913
+MCIC,yahoo,2009-04-27,pico,2.0,,2,2009-04-29,revierte en 2 sesión(es)
+MCIC,yahoo,2009-04-29,pico,0.5,,0,,parte del pico que empieza en la sesión 2919
+MCIC,yahoo,2009-05-07,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2009-05-13,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2009-05-19,real,7.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2009-05-21,pico,0.4,,1,2009-05-22,revierte en 1 sesión(es)
+MCIC,yahoo,2009-05-22,pico,2.5,,0,,parte del pico que empieza en la sesión 2937
+MCIC,yahoo,2009-06-05,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2009-06-10,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2009-06-17,pico,2.0,,3,2009-06-22,revierte en 3 sesión(es)
+MCIC,yahoo,2009-06-22,pico,0.6,,0,,parte del pico que empieza en la sesión 2955
+MCIC,yahoo,2009-06-23,pico,1.7,,1,2009-06-24,revierte en 1 sesión(es)
+MCIC,yahoo,2009-06-24,pico,0.6,,0,,parte del pico que empieza en la sesión 2959
+MCIC,yahoo,2009-07-14,real,1.7,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2009-08-28,real,2.1,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2009-10-01,real,4.8,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2009-10-09,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2009-10-19,real,1.7,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2009-10-22,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2009-10-26,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2010-03-10,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2010-04-09,real,2.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2011-03-04,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2011-03-16,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2011-03-28,real,2.1,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2011-04-14,real,4.3,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2011-04-26,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2011-07-07,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2011-07-15,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2011-11-28,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2012-03-06,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2012-03-16,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2012-03-28,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2012-08-16,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2012-10-03,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2012-11-14,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2013-03-06,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2013-11-19,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2013-12-19,pico,1.6,,2,2013-12-23,revierte en 2 sesión(es)
+MCIC,yahoo,2014-09-16,pico,1.6,,1,2014-09-17,revierte en 1 sesión(es)
+MCIC,yahoo,2014-10-27,pico,1.5,,2,2014-10-29,revierte en 2 sesión(es)
+MCIC,yahoo,2014-10-29,pico,0.6,,0,,parte del pico que empieza en la sesión 4305
+MCIC,yahoo,2014-10-30,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2014-11-21,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2014-12-05,pico,1.7,,1,2014-12-08,revierte en 1 sesión(es)
+MCIC,yahoo,2014-12-08,pico,0.6,,0,,parte del pico que empieza en la sesión 4333
+MCIC,yahoo,2016-02-09,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2016-04-28,real,1.7,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2016-05-02,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2016-06-17,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2016-08-08,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2016-08-24,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2016-10-07,split,2.0,0.5,3,2016-10-12,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2016-12-16,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2017-03-29,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2017-04-19,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2017-06-30,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2017-08-29,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2017-09-21,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2017-10-13,pico,1.7,,1,2017-10-16,revierte en 1 sesión(es)
+MCIC,yahoo,2017-10-16,pico,0.6,,0,,parte del pico que empieza en la sesión 5052
+MCIC,yahoo,2017-10-24,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2017-12-19,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2018-01-24,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2018-01-30,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2018-03-22,pico,1.5,,2,2018-03-26,revierte en 2 sesión(es)
+MCIC,yahoo,2018-03-26,pico,0.7,,0,,parte del pico que empieza en la sesión 5161
+MCIC,yahoo,2018-05-08,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2018-06-21,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2018-08-17,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2018-10-12,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2018-10-19,pico,2.1,,2,2018-10-23,revierte en 2 sesión(es)
+MCIC,yahoo,2018-10-23,pico,0.6,,0,,parte del pico que empieza en la sesión 5308
+MCIC,yahoo,2018-10-24,real,2.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2018-10-29,pico,0.5,,1,2018-10-30,revierte en 1 sesión(es)
+MCIC,yahoo,2018-10-30,pico,2.0,,0,,parte del pico que empieza en la sesión 5314
+MCIC,yahoo,2018-11-06,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2019-01-29,pico,1.6,,3,2019-02-01,revierte en 3 sesión(es)
+MCIC,yahoo,2019-02-01,pico,0.6,,0,,parte del pico que empieza en la sesión 5375
+MCIC,yahoo,2019-02-04,pico,1.6,,1,2019-02-05,revierte en 1 sesión(es)
+MCIC,yahoo,2019-02-05,pico,0.7,,0,,parte del pico que empieza en la sesión 5379
+MCIC,yahoo,2019-03-12,pico,1.6,,3,2019-03-15,revierte en 3 sesión(es)
+MCIC,yahoo,2019-03-15,pico,0.7,,0,,parte del pico que empieza en la sesión 5404
+MCIC,yahoo,2019-05-21,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2020-02-06,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2020-03-16,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2020-04-27,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2020-08-21,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2020-10-02,pico,1.5,,3,2020-10-07,revierte en 3 sesión(es)
+MCIC,yahoo,2020-10-07,pico,0.7,,0,,parte del pico que empieza en la sesión 5799
+MCIC,yahoo,2021-02-23,real,2.3,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2021-03-29,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2021-06-01,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MCIC,yahoo,2022-02-07,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2022-08-05,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2023-06-20,real,0.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2023-07-21,pico,1.9,,1,2023-07-24,revierte en 1 sesión(es)
+MCIC,yahoo,2023-07-24,pico,0.5,,0,,parte del pico que empieza en la sesión 6502
+MCIC,yahoo,2023-07-26,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2023-08-03,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2023-08-21,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2023-09-15,real,4.2,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2023-09-22,pico,0.5,,2,2023-09-26,revierte en 2 sesión(es)
+MCIC,yahoo,2023-09-26,pico,2.2,,0,,parte del pico que empieza en la sesión 6546
+MCIC,yahoo,2023-10-12,pico,1.5,,2,2023-10-16,revierte en 2 sesión(es)
+MCIC,yahoo,2023-10-16,pico,0.6,,0,,parte del pico que empieza en la sesión 6560
+MCIC,yahoo,2023-11-07,pico,1.8,,1,2023-11-08,revierte en 1 sesión(es)
+MCIC,yahoo,2023-11-08,pico,0.6,,0,,parte del pico que empieza en la sesión 6578
+MCIC,yahoo,2023-12-12,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2023-12-18,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-03-11,real,2.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-03-15,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-04-02,pico,2.1,,3,2024-04-05,revierte en 3 sesión(es)
+MCIC,yahoo,2024-04-05,pico,0.5,,0,,parte del pico que empieza en la sesión 6677
+MCIC,yahoo,2024-05-14,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2024-05-20,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-05-28,real,0.3,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2024-05-30,real,2.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2024-06-07,pico,1.9,,3,2024-06-12,revierte en 3 sesión(es)
+MCIC,yahoo,2024-06-12,pico,0.6,,0,,parte del pico que empieza en la sesión 6724
+MCIC,yahoo,2024-06-17,pico,1.7,,3,2024-06-21,revierte en 3 sesión(es)
+MCIC,yahoo,2024-06-21,pico,0.7,,0,,parte del pico que empieza en la sesión 6730
+MCIC,yahoo,2024-07-19,real,0.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2024-08-09,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-09-19,pico,0.3,,1,2024-09-20,revierte en 1 sesión(es)
+MCIC,yahoo,2024-09-20,pico,3.6,,0,,parte del pico que empieza en la sesión 6795
+MCIC,yahoo,2024-10-01,pico,0.4,,1,2024-10-02,revierte en 1 sesión(es)
+MCIC,yahoo,2024-10-02,pico,2.4,,0,,parte del pico que empieza en la sesión 6803
+MCIC,yahoo,2024-10-15,pico,0.4,,1,2024-10-16,revierte en 1 sesión(es)
+MCIC,yahoo,2024-10-16,pico,2.5,,0,,parte del pico que empieza en la sesión 6813
+MCIC,yahoo,2024-10-29,real,2.1,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-11-07,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2024-11-14,pico,2.1,,2,2024-11-18,revierte en 2 sesión(es)
+MCIC,yahoo,2024-11-18,pico,0.6,,0,,parte del pico que empieza en la sesión 6835
+MCIC,yahoo,2024-11-25,pico,2.3,,3,2024-11-29,revierte en 3 sesión(es)
+MCIC,yahoo,2024-11-29,pico,0.4,,0,,parte del pico que empieza en la sesión 6842
+MCIC,yahoo,2024-12-02,pico,2.2,,1,2024-12-03,revierte en 1 sesión(es)
+MCIC,yahoo,2024-12-03,pico,0.5,,0,,parte del pico que empieza en la sesión 6846
+MCIC,yahoo,2024-12-16,real,1.9,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2024-12-17,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-01-06,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-01-24,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-02-04,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-02-05,real,1.7,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-02-07,pico,2.4,,1,2025-02-10,revierte en 1 sesión(es)
+MCIC,yahoo,2025-02-10,pico,0.4,,0,,parte del pico que empieza en la sesión 6891
+MCIC,yahoo,2025-02-21,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-03-26,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-04-14,real,1.5,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-04-24,real,0.4,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-05-09,real,0.3,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-05-12,pico,2.4,,3,2025-05-15,revierte en 3 sesión(es)
+MCIC,yahoo,2025-05-15,pico,0.5,,0,,parte del pico que empieza en la sesión 6955
+MCIC,yahoo,2025-05-16,real,2.2,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-05-23,real,0.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2025-05-29,real,30.0,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-07-22,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+MCIC,yahoo,2025-10-27,pico,3.0,,3,2025-10-30,revierte en 3 sesión(es)
+MCIC,yahoo,2025-10-28,pico,0.7,,0,,parte del pico que empieza en la sesión 7071
+MCIC,yahoo,2025-10-30,pico,0.5,,0,,parte del pico que empieza en la sesión 7071
+MCIC,yahoo,2026-01-15,pico,4.0,,1,2026-01-16,revierte en 1 sesión(es)
+MCIC,yahoo,2026-01-16,pico,0.2,,0,,parte del pico que empieza en la sesión 7126
+MCIC,yahoo,2026-03-24,pico,23.0,,3,2026-03-27,revierte en 3 sesión(es)
+MCIC,yahoo,2026-03-27,pico,0.0,,0,,parte del pico que empieza en la sesión 7172
+MCIC,yahoo,2026-03-30,real,2.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2026-03-31,pico,5.5,,3,2026-04-06,revierte en 3 sesión(es)
+MCIC,yahoo,2026-04-06,pico,0.2,,0,,parte del pico que empieza en la sesión 7177
+MCIC,yahoo,2026-04-10,split,0.5,2.0,3,2026-04-15,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2026-05-07,split,3.0,0.3333333333333333,3,2026-05-12,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2026-05-27,real,15.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2026-05-28,real,0.3,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2026-06-01,real,0.1,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2026-06-02,real,4.0,,0,,movimiento real (no persiste): se mantiene
+MCIC,yahoo,2026-06-05,split,0.5,2.0,3,2026-06-10,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2026-10-05,split,0.5,2.0,3,2026-10-08,cambio de nivel persistente con razón de split limpio
+MCIC,yahoo,2026-11-11,real,2.0,,0,,sin sesiones para confirmar: se mantiene
+MD,yahoo,1999-03-25,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+MD,yahoo,2000-06-02,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MNST,yahoo,1987-10-20,real,0.5,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MNST,yahoo,1987-11-17,real,2.0,,0,,movimiento real (el volumen no acompaña al factor): se mantiene
+MNST,yahoo,1987-11-30,split,0.5,2.0,3,1987-12-03,cambio de nivel persistente con razón de split limpio
+MNST,yahoo,1987-12-24,pico,2.0,,1,1987-12-28,revierte en 1 sesión(es)
+MNST,yahoo,1987-12-28,pico,0.5,,0,,parte del pico que empieza en la sesión 517
+MNST,yahoo,1988-01-08,real,2.0,,0,,movimiento real (no persiste): se mantiene
+MNST,yahoo,1990-03-06,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+MNST,yahoo,1990-11-01,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MNST,yahoo,1992-07-17,real,1.6,,0,,movimiento real (no persiste): se mantiene
+MRNA,yahoo,2026-08-19,real,2.8,,0,,movimiento real (razón sin split limpio): se mantiene
+MRSH,yahoo,1980-11-12,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MS,yahoo,2008-10-13,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+MTCH,yahoo,1995-08-25,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+MTG,yahoo,2008-09-18,real,1.7,,0,,movimiento real (no persiste): se mantiene
+MTG,yahoo,2008-10-31,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+MTG,yahoo,2012-08-02,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+NBR,yahoo,1983-11-09,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+NBR,yahoo,1986-07-11,pico,1.7,,1,1986-07-14,revierte en 1 sesión(es)
+NBR,yahoo,1986-07-14,pico,0.6,,0,,parte del pico que empieza en la sesión 3383
+NBR,yahoo,1986-07-16,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+NBR,yahoo,1986-09-09,real,2.7,,0,,movimiento real (razón sin split limpio): se mantiene
+NBR,yahoo,1987-05-18,real,1.6,,0,,movimiento real (no persiste): se mantiene
+NBR,yahoo,2020-06-05,real,1.5,,0,,movimiento real (no persiste): se mantiene
+NESTLEIND.NS,yahoo,2010-01-08,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+NGAS.L,yahoo,2012-01-03,real,1783.0,,0,,movimiento real (razón sin split limpio): se mantiene
+NKTR,yahoo,2022-03-14,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+NKTR,yahoo,2023-02-24,real,0.5,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
+NKTR,yahoo,2023-08-07,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+NKTR,yahoo,2025-06-24,real,2.6,,0,,movimiento real (razón sin split limpio): se mantiene
+NKTR,yahoo,2026-02-10,real,1.5,,0,,movimiento real (no persiste): se mantiene
+NVR,yahoo,1987-06-23,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+NVR,yahoo,1993-10-01,real,27.3,,0,,movimiento real (razón sin split limpio): se mantiene
+NWG.L,yahoo,2009-01-19,real,0.3,,0,,"movimiento real revisado a mano (excepción del usuario, saneado P11): se mantiene"
+ON,yahoo,2002-01-03,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+ONGC.NS,yahoo,1996-11-12,pico,1.5,,1,1996-11-13,revierte en 1 sesión(es)
+ONGC.NS,yahoo,1996-11-13,pico,0.7,,0,,parte del pico que empieza en la sesión 226
+ONGC.NS,yahoo,1997-03-07,pico,1.5,,1,1997-03-10,revierte en 1 sesión(es)
+ONGC.NS,yahoo,1999-04-27,pico,1.5,,1,1999-04-28,revierte en 1 sesión(es)
+ONGC.NS,yahoo,1999-11-08,pico,1.5,,1,1999-11-09,revierte en 1 sesión(es)
+ONGC.NS,yahoo,1999-11-09,pico,0.7,,0,,parte del pico que empieza en la sesión 988
+ONGC.NS,yahoo,1999-11-23,pico,1.5,,1,1999-11-24,revierte en 1 sesión(es)
+ONGC.NS,yahoo,2005-07-28,pico,1.5,,1,2005-07-29,revierte en 1 sesión(es)
+ONGC.NS,yahoo,2005-07-29,pico,0.6,,0,,parte del pico que empieza en la sesión 2424
+PARA,yahoo,2024-01-05,real,1.5,,0,,movimiento real (no persiste): se mantiene
+PARA,yahoo,2024-09-20,real,2.0,,0,,movimiento real (no persiste): se mantiene
+PARA,yahoo,2024-09-24,real,2.0,,0,,movimiento real (no persiste): se mantiene
+PARA,yahoo,2024-10-09,real,1.8,,0,,movimiento real (no persiste): se mantiene
+PARA,yahoo,2025-01-29,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+PBI,yahoo,2021-01-26,real,1.8,,0,,movimiento real (no persiste): se mantiene
+PCG,yahoo,2019-01-14,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+PCG,yahoo,2019-01-24,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+PCT.L,yahoo,2009-01-02,real,10.4,,0,,movimiento real (razón sin split limpio): se mantiene
+PCT.L,yahoo,2011-04-29,pico,0.1,,1,2011-05-03,revierte en 1 sesión(es)
+PCT.L,yahoo,2011-05-03,pico,10.1,,0,,parte del pico que empieza en la sesión 3630
+PCT.L,yahoo,2013-01-02,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+PHIA.AS,yahoo,1995-08-01,split,3.9,0.25,3,1995-08-04,cambio de nivel persistente con razón de split limpio
+PNW,yahoo,1989-12-07,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+PWR,yahoo,2002-07-02,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+QIA.DE,yahoo,2003-08-22,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+REC.MI,yahoo,1995-03-29,split,2.0,0.5,3,1995-04-03,cambio de nivel persistente con razón de split limpio
+REGN,yahoo,1997-05-13,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+REGN,yahoo,2000-02-23,real,1.8,,0,,movimiento real (razón sin split limpio): se mantiene
+REGN,yahoo,2003-03-31,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+RELIANCE.NS,yahoo,2005-07-28,pico,4.4,,1,2005-07-29,revierte en 1 sesión(es)
+RELIANCE.NS,yahoo,2005-07-29,pico,0.2,,0,,parte del pico que empieza en la sesión 2415
+RIG,yahoo,2020-06-05,real,1.5,,0,,movimiento real (no persiste): se mantiene
+RR.L,yahoo,1990-01-01,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+RRC,yahoo,1987-01-06,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+RRC,yahoo,1990-04-10,split,0.3,3.0,3,1990-04-16,cambio de nivel persistente con razón de split limpio
+RRC,yahoo,1998-10-19,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+SGRO.L,yahoo,1990-01-02,real,0.1,,0,,movimiento real (razón sin split limpio): se mantiene
+SHEL.L,yahoo,1997-07-01,real,0.3,,0,,movimiento real (razón sin split limpio): se mantiene
+SHELL.AS,yahoo,1997-07-01,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+SHELL.AS,yahoo,2005-07-18,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+SIG,yahoo,1992-11-05,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+SJPA.L,yahoo,2009-10-02,pico,1.6,,2,2009-10-06,revierte en 2 sesión(es)
+SJPA.L,yahoo,2009-10-06,pico,0.6,,0,,parte del pico que empieza en la sesión 5
+SJPA.L,yahoo,2009-10-07,pico,1.6,,1,2009-10-08,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-10-08,pico,0.6,,0,,parte del pico que empieza en la sesión 8
+SJPA.L,yahoo,2009-10-09,pico,1.6,,1,2009-10-12,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-10-12,pico,0.6,,0,,parte del pico que empieza en la sesión 10
+SJPA.L,yahoo,2009-10-13,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+SJPA.L,yahoo,2009-10-21,pico,1.7,,1,2009-10-22,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-10-22,pico,0.6,,0,,parte del pico que empieza en la sesión 18
+SJPA.L,yahoo,2009-10-23,pico,1.6,,3,2009-10-28,revierte en 3 sesión(es)
+SJPA.L,yahoo,2009-10-28,pico,0.6,,0,,parte del pico que empieza en la sesión 20
+SJPA.L,yahoo,2009-10-29,pico,1.6,,2,2009-11-02,revierte en 2 sesión(es)
+SJPA.L,yahoo,2009-11-02,pico,0.6,,0,,parte del pico que empieza en la sesión 24
+SJPA.L,yahoo,2009-11-05,pico,1.6,,1,2009-11-06,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-11-06,pico,0.6,,0,,parte del pico que empieza en la sesión 29
+SJPA.L,yahoo,2009-11-09,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+SJPA.L,yahoo,2009-11-18,pico,1.7,,1,2009-11-19,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-11-19,pico,0.6,,0,,parte del pico que empieza en la sesión 38
+SJPA.L,yahoo,2009-11-20,pico,1.7,,2,2009-11-24,revierte en 2 sesión(es)
+SJPA.L,yahoo,2009-11-24,pico,0.6,,0,,parte del pico que empieza en la sesión 40
+SJPA.L,yahoo,2009-11-25,pico,1.7,,1,2009-11-26,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-11-26,pico,0.6,,0,,parte del pico que empieza en la sesión 43
+SJPA.L,yahoo,2009-11-30,pico,1.7,,2,2009-12-02,revierte en 2 sesión(es)
+SJPA.L,yahoo,2009-12-02,pico,0.6,,0,,parte del pico que empieza en la sesión 46
+SJPA.L,yahoo,2009-12-15,pico,1.6,,1,2009-12-16,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-12-16,pico,0.6,,0,,parte del pico que empieza en la sesión 57
+SJPA.L,yahoo,2009-12-18,pico,1.6,,1,2009-12-21,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-12-21,pico,0.6,,0,,parte del pico que empieza en la sesión 60
+SJPA.L,yahoo,2009-12-22,pico,1.6,,1,2009-12-23,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-12-23,pico,0.6,,0,,parte del pico que empieza en la sesión 62
+SJPA.L,yahoo,2009-12-29,pico,1.6,,1,2009-12-30,revierte en 1 sesión(es)
+SJPA.L,yahoo,2009-12-30,pico,0.6,,0,,parte del pico que empieza en la sesión 65
+SJPA.L,yahoo,2009-12-31,pico,1.6,,1,2010-01-04,revierte en 1 sesión(es)
+SJPA.L,yahoo,2010-01-04,pico,0.6,,0,,parte del pico que empieza en la sesión 67
+SJPA.L,yahoo,2010-01-07,pico,1.6,,1,2010-01-08,revierte en 1 sesión(es)
+SJPA.L,yahoo,2010-01-08,pico,0.6,,0,,parte del pico que empieza en la sesión 71
+SJPA.L,yahoo,2010-01-21,pico,1.7,,1,2010-01-22,revierte en 1 sesión(es)
+SJPA.L,yahoo,2010-01-22,pico,0.6,,0,,parte del pico que empieza en la sesión 81
+SLR.MC,yahoo,2012-06-05,real,1.5,,0,,movimiento real (no persiste): se mantiene
+SMT.L,yahoo,1975-01-31,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+SNT,yahoo,1996-07-22,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+SNT,yahoo,2001-09-17,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+SNT,yahoo,2011-11-29,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+SPM.MI,yahoo,2022-06-28,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+STLAP.PA,yahoo,2002-09-23,pico,2.2,,1,2002-09-24,revierte en 1 sesión(es)
+STLAP.PA,yahoo,2002-09-24,pico,0.5,,0,,parte del pico que empieza en la sesión 268
+STLAP.PA,yahoo,2002-10-30,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+STLAP.PA,yahoo,2002-12-02,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+STLAP.PA,yahoo,2003-04-03,pico,1.7,,3,2003-04-08,revierte en 3 sesión(es)
+STLAP.PA,yahoo,2003-04-08,pico,0.6,,0,,parte del pico que empieza en la sesión 403
+STLAP.PA,yahoo,2011-01-03,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+STLAP.PA,yahoo,2021-01-18,real,2.0,,0,,movimiento real (razón sin split limpio): se mantiene
+STT,yahoo,2009-01-20,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+SWKS,yahoo,1992-04-22,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+TATASTEEL.NS,yahoo,1996-11-12,pico,10.5,,1,1996-11-13,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1996-11-13,pico,0.1,,0,,parte del pico que empieza en la sesión 226
+TATASTEEL.NS,yahoo,1997-03-07,pico,10.5,,1,1997-03-10,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1997-03-10,pico,0.1,,0,,parte del pico que empieza en la sesión 308
+TATASTEEL.NS,yahoo,1997-04-14,pico,10.5,,1,1997-04-15,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1997-04-15,pico,0.1,,0,,parte del pico que empieza en la sesión 332
+TATASTEEL.NS,yahoo,1998-11-04,pico,10.5,,1,1998-11-05,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1998-11-05,pico,0.1,,0,,parte del pico que empieza en la sesión 731
+TATASTEEL.NS,yahoo,1998-11-25,pico,10.5,,1,1998-11-26,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1998-11-26,pico,0.1,,0,,parte del pico que empieza en la sesión 746
+TATASTEEL.NS,yahoo,1998-12-25,pico,10.5,,1,1998-12-28,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1998-12-28,pico,0.1,,0,,parte del pico que empieza en la sesión 768
+TATASTEEL.NS,yahoo,1999-03-02,pico,10.5,,1,1999-03-03,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1999-03-03,pico,0.1,,0,,parte del pico que empieza en la sesión 813
+TATASTEEL.NS,yahoo,1999-03-29,pico,10.5,,1,1999-03-30,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1999-03-30,pico,0.1,,0,,parte del pico que empieza en la sesión 832
+TATASTEEL.NS,yahoo,1999-04-27,pico,10.5,,1,1999-04-28,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1999-04-28,pico,0.1,,0,,parte del pico que empieza en la sesión 851
+TATASTEEL.NS,yahoo,1999-11-08,pico,10.5,,1,1999-11-09,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1999-11-09,pico,0.1,,0,,parte del pico que empieza en la sesión 988
+TATASTEEL.NS,yahoo,1999-11-23,pico,10.5,,1,1999-11-24,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,1999-11-24,pico,0.1,,0,,parte del pico que empieza en la sesión 999
+TATASTEEL.NS,yahoo,2003-04-14,pico,7.0,,1,2003-04-15,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,2003-04-15,pico,0.1,,0,,parte del pico que empieza en la sesión 1846
+TATASTEEL.NS,yahoo,2003-11-26,pico,7.0,,1,2003-11-27,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,2003-11-27,pico,0.1,,0,,parte del pico que empieza en la sesión 2004
+TATASTEEL.NS,yahoo,2003-12-25,pico,7.0,,1,2003-12-26,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,2003-12-26,pico,0.1,,0,,parte del pico que empieza en la sesión 2025
+TATASTEEL.NS,yahoo,2004-04-26,pico,7.0,,1,2004-04-27,revierte en 1 sesión(es)
+TATASTEEL.NS,yahoo,2004-04-27,pico,0.1,,0,,parte del pico que empieza en la sesión 2107
+TCS.NS,yahoo,2004-05-06,split,3.0,0.3333333333333333,3,2004-05-11,cambio de nivel persistente con razón de split limpio
+TCS.NS,yahoo,2005-07-28,pico,2.0,,1,2005-07-29,revierte en 1 sesión(es)
+TCS.NS,yahoo,2005-07-29,pico,0.5,,0,,parte del pico que empieza en la sesión 740
+THC,yahoo,2010-12-10,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+TMPV.NS,yahoo,1993-02-04,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+TRENT.NS,yahoo,2005-07-28,pico,10.6,,1,2005-07-29,revierte en 1 sesión(es)
+TRENT.NS,yahoo,2005-07-29,pico,0.1,,0,,parte del pico que empieza en la sesión 772
+TRGP,yahoo,2020-03-09,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+TRV,yahoo,1986-06-09,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+TSCO,yahoo,1994-02-18,real,3.3,,0,,movimiento real (razón sin split limpio): se mantiene
+TSN,yahoo,1983-04-18,split,0.5,2.0,3,1983-04-21,cambio de nivel persistente con razón de split limpio
+TSN,yahoo,1985-04-16,real,0.4,,0,,movimiento real (razón sin split limpio): se mantiene
+TTWO,yahoo,2008-02-25,real,1.5,,0,,movimiento real (razón sin split limpio): se mantiene
+UAL,yahoo,2008-07-22,real,1.7,,0,,movimiento real (razón sin split limpio): se mantiene
+UIS,yahoo,2009-04-16,real,1.7,,0,,movimiento real (no persiste): se mantiene
+ULTRACEMCO.NS,yahoo,2004-08-24,real,0.2,,0,,movimiento real (razón sin split limpio): se mantiene
+ULVR.L,yahoo,1989-06-19,real,0.0,,0,,movimiento real (razón sin split limpio): se mantiene
+ULVR.L,yahoo,1990-01-01,pico,52.3,,1,1990-01-02,revierte en 1 sesión(es)
+ULVR.L,yahoo,1990-01-02,pico,0.0,,0,,parte del pico que empieza en la sesión 391
+ULVR.L,yahoo,1992-04-17,pico,52.3,,1,1992-04-21,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-04-21,pico,0.0,,0,,parte del pico que empieza en la sesión 978
+ULVR.L,yahoo,1992-05-04,pico,52.3,,1,1992-05-05,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-05-05,pico,0.0,,0,,parte del pico que empieza en la sesión 988
+ULVR.L,yahoo,1992-05-25,pico,52.3,,1,1992-05-26,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-05-26,pico,0.0,,0,,parte del pico que empieza en la sesión 1003
+ULVR.L,yahoo,1992-05-28,pico,52.3,,1,1992-05-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-05-29,pico,0.0,,0,,parte del pico que empieza en la sesión 1006
+ULVR.L,yahoo,1992-07-01,pico,51.6,,1,1992-07-02,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-07-02,pico,0.0,,0,,parte del pico que empieza en la sesión 1030
+ULVR.L,yahoo,1992-08-25,pico,51.4,,1,1992-08-26,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-08-26,pico,0.0,,0,,parte del pico que empieza en la sesión 1069
+ULVR.L,yahoo,1992-08-31,pico,52.3,,1,1992-09-01,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-09-01,pico,0.0,,0,,parte del pico que empieza en la sesión 1073
+ULVR.L,yahoo,1992-09-28,pico,53.0,,1,1992-09-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-09-29,pico,0.0,,0,,parte del pico que empieza en la sesión 1093
+ULVR.L,yahoo,1992-12-24,pico,52.4,,1,1992-12-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1992-12-29,pico,0.0,,0,,parte del pico que empieza en la sesión 1156
+ULVR.L,yahoo,1993-01-01,pico,52.2,,1,1993-01-04,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-01-04,pico,0.0,,0,,parte del pico que empieza en la sesión 1160
+ULVR.L,yahoo,1993-02-25,pico,53.1,,1,1993-02-26,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-02-26,pico,0.0,,0,,parte del pico que empieza en la sesión 1199
+ULVR.L,yahoo,1993-04-09,pico,52.2,,1,1993-04-13,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-04-13,pico,0.0,,0,,parte del pico que empieza en la sesión 1230
+ULVR.L,yahoo,1993-05-03,pico,52.3,,1,1993-05-04,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-05-04,pico,0.0,,0,,parte del pico que empieza en la sesión 1245
+ULVR.L,yahoo,1993-05-31,pico,52.2,,1,1993-06-01,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-06-01,pico,0.0,,0,,parte del pico que empieza en la sesión 1265
+ULVR.L,yahoo,1993-06-21,pico,52.7,,1,1993-06-22,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-06-22,pico,0.0,,0,,parte del pico que empieza en la sesión 1280
+ULVR.L,yahoo,1993-08-30,pico,52.3,,1,1993-08-31,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-08-31,pico,0.0,,0,,parte del pico que empieza en la sesión 1330
+ULVR.L,yahoo,1993-12-27,pico,52.3,,1,1993-12-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1993-12-29,pico,0.0,,0,,parte del pico que empieza en la sesión 1415
+ULVR.L,yahoo,1994-01-03,pico,52.3,,1,1994-01-04,revierte en 1 sesión(es)
+ULVR.L,yahoo,1994-01-04,pico,0.0,,0,,parte del pico que empieza en la sesión 1419
+ULVR.L,yahoo,1994-04-01,pico,52.3,,1,1994-04-05,revierte en 1 sesión(es)
+ULVR.L,yahoo,1994-04-05,pico,0.0,,0,,parte del pico que empieza en la sesión 1483
+ULVR.L,yahoo,1994-05-02,pico,52.3,,1,1994-05-03,revierte en 1 sesión(es)
+ULVR.L,yahoo,1994-05-03,pico,0.0,,0,,parte del pico que empieza en la sesión 1503
+ULVR.L,yahoo,1994-05-30,pico,52.3,,1,1994-05-31,revierte en 1 sesión(es)
+ULVR.L,yahoo,1994-05-31,pico,0.0,,0,,parte del pico que empieza en la sesión 1523
+ULVR.L,yahoo,1994-08-29,pico,52.3,,1,1994-08-30,revierte en 1 sesión(es)
+ULVR.L,yahoo,1994-08-30,pico,0.0,,0,,parte del pico que empieza en la sesión 1588
+ULVR.L,yahoo,1994-12-26,pico,52.3,,1,1994-12-28,revierte en 1 sesión(es)
+ULVR.L,yahoo,1994-12-28,pico,0.0,,0,,parte del pico que empieza en la sesión 1673
+ULVR.L,yahoo,1995-01-02,pico,52.3,,1,1995-01-03,revierte en 1 sesión(es)
+ULVR.L,yahoo,1995-01-03,pico,0.0,,0,,parte del pico que empieza en la sesión 1677
+ULVR.L,yahoo,1995-04-14,pico,52.3,,1,1995-04-18,revierte en 1 sesión(es)
+ULVR.L,yahoo,1995-04-18,pico,0.0,,0,,parte del pico que empieza en la sesión 1751
+ULVR.L,yahoo,1995-05-08,pico,52.2,,1,1995-05-09,revierte en 1 sesión(es)
+ULVR.L,yahoo,1995-05-09,pico,0.0,,0,,parte del pico que empieza en la sesión 1766
+ULVR.L,yahoo,1995-05-29,pico,52.3,,1,1995-05-30,revierte en 1 sesión(es)
+ULVR.L,yahoo,1995-05-30,pico,0.0,,0,,parte del pico que empieza en la sesión 1781
+ULVR.L,yahoo,1995-08-28,pico,52.2,,1,1995-08-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1995-08-29,pico,0.0,,0,,parte del pico que empieza en la sesión 1846
+ULVR.L,yahoo,1995-12-25,pico,52.3,,1,1995-12-27,revierte en 1 sesión(es)
+ULVR.L,yahoo,1995-12-27,pico,0.0,,0,,parte del pico que empieza en la sesión 1931
+ULVR.L,yahoo,1996-01-01,pico,52.3,,1,1996-01-02,revierte en 1 sesión(es)
+ULVR.L,yahoo,1996-01-02,pico,0.0,,0,,parte del pico que empieza en la sesión 1935
+ULVR.L,yahoo,1996-05-06,pico,52.3,,1,1996-05-07,revierte en 1 sesión(es)
+ULVR.L,yahoo,1996-05-07,pico,0.0,,0,,parte del pico que empieza en la sesión 2024
+ULVR.L,yahoo,1996-05-27,pico,52.3,,1,1996-05-28,revierte en 1 sesión(es)
+ULVR.L,yahoo,1996-05-28,pico,0.0,,0,,parte del pico que empieza en la sesión 2039
+ULVR.L,yahoo,1996-08-26,pico,52.3,,1,1996-08-27,revierte en 1 sesión(es)
+ULVR.L,yahoo,1996-08-27,pico,0.0,,0,,parte del pico que empieza en la sesión 2104
+ULVR.L,yahoo,1996-12-25,pico,52.3,,1,1996-12-27,revierte en 1 sesión(es)
+ULVR.L,yahoo,1996-12-27,pico,0.0,,0,,parte del pico que empieza en la sesión 2191
+ULVR.L,yahoo,1997-01-01,pico,52.3,,1,1997-01-02,revierte en 1 sesión(es)
+ULVR.L,yahoo,1997-01-02,pico,0.0,,0,,parte del pico que empieza en la sesión 2195
+ULVR.L,yahoo,1997-03-28,pico,52.3,,1,1997-04-01,revierte en 1 sesión(es)
+ULVR.L,yahoo,1997-04-01,pico,0.0,,0,,parte del pico que empieza en la sesión 2257
+ULVR.L,yahoo,1997-05-05,pico,52.3,,1,1997-05-06,revierte en 1 sesión(es)
+ULVR.L,yahoo,1997-05-06,pico,0.0,,0,,parte del pico que empieza en la sesión 2282
+ULVR.L,yahoo,1997-05-26,pico,52.3,,1,1997-05-27,revierte en 1 sesión(es)
+ULVR.L,yahoo,1997-05-27,pico,0.0,,0,,parte del pico que empieza en la sesión 2297
+ULVR.L,yahoo,1997-08-25,pico,52.3,,1,1997-08-26,revierte en 1 sesión(es)
+ULVR.L,yahoo,1997-08-26,pico,0.0,,0,,parte del pico que empieza en la sesión 2362
+ULVR.L,yahoo,1997-12-25,pico,3.3,,1,1997-12-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1997-12-29,pico,0.3,,0,,parte del pico que empieza en la sesión 2450
+ULVR.L,yahoo,1998-01-01,pico,3.3,,1,1998-01-02,revierte en 1 sesión(es)
+ULVR.L,yahoo,1998-01-02,pico,0.3,,0,,parte del pico que empieza en la sesión 2454
+ULVR.L,yahoo,1998-04-10,pico,3.3,,1,1998-04-14,revierte en 1 sesión(es)
+ULVR.L,yahoo,1998-04-14,pico,0.3,,0,,parte del pico que empieza en la sesión 2525
+ULVR.L,yahoo,1998-05-04,pico,3.3,,1,1998-05-05,revierte en 1 sesión(es)
+ULVR.L,yahoo,1998-05-05,pico,0.3,,0,,parte del pico que empieza en la sesión 2540
+ULVR.L,yahoo,1998-05-25,pico,3.3,,1,1998-05-26,revierte en 1 sesión(es)
+ULVR.L,yahoo,1998-05-26,pico,0.3,,0,,parte del pico que empieza en la sesión 2555
+ULVR.L,yahoo,1998-08-31,pico,3.3,,1,1998-09-01,revierte en 1 sesión(es)
+ULVR.L,yahoo,1998-09-01,pico,0.3,,0,,parte del pico que empieza en la sesión 2625
+ULVR.L,yahoo,1998-12-25,pico,3.3,,1,1998-12-29,revierte en 1 sesión(es)
+ULVR.L,yahoo,1998-12-29,pico,0.3,,0,,parte del pico que empieza en la sesión 2709
+ULVR.L,yahoo,1998-12-31,pico,3.3,,1,1999-01-04,revierte en 1 sesión(es)
+ULVR.L,yahoo,1999-01-04,pico,0.3,,0,,parte del pico que empieza en la sesión 2712
+ULVR.L,yahoo,1999-04-02,pico,3.3,,1,1999-04-06,revierte en 1 sesión(es)
+ULVR.L,yahoo,1999-04-06,pico,0.3,,0,,parte del pico que empieza en la sesión 2777
+ULVR.L,yahoo,1999-05-03,pico,3.3,,1,1999-05-04,revierte en 1 sesión(es)
+ULVR.L,yahoo,1999-05-04,pico,0.3,,0,,parte del pico que empieza en la sesión 2797
+VRTX,yahoo,2012-05-07,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+VRTX,yahoo,2013-04-19,real,1.6,,0,,movimiento real (razón sin split limpio): se mantiene
+VTRS,yahoo,1981-11-16,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+VTRS,yahoo,1983-07-01,split,0.5,2.0,3,1983-07-07,cambio de nivel persistente con razón de split limpio
+VTRS,yahoo,1985-02-19,real,0.5,,0,,movimiento real (razón sin split limpio): se mantiene
+WEN,yahoo,1991-10-31,real,1.9,,0,,movimiento real (razón sin split limpio): se mantiene
+WMB,yahoo,2002-07-22,real,0.4,,0,,movimiento real (no persiste): se mantiene
+WMB,yahoo,2002-07-29,real,2.0,,0,,movimiento real (no persiste): se mantiene
+^IRX,yahoo,2008-03-24,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-09-17,real,0.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-09-18,real,3.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-09-19,real,13.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-09-25,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-09-30,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-10-07,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-10-10,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-10-16,real,2.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-10-17,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-11-20,real,0.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-11-21,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-11-25,real,10.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-11-26,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-01,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-02,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-03,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-04,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-05,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-08,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-09,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-10,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-11,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-15,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-16,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-17,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-29,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2008-12-30,real,9.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-01-06,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-01-13,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-03-31,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-06-02,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-11-19,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-11-20,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-11-23,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-11-24,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-11-30,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-12-07,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-12-08,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-12-15,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-12-22,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-12-29,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2009-12-30,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2010-01-12,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-04-05,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-05-05,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-05-06,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-05-10,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-05-17,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-06-22,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-06-23,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-06-24,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-06-28,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-06,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-07,real,4.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-12,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-13,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-19,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-21,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-07-26,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-03,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-09,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-10,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-12,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-16,real,4.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-17,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-18,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-22,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-24,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-29,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-08-30,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-09-09,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-09-27,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-10-03,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-10-04,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-10-12,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-10-24,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-10-25,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-10-31,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-11-15,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-11-16,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-11-22,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-11-25,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-11-28,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2011-12-06,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-01-04,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-01-09,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-01-10,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-01-19,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-12-14,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-12-18,real,2.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-12-28,real,0.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2012-12-31,real,3.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-01-02,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-07-01,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-07-02,real,3.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-07-16,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-07-22,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-07-23,real,4.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-08-27,real,2.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-09-16,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-09-17,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-09-24,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-09-26,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-09-27,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-01,real,2.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-03,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-08,real,2.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-11,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-15,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-17,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2013-10-29,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-01-30,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-02-03,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-02-04,real,2.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-02-14,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-02-19,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-04-24,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-04-28,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-04-29,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-06-23,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-06-24,real,4.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-07-02,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-07-03,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-07-07,real,2.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-07-08,real,3.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-07-17,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-07-22,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-08-05,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-08-26,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-09-22,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-09-23,real,2.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-09-30,real,2.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-10-08,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-10-15,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-10-16,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-10-24,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-10-28,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-10-30,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-04,real,7.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-13,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-17,real,3.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-21,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-24,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-25,real,3.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-11-28,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-02,real,2.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-03,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-04,real,2.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-08,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-09,real,5.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-16,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-18,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-26,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-29,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-30,real,6.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2014-12-31,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-02,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-05,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-06,real,6.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-13,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-20,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-21,real,2.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-26,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-27,real,3.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-01-30,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-03,real,3.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-04,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-05,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-06,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-09,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-10,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-12,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-17,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-02-18,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-03,real,2.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-05,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-06,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-10,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-17,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-19,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-20,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-24,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-03-26,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-02,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-06,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-07,real,5.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-13,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-14,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-21,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-29,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-04-30,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-05-05,real,2.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-05-07,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-05-11,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-05-12,real,2.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-05-28,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-01,real,2.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-04,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-05,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-16,real,2.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-17,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-23,real,2.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-06-30,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-07-01,real,0.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-07-06,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-07-07,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-07-20,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-07-28,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-06,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-07,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-11,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-19,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-20,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-25,real,3.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-08-31,real,0.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-01,real,12.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-04,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-10,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-11,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-15,real,2.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-17,real,0.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-18,real,3.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-22,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-24,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-25,real,4.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-29,real,0.2,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-09-30,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-01,real,3.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-02,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-12,real,3.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-13,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-14,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-15,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-20,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-21,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-26,real,2.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-28,real,3.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-10-29,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-11-06,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2015-11-10,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2020-03-18,real,0.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2020-03-19,real,-9.3,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-20,real,1.2,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-23,real,1.2,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-24,real,0.8,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-25,real,2.1,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-26,real,1.5,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-27,real,0.6,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-30,real,-0.2,,0,,cierre <= 0: se mantiene
+^IRX,yahoo,2020-03-31,real,2.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2020-04-01,real,2.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2020-04-07,real,2.1,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-02-09,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-03-18,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-03-19,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-03-23,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-03-30,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-04-05,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-04-08,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-04-12,real,3.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-04-19,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-04-30,real,0.4,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-03,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-04,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-11,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-18,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-19,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-25,real,3.3,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-26,real,0.5,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-05-28,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2021-12-21,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2022-01-03,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^IRX,yahoo,2022-01-04,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX,yahoo,1990-07-23,real,1.5,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,1991-11-15,real,1.5,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2007-02-27,real,1.6,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2018-02-05,real,2.2,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2021-01-27,real,1.6,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2021-11-26,real,1.5,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2024-08-05,real,1.6,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2024-12-18,real,1.7,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2025-04-04,real,1.5,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX,yahoo,2026-11-05,real,1.7,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX3M,yahoo,2018-02-05,real,1.7,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2011-08-04,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2011-08-08,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2011-11-09,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2013-02-25,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2013-04-15,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2014-07-17,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2015-08-21,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2016-09-09,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2017-05-17,real,2.3,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2017-08-10,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2017-08-17,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2018-02-05,real,3.1,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2018-05-29,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2018-10-10,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2019-08-05,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2019-09-24,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2020-02-24,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2020-02-27,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2020-03-12,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2020-03-16,real,1.5,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2020-06-11,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2021-01-27,real,2.0,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2021-02-25,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2021-11-26,real,2.1,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2024-08-05,real,1.8,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2024-09-03,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2024-12-18,real,2.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2025-04-04,real,1.7,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2025-10-10,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2026-01-20,real,1.6,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2026-06-05,real,1.9,,0,,clase indice sin acciones corporativas: se mantiene
+^VIX9D,yahoo,2026-11-05,real,2.2,,0,,clase indice sin acciones corporativas: se mantiene
+^VVIX,yahoo,2007-02-27,real,1.6,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VXN,yahoo,2018-02-05,real,1.6,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VXN,yahoo,2020-03-16,real,1.5,,0,,clase volatilidad sin acciones corporativas: se mantiene
+^VXN,yahoo,2026-11-05,real,1.5,,0,,clase volatilidad sin acciones corporativas: se mantiene

@@ -18,6 +18,14 @@ from ingesta.mercados_series import __main__ as cli
 from ingesta.mercados_series.contrato import ErrorContrato, fecha_publicacion_derivada, validar_series
 from ingesta.mercados_series.fuentes import alfred, fred
 
+
+@pytest.fixture(autouse=True)
+def _base_de_trabajo_por_defecto(monkeypatch):
+    """Estos tests prueban la base de trabajo: desde el saneado (P01) el defecto de las tools es la curada."""
+    from ingesta.mercados_series import tools as _tools
+
+    monkeypatch.setattr(_tools, "BASE_DEFECTO", "trabajo")
+
 HABILES = pd.bdate_range("2024-01-02", "2024-03-29")
 
 

@@ -13,8 +13,8 @@
   "autenticacion": "ninguna",
   "coste": "0 €",
   "licencia_y_terminos": "derivado de Yahoo (uso personal), FRED (dominio público) y Ken French (cita)",
-  "cobertura_inicio": "1993-02-26",
-  "cobertura_fin": "2026-10-12",
+  "cobertura_inicio": "1993-01-29",
+  "cobertura_fin": "2026-11-13",
   "frecuencia": "curvas diarias (día hábil); rebalanceo mensual o anual",
   "retraso_publicacion": "punto en el tiempo: cada valor usa solo precios con fecha_publicacion <= el día (16:30 Nueva York); DTB3 en T+1 (medido en mediciones.libre_riesgo); French RF solo ex post",
   "formato": "parquet (curvas, en el corpus) y csv de parámetros",
@@ -25,166 +25,305 @@
     "brutos": {
       "metricas": {
         "buy&hold SPY": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.1085816061071776,
-          "vol": 0.18205676109070001,
-          "sharpe": 0.638151932900726,
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.1073353830903705,
+          "vol": 0.182002439178048,
+          "sharpe": 0.632249359676944,
           "max_drawdown": -0.5518944026470529,
           "rebalanceos": 1,
           "coste_total_usd": 0.0,
-          "segundos": 4.6,
+          "segundos": 4.2,
           "avisos": [],
-          "notas": []
+          "notas": [],
+          "ejecucion": "apertura_t1"
         },
         "60/40 SPY/AGG": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.0854483472269425,
-          "vol": 0.10780759868763216,
-          "sharpe": 0.7887385475990039,
-          "max_drawdown": -0.33716268157670604,
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.08494211905458648,
+          "vol": 0.10767572013487775,
+          "sharpe": 0.7852924575638248,
+          "max_drawdown": -0.33741989841713327,
           "rebalanceos": 35,
           "coste_total_usd": 0.0,
-          "segundos": 12.3,
-          "avisos": [],
+          "segundos": 11.0,
+          "avisos": [
+            "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1993-01-29): se ejecuta a su cierre",
+            "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1993-12-31): se ejecuta a su cierre",
+            "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1994-12-30): se ejecuta a su cierre",
+            "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1995-12-29): se ejecuta a su cierre",
+            "60/40 SPY/AGG: sin apertura en la sesión de ejecución de ['VBMFX'] (orden del 1996-12-31): se ejecuta a su cierre"
+          ],
           "notas": [
             "empalme AGG: VBMFX → AGG (se usa el primero vivo en cada control)"
-          ]
+          ],
+          "ejecucion": "apertura_t1"
         },
         "1/N 46 ETF": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.08643245013881429,
-          "vol": 0.1448054745047015,
-          "sharpe": 0.6256323393398366,
-          "max_drawdown": -0.4228562151234426,
-          "rebalanceos": 404,
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.08614927857157806,
+          "vol": 0.14476417155425464,
+          "sharpe": 0.6239566082102359,
+          "max_drawdown": -0.42070641954305465,
+          "rebalanceos": 406,
           "coste_total_usd": 0.0,
-          "segundos": 142.4,
-          "avisos": [],
-          "notas": []
+          "segundos": 131.8,
+          "avisos": [
+            "1/N 46 ETF: sin apertura en la sesión de ejecución de ['USMV'] (orden del 2011-10-31): se ejecuta a su cierre",
+            "1/N 46 ETF: sin apertura en la sesión de ejecución de ['MTUM'] (orden del 2013-04-30): se ejecuta a su cierre",
+            "1/N 46 ETF: sin apertura en la sesión de ejecución de ['QUAL'] (orden del 2013-07-31): se ejecuta a su cierre",
+            "1/N 46 ETF: sin apertura en la sesión de ejecución de ['XLRE'] (orden del 2015-10-30): se ejecuta a su cierre"
+          ],
+          "notas": [],
+          "ejecucion": "apertura_t1"
         },
         "buy&hold RSP": {
           "inicio": "2003-05-30",
-          "fin": "2026-10-12",
-          "cagr": 0.10770031878254716,
-          "vol": 0.19344887122477464,
-          "sharpe": 0.6078444616696528,
-          "max_drawdown": -0.5992281317277888,
+          "fin": "2026-11-13",
+          "cagr": 0.10857018756511216,
+          "vol": 0.19334744521070882,
+          "sharpe": 0.6118889379532312,
+          "max_drawdown": -0.599228131727789,
           "rebalanceos": 1,
           "coste_total_usd": 0.0,
-          "segundos": 3.2,
+          "segundos": 2.9,
           "avisos": [],
-          "notas": []
+          "notas": [],
+          "ejecucion": "apertura_t1"
         },
         "momentum sectorial 12-1 top 3": {
           "inicio": "1999-12-31",
-          "fin": "2026-10-12",
-          "cagr": 0.09333817082405393,
-          "vol": 0.18622354351268974,
-          "sharpe": 0.556299415807182,
-          "max_drawdown": -0.46069472289716484,
-          "rebalanceos": 322,
+          "fin": "2026-11-13",
+          "cagr": 0.09031220430669729,
+          "vol": 0.18644766145360633,
+          "sharpe": 0.5414319129763869,
+          "max_drawdown": -0.46537418327763724,
+          "rebalanceos": 323,
           "coste_total_usd": 0.0,
-          "segundos": 38.0,
+          "segundos": 34.4,
           "avisos": [],
-          "notas": []
+          "notas": [],
+          "ejecucion": "apertura_t1"
         },
         "60/40 UCITS CSPX.L/EUNA.DE": {
           "inicio": "2017-11-30",
-          "fin": "2026-10-12",
-          "cagr": 0.08459481347825393,
-          "vol": 0.11197345829711537,
-          "sharpe": 0.7569420448281556,
-          "max_drawdown": -0.25419698855708817,
+          "fin": "2026-11-13",
+          "cagr": 0.0809015574790446,
+          "vol": 0.11166803328306513,
+          "sharpe": 0.728850007928965,
+          "max_drawdown": -0.25224612003311153,
           "rebalanceos": 10,
           "coste_total_usd": 0.0,
-          "segundos": 10.7,
+          "segundos": 3.4,
+          "avisos": [
+            "1 filas en EUR posteriores al último fixing visible en 2017-11-30 (2017-11-29): se usa ese fixing",
+            "1 filas en EUR posteriores al último fixing visible en 2017-12-29 (2017-12-28): se usa ese fixing",
+            "60/40 UCITS CSPX.L/EUNA.DE: sin apertura en la sesión de ejecución de ['EUNA.DE'] (orden del 2017-11-30): se ejecuta a su cierre",
+            "1 filas en EUR posteriores al último fixing visible en 2018-01-31 (2018-01-30): se usa ese fixing",
+            "60/40 UCITS CSPX.L/EUNA.DE: sin apertura en la sesión de ejecución de ['EUNA.DE'] (orden del 2017-12-29): se ejecuta a su cierre"
+          ],
+          "notas": [],
+          "ejecucion": "apertura_t1"
+        },
+        "buy&hold SPY [cierre t+1]": {
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.1071264336703679,
+          "vol": 0.1819996838480596,
+          "sharpe": 0.6312541860832106,
+          "max_drawdown": -0.5518944026470531,
+          "rebalanceos": 1,
+          "coste_total_usd": 0.0,
+          "segundos": 4.2,
           "avisos": [],
-          "notas": []
+          "notas": [],
+          "ejecucion": "cierre_t1"
+        },
+        "60/40 SPY/AGG [cierre t+1]": {
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.08447247750425024,
+          "vol": 0.10770680271920104,
+          "sharpe": 0.7812121334000792,
+          "max_drawdown": -0.3397663911674158,
+          "rebalanceos": 35,
+          "coste_total_usd": 0.0,
+          "segundos": 11.0,
+          "avisos": [],
+          "notas": [
+            "empalme AGG: VBMFX → AGG (se usa el primero vivo en cada control)"
+          ],
+          "ejecucion": "cierre_t1"
+        },
+        "1/N 46 ETF [cierre t+1]": {
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.08635492401384481,
+          "vol": 0.1447978184316044,
+          "sharpe": 0.6251034836132909,
+          "max_drawdown": -0.41822796810833507,
+          "rebalanceos": 406,
+          "coste_total_usd": 0.0,
+          "segundos": 131.8,
+          "avisos": [],
+          "notas": [],
+          "ejecucion": "cierre_t1"
+        },
+        "buy&hold RSP [cierre t+1]": {
+          "inicio": "2003-05-30",
+          "fin": "2026-11-13",
+          "cagr": 0.10875021648740879,
+          "vol": 0.19334552531740118,
+          "sharpe": 0.6127047083641061,
+          "max_drawdown": -0.5992281317277891,
+          "rebalanceos": 1,
+          "coste_total_usd": 0.0,
+          "segundos": 2.9,
+          "avisos": [],
+          "notas": [],
+          "ejecucion": "cierre_t1"
+        },
+        "momentum sectorial 12-1 top 3 [cierre t+1]": {
+          "inicio": "1999-12-31",
+          "fin": "2026-11-13",
+          "cagr": 0.09141581236315632,
+          "vol": 0.18656460097566693,
+          "sharpe": 0.5464467388458253,
+          "max_drawdown": -0.4693900562844229,
+          "rebalanceos": 323,
+          "coste_total_usd": 0.0,
+          "segundos": 34.5,
+          "avisos": [],
+          "notas": [],
+          "ejecucion": "cierre_t1"
+        },
+        "60/40 UCITS CSPX.L/EUNA.DE [cierre t+1]": {
+          "inicio": "2017-11-30",
+          "fin": "2026-11-13",
+          "cagr": 0.08189300508192976,
+          "vol": 0.11175807641442835,
+          "sharpe": 0.7362783795041286,
+          "max_drawdown": -0.25214482563033536,
+          "rebalanceos": 10,
+          "coste_total_usd": 0.0,
+          "segundos": 3.5,
+          "avisos": [
+            "1 filas en EUR posteriores al último fixing visible en 2017-11-30 (2017-11-29): se usa ese fixing",
+            "1 filas en EUR posteriores al último fixing visible en 2017-12-29 (2017-12-28): se usa ese fixing",
+            "1 filas en EUR posteriores al último fixing visible en 2018-01-31 (2018-01-30): se usa ese fixing",
+            "1 filas en EUR posteriores al último fixing visible en 2018-02-28 (2018-02-27): se usa ese fixing",
+            "1 filas en EUR posteriores al último fixing visible en 2018-03-30 (2018-03-28): se usa ese fixing"
+          ],
+          "notas": [],
+          "ejecucion": "cierre_t1"
         }
       },
-      "avisos_carga": []
+      "avisos_carga": [],
+      "fin": "2026-11-13",
+      "precios": "curados"
     },
     "costes": {
       "costes": {
         "60/40 SPY/AGG [degiro]": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.08491482402149853,
-          "vol": 0.10780139111986205,
-          "sharpe": 0.7843706003053843,
-          "max_drawdown": -0.33800763486630725,
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.08441901972895804,
+          "vol": 0.10766476483490722,
+          "sharpe": 0.7810336527196183,
+          "max_drawdown": -0.3381278881387041,
           "rebalanceos": 35,
-          "coste_total_usd": 624.6623349238878,
-          "segundos": 12.1
+          "coste_total_usd": 633.6007299543143,
+          "segundos": 11.0
         },
         "momentum sectorial 12-1 top 3 [degiro]": {
           "inicio": "1999-12-31",
-          "fin": "2026-10-12",
-          "cagr": 0.06796677235781923,
-          "vol": 0.1862432840342207,
-          "sharpe": 0.43444247057974344,
-          "max_drawdown": -0.47198249044499985,
-          "rebalanceos": 322,
-          "coste_total_usd": 12165.222156842949,
-          "segundos": 39.1
+          "fin": "2026-11-13",
+          "cagr": 0.06477157223626429,
+          "vol": 0.18646744494166875,
+          "sharpe": 0.41858333549919485,
+          "max_drawdown": -0.47675825491619883,
+          "rebalanceos": 323,
+          "coste_total_usd": 11741.884196004044,
+          "segundos": 34.6
         },
         "1/N 46 ETF [degiro]": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.055136240685011106,
-          "vol": 0.14493277312540082,
-          "sharpe": 0.43034424667319726,
-          "max_drawdown": -0.4626654546894775,
-          "rebalanceos": 404,
-          "coste_total_usd": 30951.155644248225,
-          "segundos": 147.9
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.05632887379003848,
+          "vol": 0.1448304318813622,
+          "sharpe": 0.43803570557606764,
+          "max_drawdown": -0.4596723469571413,
+          "rebalanceos": 406,
+          "coste_total_usd": 30918.085885920504,
+          "segundos": 134.0
+        },
+        "60/40 UCITS CSPX.L/EUNA.DE [degiro]": {
+          "inicio": "2017-11-30",
+          "fin": "2026-11-13",
+          "cagr": 0.07982060239149869,
+          "vol": 0.11171085670248775,
+          "sharpe": 0.7199607410485228,
+          "max_drawdown": -0.25280549789642304,
+          "rebalanceos": 10,
+          "coste_total_usd": 128.56323666114704,
+          "segundos": 3.4
         },
         "60/40 SPY/AGG [ibkr]": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.08531798105975241,
-          "vol": 0.10780620339008933,
-          "sharpe": 0.7876707176324673,
-          "max_drawdown": -0.33748836025931095,
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.084819491261926,
+          "vol": 0.10767297197411382,
+          "sharpe": 0.7842954790790848,
+          "max_drawdown": -0.3376168806073123,
           "rebalanceos": 35,
-          "coste_total_usd": 176.31067965704503,
-          "segundos": 13.3
+          "coste_total_usd": 174.05674851828525,
+          "segundos": 11.0
         },
         "momentum sectorial 12-1 top 3 [ibkr]": {
           "inicio": "1999-12-31",
-          "fin": "2026-10-12",
-          "cagr": 0.08634049410968214,
-          "vol": 0.1862105817574889,
-          "sharpe": 0.5230047824041797,
-          "max_drawdown": -0.4647539941523473,
-          "rebalanceos": 322,
-          "coste_total_usd": 4530.4655163218495,
-          "segundos": 41.9
+          "fin": "2026-11-13",
+          "cagr": 0.08313707878080279,
+          "vol": 0.18643788721517235,
+          "sharpe": 0.5072362590851197,
+          "max_drawdown": -0.4694566052083604,
+          "rebalanceos": 323,
+          "coste_total_usd": 4473.332113284978,
+          "segundos": 34.5
+        },
+        "60/40 UCITS CSPX.L/EUNA.DE [ibkr]": {
+          "inicio": "2017-11-30",
+          "fin": "2026-11-13",
+          "cagr": 0.08021840976551275,
+          "vol": 0.11169192181682612,
+          "sharpe": 0.7232496823583772,
+          "max_drawdown": -0.2525822625819948,
+          "rebalanceos": 10,
+          "coste_total_usd": 82.72506921288414,
+          "segundos": 3.4
         },
         "60/40 SPY/AGG [degiro_sin_multiplicador]": {
-          "inicio": "1993-02-26",
-          "fin": "2026-10-12",
-          "cagr": 0.08493092582973572,
-          "vol": 0.10780126680483874,
-          "sharpe": 0.7845044235934002,
-          "max_drawdown": -0.3378778591708864,
+          "inicio": "1993-01-29",
+          "fin": "2026-11-13",
+          "cagr": 0.08442862407482399,
+          "vol": 0.10766458784822612,
+          "sharpe": 0.7811142416439864,
+          "max_drawdown": -0.3381250592282756,
           "rebalanceos": 35,
-          "coste_total_usd": 592.6442150957738,
-          "segundos": 13.3
+          "coste_total_usd": 606.4940218631936,
+          "segundos": 11.0
         },
         "momentum sectorial 12-1 top 3 [degiro_sin_multiplicador]": {
           "inicio": "1999-12-31",
-          "fin": "2026-10-12",
-          "cagr": 0.06946066128145945,
-          "vol": 0.18621441315826584,
-          "sharpe": 0.4417337789996786,
-          "max_drawdown": -0.47042351058222154,
-          "rebalanceos": 322,
-          "coste_total_usd": 11589.647030106835,
-          "segundos": 40.1
+          "fin": "2026-11-13",
+          "cagr": 0.0664389990106633,
+          "vol": 0.18642985924863156,
+          "sharpe": 0.4267378436070094,
+          "max_drawdown": -0.47515149556780567,
+          "rebalanceos": 323,
+          "coste_total_usd": 11119.065262529528,
+          "segundos": 34.4
         }
       },
       "multiplicador_spy": {
@@ -205,28 +344,28 @@
             "chl_mediana_pb": 190.3
           }
         },
-        "sesiones": 8483,
+        "sesiones": 8507,
         "fraccion_chl_cero": 0.438,
-        "mediana_calma_final_pb": 11.94,
+        "mediana_calma_final_pb": 11.96,
         "capital_inicial_usd": 11000.0
       }
     },
     "libre_riesgo": {
       "dtb3": {
         "inicio": "1954-01-04",
-        "fin": "2026-10-08",
+        "fin": "2026-11-17",
         "retraso_dias_mediana": 1.0,
         "retraso_dias_p95": 3.0
       },
       "french_rf": {
         "inicio": "1926-07-01",
-        "fin": "2026-08-31"
+        "fin": "2026-09-30"
       },
       "dtb3_menos_french_pb": {
         "mediana": 5.9,
         "p05": -102.5,
-        "p95": 112.3,
-        "n": 8473
+        "p95": 113.2,
+        "n": 8494
       },
       "eur": {
         "disponible": true,
@@ -240,11 +379,11 @@
     "Baselines con get_precios en cada control (último hábil de mes) y base recortada a la ventana; test de truncado",
     "60/40: VBMFX hasta el primer control con AGG visible (2003-09-30); VBMFX publica en D+1 (NAV)",
     "1/N sobre los ETF del núcleo de Yahoo vivos en la fecha (lista estática del núcleo: sesgo de supervivencia declarado; WRDS pendiente)",
-    "60/40 europeo (anexo): CSPX.L (USD, Londres) 60 % y EUNA.DE (EUR, Xetra; a USD con el FX del BCE visible) 40 %, rebalanceo anual; empieza cuando EUNA.DE está vivo (lanzado en 2017-11)",
-    "Ejecución al cierre de la fecha de control; la señal solo ve sesiones anteriores (sesion < fecha: baselines.vista_senal), con test que falla si una estrategia usa el cierre de ejecución",
+    "60/40 europeo (anexo): CSPX.L (USD, Londres) 60 % y EUNA.DE (EUR, Xetra; a USD con el FX del BCE visible) 40 %, rebalanceo anual, desde el 2017-11-30 (EUNA.DE lanzado en 2017-11), sin empalme con el proxy, bruto y con costes (DEGIRO e IBKR)",
+    "Ejecución en t+1 (saneado P08): se decide tras el cierre de t y se opera a la apertura de la sesión siguiente de cada instrumento (si no hay apertura, a su cierre, con aviso; nunca al cierre de t); sensibilidad al cierre de t+1 (variante bruto_cierre_t1). Precios curados hasta el corte G2 (P18)",
     "EUR: EONIA hasta que €STR es visible y €STR después (lr.tasa_eur, de la base de series); Euribor 3M no catalogado",
     "Comisiones DEGIRO/IBKR de la tarifa pública sin verificar (verificado=False en costes_modelo.csv)",
     "Precios validados por contrato con almacen.leer_precios (ningún ticker leído sin validar)"
   ],
-  "fecha_sonda": "2026-10-13"
+  "fecha_sonda": "2026-11-21"
 }

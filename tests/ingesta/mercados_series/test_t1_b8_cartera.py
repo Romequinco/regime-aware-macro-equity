@@ -104,10 +104,16 @@ def test_t1_b8_cartera_truncado_no_mira_al_futuro(universo, nombre, corte):
 
 def test_t1_b8_cartera_buy_hold_es_retorno_total(universo):
     """Buy&hold = retorno total (split neutro, dividendos reinvertidos) visto al final."""
-    r = b.simular(b.buy_hold("SPY"), universo, "2001-01-31", "2006-12-29")
+    r = b.simular(b.buy_hold("SPY"), universo, "2001-01-31", "2006-12-29", ejecucion="cierre_t")
     aj = timegate.ajustar_a_fecha(universo["SPY"], "2006-12-29", avisar=False).set_index("sesion")
     esperado = aj["close_aj_total"].loc["2006-12-29"] / aj["close_aj_total"].loc["2001-01-31"]
     assert r.curva.iloc[-1] / r.curva.iloc[0] == pytest.approx(esperado, rel=1e-12)
+    # Ejecución en t+1 (P08): se compra en la apertura del 2001-02-01 (el cierre del 2001-01-31 solo decide).
+    r1 = b.simular(b.buy_hold("SPY"), universo, "2001-01-31", "2006-12-29")
+    esperado1 = aj["close_aj_total"].loc["2006-12-29"] / aj["open_aj_total"].loc["2001-02-01"]
+    assert r1.curva.iloc[-1] / r1.curva.iloc[0] == pytest.approx(esperado1, rel=1e-12)
+    assert r1.rebalanceos["fecha_ejecucion"].iloc[0] == pd.Timestamp("2001-02-01")
+    r = r1
     dia = r.curva.loc["2004-06-14":"2004-06-16"].pct_change().dropna()
     assert (dia.abs() < 0.2).all()  # el split 2:1 no aparece como caída del 50 %
 

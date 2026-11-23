@@ -125,6 +125,14 @@ CUENTAS_SOLO_ANADIR = ("conservadas", "ya_conservadas", "fechadas_observacion", 
 # el WEO (PUBLICATION_DATE / UPDATE_DATE de cada edición, fuentes.imf) y el BCE (VALID_FROM de cada versión,
 # fuentes.bce). En las demás, una fecha propia solo se respeta si es posterior.
 FUENTES_FECHA_PROPIA_ANTERIOR = ("imf_weo", "bce")
+# Saneado P13 (2026-11-21): fuentes solo-añadir que traían vintage «unico» y pasan a VINTAGE CON FECHA, como el BCE.
+# Con «unico», una corrección de la fuente tenía la misma clave que lo guardado y se tiraba (gana la guardada: 463
+# filas el 2026-11-20). Ahora: lo guardado lleva la fecha de la primera descarga de la fuente (la de este diccionario,
+# la de la base del bloque 4) y cada valor nuevo o corregido, la de su observación (``fechar_vintages``). La
+# ``fecha_publicacion`` de lo guardado no cambia: la vintage es solo la etiqueta de la versión.
+VINTAGE_PRIMERA_DESCARGA = {"eurostat": "2026-10-13", "bis": "2026-10-13", "rba": "2026-10-13"}
+# Saneado P30: fila nula de una serie de mercado en un día que su calendario da cerrado (festivo): fuera.
+NOTA_VACIO_CERRADO = "fila vacía en un día de mercado cerrado"
 TOLERANCIA_DERIVADA = 1e-9
 AVISO_FRED = ("This product uses the FRED® API but is not endorsed or certified by the Federal Reserve "
               "Bank of St. Louis.")
@@ -266,7 +274,15 @@ def tabla_oficial(nombre: str, *, sin_red: bool = True, registro: Callable[[str]
     elif nombre in _BLOQUE4:
         ruta = corpus / "bloque4" / f"{_BLOQUE4[nombre]}.parquet"
         if ruta.exists():
-            partes.append(pd.read_parquet(ruta))
+            t = pd.read_parquet(ruta)
+            if nombre == "worldbank":
+                # Saneado P23: las series de la lista curada, con las ediciones del archivo del WDI (vintages).
+                from ingesta.mercados_series.fuentes import wdi_archivo
+                dias = sorted(p.name[:8] for p in (corpus / "crudo" / "worldbank").glob("[0-9]" * 8 + "_*.json"))
+                dia = pd.Timestamp(dias[-1]) if dias else pd.Timestamp(ruta.stat().st_mtime, unit="s").normalize()
+                t, n_wdi = wdi_archivo.aplicar_archivo(validar_series(t[list(COLUMNAS_SERIES)]), dia_hoy=dia)
+                log(f"  worldbank: {n_wdi} series con las ediciones del archivo del WDI")
+            partes.append(t)
         else:
             log(f"  aviso: {nombre}: falta {ruta} (python -m ingesta.mercados_series descargar-{nombre})")
     elif nombre == "oecd":
@@ -710,6 +726,88 @@ def conservar_revisiones(tabla: pd.DataFrame, guardado: pd.DataFrame, series: It
     return out, info, previsto
 
 
+def _sin_nota_revisable(nota: Any) -> Any:
+    """La nota sin las ``catalogo.NOTAS_REVISABLE`` (que llevan «; » dentro: se quitan enteras, no por partes)."""
+    if not isinstance(nota, str):
+        return nota
+    for n in cat_mod.NOTAS_REVISABLE:
+        nota = nota.replace(n, "")
+    partes = [p for p in nota.split("; ") if p.strip()]
+    return "; ".join(partes) or None
+
+
+def fechar_vintages(tabla: pd.DataFrame, guardado: pd.DataFrame, observado: Any,
+                    primera: Mapping[str, str] = VINTAGE_PRIMERA_DESCARGA) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
+    """Saneado P13: vintage con fecha en las fuentes de ``primera`` (Eurostat, BIS, RBA), que traen vintage «unico».
+
+    - Lo guardado con vintage «unico» pasa a la fecha de la primera descarga de su fuente (``primera``); su
+      ``fecha_publicacion``, valor y nota no cambian (la vintage es solo la etiqueta de la versión).
+    - Cada fila nueva («unico») toma la vintage de la última guardada de su periodo si tiene su mismo valor (misma
+      clave: nada cambia) y, si no (corrección de la fuente o periodo nuevo), el día de ``observado`` en Nueva York.
+      Una corrección de un periodo ya guardado pierde la nota de posible fuga de revisiones (es el valor observado ese
+      día, no el de hoy con una fecha antigua).
+
+    Después, ``conservar_revisiones`` hace el resto como con el BCE: la versión vieja se conserva («valor anterior a
+    una revisión observada el...») y la corrección se ve desde su observación. Idempotente. Devuelve
+    ``(tabla, guardado, series migradas)``: las series con alguna fila guardada que cambia de vintage (se reescriben
+    enteras tras comprobar que no pierden nada, ``construir_base``).
+    """
+    obs = pd.Timestamp(observado)
+    obs = obs.tz_localize("UTC") if obs.tzinfo is None else obs.tz_convert("UTC")
+    dia = obs.tz_convert(HUSO_DECISION).date().isoformat()
+    m_t = tabla["fuente"].isin(list(primera)) & (tabla["vintage"] == "unico")
+    m_g = guardado["fuente"].isin(list(primera)) & (guardado["vintage"] == "unico")
+    migradas = sorted(set(guardado.loc[m_g, "serie"]))
+    if m_g.any():
+        guardado = guardado.copy()
+        guardado.loc[m_g, "vintage"] = guardado.loc[m_g, "fuente"].map(dict(primera)).to_numpy()
+    if not m_t.any():
+        return tabla, guardado, migradas
+    tabla = tabla.copy()
+    nuevo = tabla.loc[m_t, ["serie", "fecha_referencia", "valor"]]
+    g = guardado[guardado["serie"].isin(set(nuevo["serie"]))]
+    ultima = (g.sort_values(["serie", "fecha_referencia", "fecha_publicacion", "vintage"], kind="mergesort")
+              .drop_duplicates(["serie", "fecha_referencia"], keep="last")
+              [["serie", "fecha_referencia", "valor", "vintage"]].rename(columns={"valor": "_v", "vintage": "_vint"}))
+    cruce = nuevo.merge(ultima, on=["serie", "fecha_referencia"], how="left")
+    igual = cruce["_vint"].notna().to_numpy() & _iguales_valor(cruce["valor"], cruce["_v"])
+    vint = np.where(igual, cruce["_vint"].to_numpy(dtype=object), dia)
+    tabla.loc[m_t, "vintage"] = vint
+    corrige = cruce["_vint"].notna().to_numpy() & ~igual
+    if corrige.any():
+        idx = tabla.index[m_t][corrige]
+        tabla.loc[idx, "nota"] = [_sin_nota_revisable(n) for n in tabla.loc[idx, "nota"]]
+    return tabla, guardado, migradas
+
+
+def quitar_vacios_cerrados(tabla: pd.DataFrame) -> tuple[pd.DataFrame, int]:
+    """Saneado P30: fuera las filas nulas de las curvas diarias en un día que su calendario da cerrado.
+
+    Regla general (``fuentes.curvas.CALENDARIO_HABILES``: BCE TARGET, MoF XTKS, BoC XTSE, BoE XLON): valor nulo y
+    día laborable sin sesión en el calendario → la fila no es un hueco sino un festivo y se quita (los demás años el
+    festivo no tiene fila). Devuelve ``(tabla, filas quitadas)``.
+    """
+    from ingesta.mercados_series import eda
+    from ingesta.mercados_series.fuentes.curvas import CALENDARIO_HABILES
+
+    quitar = np.zeros(len(tabla), dtype=bool)
+    nulas = tabla["valor"].isna().to_numpy()
+    if not nulas.any():
+        return tabla, 0
+    for fuente, cal in CALENDARIO_HABILES.items():
+        m = nulas & (tabla["fuente"] == fuente).to_numpy()
+        if not m.any():
+            continue
+        try:
+            sesiones = eda.sesiones_calendario(cal)
+        except Exception:  # noqa: BLE001 - sin exchange_calendars no se quita nada
+            continue
+        dias = tabla.loc[m, "fecha_referencia"].to_numpy(dtype="datetime64[D]")
+        cerrado = np.is_busday(dias) & (dias >= sesiones[0]) & ~np.isin(dias, sesiones)
+        quitar[np.flatnonzero(m)[cerrado]] = True
+    return (tabla[~quitar].reset_index(drop=True), int(quitar.sum())) if quitar.any() else (tabla, 0)
+
+
 def _comprobar_solo_crece(previsto: pd.DataFrame, nuevo: pd.DataFrame, revisables: Iterable[str]) -> None:
     """La comprobación de ``almacen.escribir_series`` contra ``previsto`` (lo guardado con sus notas nuevas).
 
@@ -890,13 +988,34 @@ def construir_base(*, sin_red: bool = False, escribir: bool = True, ruta: Path |
     # revisiones se fechan desde su observación. También desde cero y con permitir_perdidas (lo guardado es lo
     # único que queda de lo que se sabía antes), también en los errores_propios declarados.
     errores = set(errores_propios)
-    solo_ids = sorted(sid for sid in servidas if elegido.get(sid) in CARGADORES_SOLO_ANADIR and sid in guardadas)
+    # Saneado P30: filas vacías de curvas en días de mercado cerrado, fuera (también de lo guardado, abajo).
+    tabla, n_cerrados = quitar_vacios_cerrados(tabla)
+    if n_cerrados:
+        log(f"filas vacías en días de mercado cerrado quitadas: {n_cerrados}")
+    # Saneado P23: las series del Banco Mundial con vintages del archivo del WDI traen toda su historia (como la OCDE):
+    # no entran en el solo-añadir y sustituyen a lo guardado con vintage «unico» (la carga del archivo es la fuente).
+    no_unico = tabla.loc[tabla["vintage"] != "unico", "serie"].unique()
+    con_historia = {sid for sid in no_unico if elegido.get(sid) == "worldbank"}
+    solo_ids = sorted(sid for sid in servidas if elegido.get(sid) in CARGADORES_SOLO_ANADIR and sid in guardadas
+                      and sid not in con_historia)
     solo_anadir: dict[str, Any] = {}
     previsto = vacio_series()
     if solo_ids:
         previo = almacen.leer_series(solo_ids, ruta=ruta_guardada, validar=False)
+        antes = previo["serie"].value_counts()
+        previo, n_cerr_g = quitar_vacios_cerrados(previo)
+        despues = previo["serie"].value_counts().reindex(antes.index, fill_value=0)
+        ajustadas = set(antes.index[antes != despues])
+        # Saneado P13: Eurostat, BIS y RBA con vintage con fecha (lo guardado, con la de su primera descarga).
+        tabla, previo, migradas = fechar_vintages(tabla, previo, observado if observado is not None else t_obs)
         tabla, solo_anadir, previsto = conservar_revisiones(tabla, previo, solo_ids,
                                                             observado if observado is not None else t_obs)
+        # Las series migradas o con filas quitadas se reescriben enteras: se comprueban contra lo guardado ya ajustado.
+        extra = (set(migradas) | ajustadas) - set(previsto["serie"])
+        if extra:
+            previsto = pd.concat([previsto, previo[previo["serie"].isin(extra)]], ignore_index=True)
+        solo_anadir = {**solo_anadir, "vintage_con_fecha": len(migradas), "vacios_cerrados": n_cerrados + n_cerr_g,
+                       "con_historia_wdi": len(con_historia)}
         tabla = validar_series(tabla)
         cat_mod.validar_contra_catalogo(tabla[tabla["serie"].isin(solo_ids)], efectivo)
         log(f"solo-añadir ({len(solo_ids)} series): {solo_anadir['conservadas']} filas guardadas conservadas "
