@@ -58,6 +58,9 @@
   curadas, las escalas por vintage, las derivadas recalculadas y el corte G2), ``alias.parquet``,
   ``proyecciones.parquet`` y ``registro_cambios.parquet`` (``curada``; no toca ``base_series.parquet``). Tablas
   ``curada_verificaciones.csv`` y ``curada_resumen.csv``; si alguna verificación falla, no escribe nada.
+- ``catalogo-agentes [--sin-escribir]``: catálogo para los agentes (``catalogo_agentes``): una fila por serie que
+  queda en la curada, por proyección y por ticker de ``precios_curados``, solo metadatos y fechas, en
+  ``tablas/catalogo_agentes.csv`` y ``catalogo_agentes_resumen.csv`` (escritura atómica). Lo lee ``buscar_series``.
 
 This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.
 """
@@ -365,6 +368,12 @@ def _curar_precios(a: argparse.Namespace) -> int:
     return curada_precios.main(["--sin-escribir"] * a.sin_escribir + (["--tickers", a.tickers] if a.tickers else []))
 
 
+def _catalogo_agentes(a: argparse.Namespace) -> int:
+    from ingesta.mercados_series import catalogo_agentes
+
+    return catalogo_agentes.main(["--sin-escribir"] * a.sin_escribir)
+
+
 def _sin_red(url: str, params: dict) -> dict:
     raise RuntimeError("sin red (--sin-red): falta en la caché de hoy")
 
@@ -455,6 +464,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     cu.add_argument("--sin-escribir", action="store_true", help="construye y verifica sin escribir nada")
     cu.add_argument("--corte", default=None, help="corte AAAA-MM-DD (por defecto config/corte.yaml)")
     cu.set_defaults(func=_curar)
+    ca = sub.add_parser("catalogo-agentes", help="catálogo para los agentes y la búsqueda (series, proyecciones y "
+                                                 "precios curados; solo metadatos)")
+    ca.add_argument("--sin-escribir", action="store_true", help="construye y valida sin escribir los CSV")
+    ca.set_defaults(func=_catalogo_agentes)
     rf = sub.add_parser("refrescar", help="orden única de refresco hasta un corte (descargas, base y curado; P07)",
                         add_help=False)
     rf.add_argument("resto", nargs=argparse.REMAINDER, help="argumentos de ingesta.mercados_series.refrescar")

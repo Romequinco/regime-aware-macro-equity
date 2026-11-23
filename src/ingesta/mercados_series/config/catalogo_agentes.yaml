@@ -1,0 +1,650 @@
+# Catálogo para los agentes y búsqueda de series (Tema 1, Fase 2): lo lee catalogo_agentes.py.
+#
+# Lo ÚNICO que se escribe a mano del catálogo de los agentes está aquí; el resto sale de la base curada, del
+# manifiesto, de catalogo_series.yaml, lista_curada.yaml, universo.yaml y las tablas del tema. Solo metadatos.
+# Regenerar el CSV tras cambiar este fichero: python -m ingesta.mercados_series catalogo-agentes
+#
+# Reglas (temas, zonas, agentes): cada regla lleva 'si' con condiciones sobre los campos de la fila
+#   (id, tipo, fuente, grupo, nombre, unidad, clase, bucket, mercado, rol, tema, subtema, clave) y TODAS deben
+#   cumplirse. Una condición es un texto (igualdad), una lista (pertenencia) o un texto que empieza por '~'
+#   (expresión regular de Python, sin distinguir mayúsculas, con re.search). 'clave' es true en las filas con
+#   descripción a mano (abajo). Sin 'si', la regla vale para todas.
+# - temas: la PRIMERA regla que cumple fija tema y subtema. Una fila sin tema es un error al construir.
+# - zonas: la PRIMERA regla que cumple y da una zona. Valores especiales: '$pais' (país o zona de la serie según
+#   su id y su fuente, inventario.pais_zona, traducido con zona_codigos), '$pareja' (tipo de cambio: la divisa
+#   distinta del USD si el USD está en la pareja; si no, la distinta del EUR; código ISO de país = 2 primeras
+#   letras de la divisa, EUR -> EA) y '$mercado' (zona_mercado). Si da vacío, se sigue con la siguiente regla.
+# - agentes: se suman los de TODAS las reglas que cumplen (una fila puede tener varios). Sin agentes: error.
+
+version: 1
+
+agentes: [macro, risk, equity, portfolio, cio]
+
+# Vocabulario cerrado de temas (con su uso, para la plantilla de descripción).
+temas:
+  tipos_interes: Sirve para seguir la política monetaria y el coste del dinero a corto plazo.
+  curva: Sirve para leer la curva de tipos (su nivel, su pendiente y lo que descuenta el mercado).
+  inflacion: Sirve para seguir la inflación y anticipar la política monetaria.
+  actividad: Sirve para seguir el ciclo económico y el crecimiento.
+  empleo: Sirve para seguir el mercado laboral.
+  credito_spreads: Sirve para medir el riesgo de crédito y las condiciones de financiación.
+  volatilidad: Sirve para medir la incertidumbre y el riesgo de mercado.
+  condiciones_financieras: Sirve para medir de un vistazo el estrés y las condiciones financieras.
+  renta_variable: Sirve para seguir la bolsa y la rentabilidad de la renta variable.
+  renta_fija: Sirve para seguir la renta fija y construir la parte de bonos de una cartera.
+  factores: Sirve para analizar estilos y factores de la bolsa (mercado, tamaño, valor, momentum, sectores).
+  valoracion: Sirve para valorar la bolsa (cara o barata) frente a sus beneficios, dividendos o fundamentales.
+  divisas: Sirve para seguir los tipos de cambio y la fuerza de cada divisa.
+  materias_primas: Sirve para seguir los precios de las materias primas.
+  monetario: Sirve para seguir la cantidad de dinero y el balance del banco central.
+  sector_exterior: Sirve para seguir el comercio exterior y la balanza de pagos.
+  vivienda: Sirve para seguir el mercado de la vivienda.
+  fiscal: Sirve para seguir las cuentas públicas.
+  cripto: Sirve para seguir los criptoactivos.
+
+# --- Temas ----------------------------------------------------------------------------------------------------
+temas_reglas:
+  # Factores y carteras de Ken French
+  - {si: {id: '~^ff:F3D\.RF$'}, tema: tipos_interes, subtema: libre_riesgo}
+  - {si: {id: '~^ff:IND'}, tema: factores, subtema: sectores}
+  - {si: {id: '~^ff:'}, tema: factores, subtema: fama_french}
+  # Volatilidad (series y precios)
+  - {si: {id: '~^(yf:)?\^MOVE$|^fred:VXTYN$'}, tema: volatilidad, subtema: tipos}
+  - {si: {id: '~^fred:(EVZCLS|GVZCLS|OVXCLS)$'}, tema: volatilidad, subtema: otros_activos}
+  - {si: {id: '~^(yf:)?\^SKEW$'}, tema: volatilidad, subtema: riesgo_de_cola}
+  - {si: {id: '~^deriv:VOLREAL|^gw:M\.svar$'}, tema: volatilidad, subtema: realizada}
+  - {si: {id: '~VIX|^fred:(VXNCLS|VXDCLS|VXEEMCLS|VXEWZCLS|RVXCLS)$|^\^VXN$'}, tema: volatilidad, subtema: renta_variable}
+  - {si: {bucket: volatilidad}, tema: volatilidad, subtema: renta_variable}
+  - {si: {bucket: volatilidad_tipos}, tema: volatilidad, subtema: tipos}
+  # Condiciones financieras y estrés
+  - {si: {id: '~^ofr:|^fred:(NFCI|ANFCI|NFCICREDIT|NFCILEVERAGE|NFCIRISK|STLFSI4|KCFSI|CFSI)$'}, tema: condiciones_financieras, subtema: estres}
+  # Crédito y diferenciales
+  - {si: {id: '~^fred:BAML(H|C0A0CMEY$|C0A0CM$|C0A1|C0A4)'}, tema: credito_spreads, subtema: corporativo}
+  - {si: {id: '~^fred:(AAA|BAA|DAAA|DBAA|BAAFFM)$|^deriv:DBAA|^gw:M\.corpr$'}, tema: credito_spreads, subtema: corporativo}
+  - {si: {id: '~^fred:(TEDRATE|DED3|DCPF3M|LIOR3M)$|^deriv:DCPF3M'}, tema: credito_spreads, subtema: financiacion}
+  - {si: {id: '~^bis:WS_(CREDIT_GAP|DSR)\.'}, tema: credito_spreads, subtema: credito_privado}
+  - {si: {id: '~^fred:(DRALACBS|DRCCLACBS|DRSFRMACBS|CORCCACBS)$'}, tema: credito_spreads, subtema: morosidad}
+  - {si: {id: '~^fred:(BUSLOANS|CONSUMER|REALLN|TOTBKCR|TOTLL|TOTALSL|REVOLSL|BCNSDODNS|CMDEBT|TDSP)$'}, tema: credito_spreads, subtema: credito_bancario}
+  # Monetario
+  - {si: {id: '~^fred:(BOGMBASE|M2SL|WALCL|DPSACBW027SBOG)$'}, tema: monetario, subtema: dinero_y_balance}
+  # Fiscal
+  - {si: {id: '~^fred:(GFDEBTN|MTSDS133FMS)$'}, tema: fiscal, subtema: deuda_y_deficit}
+  # Tipos oficiales de fuentes que también publican curva (antes de la regla de curva por prefijo)
+  - {si: {id: '~^rba:FIRMMCRTD$|^boc:V39079$'}, tema: tipos_interes, subtema: oficial}
+  # Curva soberana (rendimientos por plazo y pendientes)
+  - {si: {id: '~^fred:(T10Y2Y|T10Y3M)$|^deriv:DGS(10|5)-DFF$'}, tema: curva, subtema: pendiente}
+  - {si: {id: '~^fred:DFII'}, tema: curva, subtema: real}
+  - {si: {id: '~^fred:(DGS\d+|DGS\d+MO|GS\d+)$|^ust:|^(yf:)?\^(TNX|TYX|FVX)$|^shiller:LONGRATE$|^gw:M\.(lty|ltr)$'}, tema: curva, subtema: soberana}
+  - {si: {id: '~^(boe|mof|boc|bbk|rba):|^ecb:YC\.'}, tema: curva, subtema: soberana}
+  - {si: {fuente: [boe_curvas, mof_jgb, boc_curva, bce_curvas, ust_curva, bundesbank]}, tema: curva, subtema: soberana}
+  # Tipos de interés a corto (oficiales, interbancarios y letras)
+  - {si: {id: '~^fred:(FEDFUNDS|DFF|EFFR|IORB|DPCREDIT|FEDTARMD)$|^ecb:(DFR|MRO)$|^bis:WS_CBPOL\.'}, tema: tipos_interes, subtema: oficial}
+  - {si: {id: '~^fred:(SOFR|OBFR)$|^ecb:(ESTR|EONIA)$|^boj:|^deriv:SOFR-EFFR$'}, tema: tipos_interes, subtema: interbancario}
+  - {si: {id: '~^fred:(DTB\w+|TB3MS|TB3SMFFM)$|^(yf:)?\^IRX$|^gw:M\.(tbl|Rfree)$'}, tema: tipos_interes, subtema: letras}
+  # Divisas
+  - {si: {id: '~^ecb:EXR\.|^fred:DEX'}, tema: divisas, subtema: bilateral}
+  - {si: {id: '~^fred:(DTWEXBGS|DTWEXAFEGS|TWEXAFEGSMTH|NNUSBIS|RNUSBIS)$|^bis:WS_EER\.|^(yf:)?DX-Y\.NYB$|^UUP$'}, tema: divisas, subtema: efectivo}
+  - {si: {bucket: divisas}, tema: divisas, subtema: bilateral}
+  # Inflación (antes que actividad: hay series de precios en grupos de encuestas)
+  - {si: {id: '~^fred:(T10YIE|T5YIE|T5YIFR|EXPINF\w+|MICH)$'}, tema: inflacion, subtema: expectativas}
+  - {si: {id: '~^fred:(CPILFESL|PCEPILFE|CORESTICK\w+|MEDCPI\w+|TRMMEAN\w+|PCETRIM\w+|CUSR0000SACL1E|CUSR0000SASLE)$|XEF000'}, tema: inflacion, subtema: subyacente}
+  - {si: {id: '~^fred:(PCEPI|PCECTPIMD)$'}, tema: inflacion, subtema: pce}
+  - {si: {id: '~^fred:(PPI\w+|WPU\w+|WPSFD\w+)$'}, tema: inflacion, subtema: produccion}
+  - {si: {id: '~^fred:(IQ|IR)$'}, tema: inflacion, subtema: comercio_exterior}
+  - {si: {id: '~^fred:GDPDEF$'}, tema: inflacion, subtema: deflactor}
+  - {si: {id: '~^fred:(CPI|CUSR)|^ecb:HICP\.|^eurostat:HICP|^oecd:CP\.|FP\.CPI|^gw:M\.infl$|^shiller:CPI$'}, tema: inflacion, subtema: ipc}
+  - {si: {grupo: precios}, tema: inflacion, subtema: ipc}
+  # Materias primas
+  - {si: {id: '~^fred:WTISPLC$|^(yf:)?(GC=F|\^BCOM|\^SPGSCI)$'}, tema: materias_primas, subtema: precios}
+  - {si: {bucket: oro}, tema: materias_primas, subtema: oro}
+  - {si: {bucket: metales_preciosos}, tema: materias_primas, subtema: metales_preciosos}
+  - {si: {bucket: metales_industriales}, tema: materias_primas, subtema: metales_industriales}
+  - {si: {bucket: energia}, tema: materias_primas, subtema: energia}
+  - {si: {bucket: materias_primas}, tema: materias_primas, subtema: amplio}
+  # Valoración y beneficios
+  - {si: {id: '~^shiller:(CAPE|E|D)$|^gw:M\.(bm|ntis)$|^fred:NCBEILQ027S$'}, tema: valoracion, subtema: bolsa}
+  - {si: {id: '~^fred:(CP|CPATAX)$'}, tema: valoracion, subtema: beneficios}
+  # Renta variable (series de índices y de rentabilidad)
+  - {si: {id: '~^shiller:P$|^gw:M\.(Index|CRSP_SPvw|CRSP_SPvwx)$'}, tema: renta_variable, subtema: indices}
+  - {si: {tipo: serie, fuente: yfinance}, tema: renta_variable, subtema: indices}
+  # Empleo
+  - {si: {id: '~^fred:(ICSA|CCSA)$'}, tema: empleo, subtema: peticiones_subsidio}
+  - {si: {id: '~^fred:(UNRATE|U6RATE|NROU|UEMP27OV|UNRATEMD)$|UNEMP|une_rt|UNEHRT|SL\.UEM'}, tema: empleo, subtema: paro}
+  - {si: {id: '~^fred:JTS'}, tema: empleo, subtema: vacantes_y_rotacion}
+  - {si: {id: '~^fred:(AHETPI|CES0500000003|ECIALLCIV|ULCNFB)$'}, tema: empleo, subtema: salarios}
+  - {si: {id: '~^fred:(PAYEMS|USPRIV|MANEMP|USCONS|TEMPHELPS|CE16OV|CLF16OV)$'}, tema: empleo, subtema: empleo}
+  - {si: {grupo: empleo}, tema: empleo, subtema: otros}
+  # Vivienda, sector exterior
+  - {si: {grupo: vivienda}, tema: vivienda, subtema: vivienda}
+  - {si: {grupo: comercio}, tema: sector_exterior, subtema: comercio}
+  - {si: {id: '~^fred:NETEXC$'}, tema: sector_exterior, subtema: comercio}
+  # Actividad
+  - {si: {grupo: recesion}, tema: actividad, subtema: recesion}
+  - {si: {id: '~^fred:USRECD$'}, tema: actividad, subtema: recesion}
+  - {si: {id: '~BS-ESI|^fred:UMCSENT$'}, tema: actividad, subtema: encuestas}
+  - {si: {grupo: encuestas}, tema: actividad, subtema: encuestas}
+  - {si: {id: '~^oecd:LI_|^fred:(USALOLITOAASTSAM|BBKMLEIX|CFNAI|CFNAIMA3|USPHCI|WEI)$'}, tema: actividad, subtema: indicadores_ciclicos}
+  - {si: {id: '~namq_10_gdp|^ecb:MNA\.|NY\.GDP|^fred:(GDPNOW|BBKMGDP)$'}, tema: actividad, subtema: pib}
+  - {si: {grupo: pib}, tema: actividad, subtema: pib}
+  - {si: {grupo: consumo}, tema: actividad, subtema: consumo}
+  - {si: {id: '~^fred:TNWBSHNO$'}, tema: actividad, subtema: hogares}
+  - {si: {grupo: actividad}, tema: actividad, subtema: produccion_y_pedidos}
+  # Precios: renta fija, renta variable, cripto (por bucket de universo.yaml o, si no hay, por id)
+  - {si: {bucket: liquidez_usd}, tema: renta_fija, subtema: liquidez}
+  - {si: {bucket: [rf_credito_ig, rf_credito_hy]}, tema: renta_fija, subtema: credito}
+  - {si: {bucket: rf_ligada_inflacion}, tema: renta_fija, subtema: ligada_inflacion}
+  - {si: {bucket: rf_emergentes}, tema: renta_fija, subtema: emergentes}
+  - {si: {bucket: '~^rf_gobierno'}, tema: renta_fija, subtema: gobierno}
+  - {si: {bucket: '~^rf_'}, tema: renta_fija, subtema: agregado}
+  - {si: {bucket: cripto}, tema: cripto, subtema: cripto}
+  - {si: {bucket: '~^factor_'}, tema: renta_variable, subtema: factor}
+  - {si: {id: '~^(SPHB|SPLV)$'}, tema: renta_variable, subtema: factor}
+  - {si: {bucket: sector_eeuu}, tema: renta_variable, subtema: sectorial}
+  - {si: {bucket: inmobiliario}, tema: renta_variable, subtema: inmobiliario}
+  - {si: {tipo: precio, clase: accion}, tema: renta_variable, subtema: acciones}
+  - {si: {tipo: precio, clase: indice}, tema: renta_variable, subtema: indices}
+  - {si: {bucket: '~^rv_'}, tema: renta_variable, subtema: regional}
+  - {si: {id: '~^MDY$'}, tema: renta_variable, subtema: regional}
+
+# --- Zonas ----------------------------------------------------------------------------------------------------
+# Códigos: ISO-2 de país (US, GB, JP, CN, CA, DE, FR, IT, AU, KR, HK, IN, ES, NL, CH, TW, BR...) y agregados:
+# EA zona euro, EU Unión Europea o Europa en sentido amplio, EM emergentes, APAC Asia-Pacífico, WLD mundo.
+zona_codigos:
+  USA: US
+  EA: EA
+  EA20: EA
+  EA21: EA
+  XM: EA
+  EMU: EA
+  U2: EA
+  EU27_2020: EU
+  G4E: EU
+  UK: GB
+  GBR: GB
+  DEU: DE
+  FRA: FR
+  ITA: IT
+  JPN: JP
+  CHN: CN
+  CAN: CA
+  AUS: AU
+  LMY: EM
+  WLD: WLD
+
+zona_nombres:
+  US: [estados unidos, eeuu, ee uu, usa, united states, americano]
+  EA: [zona euro, eurozona, euro area, eurozone, area del euro]
+  EU: [europa, union europea, ue, europe]
+  GB: [reino unido, uk, united kingdom, britanico]
+  JP: [japon, japan, japones]
+  CN: [china, chino]
+  CA: [canada]
+  DE: [alemania, germany, aleman]
+  FR: [francia, france]
+  IT: [italia, italy]
+  AU: [australia]
+  KR: [corea del sur, korea]
+  HK: [hong kong]
+  IN: [india]
+  ES: [espana, spain]
+  NL: [paises bajos, holanda, netherlands]
+  CH: [suiza, switzerland]
+  TW: [taiwan]
+  BR: [brasil, brazil]
+  MX: [mexico]
+  ZA: [sudafrica, south africa]
+  EM: [emergentes, emerging markets]
+  APAC: [asia pacifico, asia]
+  WLD: [mundo, global, mundial, world]
+
+zona_mercado:
+  XNYS: US
+  XNAS: US
+  ARCX: US
+  CBOE_IDX: US
+  ICE_MOVE: US
+  ICE_DXY: US
+  NAV_US: US
+  XKRX: KR
+  XLON: GB
+  XHKG: HK
+  XNSE: IN
+  XETR: DE
+  XMIL: IT
+  XPAR: FR
+  XMAD: ES
+  XAMS: NL
+  XSWX: CH
+  XTKS: JP
+  XTAI: TW
+  STOXX_IDX: EU
+  XSHG: CN
+  XASX: AU
+  BVMF: BR
+  XTSE: CA
+  CRYPTO: WLD
+
+zonas:
+  # Excepciones por id
+  - {si: {id: '~^(yf:)?\^W5000$'}, zona: US}          # Yahoo lo da en XLON (saneado P21)
+  - {si: {id: '~^6E=F$'}, zona: EA}
+  - {si: {id: '~^AUDUSD=X$'}, zona: AU}
+  - {si: {id: '~^CAD=X$'}, zona: CA}
+  - {si: {id: '~^CHF=X$'}, zona: CH}
+  - {si: {id: '~^GBPUSD=X$'}, zona: GB}
+  - {si: {id: '~^(VNQI|IWDP\.L|CPXJ\.L)$'}, zona: WLD}
+  - {si: {id: '~^(IUSP\.L|VNQ)$'}, zona: US}
+  - {si: {id: '~^deriv:VOLREAL'}, zona: US}
+  # Tipos de cambio bilaterales: la divisa que no es el dólar (o el euro)
+  - {si: {tema: divisas, subtema: bilateral, tipo: serie}, zona: $pareja}
+  # Series: país del id o de la fuente
+  - {si: {tipo: [serie, proyeccion]}, zona: $pais}
+  - {si: {tipo: serie, fuente: yfinance, tema: materias_primas}, zona: WLD}
+  - {si: {tipo: serie, fuente: yfinance}, zona: US}
+  # Precios: acciones, índices y volatilidad por mercado; ETF de un país por su nombre; el resto por bucket
+  - {si: {tipo: precio, tema: materias_primas}, zona: WLD}
+  - {si: {tipo: precio, clase: [accion, indice, volatilidad]}, zona: $mercado}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~(?<!ex-)(?<!ex )Japan'}, zona: JP}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Germany'}, zona: DE}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~United Kingdom|\bUK\b'}, zona: GB}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~France'}, zona: FR}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Italy'}, zona: IT}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Canada'}, zona: CA}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Spain'}, zona: ES}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Taiwan'}, zona: TW}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Mexico'}, zona: MX}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Korea'}, zona: KR}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Brazil'}, zona: BR}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~South Africa'}, zona: ZA}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~India'}, zona: IN}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Australia'}, zona: AU}
+  - {si: {tipo: precio, clase: [etf, etp], nombre: '~Hong Kong'}, zona: HK}
+  - {si: {bucket: '~desarrollados'}, zona: WLD}
+  - {si: {bucket: '~eeuu$|^rf_municipal$|^rf_titulizaciones$|^rf_credito_|^rf_ligada_inflacion$|^liquidez_usd$|^volatilidad'}, zona: US}
+  - {si: {bucket: rv_europa}, zona: EU}
+  - {si: {bucket: rv_japon}, zona: JP}
+  - {si: {bucket: rv_china}, zona: CN}
+  - {si: {bucket: '~emergentes$'}, zona: EM}
+  - {si: {bucket: rv_asia_pacifico}, zona: APAC}
+  - {si: {bucket: '~global$|^oro$|^metales_|^energia$|^materias_primas$|^cripto$|^inmobiliario$'}, zona: WLD}
+  - {si: {bucket: divisas}, zona: US}
+  - {si: {tipo: precio}, zona: $mercado}
+
+# --- Agentes --------------------------------------------------------------------------------------------------
+agentes_reglas:
+  # macro: tipos, inflación, actividad, empleo, monetario, sector exterior (y vivienda, fiscal, materias primas)
+  - {si: {tema: [tipos_interes, inflacion, actividad, empleo, monetario, sector_exterior, vivienda, fiscal, materias_primas]}, agentes: [macro]}
+  - {si: {tema: divisas, tipo: serie}, agentes: [macro]}   # índices del dólar y bilaterales (EURUSD, USDJPY...)
+  - {si: {tema: credito_spreads, subtema: [credito_bancario, credito_privado, morosidad]}, agentes: [macro]}
+  - {si: {tema: valoracion, subtema: beneficios}, agentes: [macro]}
+  - {si: {tema: curva, tipo: serie}, agentes: [macro]}
+  # risk: volatilidad, crédito, condiciones financieras, curva (y cripto, bonos con riesgo de crédito)
+  - {si: {tema: [volatilidad, credito_spreads, condiciones_financieras, curva, cripto]}, agentes: [risk]}
+  - {si: {tema: renta_fija, subtema: [credito, emergentes]}, agentes: [risk]}
+  # equity: renta variable, factores, valoración y precios de acciones
+  - {si: {tema: [renta_variable, factores, valoracion]}, agentes: [equity]}
+  - {si: {tipo: precio, clase: accion}, agentes: [equity]}
+  # portfolio: precios de ETF, índices y fondos; divisas; tipos cortos; renta fija; cripto; materias primas
+  - {si: {tipo: precio, clase: [etf, etp, indice, fondo, futuro, divisa, cripto, volatilidad]}, agentes: [portfolio]}
+  - {si: {tema: [divisas, renta_fija, cripto]}, agentes: [portfolio]}
+  - {si: {tema: tipos_interes, subtema: [oficial, interbancario, letras, libre_riesgo]}, agentes: [portfolio]}
+  # cio: visión de conjunto (estrés, recesión, pendiente de la curva, proyecciones de la Fed y series clave)
+  - {si: {tema: condiciones_financieras}, agentes: [cio]}
+  - {si: {tema: actividad, subtema: [recesion, indicadores_ciclicos]}, agentes: [cio]}
+  - {si: {tema: curva, subtema: pendiente}, agentes: [cio]}
+  - {si: {tipo: proyeccion}, agentes: [cio]}
+  - {si: {clave: true}, agentes: [cio]}
+
+# --- Avisos a mano ----------------------------------------------------------------------------------------------
+# Series que la curada solo deja ver tarde (primera publicación de 2016 en adelante) y que no tienen una historia
+# previa en lista_curada.yaml: qué usar para fechas anteriores. Se suman a los avisos de TODAS las reglas que
+# cumplen; si nombran un id del catálogo publicado después que la fila, llevan su etiqueta de visibilidad.
+# (Las que sí tienen historia previa ya lo dicen: «su historia anterior está en ...».)
+avisos_reglas:
+  - {si: {id: '~^fred:BAML'}, aviso: 'FRED solo da los 3 últimos años de ICE BofA (se ve desde 2023-10-12): para la historia larga del crédito, deriv:DBAA-DGS10, deriv:DBAA-DAAA o los ETF HYG, JNK y LQD'}
+  - {si: {id: '~^ofr:FSI'}, aviso: 'publicada desde 2017-10-25: antes, fred:KCFSI o fred:CFSI'}
+  - {si: {id: '~^fred:STLFSI4$'}, aviso: 'versión 4 publicada desde 2022-11-10: antes, fred:KCFSI, fred:CFSI o fred:NFCI'}
+  - {si: {id: '~^fred:(SOFR|OBFR)$|^deriv:SOFR-EFFR$'}, aviso: 'antes de su primera publicación, el tipo a un día en dólares es fred:EFFR (o fred:DFF)'}
+  - {si: {id: '~^fred:IORB$'}, aviso: 'antes de 2021-07-29 la Fed remuneraba las reservas con IOER (no está en la base): fred:EFFR o fred:DFF'}
+  - {si: {id: '~^fred:SAHM'}, aviso: 'reconstruida desde 2019: para fechas anteriores, calcularla con fred:UNRATE'}
+  - {si: {id: '~^eurostat:ei_bssi_m_r2\.M\.BS-ESI-I\.SA\.EA2[01]$'}, aviso: 'el ESI de la zona euro solo se ve desde 2023: antes, eurostat:ei_bssi_m_r2.M.BS-ESI-I.SA.EU27_2020 o los de DE, FR e IT'}
+  - {si: {id: '~^ecb:HICP\.M\.U2\.N\.XEF000'}, aviso: 'sin historia previa en la base: antes de 2026-01-28 no hay inflación subyacente de la zona euro (solo la general, eurostat:HICP_EMP.EA)'}
+  - {si: {id: '~^ust:PAR\.(6W|2M|4M)$'}, aviso: 'plazo nuevo del Tesoro: antes, fred:DTB3 o fred:DGS1MO'}
+
+# --- Descripciones --------------------------------------------------------------------------------------------
+# Plantillas (castellano sencillo, 1-2 frases): {nombre}, {unidad}, {frecuencia}, {fuente}, {clase}, {mercado},
+# {divisa} y {uso} (la frase del tema). Las series clave llevan la suya en 'descripciones'.
+plantillas:
+  serie: '{nombre}. Se mide en {unidad}, con frecuencia {frecuencia} ({fuente}). {uso}'
+  proyeccion: '{nombre}. Proyección en {unidad} por año ({fuente}); se pide con get_proyeccion. {uso}'
+  precio: '{nombre}: {clase} que cotiza en {mercado}, en {divisa}. Precios diarios as-traded (apertura, máximo, mínimo, cierre y volumen) con get_precios. {uso}'
+
+nombres_fuente:
+  fred_alfred: FRED/ALFRED
+  bce: BCE
+  bce_curvas: curvas del BCE
+  bis: BIS
+  worldbank: Banco Mundial
+  yfinance: Yahoo Finance
+  oecd: OCDE
+  eurostat: Eurostat
+  mof_jgb: Ministerio de Finanzas de Japón
+  ken_french: Ken French
+  boe_curvas: Banco de Inglaterra
+  goyal_welch: Goyal-Welch
+  calculo_propio: cálculo propio
+  boc_curva: Banco de Canadá
+  boc: Banco de Canadá
+  shiller: Robert Shiller
+  ofr_fsi: OFR
+  ust_curva: Tesoro de EE. UU.
+  rba: Reserve Bank of Australia
+  bundesbank: Bundesbank
+  boj: Banco de Japón
+  yahoo: Yahoo Finance
+  coinbase: Coinbase
+
+nombres_clase:
+  accion: acción
+  etf: ETF
+  etp: ETP (materia prima cotizada)
+  indice: índice
+  volatilidad: índice de volatilidad
+  futuro: futuro continuo
+  divisa: tipo de cambio
+  cripto: criptoactivo
+  fondo: fondo de inversión
+
+nombres_mercado:
+  XNYS: la NYSE
+  XNAS: el NASDAQ
+  ARCX: NYSE Arca
+  XKRX: la Bolsa de Corea
+  XLON: la Bolsa de Londres
+  XHKG: la Bolsa de Hong Kong
+  XNSE: la NSE de la India
+  XETR: Xetra (Fráncfort)
+  XMIL: la Bolsa de Milán
+  XPAR: Euronext París
+  XMAD: la Bolsa de Madrid
+  XAMS: Euronext Ámsterdam
+  XSWX: la SIX suiza
+  XTKS: la Bolsa de Tokio
+  XTAI: la Bolsa de Taiwán
+  XSHG: la Bolsa de Shanghái
+  XASX: la ASX australiana
+  BVMF: B3 (Brasil)
+  XTSE: la Bolsa de Toronto
+  CME: CME Globex
+  CBOE_IDX: Cboe
+  ICE_MOVE: ICE
+  ICE_DXY: ICE
+  STOXX_IDX: STOXX
+  FX_YAHOO: Yahoo (divisas)
+  NAV_US: EE. UU. (valor liquidativo diario)
+  CRYPTO: Coinbase (vela diaria UTC)
+
+# Unidad de los precios por clase ({divisa}: la de la línea cotizada).
+unidades_precio:
+  accion: 'precio por acción ({divisa})'
+  etf: 'precio por participación ({divisa})'
+  etp: 'precio por participación ({divisa})'
+  fondo: 'valor liquidativo por participación ({divisa})'
+  indice: puntos de índice
+  volatilidad: puntos de índice
+  futuro: 'precio del contrato ({divisa})'
+  divisa: tipo de cambio
+  cripto: 'precio por moneda ({divisa})'
+
+licencias_precio:
+  yahoo: 'Términos de Yahoo: uso personal, no comercial; solo local, sin redistribuir'
+  coinbase: 'Términos de Coinbase (Exchange API): datos de mercado públicos; solo local, sin redistribuir'
+
+# Componentes de índices (foto actual de <corpus>/mercados_series/constituyentes): sufijo de Yahoo y nombre
+# para las palabras clave. El S&P 500 es point-in-time (miembro en algún momento).
+constituyentes:
+  sp500: {nombre: s&p 500, sufijo: '', punto_por_guion: true}
+  aex: {nombre: aex, sufijo: ''}
+  cac40: {nombre: cac 40, sufijo: ''}
+  dax: {nombre: dax, sufijo: ''}
+  ftse100: {nombre: ftse 100, sufijo: '.L'}
+  ftse_mib: {nombre: ftse mib, sufijo: ''}
+  hang_seng: {nombre: hang seng, sufijo: '.HK', ceros: 4}
+  ibex35: {nombre: ibex 35, sufijo: ''}
+  kospi200: {nombre: kospi 200, sufijo: '.KS'}
+  nifty50: {nombre: nifty 50, sufijo: '.NS'}
+  smi: {nombre: smi, sufijo: '.SW'}
+
+# Palabras clave a mano (se suman a las generadas) para encontrar las series clave por su nombre de calle.
+palabras_por_id:
+  fred:VIXCLS: [vix, indice del miedo, volatilidad implicita, s&p 500]
+  fred:DGS10: [bono 10 anos, treasury 10y, 10y, tipo largo]
+  fred:DGS2: [bono 2 anos, treasury 2y, 2y]
+  fred:DGS30: [bono 30 anos, treasury 30y, 30y]
+  fred:DGS3MO: [3 meses, tipo corto, libre de riesgo]
+  fred:T10Y2Y: [curva invertida, pendiente, 10y 2y, 2s10s, pendiente 2 10]
+  fred:T10Y3M: [curva invertida, pendiente, 10y 3m, 3m10y]
+  fred:FEDFUNDS: [fed funds, tipo oficial fed, fomc]
+  fred:EFFR: [fed funds, tipo oficial fed]
+  fred:CPIAUCSL: [ipc, cpi, inflacion general]
+  fred:CPILFESL: [core cpi, ipc subyacente]
+  fred:PCEPILFE: [core pce, pce subyacente]
+  fred:UNRATE: [paro, desempleo, unemployment]
+  fred:PAYEMS: [nominas, payrolls, nfp]
+  fred:BAMLH0A0HYM2: [high yield, hy, bono basura, spread hy]
+  fred:BAMLC0A0CM: [investment grade, ig, spread ig]
+  yf:^GSPC: [sp500, s&p 500, spx, bolsa eeuu]
+  ecb:EXR.D.USD.EUR: [eurusd, eur usd, dolar euro]
+  fred:DEXUSEU: [eurusd, eur usd, dolar euro]
+  ecb:HICP.M.U2.N.000000.4D0.ANR: [ipc zona euro, inflacion zona euro, hicp]
+  ecb:HICP.M.U2.N.XEF000.4D0.ANR: [inflacion subyacente zona euro, core hicp]
+  ecb:DFR: [tipo de deposito, tipo oficial bce]
+  ecb:MRO: [tipo oficial bce, tipo de intervencion]
+  shiller:CAPE: [per de shiller, per ajustado al ciclo]
+  yf:^MOVE: [vix de los bonos]
+  yf:DX-Y.NYB: [dxy, indice dolar]
+  ecb:LFSI.M.U2.S.UNEHRT.TOTAL0.15_74.T: [paro zona euro, desempleo zona euro]
+  fred:UMCSENT: [sentimiento del consumidor, confianza del consumidor, consumer sentiment, michigan]
+  bbk:BBSIS.D.I.ZST.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A: [bund, bono aleman, bund 10 anos]
+  HYG: [spread high yield, credito high yield, bono basura]
+  JNK: [spread high yield, credito high yield, bono basura]
+  deriv:DBAA-DGS10: [spread de credito, spread corporativo]
+  wb:CHN.NY.GDP.MKTP.KD.ZG: [pib china, crecimiento china]
+  SPY: [s&p 500, sp500]
+  ^VIX: [vix, indice del miedo]
+  cb:BTC-USD: [bitcoin, btc]
+
+# Descripciones a mano de las series clave (y de unos pocos precios): qué mide, unidad y para qué sirve.
+descripciones:
+  fred:VIXCLS: VIX, volatilidad implícita a 30 días del S&P 500 que descuentan sus opciones, en puntos (equivale a % anualizado; diario). Es el «índice del miedo» y por encima de 30 suele señalar estrés en los mercados.
+  fred:DGS10: Rendimiento del bono del Tesoro de EE. UU. a 10 años, en % anual (diario, H.15). Es el tipo de referencia a largo plazo y resume las expectativas de tipos, de inflación y la prima por plazo.
+  fred:DGS2: Rendimiento del Tesoro de EE. UU. a 2 años, en % anual (diario, H.15). Es muy sensible a lo que el mercado espera de la Fed en los dos años siguientes.
+  fred:DGS3MO: Rendimiento del Tesoro de EE. UU. a 3 meses, en % anual (diario, H.15). Aproxima el tipo libre de riesgo a corto plazo en dólares.
+  fred:DGS30: Rendimiento del Tesoro de EE. UU. a 30 años, en % anual (diario, H.15). Es el tramo más largo de la curva y refleja la prima por plazo y la inflación a muy largo plazo.
+  fred:T10Y2Y: Pendiente de la curva de EE. UU., rendimiento a 10 años menos el de 2 años, en puntos porcentuales (diario). Cuando es negativa (curva invertida) ha anticipado muchas recesiones.
+  fred:T10Y3M: Pendiente de la curva de EE. UU., 10 años menos 3 meses, en puntos porcentuales (diario). Es la medida de inversión de la curva del modelo de probabilidad de recesión de la Fed de Nueva York.
+  fred:FEDFUNDS: Tipo efectivo de los fondos federales, media mensual en % anual. Sigue de cerca al objetivo que fija la Reserva Federal y marca el tono de la política monetaria de EE. UU.
+  fred:EFFR: Tipo efectivo de los fondos federales de cada día hábil (Fed de Nueva York), en % anual. Sigue al día el tipo oficial de la Fed.
+  fred:SOFR: SOFR, tipo a un día de las operaciones repo garantizadas con bonos del Tesoro, en % anual (diario, desde 2018). Es la referencia elegida para sustituir al LIBOR en dólares.
+  fred:CPIAUCSL: Índice de precios de consumo de EE. UU. (todos los artículos, desestacionalizado), base 1982-84 = 100, mensual. Su variación interanual es la inflación general (IPC).
+  fred:CPILFESL: IPC subyacente de EE. UU. (sin alimentos ni energía), base 1982-84 = 100, mensual. Muestra la tendencia de fondo de la inflación sin lo más volátil.
+  fred:PCEPI: Índice de precios del gasto en consumo personal (PCE) de EE. UU., base 2017 = 100, mensual. Es la medida de inflación preferida por la Reserva Federal.
+  fred:PCEPILFE: PCE subyacente de EE. UU. (sin alimentos ni energía), base 2017 = 100, mensual. Es la medida de inflación que más mira la Fed para decidir los tipos.
+  fred:UNRATE: Tasa de paro de EE. UU., en % de la población activa (mensual, desestacionalizada). Es el indicador clave del mercado laboral y del ciclo.
+  fred:PAYEMS: Empleo no agrícola de EE. UU. (nóminas), en miles de personas (mensual, desestacionalizado). Su variación mensual es el dato de empleo que más mueve a los mercados.
+  fred:ICSA: Peticiones iniciales de subsidio de paro en EE. UU., número semanal desestacionalizado. Es el dato de empleo más rápido y una subida sostenida avisa de deterioro.
+  fred:NFCI: Índice nacional de condiciones financieras de la Fed de Chicago, en desviaciones típicas (semanal). Por encima de 0 las condiciones son más tensas que la media y por debajo más holgadas.
+  fred:STLFSI4: Índice de estrés financiero de la Fed de St. Louis (versión 4), 0 = normal (semanal). Valores positivos indican más estrés que la media.
+  fred:BAMLH0A0HYM2: Diferencial (OAS) de los bonos corporativos high yield de EE. UU. frente al Tesoro, en puntos porcentuales (diario, ICE BofA). Mide la prima por riesgo de impago y se dispara en las crisis.
+  fred:BAMLC0A0CM: Diferencial (OAS) de los bonos corporativos con grado de inversión de EE. UU. frente al Tesoro, en puntos porcentuales (diario, ICE BofA). Es el termómetro del riesgo de crédito de las empresas de más calidad.
+  deriv:DBAA-DGS10: Diferencial entre los bonos corporativos Baa de Moody's y el Tesoro a 10 años, en puntos porcentuales (diario, cálculo propio). Mide el riesgo de crédito corporativo con una historia mucho más larga que las OAS.
+  yf:^GSPC: Índice S&P 500 (solo precio, sin dividendos), en puntos (diario). Es la referencia de la bolsa de EE. UU. y de la renta variable mundial.
+  yf:^SP500TR: S&P 500 con los dividendos reinvertidos (total return), en puntos (diario). Sirve para medir la rentabilidad total de la bolsa de EE. UU.
+  yf:^MOVE: Índice MOVE, volatilidad implícita a un mes de los bonos del Tesoro de EE. UU., en puntos básicos (diario). Es el «VIX de los bonos» y sube cuando hay incertidumbre sobre los tipos.
+  ecb:EXR.D.USD.EUR: Tipo de cambio de referencia del BCE, dólares por euro (EURUSD), diario. Es la referencia para convertir entre euros y dólares.
+  fred:DEXUSEU: Dólares por euro al mediodía de Nueva York (H.10 de la Fed), diario. Es la alternativa americana al EURUSD del BCE.
+  fred:DTWEXBGS: Índice nominal amplio del dólar frente a las divisas de sus socios comerciales (Fed, enero de 2006 = 100, diario). Sube cuando el dólar se aprecia.
+  yf:DX-Y.NYB: Índice dólar DXY de ICE, el dólar frente a una cesta de seis divisas dominada por el euro, en puntos (diario). Es la medida rápida y más seguida de la fuerza del dólar.
+  ecb:HICP.M.U2.N.000000.4D0.ANR: Inflación general de la zona euro (HICP), tasa interanual en % (mensual, con la composición de cada fecha). El BCE fija su objetivo del 2 % sobre esta medida.
+  ecb:HICP.M.U2.N.XEF000.4D0.ANR: Inflación subyacente de la zona euro (HICP sin energía, alimentos, alcohol ni tabaco), tasa interanual en % (mensual). Muestra la tendencia de fondo de los precios en el euro.
+  ecb:DFR: Tipo de la facilidad de depósito del BCE, en % anual (con su fecha de efecto). Con exceso de liquidez en el sistema es el tipo oficial que guía el corto plazo del euro.
+  ecb:MRO: Tipo de las operaciones principales de financiación del BCE, en % anual (con su fecha de efecto). Fue el tipo de referencia del euro cuando no sobraba liquidez.
+  ecb:ESTR: €STR, tipo a un día sin garantía del mercado monetario del euro, en % anual (diario, desde 2019). Sustituye al EONIA como referencia del corto plazo en euros.
+  ecb:YC.AAA.10Y: Tipo al contado a 10 años de la curva de bonos AAA de la zona euro (BCE, modelo Svensson), en % anual (diario). Es la referencia del tipo largo sin riesgo en euros, cercana al Bund alemán.
+  ecb:LFSI.M.U2.S.UNEHRT.TOTAL0.15_74.T: Tasa de paro de la zona euro (15-74 años), en % de la población activa (mensual, desestacionalizada, composición de cada fecha). Es el indicador clave del mercado laboral del euro.
+  eurostat:namq_10_gdp.Q.CLV_PCH_SM.SCA.B1GQ.EA: Crecimiento interanual del PIB real de la zona euro (Eurostat), en % (trimestral, desestacionalizado). Mide el ciclo económico del área del euro.
+  ff:F3D.Mkt-RF: Factor mercado de Fama-French, rentabilidad diaria de la bolsa de EE. UU. menos el tipo libre de riesgo, en %. Es la prima de riesgo de la renta variable día a día.
+  ff:F3D.SMB: Factor tamaño (SMB) de Fama-French, rentabilidad diaria de las empresas pequeñas menos las grandes, en %. Indica si las de baja capitalización lo hacen mejor que las grandes.
+  ff:F3D.HML: Factor valor (HML) de Fama-French, rentabilidad diaria de las empresas baratas (valor contable alto) menos las caras, en %. Mide si el estilo valor gana al de crecimiento.
+  ff:MOMD.Mom: Factor momentum de Ken French, rentabilidad diaria de las acciones que más han subido en el último año menos las que más han bajado, en %. Mide la tendencia a seguir lo que ya subió.
+  shiller:CAPE: CAPE de Shiller, precio real del S&P 500 entre la media de 10 años de los beneficios reales (ratio, mensual). Valores altos indican una bolsa cara y rentabilidades a largo plazo más bajas.
+  fred:T10YIE: Inflación implícita a 10 años (breakeven), Tesoro nominal a 10 años menos el TIPS a 10 años, en % anual (diario). Es la inflación media que descuenta el mercado.
+  fred:T5YIFR: Inflación esperada a 5 años dentro de 5 años (5y5y), en % anual (diario). Sirve para saber si las expectativas de inflación a largo plazo siguen ancladas.
+  fred:DFII10: Rendimiento real del bono ligado a la inflación (TIPS) a 10 años, en % anual (diario). Es el tipo de interés real; cuando sube endurece las condiciones financieras.
+  fred:GDPC1: PIB real de EE. UU., en miles de millones de dólares encadenados de 2017 (tasa anual, trimestral). Mide el tamaño de la economía descontando la inflación.
+  fred:A191RL1Q225SBEA: Crecimiento del PIB real de EE. UU., variación trimestral anualizada en %. Es el titular del dato de PIB; dos trimestres negativos se asocian a una recesión.
+  fred:INDPRO: Índice de producción industrial de EE. UU. (2017 = 100, mensual). Indicador coincidente del ciclo que cubre industria, minería y suministros.
+  fred:SAHMREALTIME: Regla de Sahm en tiempo real, en puntos porcentuales (mensual). Si la media de 3 meses del paro sube 0,5 puntos sobre su mínimo de 12 meses, suele indicar que ya ha empezado una recesión.
+  fred:USRECD: Indicador diario de recesión del NBER (1 = recesión, 0 = expansión). El NBER fecha las recesiones con muchos meses de retraso, así que hay que usarlo con cuidado en tiempo real.
+  fred:WTISPLC: Precio al contado del petróleo WTI, media mensual en dólares por barril. Es la referencia del precio de la energía y mueve una parte de la inflación.
+  yf:GC=F: Futuro continuo del oro en COMEX, en dólares por onza troy (diario). Activo refugio que suele subir con tipos reales bajos o en momentos de miedo.
+  ofr:FSI: Índice de estrés financiero de la OFR (diario; 0 = estrés medio). Resume crédito, bolsa, financiación, tipos y volatilidad en un solo número.
+  fred:UMCSENT: Confianza del consumidor de la Universidad de Michigan (índice, primer trimestre de 1966 = 100, mensual). Anticipa el gasto de los hogares.
+  fred:WALCL: Activos totales de la Reserva Federal (H.4.1), en millones de dólares (semanal). Mide el tamaño del balance de la Fed, que sube con las compras de bonos (QE) y baja con su reducción (QT).
+  fred:M2SL: Masa monetaria M2 de EE. UU. (H.6), en miles de millones de dólares (mensual, desestacionalizada). Mide el dinero en manos del público (efectivo, depósitos y fondos del mercado monetario).
+  fred:FEDTARMD: Proyección mediana del FOMC (SEP) para el tipo de los fondos federales a final de cada año, en % anual. Indica la senda de tipos que esperan los miembros de la Fed.
+  fred:UNRATEMD: Proyección mediana del FOMC (SEP) para la tasa de paro de EE. UU., en % de la población activa (por año). Muestra cómo ve la Fed el mercado laboral.
+  fred:PCECTPIMD: Proyección mediana del FOMC (SEP) para la inflación PCE (cuarto trimestre sobre el cuarto anterior), en %. Indica la inflación que espera la Fed.
+  SPY: SPDR S&P 500 ETF Trust, el ETF más negociado sobre el S&P 500, en dólares (NYSE Arca, diario). Sirve de referencia de la bolsa de EE. UU. en las carteras.
+  TLT: iShares 20+ Year Treasury Bond ETF, bonos del Tesoro de EE. UU. a más de 20 años, en dólares (diario). Es la forma habitual de exponerse a los tipos largos de EE. UU. en una cartera.
+  GLD: SPDR Gold Shares, ETF respaldado por oro físico, en dólares (NYSE Arca, diario). Da exposición al oro en una cartera.
+  ^VIX: Índice VIX de Cboe como precio diario (apertura, máximo, mínimo y cierre), en puntos. Complementa a la serie fred:VIXCLS cuando se necesita la vela del día.
+  cb:BTC-USD: Bitcoin en dólares en Coinbase, vela diaria UTC visible al día siguiente. Es el criptoactivo de referencia.
+
+# --- Búsqueda -------------------------------------------------------------------------------------------------
+busqueda:
+  pesos:
+    exacto_total: 100        # el texto entero es el id o un alias
+    id_alias: 10             # un término es el id (con o sin prefijo de fuente) o un alias
+    nombre: 8
+    palabras_clave: 5        # también los trozos del id
+    descripcion: 3
+    tema: 2                  # tema y subtema
+    sinonimo: 0.9            # factor de un término que llega por sinónimo
+    clave: 2                 # suma de las series con descripción a mano (si casan todos los términos)
+    secundaria: -0.5         # suma de las de rol historia_previa o validación (si ya puntúan)
+  vacias: [de, del, la, las, el, los, en, y, e, o, u, a, al, por, para, con, sin, un, una, unos, unas, que, se, su,
+           sus, lo, the, of, and, in, 'on', to, for]   # 'on' entre comillas: YAML lo leería como true
+  # Sinónimos (dirigidos): si la búsqueda contiene la clave, también se buscan sus equivalentes.
+  sinonimos:
+    2s10s: [t10y2y, 10y 2y, pendiente]
+    pmi: [encuesta manufacturera, indice de gestores de compras, ism, sentimiento economico, esi]
+    sentimiento: [confianza, sentiment]
+    sentimiento del consumidor: [confianza del consumidor, umcsent, consumer sentiment]
+    bund: [bono aleman, alemania 10 anos, bundesbank, yc aaa]
+    bono aleman: [bund, bundesbank]
+    inflacion: [ipc, cpi, hicp, pce, precios, inflation]
+    ipc: [cpi, hicp, inflacion, indice de precios de consumo]
+    cpi: [ipc, inflacion]
+    hicp: [ipc armonizado, inflacion]
+    precios: [inflacion, ipc]
+    subyacente: [core, sin alimentos ni energia, xef000]
+    core: [subyacente]
+    inflacion esperada: [expectativas de inflacion, inflacion implicita, breakeven, t10yie, t5yifr]
+    breakeven: [inflacion implicita]
+    deflactor: [gdpdef]
+    paro: [desempleo, unemployment, tasa de paro, unrate, parados]
+    desempleo: [paro, unemployment, unrate]
+    unemployment: [paro, desempleo]
+    empleo: [nominas, payrolls, ocupados, employment, mercado laboral]
+    nominas: [payems, empleo no agricola, payrolls]
+    salarios: [salario, wages, earnings, remuneracion]
+    bono: [rendimiento, bond, yield, deuda publica, tesoro]
+    bono 10 anos: [10y, 10 anos, dgs10, gs10, treasury 10, tnx]
+    bono 2 anos: [2y, 2 anos, dgs2]
+    bono 30 anos: [30y, 30 anos, dgs30, tyx]
+    10 anos: [10y]
+    2 anos: [2y]
+    30 anos: [30y]
+    treasury: [tesoro]
+    tesoro: [treasury]
+    curva: [curva de tipos, yield curve, pendiente, plazos]
+    pendiente: [t10y2y, t10y3m, curva invertida]
+    curva invertida: [t10y2y, t10y3m, pendiente]
+    tipos de interes: [tipo, interest rate]
+    tipo oficial: [policy rate, fondos federales, facilidad de deposito, cbpol, tipo oficial]
+    fed: [reserva federal, fomc, fondos federales, federal reserve]
+    reserva federal: [fed, fomc]
+    fondos federales: [fed funds, fedfunds, effr, dff]
+    bce: [ecb, banco central europeo, zona euro]
+    ecb: [bce]
+    libre de riesgo: [risk free, letra, rf, tesoro a 3 meses]
+    eurozona: [zona euro, euro area, ea, ea20, ea21, eurozone, xm, emu]
+    zona euro: [eurozona, ea, euro area]
+    europa: [eu, ue, europe, eurozona, union europea]
+    eeuu: [us, usa, estados unidos, ee uu, united states]
+    ee uu: [us, usa, estados unidos, eeuu]
+    estados unidos: [us, usa, eeuu]
+    japon: [jp, jpn, japan]
+    china: [cn, chn]
+    reino unido: [gb, uk, gbr, united kingdom]
+    alemania: [de, deu, germany]
+    francia: [fr, fra, france]
+    italia: [it, ita, italy]
+    canada: [ca, can]
+    volatilidad: [vix, volatility, volatilidad implicita]
+    vix: [volatilidad]
+    miedo: [vix, volatilidad, estres]
+    estres: [stress, fsi, estres financiero, condiciones financieras, nfci]
+    condiciones financieras: [nfci, financial conditions, estres financiero, fsi]
+    credito: [credit, spread, diferencial, oas, prestamos]
+    spread: [diferencial, oas]
+    diferencial: [spread, oas]
+    high yield: [hy, alto rendimiento, bono basura, junk]
+    alto rendimiento: [high yield, hy]
+    grado de inversion: [investment grade, ig]
+    corporativo: [corporate, empresas, baa, aaa]
+    renta variable: [acciones, equity, bolsa, stocks, indice bursatil]
+    bolsa: [renta variable, acciones, indice bursatil, equity]
+    acciones: [accion, renta variable, equity, stock]
+    s&p 500: [sp500, gspc, spx, spy]
+    sp500: [s&p 500, gspc]
+    nasdaq: [ixic, ndx, qqq]
+    dolar: [usd, dollar, dxy, dolar estadounidense]
+    euro: [eur, eurusd]
+    eurusd: [eur usd, dolar euro, dexuseu]
+    yen: [jpy]
+    libra: [gbp, esterlina]
+    tipo de cambio: [divisa, fx, exchange rate, por 1 eur, por 1 usd]
+    divisas: [tipo de cambio, fx, currency, monedas]
+    petroleo: [oil, crudo, wti, brent]
+    oro: [gold, gc=f, gld]
+    materias primas: [commodities, commodity, gsci, bcom]
+    pib: [gdp, producto interior bruto, crecimiento]
+    gdp: [pib]
+    crecimiento: [pib, gdp, actividad]
+    recesion: [recession, nber, sahm, ciclo]
+    vivienda: [housing, casa, inmobiliario, hipoteca, case shiller]
+    hipotecas: [mortgage, hipotecario, hipoteca]
+    m2: [masa monetaria, oferta monetaria, money supply]
+    masa monetaria: [m2, base monetaria]
+    balance de la fed: [walcl, activos totales de la reserva federal]
+    factores: [fama french, factor, ken french, smb, hml, momentum]
+    fama french: [factor, ken french]
+    momentum: [mom, impulso]
+    tamano: [smb, size]
+    valoracion: [cape, per, valuation, beneficios, dividendos]
+    per: [cape, valoracion, price earnings]
+    tipos reales: [tips, rendimiento real, dfii10]
+    tips: [ligada a la inflacion, rendimiento real]
+    cripto: [bitcoin, btc, ethereum, eth, crypto, criptoactivo]
+    bitcoin: [btc, cripto]
+    confianza: [sentimiento, sentiment, confidence, umcsent, esi]
+    encuesta: [survey, indice de difusion]
+    produccion industrial: [indpro, industrial production]
+    ventas minoristas: [retail sales, rsafs]
+    consumo: [consumption, gasto en consumo]
+    comercio exterior: [balanza comercial, exportaciones, importaciones, trade]
+    cuenta corriente: [current account]
+    deuda publica: [debt, deuda federal, gfdebtn]
+    deficit: [superavit, saldo fiscal]

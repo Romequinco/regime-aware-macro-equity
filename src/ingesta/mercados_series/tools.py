@@ -30,7 +30,7 @@ from __future__ import annotations
 
 import fnmatch
 import re
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, Literal
@@ -55,7 +55,7 @@ Ajuste = Literal["ninguno", "splits", "total"]
 
 AJUSTES: tuple[str, ...] = ("ninguno", "splits", "total")
 DIVISAS_SALIDA: tuple[str, ...] = ("original", "USD")
-# Bases que leen las tools (paso 4): la de trabajo (por defecto) y la curada (agentes y backtest).
+# Bases que leen las tools (paso 4): la curada (por defecto, BASE_DEFECTO; agentes y backtest) y la de trabajo.
 BASES: tuple[str, ...] = ("trabajo", "curada")
 # ``base``: una de ``BASES`` o una tabla del contrato en memoria (tests y recortes, como antes del paso 4).
 BaseLike = Literal["trabajo", "curada"] | pd.DataFrame | None
@@ -216,11 +216,12 @@ def _resolver_fase1(id: str, alias: dict[str, str] | None) -> str:
     return id
 
 
-def _comprobar_excluida(canonico: str, id: str) -> None:
+def _comprobar_excluida(canonico: str, id: str, fecha: pd.Timestamp | None = None, curada: bool = True) -> None:
     """``KeyError`` si el catálogo excluye ``canonico`` de la base de series (ETF ajustadas).
 
-    También un ticker suelto (``'SPY'``) cuyo ``yf:<ticker>`` está excluido. Es un metadato
-    estático (no depende de la fecha): no revela nada del futuro.
+    También un ticker suelto (``'SPY'``) cuyo ``yf:<ticker>`` está excluido. Con ``fecha``, solo si el ETF ya
+    tiene alguna sesión publicada en ``precios_curados`` hasta ``fecha``: si no (``XLC`` antes de 2018), sigue y
+    acaba en el ``KeyError`` neutro, para no revelar que el ETF existirá (verificación del 2026-11-23).
     """
     cat = cat_mod._cat(None)
     if canonico not in cat and f"yf:{canonico}" in cat:
@@ -228,6 +229,13 @@ def _comprobar_excluida(canonico: str, id: str) -> None:
     e = cat.get(canonico)
     if e is None or e["estado"] != "excluida_ajustada":
         return
+    if fecha is not None:
+        import pyarrow.parquet as pq
+
+        ruta = almacen.ruta_precios("yahoo", str(e["id_origen"]), curada=curada)
+        if not ruta.exists() or pq.read_table(ruta, columns=["fecha_publicacion"], filters=[
+                ("fecha_publicacion", "<=", fecha.to_datetime64())]).num_rows == 0:
+            return
     nombre = repr(canonico) if canonico == id else f"{canonico!r} (alias {id!r})"
     raise KeyError(f"serie {nombre} excluida de la base de series: ETF de yfinance con niveles ajustados a "
                    f"posteriori (auto_adjust=True). Usa get_precios({e['id_origen']!r}, fecha), que reconstruye "
@@ -527,13 +535,30 @@ def _aviso_atraso_periodica(serie: str, visibles: pd.DataFrame, f: pd.Timestamp)
             f"{MARGEN_ATRASO_DIAS}: datos atrasados (serie parada, refresco pendiente o sin publicación)")
 
 
+#: Una serie retirada solo se avisa como tal cuando lleva sin publicar al menos esto (o 2 periodos, si es más): antes,
+#: en la fecha de la decisión aún no se sabía que la fuente la dejaría (TimeGate; verificación del catálogo, 2026-11-23).
+MARGEN_RETIRADA_DIAS = 92
+
+
+def dias_sin_publicar_retirada(referencias: pd.Series) -> int:
+    """Días sin publicar a partir de los cuales una serie retirada se da por retirada: ``MARGEN_RETIRADA_DIAS`` o
+    2 veces la mediana de la separación entre sus fechas de referencia, si es mayor (una anual, unos dos años)."""
+    u = pd.DatetimeIndex(pd.Series(referencias).dropna().unique()).sort_values()
+    paso = float(np.median(np.diff(u.values).astype("timedelta64[D]").astype(int))) if len(u) > 1 else 0.0
+    return int(max(MARGEN_RETIRADA_DIAS, 2 * paso))
+
+
 def _aviso_retirada(serie: str, visibles: pd.DataFrame, f: pd.Timestamp) -> str | None:
-    """Aviso de una serie que la fuente ya no publica (estado ``retirada`` del catálogo), si su último dato es anterior."""
+    """Aviso de una serie que la fuente ya no publica (estado ``retirada`` del catálogo), solo si en ``f`` ya lleva
+    ``dias_sin_publicar_retirada`` días sin publicar (si no, revelaría que la retirarán: TimeGate)."""
     e = cat_mod._cat(None).get(serie) or {}
     if e.get("estado") != "retirada":
         return None
     con_valor = visibles.loc[visibles["valor"].notna(), "fecha_referencia"]
     if con_valor.empty:
+        return None
+    ultima_pub = pd.Timestamp(visibles["fecha_publicacion"].max())
+    if (f - ultima_pub).days < dias_sin_publicar_retirada(visibles["fecha_referencia"]):
         return None
     return (f"{serie}: serie retirada por la fuente (catálogo); último dato visible {_iso(con_valor.max())}: no se "
             f"actualiza más, usa su sustituta si la hay")
@@ -586,21 +611,49 @@ def _lista_curada() -> tuple[dict[str, dict], dict[str, list[str]]]:
     return g[1], g[2]
 
 
-def _avisos_lista(serie: str) -> list[str]:
-    """Avisos estáticos de la lista curada (sin fechas ni valores): historia previa, composición de la zona euro, notas."""
+_FECHA_ISO = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
+
+
+def _nota_visible(nota: str, f: pd.Timestamp | None) -> bool:
+    """Una nota de la lista curada que cita una fecha posterior a ``f`` (p. ej. «parado el 2026-10-13») no se sabía."""
+    return f is None or all(pd.Timestamp(d) <= f for d in _FECHA_ISO.findall(nota))
+
+
+def _avisos_lista(serie: str, fecha: FechaLike | None = None,
+                  visible: Callable[[str], bool] | None = None) -> list[str]:
+    """Avisos estáticos de la lista curada (sin valores): historia previa, composición de la zona euro, notas.
+
+    Con ``fecha`` (``get_serie``), TimeGate: la serie de destino de una historia previa (``completa_a``) o de origen
+    solo se nombra si ``visible(id)`` (algo publicado hasta ``fecha``), y una nota que cita una fecha posterior no
+    sale. Sin ``fecha``, todos (uso interno y tests).
+    """
     lista, previas = _lista_curada()
+    f = timegate.fecha_decision(fecha) if fecha is not None else None
+    ve = visible if (visible is not None and f is not None) else (lambda _s: True)
     e = lista.get(serie) or {}
     out = []
-    if e.get("completa_a"):
+    if e.get("completa_a") and ve(str(e["completa_a"])):
         out.append(f"{serie}: historia previa de {e['completa_a']} (serie más antigua o parada del mismo concepto; "
                    f"desde donde acaba, usa {e['completa_a']}): no mezclar los dos niveles sin revisar el salto")
-    if previas.get(serie):
-        out.append(f"{serie}: su historia anterior está en {', '.join(sorted(previas[serie]))} (historia previa)")
+    anteriores = [p for p in sorted(previas.get(serie, [])) if ve(p)]
+    if anteriores:
+        out.append(f"{serie}: su historia anterior está en {', '.join(anteriores)} (historia previa)")
     if _ZONA_EURO_FIJA.search(serie) and serie not in _ZONA_EURO_NO_IMPORTA:
         out.append(AVISO_ZONA_EURO_FIJA.format(s=serie))
-    if e.get("nota"):
+    if e.get("nota") and _nota_visible(str(e["nota"]), f):
         out.append(f"{serie}: {e['nota']}")
     return out
+
+
+def _visible_en_curada(serie: str, f: pd.Timestamp) -> bool:
+    """¿Tiene ``serie`` alguna fila publicada hasta ``f`` en la base curada? (solo lee la columna de fechas)."""
+    import pyarrow.parquet as pq
+
+    ruta = almacen.ruta_series(curada=True)
+    if not ruta.exists():
+        return False
+    filtros = [("serie", "==", serie), ("fecha_publicacion", "<=", f.to_datetime64())]
+    return pq.read_table(ruta, columns=["fecha_publicacion"], filters=filtros).num_rows > 0
 
 
 _MESES_PERIODO = (1, 3, 6, 12)
@@ -627,15 +680,13 @@ def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divi
     ``id``: canónico con prefijo de fuente (``'fred:DGS10'``) o alias de la Fase 1 (``'VIX'``),
     resuelto con ``alias`` o, por defecto, con ``alias_por_defecto()`` (catálogo de series y
     ``publicaciones.yaml``). Una ETF que el catálogo excluye de la base (``excluida_ajustada``)
-    lanza ``KeyError`` con un mensaje que remite a ``get_precios``.
+    lanza ``KeyError`` con un mensaje que remite a ``get_precios`` (si ya cotizaba en ``fecha``; si no, el neutro).
     ``desde``: recorta por ``fecha_referencia >= desde`` (con un aviso si no queda nada).
 
     ``base`` (paso 4; mismo TimeGate y mismo truncado en las dos):
 
-    - ``'trabajo'`` (por defecto; también ``None``): la base de trabajo del almacén
-      (``almacen.leer_ultimas``), sin cambios respecto a antes del paso 4. Para auditar y construir.
-    - ``'curada'``: la base curada (``series/base_curada.parquet``). **Es la de los agentes y el
-      backtest.** Un id que es alias en ``series/alias.parquet`` (también tras resolver el alias de la
+    - ``'curada'`` (por defecto: ``None`` se resuelve a ``BASE_DEFECTO``, P01 del saneado): la base curada
+      (``series/base_curada.parquet``). **Es la de los agentes y el backtest.** Un id que es alias en ``series/alias.parquet`` (también tras resolver el alias de la
       Fase 1) sirve su canónico con el aviso «alias de X: se sirve el canónico»; una proyección (tabla
       aparte ``series/proyecciones.parquet``) lanza ``KeyError`` que remite a ``get_proyeccion``, solo si
       tiene algo publicado hasta ``fecha`` (si no, el mensaje neutro); las notas de la curación
@@ -643,6 +694,8 @@ def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divi
       Una serie diaria o semanal que lleva sin publicar más de ``MAX_DIAS_HABILES_ATRASO`` días hábiles
       (o ``MULTIPLO_RITMO`` veces su ritmo de publicación, si es mayor) avisa «datos atrasados»; las
       mensuales, trimestrales o anuales no. El FX de ``divisa='USD'`` sale también de la base curada.
+    - ``'trabajo'``: la base de trabajo del almacén (``almacen.leer_ultimas``), sin las fechas prudentes del
+      curado ni el corte. Solo para auditar, depurar y construir: hay que pedirla a mano.
     - una tabla del contrato en memoria (tests, recortes): se usa tal cual, sin alias ni avisos de
       la curación.
 
@@ -676,7 +729,7 @@ def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divi
     avisos: list[str] = []
     if curada:
         canonico, avisos = _resolver_alias_curada(canonico, id)
-    _comprobar_excluida(canonico, id)
+    _comprobar_excluida(canonico, id, f if tabla_base is None else None, curada)
     corte = timegate.fecha_decision(desde) if desde is not None else None
     # Del almacén: solo la serie, lo publicado hasta f y la última fila por periodo (resuelto en Arrow).
     tabla = tabla_base if tabla_base is not None else almacen.leer_ultimas(canonico, f, curada=curada)
@@ -701,11 +754,11 @@ def get_serie(id: str, fecha: FechaLike, *, desde: FechaLike | None = None, divi
     datos = datos.reset_index(drop=True)
     avisos += _avisos_serie(datos, curada)
     if curada:
-        atraso = (_aviso_atraso_serie(canonico, visibles, f) or _aviso_atraso_periodica(canonico, visibles, f)
-                  or _aviso_retirada(canonico, visibles, f))
+        atraso = (_aviso_retirada(canonico, visibles, f) or _aviso_atraso_serie(canonico, visibles, f)
+                  or _aviso_atraso_periodica(canonico, visibles, f))
         if atraso:
             avisos.append(atraso)
-        avisos += _avisos_lista(canonico)
+        avisos += _avisos_lista(canonico, f, lambda s: _visible_en_curada(s, f))
         vacios = _aviso_vacios(canonico, datos)
         if vacios:
             avisos.append(vacios)
@@ -785,15 +838,16 @@ def get_precios(tk: str | Sequence[str], fecha: FechaLike, *, desde: FechaLike |
 
     ``base`` (paso 4; mismo TimeGate, mismo ajuste a la fecha y mismo truncado en las dos):
 
-    - ``'trabajo'`` (por defecto; también ``None``): ``precios/<proveedor>/`` (``almacen.leer_precios``),
-      sin cambios respecto a antes del paso 4. Para auditar y construir.
-    - ``'curada'``: ``precios_curados/<proveedor>/``, con las propuestas del EDA aplicadas (sin velas de
+    - ``'curada'`` (por defecto: ``None`` se resuelve a ``BASE_DEFECTO``, P01 del saneado):
+      ``precios_curados/<proveedor>/``, con las propuestas del EDA aplicadas (sin velas de
       relleno fuera de calendario; aperturas de relleno a nulo, con un aviso por ticker). **Es la de los
       agentes y el backtest.** Un ticker que la curación deja fuera recibe el mismo aviso neutro que uno
       desconocido. Si la última sesión visible queda más de ``MAX_DIAS_HABILES_ATRASO`` días hábiles antes
       de ``fecha``, avisa «última sesión AAAA-MM-DD: datos atrasados (refresco pendiente o sin
       cotización)»: ticker sin refrescar (acciones no estadounidenses hasta el 3b-2) o que dejó de cotizar.
       El FX de ``divisa='USD'`` sale de la base curada de series.
+    - ``'trabajo'``: ``precios/<proveedor>/`` (``almacen.leer_precios``), la descarga tal cual. Solo para
+      auditar, depurar y construir: hay que pedirla a mano.
     - una tabla de precios del contrato en memoria (tests, recortes): se usa tal cual.
 
     ``base_fx``: tabla de series con el FX (por defecto ``almacen.leer_series`` de la base elegida).

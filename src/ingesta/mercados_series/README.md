@@ -158,6 +158,69 @@ t = get_serie("fred:DGS10", "2020-03-16", base="trabajo")    # la de trabajo, so
 w = get_proyeccion("fred:UNRATEMD", "2020-03-16")             # SEP; solo de la base curada
 ```
 
+## Catálogo para los agentes
+
+Para que un agente sepa **qué hay** antes de pedir un dato: [`catalogo_agentes`](catalogo_agentes.py) deja una
+fila por serie que queda en la base curada (514, `tipo='serie'`), por proyección del SEP (3, `tipo='proyeccion'`,
+se piden con `get_proyeccion`) y por ticker de `precios_curados` (1.494, `tipo='precio'`, con `get_precios`).
+**Solo metadatos y fechas**, ningún valor:
+
+- `id`, `tipo`, `alias` (ids que resuelven a este: tabla de alias de la curada y alias de la Fase 1), `nombre` y
+  `descripcion` (1–2 frases en castellano sencillo: qué mide, unidad y para qué sirve);
+- `tema` (vocabulario cerrado: `catalogo_agentes.temas()`) y `subtema`, `zona` (US, EA, EU, GB, JP, CN, DE, WLD,
+  EM...), `frecuencia`, `unidad`, `divisa`, `fuente`, `clase` (solo precios: accion, etf, indice, futuro...);
+- `desde` (primera referencia o sesión), `desde_inicial` y `desde_completo_en` (si la historia se amplió hacia
+  atrás después de la primera publicación: la primera referencia que ya se veía entonces y cuándo se publicó
+  `desde`), `primera_publicacion` (mínima `fecha_publicacion`: la usa el TimeGate de la búsqueda) y
+  `retraso_tipico_dias` (series: mediana del retraso de un dato nuevo, publicado en vivo, en los 5 años antes del
+  corte; precios: 0 o 1 según el mercado; es un metadato fijo y orientativo, no se recalcula a la fecha);
+- `agentes` (`|`), `avisos` (limitaciones de la lista curada, del catálogo y del curado de precios; los que solo se
+  saben desde una fecha llevan « [visible desde AAAA-MM-DD]»: la retirada de una serie, la serie o el ticker que
+  nombran si aún no existía, una nota con una fecha posterior), `licencia`, `palabras_clave`, `rol` y
+  `descripcion_manual`.
+
+Todo sale de la curada, del manifiesto, de los YAML del tema y de sus tablas. Lo único escrito a mano está en
+[`config/catalogo_agentes.yaml`](config/catalogo_agentes.yaml): reglas que asignan tema, zona y agentes (por
+grupo, fuente, patrón de id, bucket o mercado; revisables), sinónimos de la búsqueda y las descripciones
+repasadas a mano de 59 series clave y 5 precios (VIX, DGS10, DGS2, pendientes de la curva, FEDFUNDS, IPC y PCE,
+paro, NFCI, spreads HY/IG, S&P 500, EURUSD del BCE, HICP, tipos del BCE, Ken French, CAPE...). El resto lleva una
+plantilla. Agentes: macro (tipos, inflación, actividad, empleo, monetario, sector exterior...), risk (volatilidad,
+crédito, condiciones financieras, curva), equity (renta variable, factores, valoración y acciones), portfolio
+(ETF, índices, divisas, tipos cortos, renta fija) y cio (estrés, recesión, pendiente de la curva, proyecciones de
+la Fed y las series clave).
+
+```bash
+python -m ingesta.mercados_series catalogo-agentes   # lee el corpus (solo lectura); escribe los dos CSV
+```
+
+Escribe, de forma atómica, `results/ingesta/mercados_series/tablas/catalogo_agentes.csv` y
+`catalogo_agentes_resumen.csv` (recuentos por tipo, tema, agente y zona). Hay que regenerarlo tras cambiar la
+curada, la lista curada o el YAML; `test_catalogo_agentes.py` falla si el CSV no está al día (con el corpus).
+
+```python
+from ingesta.mercados_series.catalogo_agentes import buscar_series
+
+buscar_series("inflación eurozona", "2026-11-20")          # ecb:HICP...ANR, ecb:HICP...XEF000, wb:EMU.FP.CPI...
+buscar_series("bono 10 años", "2024-06-28", limite=3)       # fred:DGS10 primero
+buscar_series(None, "2024-06-28", agente="risk", tema="volatilidad")   # sin texto: filtra y ordena por id
+```
+
+`buscar_series(texto, fecha, *, tema, zona, agente, tipo, limite)` lee el CSV del repo (cacheado): **no necesita el
+corpus ni la red**. Es determinista: normaliza (minúsculas, sin acentos, singular simple), expande los sinónimos
+del YAML y pondera id o alias exacto > nombre > palabras clave > descripción > tema; ordena por `puntuacion` y
+luego por `id`; `limite` entre 1 y 50. La `fecha` es obligatoria (`timegate.fecha_decision`) y hace de
+**TimeGate**: no salen las filas cuya `primera_publicacion` es posterior, para no revelar que una serie existirá.
+Por eso, antes de 2026 «inflación eurozona» devuelve `eurostat:HICP_EMP.EA` (la historia previa) y no el HICP
+canónico del BCE, que la curada solo fecha desde 2026-01. El TimeGate alcanza también a los metadatos: los
+`avisos` con etiqueta solo salen (sin ella) desde su fecha y `desde` es `desde_inicial` mientras la historia ampliada
+no se había publicado. Huecos que el catálogo no puede tapar: no hay HICP subyacente de la zona euro antes de
+2026-01-28 (sin historia previa) ni OAS de ICE BofA antes de 2023-10-12 (FRED solo da 3 años; antes, `HYG`, `JNK`
+o `deriv:DBAA-DGS10`).
+
+Limitaciones: de 648 acciones (645 de EE. UU.: la lista del S&P 500 no trae nombres) no hay nombre en el corpus y
+se llaman por su ticker («Acción AAPL»); las demás lo toman de la foto de su índice (`constituyentes/`). La búsqueda
+es por palabras, sin semántica, y los sinónimos hay que mantenerlos en el YAML.
+
 ## Contrato (bloque 1)
 
 **Hora de decisión:** 16:30 America/New_York (con cambio de hora) de cada día natural. Un cierre de
