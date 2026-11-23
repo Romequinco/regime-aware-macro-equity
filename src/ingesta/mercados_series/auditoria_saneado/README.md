@@ -1,7 +1,7 @@
 # Auditoría de saneado del Tema 1 (2026-11-21)
 
 Scripts de **solo lectura** que sacan las cifras de
-[`AUDITORIA_SANEADO.md`](../../../../docs/fase2/mercados_series/AUDITORIA_SANEADO.md). Leen el corpus
+[`registro_saneado.md`](../../../../docs/fase2/mercados_series/registro_saneado.md). Leen el corpus
 (`D:/tfm_corpus/mercados_series`) y las tablas de `results/ingesta/mercados_series/tablas/`, sin escribir en ninguno de
 los dos. No son parte del paquete: son scripts sueltos, sin `__init__.py`.
 

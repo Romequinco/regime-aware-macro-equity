@@ -1,5 +1,5 @@
-# Fecha de corte del dataset del Tema 1 (G2, PLAN_DESCARGA.md, paso 3b; aprobada el 2026-11-19).
-# Único sitio donde vive el corte (P07 de AUDITORIA_SANEADO.md). La leen curada.py, curada_precios.py,
+# Fecha de corte del dataset del Tema 1 (G2, registro_descarga.md, paso 3b; aprobada el 2026-11-19).
+# Único sitio donde vive el corte (P07 de registro_saneado.md). La leen curada.py, curada_precios.py,
 # seleccion.py y estado_3b.py a través de ``corte.corte_vigente()``.
 #
 # Para un refresco: ``python -m ingesta.mercados_series refrescar --corte AAAA-MM-DD`` (la orden pasa el corte a

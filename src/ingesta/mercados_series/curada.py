@@ -72,7 +72,7 @@ __all__ = [
 ]
 
 TEMA = "mercados_series"
-# G2 (PLAN_DESCARGA.md, paso 3b, aprobada el 2026-11-19): fecha de corte del dataset, el último viernes con cierre
+# G2 (registro_descarga.md, paso 3b, aprobada el 2026-11-19): fecha de corte del dataset, el último viernes con cierre
 # completo antes del 3b-1. Las fuentes acaban entre el 11-16 y el 11-19, así que todas lo cubren. La base curada y
 # las proyecciones no llevan nada con fecha_publicacion (curada) posterior; la base de trabajo y el crudo sí lo
 # guardan, para el siguiente refresco.

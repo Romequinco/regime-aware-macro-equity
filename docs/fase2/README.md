@@ -21,11 +21,12 @@ fusionadas y en el remoto solo queda `main`.
 **Estado** (2026-11-11): los cuatro temas tienen su sonda en `main`: Tema 1 (mercados y series, con `get_serie` y
 `get_precios`), Tema 2 (sonda de bancos centrales y riesgo), Tema 3 (sonda EDGAR) y Tema 4 (sonda de noticias y
 alternativos con validez). Ninguno implica todavía una ingesta masiva desplegada. El contrato de tools
-(`src/herramientas`) ya envuelve `get_regimen`; `get_serie` y `get_precios` están pendientes de envolver.
+(`src/herramientas`) envuelve `get_regimen` y, del Tema 1, `buscar_series`, `get_serie`, `get_precios` y `get_proyeccion`.
 
 **Notebooks por tema:**
 - Tema 1: [`notebooks/fase2/mercados_series/01_resumen_sonda.ipynb`](../../notebooks/fase2/mercados_series/01_resumen_sonda.ipynb);
-  la descarga completa añadirá `02`–`05` ([plan](mercados_series/PLAN_DESCARGA.md)).
+  la descarga completa, `02`–`06` (de `02_inventario` a `06_catalogo`), con sus registros de
+  [descarga](mercados_series/registro_descarga.md) y [saneado](mercados_series/registro_saneado.md).
 - Tema 2: [`notebooks/fase2/bancos_riesgo/01_sonda.ipynb`](../../notebooks/fase2/bancos_riesgo/01_sonda.ipynb);
   [diseño y guías](../../src/ingesta/bancos_riesgo/README.md#diseño-y-próximos-pasos).
 - Tema 3: [`notebooks/fase2/empresas/01_sonda.ipynb`](../../notebooks/fase2/empresas/01_sonda.ipynb).

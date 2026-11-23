@@ -251,7 +251,7 @@ h(id="C11", tipo="consistencia", titulo="Cifras desfasadas en el plan y en los n
           "historia_recortada_avisos": P["ucits_historia_recortada_avisos"], "filas_base_manifiesto": 10232074,
           "filas_base_parquet": S["base_filas"], "sp500_pct_tabla": 67.78, "sp500_pct_recalculado": spr["pct_dias_tramo_cubiertos"]},
   desglose={"historia_recortada_solo_en_avisos": P["ucits_historia_recortada_solo_avisos"]},
-  evidencia=("PLAN_DESCARGA.md (tabla de salidas del paso 4 y estado), curada_manifiesto.json (filas_base = lo que lee "
+  evidencia=("registro_descarga.md (tabla de salidas del paso 4 y estado), curada_manifiesto.json (filas_base = lo que lee "
              "curar tras filtrar), descargas_3b_estado.csv (16 instrumentos) frente a precios_curados_avisos.csv (18)"),
   difiere_del_plan="Sí: 243→309, 25→26, 26→37, 18 avisos frente a 16 en el estado del 3b (CSPX.L y ^KS11 solo en avisos)",
   gravedad_propuesta="cosmetico",

@@ -276,7 +276,7 @@ def _cita_series(fecha_publicacion: date | None) -> Cita:
     return Cita(fuente=FUENTE_SERIES, id=huella_salida("base_curada", ruta), fecha_publicacion=fecha_publicacion)
 
 
-@registrar("get_serie", EntradaSerie, agentes=("macro", "risk", "portfolio", "cio"))
+@registrar("get_serie", EntradaSerie, agentes=("macro", "equity", "risk", "portfolio", "cio"))
 def get_serie(entrada: EntradaSerie, fecha: date) -> SalidaSerie:
     """Serie macro o de mercado tal como se conocía en la fecha de la decisión: resumen (último dato, cambios, percentil histórico) y últimas filas."""
     comun = {"tool": "get_serie", "fecha_consulta": fecha, "id": entrada.id}
@@ -324,7 +324,7 @@ class SalidaProyeccion(SalidaTool):
         default_factory=list, description="Una fila por periodo proyectado, de la última edición visible que lo cubre.")
 
 
-@registrar("get_proyeccion", EntradaProyeccion, agentes=("macro", "cio"))
+@registrar("get_proyeccion", EntradaProyeccion, agentes=("macro", "portfolio", "cio"))
 def get_proyeccion(entrada: EntradaProyeccion, fecha: date) -> SalidaProyeccion:
     """Proyecciones de la Fed (SEP del FOMC) visibles en la fecha de la decisión: por periodo, la última edición publicada, con su horizonte."""
     comun = {"tool": "get_proyeccion", "fecha_consulta": fecha, "id": entrada.id}
@@ -461,7 +461,7 @@ def _filas_precios(datos: pd.DataFrame, max_filas: int) -> tuple[list[FilaPrecio
     return filas, len(datos) - len(filas)
 
 
-@registrar("get_precios", EntradaPrecios, agentes=("equity", "portfolio", "risk", "cio"))
+@registrar("get_precios", EntradaPrecios, agentes=("macro", "equity", "risk", "portfolio", "cio"))
 def get_precios(entrada: EntradaPrecios, fecha: date) -> SalidaPrecios:
     """Precios de acciones, ETF, índices o cripto conocidos en la fecha de la decisión: por ticker, resumen (rentabilidades, volatilidad, caída desde máximos) y últimas sesiones OHLCV."""
     pedidos = list(dict.fromkeys(entrada.tickers))
@@ -546,6 +546,8 @@ class EntradaBuscar(EntradaTool):
 class FichaSerie(Modelo):
     id: str = Field(description="Id para get_serie, get_precios o get_proyeccion según el tipo.")
     tipo: str | None = None
+    tambien_como: str | None = Field(default=None, description="El mismo instrumento con la otra tool: id de la "
+                                     "serie (get_serie) si la ficha es un precio, o el ticker (get_precios) si es una serie.")
     nombre: str | None = None
     descripcion: str | None = None
     tema: str | None = None
@@ -583,7 +585,7 @@ def _lista(valor: Any, separador: str) -> list[str]:
 
 
 def _ficha(fila: dict[str, Any]) -> FichaSerie:
-    campos = {k: _texto(fila.get(k)) for k in ("tipo", "nombre", "descripcion", "tema", "zona", "frecuencia",
+    campos = {k: _texto(fila.get(k)) for k in ("tipo", "tambien_como", "nombre", "descripcion", "tema", "zona", "frecuencia",
                                                "unidad", "divisa")}
     return FichaSerie(id=str(fila["id"]), **campos, desde=_fecha(fila.get("desde")),
                       retraso_tipico_dias=_real(fila.get("retraso_tipico_dias")),

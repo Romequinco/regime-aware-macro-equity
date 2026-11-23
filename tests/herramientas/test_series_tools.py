@@ -26,9 +26,9 @@ from ingesta.mercados_series import tools as t1
 
 TOOLS = ("get_serie", "get_precios", "get_proyeccion", "buscar_series")
 AGENTES = {
-    "get_serie": {"macro", "risk", "portfolio", "cio"},
-    "get_precios": {"equity", "portfolio", "risk", "cio"},
-    "get_proyeccion": {"macro", "cio"},
+    "get_serie": {"macro", "equity", "risk", "portfolio", "cio"},
+    "get_precios": {"macro", "equity", "risk", "portfolio", "cio"},
+    "get_proyeccion": {"macro", "portfolio", "cio"},
     "buscar_series": {"macro", "equity", "risk", "portfolio", "cio"},
 }
 F = date(2024, 6, 14)
@@ -89,7 +89,19 @@ def test_tools_registradas_con_sus_agentes() -> None:
         assert set(por_nombre[nombre].agentes) == AGENTES[nombre]
         assert por_nombre[nombre].descripcion
     assert "get_proyeccion" not in [t.nombre for t in catalogo("equity")]
-    assert "get_precios" not in [t.nombre for t in catalogo("macro")]
+
+
+def test_cada_agente_tiene_la_tool_de_sus_fichas() -> None:
+    """Un agente al que el catálogo asigna fichas de un tipo puede pedirlas con su tool."""
+    from ingesta.mercados_series import catalogo_agentes
+
+    tool_de_tipo = {"serie": "get_serie", "precio": "get_precios", "proyeccion": "get_proyeccion"}
+    cat = catalogo_agentes.cargar_catalogo()
+    for agente in ("macro", "equity", "risk", "portfolio", "cio"):
+        tools = {t.nombre for t in catalogo(agente)}
+        suyas = cat[cat["agentes"].astype(str).str.split("|").map(lambda a, ag=agente: ag in a)]
+        for tipo in suyas["tipo"].unique():
+            assert tool_de_tipo[tipo] in tools, (agente, tipo)
 
 
 @pytest.mark.parametrize("nombre", TOOLS)

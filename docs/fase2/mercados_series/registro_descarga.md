@@ -1,8 +1,10 @@
-# Tema 1 · Plan de la descarga completa (documento temporal)
+# Tema 1 · Registro de la descarga completa
 
-> **Temporal.** Este documento solo existe en la rama `fase2/t1-descarga`. Al terminar se destila en el
-> [README del tema](../../../src/ingesta/mercados_series/README.md) y se borra antes de fusionar con `main`.
-> Aquí se apuntan el plan, las decisiones y el estado de cada paso.
+> **Registro cerrado (2026-11-23).** Plan, decisiones (D1–D10, E1–E7, F1–F5, G1–G7, H1) y estado de cada paso de
+> la descarga completa, tal como se tomaron. No se actualiza: el uso vigente está en el
+> [README del tema](../../../src/ingesta/mercados_series/README.md), el saneado posterior en
+> [`registro_saneado.md`](registro_saneado.md) y el catálogo para los agentes en
+> [`06_catalogo`](../../../notebooks/fase2/mercados_series/06_catalogo.ipynb).
 
 ## Objetivo
 
@@ -325,7 +327,7 @@ En el repo solo van resúmenes de metadatos (`tablas/curada_*.csv`) y el noteboo
 ## Saneado (2026-11-21)
 
 Auditoría de solo lectura y saneado con las opciones que eligió el usuario en el HTML: detalle, cifras y estado de
-cada pendiente (P01–P35) en [`AUDITORIA_SANEADO.md`](AUDITORIA_SANEADO.md#resultado-del-saneado-2026-11-21).
+cada pendiente (P01–P35) en [`registro_saneado.md`](registro_saneado.md#resultado-del-saneado-2026-11-21).
 
 **Después del saneado:**
 - **Base de trabajo:** 10.675.327 filas de 1.523 series.
@@ -373,4 +375,4 @@ Lo que dejaban los notebooks antiguos y no recoge el README (originales en la et
 | 3b | **3b-1 HECHO (2026-11-19/20; alcance H1)**:<br>- **Series:** FRED vivo, ALFRED (161), BCE, curvas, BoC/BoJ/RBA, Ken French (edición 2026-10), Shiller, GW, OFR y 23 índices `yf:` desde el almacén de precios (^GSPC, ^VIX…, rendimientos del Tesoro).<br>- **Precios:** 834 del S&P 500 y del núcleo al día, 6 altas del S&P (BE, P, VYLR, TWLO, OKTA, SKYD) y Coinbase.<br>- **OAS de ICE:** `archivar-oas`; la primera captura recupera 29 días.<br>- **Base:** 10.598.317 filas, sin perder ninguna. Las fuentes sin historia de revisiones solo crecen (132 valores anteriores del BCE conservados y 130 revisiones fechadas desde su observación). Copia previa rotatoria y `tablas/solo_anadir_ultima.csv`.<br>- **Estado** (`tablas/descargas_3b_estado.csv`): 28 hechos, 3 resueltos, 61 limitaciones declaradas y 187 aplazadas al 3b-2.<br>- **Limitaciones principales:** Bundesbank (anti-bots); 112 tickers del S&P reutilizados; KVUE y los truncados; la composición del S&P posterior al 2026-08-18 (fja05680 sin cambios); ^BCOM, ^W5000 y GC=F.<br>- **Cobertura histórica del S&P 500:** 67,8 % de los días-tramo (`tablas/sp500_cobertura_3b1.csv`).<br>- **Corte G2 (2026-11-13):** se aplica en el paso 4.<br>**Pendiente: 3b-2** (UCITS, acciones no estadounidenses, macro internacional, series nuevas, ediciones del WEO) | este |
 | 4 | **HECHO (2026-11-20; cifras actualizadas tras el 3b-2).**<br>**Base curada** (`curada.py`, orden `curar`):<br>- 10.189.709 filas de 533 series, corte 2026-11-13.<br>- 1.426.536 filas retrasadas por las capas del plan y 0 adelantadas.<br>- Escalas por vintage (6 series) y unidades homogeneizadas (27).<br>- Derivadas recalculadas.<br>- 109 alias y 309 proyecciones en tablas aparte.<br>- Registro de cambios y manifiesto firmado; publicación atómica.<br>**Precios curados** (`curada_precios.py`, `curar-precios`):<br>- 1.616 tickers.<br>- 29.611 velas de relleno quitadas.<br>- 430.050 aperturas de relleno anuladas (las que tienen volumen, con aviso propio).<br>- VBMFX y ^SKEW, sin apertura.<br>**Tools:** `get_serie`/`get_precios(base='curada')`, `get_proyeccion`, alias con aviso y aviso de datos atrasados.<br>**Verificaciones:** 13 + 13 en 0, revisadas por dos verificadores y corregidas en una ronda.<br>**Notebook:** `04_preprocesado`.<br>**Pendientes menores:** USD de las series en CNY sin fixing visible; la historia anterior a 2000 de 26 alias solo estaba en la base de trabajo (resuelto en el saneado, P24) | este |
 | 5 | **Notebook `05_resultado` hecho (2026-11-20)**: la foto final del dataset (533 series de 23 fuentes, 1.616 tickers, corte 2026-11-13, 26 verificaciones en 0, 124 limitaciones declaradas). **Pendiente:** el catálogo formal para los agentes, destilar este plan en el README, integrar main (3 commits del Tema 2) y la PR | este |
-| saneado | **Hecho (2026-11-21)**: auditoría (35 pendientes) y saneado elegido por el usuario; ver [`AUDITORIA_SANEADO.md`](AUDITORIA_SANEADO.md). notebooks `03`–`05` regenerados | rama `fase2/t1-saneado` |
+| saneado | **Hecho (2026-11-21)**: auditoría (35 pendientes) y saneado elegido por el usuario; ver [`registro_saneado.md`](registro_saneado.md). notebooks `03`–`05` regenerados | rama `fase2/t1-saneado` |

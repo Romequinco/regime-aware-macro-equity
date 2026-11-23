@@ -1,4 +1,4 @@
-"""Fecha de corte del dataset del Tema 1 en un solo sitio (P07 de ``AUDITORIA_SANEADO.md``).
+"""Fecha de corte del dataset del Tema 1 en un solo sitio (P07 de ``registro_saneado.md``).
 
 Orden de prioridad:
 

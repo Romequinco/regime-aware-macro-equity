@@ -46,7 +46,7 @@ hay que evaluarlos y justificar si entran o no.
 4. **Hecho (bloque 3)**: vintages exactos de ALFRED, FRED como fuente viva y ediciones académicas con vintage propio
    (ver «Vintages (bloque 3)»).
 5. Limpieza y EDA de las series (huecos, rupturas, series retiradas): pendiente, en la descarga completa
-   (`02_inventario` y `03_seleccion_eda`; ver [`PLAN_DESCARGA.md`](../../../docs/fase2/mercados_series/PLAN_DESCARGA.md)).
+   (`02_inventario` y `03_seleccion_eda`; ver [`registro_descarga.md`](../../../docs/fase2/mercados_series/registro_descarga.md)).
 6. **Hecho (bloques 4–8)**: macro internacional, universo, precios as-traded, supervivencia y libre de riesgo,
    baselines y costes. Ver las secciones de cada bloque.
 7. **Hecho (bloque 9, cierre)**: calidad global, tabla de fichas, las dos tools en 2008-09-15 y 2020-03-16 y truncado
@@ -167,7 +167,9 @@ fila por serie que queda en la base curada (514, `tipo='serie'`), por proyecció
 se piden con `get_proyeccion`) y por ticker de `precios_curados` (1.494, `tipo='precio'`, con `get_precios`).
 **Solo metadatos y fechas**, ningún valor:
 
-- `id`, `tipo`, `alias` (ids que resuelven a este: tabla de alias de la curada y alias de la Fase 1), `nombre` y
+- `id`, `tipo`, `alias` (ids que resuelven a este: tabla de alias de la curada y alias de la Fase 1), `tambien_como`
+  (el mismo instrumento con la otra tool: `yf:^GSPC` en `get_serie` ↔ `^GSPC` en `get_precios`; la búsqueda solo
+  devuelve el mejor colocado de los dos, con el otro anotado), `nombre` y
   `descripcion` (1–2 frases en castellano sencillo: qué mide, unidad y para qué sirve);
 - `tema` (vocabulario cerrado: `catalogo_agentes.temas()`) y `subtema`, `zona` (US, EA, EU, GB, JP, CN, DE, WLD,
   EM...), `frecuencia`, `unidad`, `divisa`, `fuente`, `clase` (solo precios: accion, etf, indice, futuro...);
@@ -219,8 +221,10 @@ no se había publicado. Huecos que el catálogo no puede tapar: no hay HICP suby
 2026-01-28 (sin historia previa) ni OAS de ICE BofA antes de 2023-10-12 (FRED solo da 3 años; antes, `HYG`, `JNK`
 o `deriv:DBAA-DGS10`).
 
-Limitaciones: de 648 acciones (645 de EE. UU.: la lista del S&P 500 no trae nombres) no hay nombre en el corpus y
-se llaman por su ticker («Acción AAPL»); las demás lo toman de la foto de su índice (`constituyentes/`). La búsqueda
+Nombres de las acciones: los de EE. UU. salen de la lista pública de la SEC (`company_tickers.json`, guardada en
+`crudo/sec/` del corpus; es la foto de hoy, así que el nombre es el actual), los de otros índices de la foto de su
+índice (`constituyentes/`) y unos pocos de `nombres_a_mano` del YAML; la que no está en ninguna se llama por su ticker
+(«Acción X», hoy 1). La búsqueda
 es por palabras, sin semántica, y los sinónimos hay que mantenerlos en el YAML.
 
 ## Contrato (bloque 1)

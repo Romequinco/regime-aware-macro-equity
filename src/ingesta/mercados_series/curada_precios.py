@@ -8,7 +8,7 @@ Lee ``<corpus>/mercados_series/precios/<proveedor>/`` (**nunca lo toca**) y escr
 1. **Solo los que se quedan**: los tickers con ``decision: queda`` en la sección ``precios`` de
    ``config/lista_curada.yaml`` (Yahoo y Coinbase; la lista no dice el proveedor: sale de la carpeta del fichero).
 2. **Corte G2** (``CORTE_G2`` = 2026-11-13, último viernes con cierre completo antes del 3b-1;
-   ``docs/fase2/mercados_series/PLAN_DESCARGA.md``): fuera las sesiones con ``fecha_publicacion`` posterior. En
+   ``docs/fase2/mercados_series/registro_descarga.md``): fuera las sesiones con ``fecha_publicacion`` posterior. En
    Coinbase la vela de un día se publica al siguiente (00:30 UTC), así que su última sesión curada es la del 12.
 3. **Acciones automáticas del EDA** (``incidencias_eda`` de ``config/preprocesado.yaml``, de ``eda.PROPUESTAS``):
    - ``sesion_fuera_calendario_relleno`` («nulo + aviso»): las velas en un día que el calendario del mercado da
@@ -100,7 +100,7 @@ from ingesta.mercados_series import saneado_precios as sp
 from ingesta.mercados_series.contrato import COLUMNAS_PRECIOS, ErrorContrato, validar_precios
 
 TEMA = "mercados_series"
-# Corte G2 (PLAN_DESCARGA.md, paso 3b): nada con fecha_publicacion posterior entra en los precios curados.
+# Corte G2 (registro_descarga.md, paso 3b): nada con fecha_publicacion posterior entra en los precios curados.
 CORTE_G2 = __import__("ingesta.mercados_series.corte", fromlist=["corte_vigente"]).corte_vigente()  # P07
 CARPETA_CURADOS = almacen.CARPETA_PRECIOS_CURADOS     # "precios_curados", la de almacen.ruta_precios(curada=True)
 RUTA_LISTA = Path(__file__).resolve().parent / "config" / "lista_curada.yaml"

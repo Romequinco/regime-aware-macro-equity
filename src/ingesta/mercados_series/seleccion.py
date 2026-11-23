@@ -122,7 +122,7 @@ ARCX desde 2026-09-17, no Alltel; DWD, GP, LU...).
 alias UCITS con correlación semanal < 0,9 con su ETF de EE. UU. (``ucits_poco_correlados``), ``AVISO_UCITS``; y los
 ficheros rotos verificados a mano (``SOSPECHOSAS_VERIFICADAS``: IBTS.L) son serie sospechosa.
 
-**Decisiones de cierre del paso 3** (``PLAN_DESCARGA.md``):
+**Decisiones de cierre del paso 3** (``registro_descarga.md``):
 
 - **F3 · Q1 = solo Yahoo** (``aplicar_f3``): en ``descargas_3b.csv`` la columna ``estado`` dice
   ``pendiente`` o ``limitacion_declarada``; las filas que dependían de Q1 (deslistados, sospechosas,

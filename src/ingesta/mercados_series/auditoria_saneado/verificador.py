@@ -871,7 +871,7 @@ def informe():
       "Totales y causas principales correctos. El desglose se contradice con N05: los 7 «festivos» incluyen "
       "fred:DGS20 1987-01-01, que N05 (y su nota: «hueco permanente: FRED sin valor más de 31 días») dice que no es "
       "festivo; festivos reales = 6 (BoC). Y «plazo de curva no publicado» = 6.578 mete 3 filas FRED diarias (marcas de "
-      "hueco) además de las 6.575 de BoE+MoF. La frase del plan sobre festivos no aparece en PLAN_DESCARGA.md (grep de "
+      "hueco) además de las 6.575 de BoE+MoF. La frase del plan sobre festivos no aparece en registro_descarga.md (grep de "
       "26.200/19.619 sin resultados): la discrepancia es con el brief, no con el plan del repo.",
       "DuckDB sobre base_curada: causa = existe otra fila (serie, fecha_referencia) con valor publicada después / solo "
       "antes / nunca; festivos con exchange_calendars (XLON, XTKS, XTSE, XNYS) sobre filas nulas de series diarias")
@@ -983,7 +983,7 @@ def informe():
     v("V06", "CONFIRMADO", "4 ediciones WEO (2025-04..2026-10), 357 series, 28 en la curada (4.296 filas), primera publicación 2025-04-22",
       f"{g('V06')['vintages_bloque4']}; curada {g('V06')['curada_series_imf']} series / {f(g('V06')['curada_filas_imf'])} filas; primera "
       f"{g('V06')['curada_primera_pub_imf']}; 2025-10 fechada {g('V06')['pub_por_vintage']['2025-10']}; dbnomics {g('V06')['dbnomics_meta']} meta y {g('V06')['dbnomics_datos']} datos",
-      "PLAN_DESCARGA.md:262 omite la 2026-10, como dice el auditor.", "bloque4/imf_weo.parquet y base_curada por fuente imf_weo")
+      "registro_descarga.md:262 omite la 2026-10, como dice el auditor.", "bloque4/imf_weo.parquet y base_curada por fuente imf_weo")
     v("V07", "CONFIRMADO", "Ken French 3 ediciones, Shiller 1, Goyal-Welch 2, OFR 0; 2 días de descarga; 49 filas KF 2026-10",
       f"{g('V07')['ediciones']}; días {g('V07')['dias_descarga']}; curada KF {g('V07')['curada_kf_vintages']}; GW {g('V07')['curada_gw_vintages']}", "",
       "listado de crudo/<fuente>/ediciones y vintages de la curada")

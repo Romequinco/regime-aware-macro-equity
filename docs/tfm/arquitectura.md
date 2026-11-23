@@ -55,8 +55,10 @@ Cada tool aplica el TimeGate con `fecha`. Las marcadas **D** son deterministas (
 | `buscar_filings(tk, q, fecha)` | SEC EDGAR: 10-K, 10-Q, 8-K, earnings calls | | x | | | |
 | `buscar_riesgo(q, fecha)` | BIS Quarterly, FSR Fed/BCE, papers de crisis | | | x | | |
 | `buscar_noticias(q, fecha)` | GDELT, RSS Reuters/FT | x | x | | | |
-| `get_serie(id, fecha)` | FRED/ALFRED: VIX, spreads, curva, IPC, paro... | x | | x | | |
-| `get_precios(tk, fecha)` | yfinance (ETF y acciones) | | x | | x | |
+| `get_serie(id, fecha)` | Base curada del Tema 1: VIX, spreads, curva, IPC, paro, factores, valoración... | x | x | x | x | x |
+| `get_precios(tk, fecha)` | Precios curados (Yahoo y Coinbase): ETF, acciones, índices, futuros | x | x | x | x | x |
+| `get_proyeccion(id, fecha)` | Proyecciones SEP del FOMC (última edición visible) | x | | | x | x |
+| `buscar_series(q, fecha)` | Catálogo del Tema 1: qué series y tickers existen a la fecha (sin valores) | x | x | x | x | x |
 | `get_fundamentales(tk, fecha)` | SEC XBRL: ventas, márgenes, deuda | | x | | | |
 | `get_polymarket(evento, fecha)` | Probabilidad implícita de eventos de cola | | | x | | |
 | `get_regimen(fecha)` | Detector de régimen (Fase 1): estado, probabilidad de crisis, días en el estado y consenso del resto de detectores (§5) | x | | x | x | x |

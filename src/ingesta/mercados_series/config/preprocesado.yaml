@@ -2,7 +2,7 @@
 #
 # Qué es: el plan que el paso 4 (`04_preprocesado`) aplicará para construir una BASE CURADA APARTE a partir del
 # crudo y de la lista aprobada (`config/lista_curada.yaml`, de B1). La base actual (`series/base_series.parquet`)
-# y el crudo no se tocan nunca. Decisiones que recoge (docs/fase2/mercados_series/PLAN_DESCARGA.md): D2 y D4 del
+# y el crudo no se tocan nunca. Decisiones que recoge (docs/fase2/mercados_series/registro_descarga.md): D2 y D4 del
 # paso 2; E4 y E5 del paso 3.
 #
 # En el paso 3 este fichero solo se carga, se valida y se SIMULA (`python -m ingesta.mercados_series.preprocesado`:
@@ -891,7 +891,7 @@ homogeneizacion:
        motivo: 'ratios y varianza sin equivalente en %: se dejan como están'}
   frecuencias:
     remuestrear: false
-    motivo: 'frecuencias nativas (decisión del paso 4 en PLAN_DESCARGA.md): ni se agregan ni se rellenan'
+    motivo: 'frecuencias nativas (decisión del paso 4 en registro_descarga.md): ni se agregan ni se rellenan'
   alias:
     donde: 'tabla de alias aparte (series/alias.parquet del paso 4), NO en la base curada'
     nota: 'los alias y canónicos los decide B1 en config/lista_curada.yaml; aquí solo cómo se marcan: la base curada

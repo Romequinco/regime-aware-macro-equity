@@ -1,4 +1,4 @@
-"""Orden única de refresco del Tema 1 (P07 de ``docs/fase2/mercados_series/AUDITORIA_SANEADO.md``).
+"""Orden única de refresco del Tema 1 (P07 de ``docs/fase2/mercados_series/registro_saneado.md``).
 
 ``python -m ingesta.mercados_series refrescar --corte AAAA-MM-DD [opciones]`` encadena, en este orden, las órdenes
 que antes se lanzaban a mano (unas 20), cada una en un proceso aparte con ``T1_CORTE`` en el entorno

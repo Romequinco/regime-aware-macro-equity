@@ -648,3 +648,9 @@ busqueda:
     cuenta corriente: [current account]
     deuda publica: [debt, deuda federal, gfdebtn]
     deficit: [superavit, saldo fiscal]
+
+# Nombres de acciones que no salen de constituyentes/ ni de la lista de la SEC (crudo/sec/company_tickers.json).
+nombres_a_mano:
+  2330.TW: Taiwan Semiconductor Manufacturing (TSMC)
+  6758.T: Sony Group
+  7203.T: Toyota Motor

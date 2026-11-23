@@ -55,6 +55,9 @@ RUTA_CONFIG = Path(__file__).resolve().parent / "config" / "catalogo_agentes.yam
 CARPETA_TABLAS = RESULTS_INGESTA / TEMA / "tablas"
 RUTA_CSV = CARPETA_TABLAS / "catalogo_agentes.csv"
 RUTA_RESUMEN = CARPETA_TABLAS / "catalogo_agentes_resumen.csv"
+# Nombres de empresa: lista pública ticker -> nombre de la SEC (company_tickers.json), guardada en el crudo del tema.
+# Es la foto ACTUAL (empresas que hoy presentan informes): el nombre es el de hoy, no el de cada fecha.
+SUBRUTA_SEC_TICKERS = ("crudo", "sec", "company_tickers.json")
 
 TIPOS = ("serie", "proyeccion", "precio")
 AGENTES = ("macro", "risk", "equity", "portfolio", "cio")
@@ -63,12 +66,12 @@ SEP = "|"
 ANIOS_RETRASO = 5      # ventana (años antes del corte) del retraso típico de las series
 
 COLUMNAS = (
-    "id", "tipo", "alias", "nombre", "descripcion", "tema", "subtema", "zona", "frecuencia", "unidad", "divisa",
-    "fuente", "clase", "desde", "desde_inicial", "desde_completo_en", "primera_publicacion", "retraso_tipico_dias",
+    "id", "tipo", "alias", "tambien_como", "nombre", "descripcion", "tema", "subtema", "zona", "frecuencia", "unidad",
+    "divisa", "fuente", "clase", "desde", "desde_inicial", "desde_completo_en", "primera_publicacion", "retraso_tipico_dias",
     "agentes", "avisos", "licencia", "palabras_clave", "rol", "descripcion_manual",
 )
 COLUMNAS_BUSQUEDA = (
-    "id", "tipo", "nombre", "descripcion", "tema", "zona", "frecuencia", "unidad", "divisa", "desde",
+    "id", "tipo", "tambien_como", "nombre", "descripcion", "tema", "zona", "frecuencia", "unidad", "divisa", "desde",
     "retraso_tipico_dias", "agentes", "avisos", "puntuacion",
 )
 COLUMNAS_RESUMEN = ("dimension", "categoria", "n", *(f"n_{t}" for t in TIPOS))
@@ -505,8 +508,21 @@ def _filas_series(cfg: dict[str, Any], *, ruta_curada: Path, ruta_proyecciones: 
     return filas
 
 
+def nombres_sec(ruta: Path) -> dict[str, str]:
+    """Ticker (formato Yahoo, ``BRK-B``) -> nombre de empresa de la lista de la SEC; vacío si no está el fichero."""
+    if not ruta.exists():
+        return {}
+    datos = json.loads(ruta.read_text(encoding="utf-8"))
+    nombres: dict[str, str] = {}
+    for e in datos.values():
+        tk = str(e.get("ticker", "")).upper().replace(".", "-")
+        if tk and e.get("title") and tk not in nombres:
+            nombres[tk] = str(e["title"]).strip()
+    return nombres
+
+
 def _nombre_precio(tk: str, clase: str, universo_fila: dict[str, Any] | None, cat: dict[str, dict],
-                   nombres_comp: dict[str, str]) -> str:
+                   nombres_comp: dict[str, str], nombres_sec_: dict[str, str] | None = None) -> str:
     if universo_fila and universo_fila.get("nombre"):
         return str(universo_fila["nombre"])
     e = cat.get(f"yf:{tk}")
@@ -514,6 +530,8 @@ def _nombre_precio(tk: str, clase: str, universo_fila: dict[str, Any] | None, ca
         return re.sub(r"\s*\(cierre ajustado de Yahoo\)$", "", e["nombre"])
     if tk in nombres_comp:
         return f"{nombres_comp[tk]} ({tk})"
+    if clase == "accion" and nombres_sec_ and tk in nombres_sec_:
+        return f"{nombres_sec_[tk]} ({tk})"
     return f"Acción {tk}" if clase == "accion" else tk
 
 
@@ -554,7 +572,7 @@ def _avisos_precio(tk: str, lp: dict[str, Any], u: dict[str, Any] | None, avisos
 
 
 def _filas_precios(cfg: dict[str, Any], *, carpeta_precios: Path, carpeta_constituyentes: Path,
-                   registro: Callable[[str], Any]) -> list[dict[str, Any]]:
+                   registro: Callable[[str], Any], ruta_sec: Path | None = None) -> list[dict[str, Any]]:
     from ingesta.mercados_series import catalogo, curada_precios, universo
 
     cat = catalogo.cargar_catalogo()
@@ -568,6 +586,8 @@ def _filas_precios(cfg: dict[str, Any], *, carpeta_precios: Path, carpeta_consti
     avisos_curado = {tk: sorted(set(g["tipo"])) for tk, g in av.groupby("ticker")}
     comp = _componentes_indices(carpeta_constituyentes, cfg)
     nombres_comp = comp.pop("_nombres")  # type: ignore[arg-type]
+    sec = nombres_sec(ruta_sec) if ruta_sec is not None else {}
+    sec.update(cfg.get("nombres_a_mano", {}))      # acciones que la SEC no lista (no estadounidenses)
     manuales = cfg.get("descripciones", {})
     series_ids = set(cat)
 
@@ -593,7 +613,7 @@ def _filas_precios(cfg: dict[str, Any], *, carpeta_precios: Path, carpeta_consti
             alias = [id_u] if id_u and id_u != tk and id_u not in series_ids else []
             fila = {
                 "id": tk, "tipo": "precio", "alias": SEP.join(alias),
-                "nombre": _nombre_precio(tk, clase, u, cat, nombres_comp), "frecuencia": "diaria",
+                "nombre": _nombre_precio(tk, clase, u, cat, nombres_comp, sec), "frecuencia": "diaria",
                 "unidad": cfg["unidades_precio"][clase].format(divisa=divisa or "-"), "divisa": divisa,
                 "fuente": prov, "clase": clase, "licencia": cfg["licencias_precio"][prov], "rol": None,
                 "grupo": None, "clave": tk in manuales, "bucket": r.get("bucket") or None,
@@ -612,6 +632,20 @@ def _filas_precios(cfg: dict[str, Any], *, carpeta_precios: Path, carpeta_consti
     return filas
 
 
+def _gemelos(df: pd.DataFrame) -> pd.Series:
+    """El mismo dato con la otra tool: ``yf:X`` (serie, get_serie) <-> ``X`` (precio, get_precios)."""
+    series = set(df.loc[df["tipo"] == "serie", "id"])
+    precios = set(df.loc[df["tipo"] == "precio", "id"])
+
+    def gemelo(fila: pd.Series) -> str | None:
+        if fila["tipo"] == "precio" and f"yf:{fila['id']}" in series:
+            return f"yf:{fila['id']}"
+        if fila["tipo"] == "serie" and str(fila["id"]).startswith("yf:") and fila["id"][3:] in precios:
+            return fila["id"][3:]
+        return None
+    return df.apply(gemelo, axis=1)
+
+
 def construir_catalogo(*, registro: Callable[[str], Any] | None = None) -> pd.DataFrame:
     """Catálogo para los agentes (``COLUMNAS``) desde el corpus curado (solo lectura) y los YAML del tema.
 
@@ -628,13 +662,15 @@ def construir_catalogo(*, registro: Callable[[str], Any] | None = None) -> pd.Da
                           ruta_alias=series / almacen.FICHERO_ALIAS, ruta_manifiesto=series / "curada_manifiesto.json",
                           registro=log)
     filas += _filas_precios(cfg, carpeta_precios=carpeta / almacen.CARPETA_PRECIOS_CURADOS,
-                            carpeta_constituyentes=carpeta / "constituyentes", registro=log)
+                            carpeta_constituyentes=carpeta / "constituyentes", registro=log,
+                            ruta_sec=carpeta.joinpath(*SUBRUTA_SEC_TICKERS))
     primeras = {f["id"]: pd.Timestamp(f["primera_publicacion"]) for f in filas}
     for f in filas:
         f["avisos"] = _etiquetar(f.pop("_avisos"), primeras[f["id"]], primeras)
     df = pd.DataFrame(filas).reindex(columns=list(COLUMNAS))
     df["retraso_tipico_dias"] = pd.to_numeric(df["retraso_tipico_dias"], errors="coerce").astype(float)
     df["descripcion_manual"] = df["descripcion_manual"].astype(bool)
+    df["tambien_como"] = _gemelos(df)
     duplicados = df.loc[df["id"].duplicated(), "id"].tolist()
     if duplicados:
         raise RuntimeError(f"ids duplicados en el catálogo: {duplicados[:10]}")
@@ -867,7 +903,19 @@ def buscar_series(texto: str | None = None, fecha: FechaLike | EllipsisType = ..
     else:
         sub["puntuacion"] = 0.0
         sub = sub.sort_values("id", kind="mergesort")
-    sub = sub.head(int(limite)).copy()
+    # Serie y precio del mismo instrumento (``tambien_como``): sale solo el mejor colocado, con el otro id anotado.
+    # El gemelo solo se anota si ya era visible en f (si no, ni siquiera está en ``sub``).
+    visibles = set(df["id"].iloc[filas])
+    gem = sub["tambien_como"].where(sub["tambien_como"].isin(visibles))
+    vistos: set[str] = set()
+    quedan = []
+    for i, g in zip(sub["id"], gem, strict=True):
+        quedan.append(i not in vistos)
+        if isinstance(g, str):
+            vistos.add(g)
+        vistos.add(i)
+    quedan_ = np.array(quedan, dtype=bool)        # lista vacía: pandas la leería como selección de columnas
+    sub = sub[quedan_].assign(tambien_como=gem[quedan_]).head(int(limite)).copy()
     # TimeGate de los metadatos: avisos que aún no se sabían fuera, y ``desde`` de la historia ya publicada en f.
     sub["avisos"] = [avisos_en_fecha(a, f) for a in sub["avisos"]]
     ampliada = pd.to_datetime(sub["desde_completo_en"])

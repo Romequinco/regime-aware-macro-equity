@@ -1,4 +1,7 @@
-# Tema 1 · Auditoría de saneado (2026-11-21)
+# Tema 1 · Registro de la auditoría y el saneado (2026-11-21)
+
+> **Registro cerrado (2026-11-23).** Auditoría, opciones elegidas y resultado del saneado (P01–P35). No se
+> actualiza: el plan y las decisiones previas están en [`registro_descarga.md`](registro_descarga.md).
 
 > **Pregunta del usuario:** «¿Aún queda mucho para sanear todos los datos?»
 >
@@ -381,7 +384,7 @@ Antes de tocar nada se hizo un respaldo completo en `D:/tfm_corpus/mercados_seri
 | P30 | b | Hecho | Fuera las filas vacías en días de mercado cerrado (6) |
 | P31 | b | Hecho | «Posible fuga de revisiones» en las 73.559 filas de FRED anteriores a ALFRED (las 971 de `philly:ROUTPUT` ya no están: la serie salió por P10) |
 | P32 | b | Hecho | `tests/ingesta/mercados_series/conftest.py`: aviso visible si falta el corpus; `T1_EXIGIR_CORPUS=1` hace fallar |
-| P33 | b | Hecho | Cifras y frases al día en este documento, `PLAN_DESCARGA.md` y el README del tema. Los notebooks `03`–`05` aún tienen las cifras de antes |
+| P33 | b | Hecho | Cifras y frases al día en este documento, `registro_descarga.md` y el README del tema. Los notebooks `03`–`05` aún tienen las cifras de antes |
 | P34 | a | Limitación | Solo Yahoo (F3) |
 | P35 | a | Fase 4 | D10 abierta |
 

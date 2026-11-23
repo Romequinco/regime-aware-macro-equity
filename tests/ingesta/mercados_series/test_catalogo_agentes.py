@@ -307,3 +307,28 @@ def test_csv_al_dia_con_el_corpus(cat, corpus, tmp_path):
     nuevo = ca.construir_catalogo()
     ruta = almacen.escribir_csv_atomico(nuevo, tmp_path / "catalogo_agentes.csv")
     pd.testing.assert_frame_equal(ca.cargar_catalogo(ruta), cat)
+
+
+# --- Nombres de empresa y gemelos serie/precio (2026-11-23) ----------------------------------------------
+def test_acciones_con_nombre_de_empresa(cat: pd.DataFrame) -> None:
+    acciones = cat[(cat["tipo"] == "precio") & (cat["clase"] == "accion")]
+    sin_nombre = acciones["nombre"].str.startswith("Acción ")
+    assert sin_nombre.sum() <= 5, acciones.loc[sin_nombre, "id"].tolist()
+    assert buscar_series("Apple", "2024-06-28", limite=3)["id"].iloc[0] == "AAPL"
+    assert buscar_series("Microsoft", "2024-06-28", limite=3)["id"].iloc[0] == "MSFT"
+
+
+def test_gemelos_serie_precio_simetricos(cat: pd.DataFrame) -> None:
+    gem = cat.dropna(subset=["tambien_como"]).set_index("id")["tambien_como"]
+    assert len(gem) > 0
+    for i, g in gem.items():
+        assert gem.get(g) == i, (i, g)
+        assert {i, g} == {f"yf:{i.removeprefix('yf:')}", i.removeprefix("yf:")}
+
+
+@pytest.mark.parametrize("texto", ["S&P 500", "volatilidad", "nasdaq", "dax", "oro"])
+def test_busqueda_sin_gemelos_repetidos(texto: str) -> None:
+    for f in ("2008-09-15", "2024-06-28"):
+        r = buscar_series(texto, f, limite=50)
+        ids = set(r["id"])
+        assert not any(g in ids for g in r["tambien_como"].dropna()), (texto, f)

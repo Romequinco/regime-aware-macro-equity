@@ -126,7 +126,7 @@ footer { color: var(--ink2); font-size: 12.5px; margin-top: 30px; }
 </div>
 <textarea id="salida" readonly aria-label="Texto de la selección"></textarea>
 <div id="tarjetas"></div>
-<footer>Solo metadatos, recuentos, fechas y porcentajes: ningún valor de serie ni precio. La selección se guarda en este navegador (localStorage) si está disponible. Detalle y cifras: docs/fase2/mercados_series/AUDITORIA_SANEADO.md (rama fase2/t1-saneado).</footer>
+<footer>Solo metadatos, recuentos, fechas y porcentajes: ningún valor de serie ni precio. La selección se guarda en este navegador (localStorage) si está disponible. Detalle y cifras: docs/fase2/mercados_series/registro_saneado.md (rama fase2/t1-saneado).</footer>
 </main>
 <div id="aviso" role="status"></div>
 <script id="datos" type="application/json">__DATOS__</script>
